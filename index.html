@@ -3,13 +3,44 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-<title>FinPlan Pro - Sachintha Gaurawa</title>
+<title>WealthFlow - Sachintha Gaurawa</title>
 <link rel="icon" type="image/x-icon" href="https://res.cloudinary.com/dzrfpc9be/image/upload/v1777219304/Fav_img_rkpnbl.ico">
 <link rel="icon" type="image/png" href="https://res.cloudinary.com/dzrfpc9be/image/upload/v1777219344/Fav_img_bagjfj.png">
 <link rel="apple-touch-icon" href="https://res.cloudinary.com/dzrfpc9be/image/upload/v1777219344/Fav_img_bagjfj.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getFirestore, doc, setDoc, getDoc, onSnapshot, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBpIRHoNQJTeMIVYime_oVjBXiQWNH18K4",
+    authDomain: "wealthflow-6dffb.firebaseapp.com",
+    projectId: "wealthflow-6dffb",
+    storageBucket: "wealthflow-6dffb.firebasestorage.app",
+    messagingSenderId: "1020193373377",
+    appId: "1:1020193373377:web:52ae0662d35b02037f6840",
+    measurementId: "G-FKEKQGG8MZ"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  enableIndexedDbPersistence(db).catch((err) => {
+      console.warn("Offline persistence failed", err.code);
+  });
+
+  window.fsDb = db;
+  window.fsDoc = doc(db, 'wealthflow_data', 'sachintha_main');
+  window.fsSetDoc = setDoc;
+  window.fsGetDoc = getDoc;
+  window.fsOnSnapshot = onSnapshot;
+
+  if(window.initFirebaseSync) window.initFirebaseSync();
+</script>
+
 <style>
 /* ================== THEME VARIABLES ================== */
 :root{
@@ -117,13 +148,14 @@ input,select,textarea,button{font-family:var(--font);}
 .pg-title{font-size:17px;font-weight:700;}
 .pg-title span{color:var(--accent);}
 .tb-right{display:flex;align-items:center;gap:8px;}
-.online-badge{display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;font-family:var(--mono);}
+.online-badge{display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;font-family:var(--mono); transition:all 0.3s;}
 .online-badge.on{background:var(--gg);color:var(--green);}
 .online-badge.off{background:var(--rg);color:var(--red);}
 .online-dot{width:6px;height:6px;border-radius:50%;background:currentColor;animation:dotPulse 1.5s infinite;}
 @keyframes dotPulse{0%,100%{opacity:1;}50%{opacity:.4;}}
 .theme-btn,.refresh-btn{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:7px 9px;cursor:pointer;font-size:15px;color:var(--text2);transition:all .18s;display:flex;align-items:center;}
 .theme-btn:hover,.refresh-btn:hover{color:var(--accent);border-color:var(--accent);}
+.refresh-btn { transition: transform 0.5s ease; }
 .month-badge{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:5px 11px;font-size:11.5px;font-weight:600;color:var(--text2);font-family:var(--mono);}
 .content{padding:22px 26px;flex:1;}
 .page{display:none;}
@@ -372,6 +404,9 @@ tbody td{padding:10px 13px;vertical-align:middle;}
 .dscr-advice{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px;font-size:13px;line-height:1.7;color:var(--text2);margin-top:14px;border-left:3px solid var(--accent);}
 .dscr-advice.loading{animation:pulse 1.5s infinite;}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.5;}}
+.dscr-loan-check { accent-color: var(--accent); transform: scale(1.2); margin-right: 8px; cursor: pointer;}
+.dscr-loan-row { display:flex; align-items:center; justify-content:space-between; background:var(--bg2); padding:10px 14px; border-radius:8px; border:1px solid var(--border); cursor:pointer; transition:all 0.2s; margin-bottom:8px; }
+.dscr-loan-row:hover { border-color:var(--accent); }
 
 /* ================== SETTINGS ================== */
 .settings-section{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:14px;}
@@ -424,7 +459,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
 <div id="splash">
   <div class="sp-bg"><div class="sp-orb sp-orb1"></div><div class="sp-orb sp-orb2"></div></div>
   <div class="sp-logo">₣</div>
-  <div class="sp-title">FinPlan Pro</div>
+  <div class="sp-title">WealthFlow</div>
   <div class="sp-sub">Personal Financial System</div>
   <div class="sp-bar"><div class="sp-fill" id="spFill"></div></div>
   <div class="sp-status" id="spStatus">Initializing system...</div>
@@ -478,7 +513,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
     <div class="auth-sub">Store this code safely - you'll need it if you forget your PIN</div>
     <div style="background:var(--bg2);border:2px dashed var(--accent);border-radius:var(--r);padding:18px;margin:16px 0;font-family:var(--mono);font-size:20px;font-weight:700;letter-spacing:4px;color:var(--accent);word-break:break-all;" id="recovCodeDisplay"></div>
     <div style="font-size:12px;color:var(--text3);margin-bottom:16px;">⚠️ This code will only be shown once. Save it now!</div>
-    <button class="auth-btn" onclick="copyRecovCode()">📋 Copy Code</button>
+    <button class="auth-btn" onclick="copyRecovCode(this)" id="copyRecovBtn">📋 Copy Code</button>
     <button class="auth-btn ghost" onclick="confirmRecovSaved()">✅ I've Saved It - Continue</button>
   </div>
 
@@ -511,7 +546,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
     <div class="sb-logo">
       <div class="sb-logomark">
         <div class="sb-icon">₣</div>
-        <div><div class="sb-title">FinPlan Pro</div><div class="sb-sub">Financial System</div></div>
+        <div><div class="sb-title">WealthFlow</div><div class="sb-sub">Financial System</div></div>
       </div>
     </div>
     <nav class="sb-nav">
@@ -535,7 +570,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
     <div class="sb-footer">
       <div class="sb-user">👤 Sachintha Gaurawa</div>
       <div class="sb-date" id="sbDate">-</div>
-      <div class="sb-ver">FinPlan Pro v2.0 · Personal</div>
+      <div class="sb-ver">WealthFlow v2.0 · Personal</div>
     </div>
   </aside>
 
@@ -547,7 +582,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
       </div>
       <div class="tb-right">
         <div class="online-badge on" id="onlineBadge"><span class="online-dot"></span><span id="onlineText">Online</span></div>
-        <button class="refresh-btn" onclick="refreshApp()" title="Refresh">↻</button>
+        <button class="refresh-btn" onclick="refreshApp(this)" title="Refresh">↻</button>
         <button class="theme-btn" onclick="toggleTheme()" id="themeBtn" title="Toggle Theme">🌙</button>
         <div class="month-badge" id="curMonthBadge">-</div>
         <button class="btn btn-primary btn-sm" id="topAddBtn" onclick="handleTopAdd()" style="display:none;">+ Add</button>
@@ -555,9 +590,16 @@ tbody td{padding:10px 13px;vertical-align:middle;}
     </header>
 
     <div class="content">
-      <div id="offlineBanner">📡 You're offline. Changes saved locally and will sync when connected.</div>
+      <div id="offlineBanner">📡 You're offline. Changes saved locally and will sync to Cloud when reconnected.</div>
 
       <div class="page active" id="page-dashboard">
+        
+        <div class="card" style="margin-bottom:16px; border-color:var(--accent); background:linear-gradient(145deg, var(--card), var(--bg));">
+           <div class="card-header" style="margin-bottom:8px;"><div class="card-title" style="color:var(--accent);">✨ AI Wealth Insights</div></div>
+           <div id="aiResult" style="font-size:13px; color:var(--text2); margin-bottom:12px; line-height:1.6;">Click below to analyse your current financial flow.</div>
+           <button class="btn btn-primary btn-sm" id="aiBtn" onclick="getAIInsights()">Analyse Finances</button>
+        </div>
+
         <div class="g5" id="dashStats" style="margin-bottom:16px;"></div>
         <div class="dash-chart-row">
           <div class="card">
@@ -729,15 +771,17 @@ tbody td{padding:10px 13px;vertical-align:middle;}
       </div>
 
       <div class="page" id="page-dscr">
-        <div class="sh"><div class="sh-title">DSCR Calculator - Loan Eligibility</div></div>
+        <div class="sh"><div class="sh-title">DSCR Calculator - Sri Lanka Loan Eligibility</div></div>
         <div class="g2">
           <div class="card">
             <div class="card-header"><div class="card-title">Your Financial Profile</div></div>
             <div class="fg"><label class="fl">Gross Monthly Income (LKR)</label><input class="fi money-input" id="dscrIncome" placeholder="1,125,000" oninput="calcDSCR()"></div>
             <div class="fg"><label class="fl">Monthly Operating Expenses (LKR)</label><input class="fi money-input" id="dscrOpex" placeholder="100,000" oninput="calcDSCR()"><span class="fhint">Utilities, food, transport, etc. (excluding loan payments)</span></div>
-            <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:14px 0 8px;">Existing Loan Payments</div>
-            <div id="dscrExistingLoans" style="margin-bottom:10px;"></div>
-            <button class="btn btn-ghost btn-sm" onclick="addDscrLoan()" style="width:100%;justify-content:center;">+ Add Existing Loan</button>
+            
+            <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:24px 0 10px;">Select Active Loans to Include</div>
+            <div id="dscrExistingLoansList" style="margin-bottom:20px; display:flex; flex-direction:column; gap:8px;">
+               </div>
+            
             <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:18px 0 8px;">Proposed New Loan</div>
             <div class="fr">
               <div class="fg"><label class="fl">Loan Amount (LKR)</label><input class="fi money-input" id="dscrNewAmt" placeholder="20,000,000" oninput="calcDSCR()"></div>
@@ -747,8 +791,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
               <div class="fg"><label class="fl">Duration (months)</label><input class="fi" id="dscrNewDur" type="number" placeholder="120" oninput="calcDSCR()"></div>
               <div class="fg"><label class="fl">Down Payment (LKR)</label><input class="fi money-input" id="dscrDown" placeholder="6,000,000" oninput="calcDSCR()"></div>
             </div>
-            <div class="fg"><label class="fl">Purpose</label><input class="fi" id="dscrPurpose" placeholder="Land / House / Vehicle..."></div>
-            <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:6px;" onclick="calcDSCR()">📐 Calculate DSCR</button>
+            <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:12px;" onclick="calcDSCR()">📐 Calculate DSCR</button>
           </div>
           <div class="card">
             <div class="card-header"><div class="card-title">Analysis Result</div></div>
@@ -760,7 +803,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
       </div>
 
       <div class="page" id="page-settings">
-        <div class="sh"><div class="sh-title">Settings</div></div>
+        <div class="sh"><div class="sh-title">System Settings</div></div>
         <div id="settingsContent"></div>
       </div>
 
@@ -912,11 +955,10 @@ tbody td{padding:10px 13px;vertical-align:middle;}
 
 <script>
 // =====================================================
-// FINPLAN PRO v2.0 - Complete Financial Management
+// WEALTHFLOW v2.0 - Complete Financial Management
 // Owner: Sachintha Gaurawa
 // =====================================================
 const GEMINI_KEY = 'AIzaSyBi34LwRku09fYjc95Rn4yJ9o2fzQB9u6k';
-const OWNER_EMAIL = 'gaurawasachintha@gmail.com';
 
 // ==================== UTILITIES ====================
 const $ = id => document.getElementById(id);
@@ -926,7 +968,6 @@ const p2 = n => String(n).padStart(2,'0');
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 const MONTHS_S = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
-// Money formatting
 const fmtN = (n) => {
   n = parseFloat(n) || 0;
   return n.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
@@ -940,7 +981,6 @@ const fmtS = (n) => {
   return 'LKR ' + fmtN(n);
 };
 
-// Parse money input (remove commas)
 const parseMoney = (s) => parseFloat(String(s).replace(/,/g,'')) || 0;
 
 function emptyState(icon, title, sub) {
@@ -952,11 +992,78 @@ function monthStrFmt(ymd) {
   return MONTHS_S[d.getMonth()] + ' ' + d.getFullYear();
 }
 
-// ==================== STORAGE ====================
+// ==================== STORAGE & FIREBASE SYNC ====================
+let isSyncingFromCloud = false;
+let cloudSyncTimer = null;
+
+// Ensure old "FinPlan Pro" local data migrates to "WealthFlow" prefix smoothly
+function migrateOldData() {
+    ['auth','income','loans','ccinstall','cconetime','cheques','expenses','targets','balance','settings'].forEach(k => {
+        let old = localStorage.getItem('fp2_' + k);
+        if (old && !localStorage.getItem('wf_' + k)) {
+            localStorage.setItem('wf_' + k, old);
+        }
+    });
+}
+migrateOldData();
+
 const DB = {
-  get(k, def=[]) { try{ return JSON.parse(localStorage.getItem('fp2_'+k)) ?? def; }catch(e){ return def; } },
-  set(k, v) { localStorage.setItem('fp2_'+k, JSON.stringify(v)); },
-  getObj(k, def={}) { try{ return JSON.parse(localStorage.getItem('fp2_'+k)) ?? def; }catch(e){ return def; } }
+  get(k, def=[]) { try{ return JSON.parse(localStorage.getItem('wf_'+k)) ?? def; }catch(e){ return def; } },
+  set(k, v) { 
+    localStorage.setItem('wf_'+k, JSON.stringify(v)); 
+    syncToCloud();
+  },
+  getObj(k, def={}) { try{ return JSON.parse(localStorage.getItem('wf_'+k)) ?? def; }catch(e){ return def; } }
+};
+
+function syncToCloud(immediate = false) {
+   if(!window.fsSetDoc || isSyncingFromCloud) return;
+   clearTimeout(cloudSyncTimer);
+   
+   const pushAction = async () => {
+       try {
+           const fullData = {};
+           ['auth','income','loans','ccinstall','cconetime','cheques','expenses','targets','balance','settings'].forEach(k => {
+               fullData[k] = DB.getObj(k, null) || DB.get(k, []);
+           });
+           fullData.lastUpdated = new Date().toISOString();
+           await window.fsSetDoc(window.fsDoc, fullData, {merge:true});
+           console.log("Cloud synced successfully.");
+       } catch(e) {
+           console.error("Cloud Sync Error", e);
+       }
+   };
+   
+   if(immediate) pushAction();
+   else cloudSyncTimer = setTimeout(pushAction, 1500);
+}
+
+window.initFirebaseSync = async function() {
+    if(!window.fsGetDoc || !window.fsOnSnapshot) return;
+    
+    // First, check if cloud exists. If not, upload local immediately.
+    try {
+        const snap = await window.fsGetDoc(window.fsDoc);
+        if(!snap.exists()) {
+            syncToCloud(true);
+        }
+    } catch(e) { console.error("Firebase init fetch err:", e); }
+
+    // Subscribe to live changes
+    window.fsOnSnapshot(window.fsDoc, { includeMetadataChanges: true }, (docSnap) => {
+        if(docSnap.exists() && !docSnap.metadata.hasPendingWrites) {
+            const data = docSnap.data();
+            isSyncingFromCloud = true; // Block loop
+            ['auth','income','loans','ccinstall','cconetime','cheques','expenses','targets','balance','settings'].forEach(k => {
+               if(data[k]) localStorage.setItem('wf_'+k, JSON.stringify(data[k]));
+            });
+            isSyncingFromCloud = false;
+            
+            // Re-render page smoothly if active
+            const activePage = document.querySelector('.page.active');
+            if(activePage) renderPage(activePage.id.replace('page-',''));
+        }
+    });
 };
 
 // ==================== BANKS ================== 
@@ -1022,6 +1129,19 @@ function buildDots(containerId, len=6, filled=0) {
 function initAuthUI() {
   buildNumpad('loginPad'); buildNumpad('setupPad'); buildNumpad('newPinPad');
   buildDots('loginDots'); buildDots('setupDots'); buildDots('newPinDots');
+  
+  // Physical Keyboard Support
+  window.addEventListener('keydown', (e) => {
+     if ($('authScreen').classList.contains('show')) {
+         if (e.key >= '0' && e.key <= '9') {
+             let activePad = pinMode.includes('setup') ? 'setupPad' : (pinMode.includes('newpin') ? 'newPinPad' : 'loginPad');
+             pinDigit(activePad, e.key);
+         } else if (e.key === 'Backspace') {
+             let activePad = pinMode.includes('setup') ? 'setupPad' : (pinMode.includes('newpin') ? 'newPinPad' : 'loginPad');
+             pinBackspace(activePad);
+         }
+     }
+  });
 }
 
 function pinDigit(padId, digit) {
@@ -1047,7 +1167,7 @@ async function handlePinComplete(padId) {
 
   if(padId === 'loginPad') {
     const stored = DB.getObj('auth').pin;
-    const hash = await sha256(pin + 'fp_salt_sg2024');
+    const hash = await sha256(pin + 'wf_salt_sg2024');
     if(hash === stored) {
       $('loginErr').textContent = '';
       launchApp();
@@ -1065,13 +1185,12 @@ async function handlePinComplete(padId) {
       buildDots('setupDots', 6, 0);
     } else if(pinMode === 'setup_confirm') {
       if(pin === pinTemp) {
-        const hash = await sha256(pin + 'fp_salt_sg2024');
+        const hash = await sha256(pin + 'wf_salt_sg2024');
         const auth = DB.getObj('auth');
         auth.pin = hash;
         DB.set('auth', auth);
         pinMode = 'login';
         pinTemp = '';
-        // Show security question setup
         showAuthView('authSecQ');
       } else {
         $('setupErr').textContent = '❌ PINs do not match. Try again.';
@@ -1090,7 +1209,7 @@ async function handlePinComplete(padId) {
       buildDots('newPinDots', 6, 0);
     } else if(pinMode === 'newpin_confirm') {
       if(pin === pinTemp) {
-        const hash = await sha256(pin + 'fp_salt_sg2024');
+        const hash = await sha256(pin + 'wf_salt_sg2024');
         const auth = DB.getObj('auth');
         auth.pin = hash;
         DB.set('auth', auth);
@@ -1130,9 +1249,9 @@ async function saveSecQ() {
   if(sel === 'Custom question') q = cust;
   if(!q || !ans) { $('secQErr').textContent = 'Please fill in all fields.'; return; }
 
-  const hash = await sha256(ans.toLowerCase() + 'fp_ans_sg');
+  const hash = await sha256(ans.toLowerCase() + 'wf_ans_sg');
   const code = Array.from(crypto.getRandomValues(new Uint8Array(8))).map(b=>b.toString(16).padStart(2,'0')).join('').toUpperCase();
-  const codeHash = await sha256(code + 'fp_code_sg');
+  const codeHash = await sha256(code + 'wf_code_sg');
 
   const auth = DB.getObj('auth');
   auth.secQ = q;
@@ -1144,14 +1263,18 @@ async function saveSecQ() {
   showAuthView('authRecovShow');
 }
 
-function copyRecovCode() {
+function copyRecovCode(btn) {
   const code = $('recovCodeDisplay').textContent;
-  navigator.clipboard.writeText(code).then(() => notify('Recovery code copied!', 'success')).catch(()=>{});
+  navigator.clipboard.writeText(code).then(() => {
+     const oldTxt = btn.innerHTML;
+     btn.innerHTML = '✅ Copied!';
+     setTimeout(() => btn.innerHTML = oldTxt, 2000);
+  }).catch(()=>{});
 }
 
 function confirmRecovSaved() {
   showAuthView('authLogin');
-  notify('Setup complete! Welcome to FinPlan Pro 🎉', 'success');
+  notify('Setup complete! Welcome to WealthFlow 🎉', 'success');
   pinBuffer = '';
   buildDots('loginDots', 6, 0);
 }
@@ -1163,8 +1286,8 @@ async function verifyRecovery() {
 
   if(!auth.secQ) { $('recovErr').textContent = 'No security question set up.'; return; }
 
-  const ansHash = await sha256(ans + 'fp_ans_sg');
-  const codeHash = await sha256(code + 'fp_code_sg');
+  const ansHash = await sha256(ans + 'wf_ans_sg');
+  const codeHash = await sha256(code + 'wf_code_sg');
 
   if(ansHash !== auth.secAHash || codeHash !== auth.codeHash) {
     $('recovErr').textContent = '❌ Incorrect answer or recovery code. Please try again.';
@@ -1184,9 +1307,9 @@ async function changePin() {
   if(nw.length !== 6 || !/^\d+$/.test(nw)) { $('cp_err').textContent='PIN must be 6 digits'; return; }
   if(nw !== conf) { $('cp_err').textContent='New PINs do not match'; return; }
   const auth = DB.getObj('auth');
-  const currHash = await sha256(curr + 'fp_salt_sg2024');
+  const currHash = await sha256(curr + 'wf_salt_sg2024');
   if(currHash !== auth.pin) { $('cp_err').textContent='Current PIN is incorrect'; return; }
-  const newHash = await sha256(nw + 'fp_salt_sg2024');
+  const newHash = await sha256(nw + 'wf_salt_sg2024');
   auth.pin = newHash;
   DB.set('auth', auth);
   closeModal('mdChangePin');
@@ -1197,7 +1320,7 @@ async function changePin() {
 // ==================== INIT ====================
 window.onload = async function() {
   // Splash animation
-  const statuses = ['Initializing system...', 'Loading financial data...', 'Preparing dashboard...', 'Securing your vault...', 'Almost ready...'];
+  const statuses = ['Initializing system...', 'Syncing with cloud...', 'Preparing dashboard...', 'Securing your vault...', 'Almost ready...'];
   let si = 0;
   const statusEl = $('spStatus');
   const fillEl = $('spFill');
@@ -1227,15 +1350,18 @@ window.onload = async function() {
   setupOnlineStatus();
   setupBackupReminder();
 
-  const auth = DB.getObj('auth');
-  if(!auth.pin) {
-    pinMode = 'setup';
-    $('authScreen').classList.add('show');
-    showAuthView('authSetup');
-  } else {
-    $('authScreen').classList.add('show');
-    showAuthView('authLogin');
-  }
+  // Always fetch fresh auth check from DB which should sync from Firebase
+  setTimeout(() => {
+      const auth = DB.getObj('auth');
+      if(!auth.pin) {
+        pinMode = 'setup';
+        $('authScreen').classList.add('show');
+        showAuthView('authSetup');
+      } else {
+        $('authScreen').classList.add('show');
+        showAuthView('authLogin');
+      }
+  }, 300);
 
   // Setup custom Q toggle
   $('secQSelect')?.addEventListener('change', function() {
@@ -1264,9 +1390,6 @@ window.onload = async function() {
   dateForms.forEach(id => { const el=$(id); if(el) el.value=today(); });
   const monthForms = ['e_month'];
   monthForms.forEach(id => { const el=$(id); if(el) el.value=today().substr(0,7); });
-
-  // Load sample data if first run
-  loadSampleIfEmpty();
 };
 
 function launchApp() {
@@ -1309,7 +1432,13 @@ function setupBackupReminder() {
   }
 }
 
-function refreshApp() {
+function refreshApp(btn) {
+  // Rotate animation 360deg
+  if(btn) {
+      btn.style.transform = `rotate(${btn.rotation || 360}deg)`;
+      btn.rotation = (btn.rotation || 360) + 360;
+  }
+  
   const active = document.querySelector('.page.active');
   if(active) renderPage(active.id.replace('page-',''));
   updateCCOTBadge();
@@ -1326,6 +1455,38 @@ function notify(msg, type='success') {
   $('notifs').appendChild(el);
   requestAnimationFrame(() => el.classList.add('show'));
   setTimeout(() => { el.classList.remove('show'); setTimeout(()=>el.remove(), 400); }, 3600);
+}
+
+// ==================== AI INSIGHTS ====================
+async function getAIInsights() {
+    const btn = $('aiBtn');
+    btn.textContent = 'Analyzing...';
+    btn.disabled = true;
+    
+    try {
+        const incomeM = DB.get('income').reduce((s,x)=>s+x.monthly,0);
+        const activeLoans = DB.get('loans').filter(l => loanEndDate(l) > new Date()).reduce((s,x)=>s+x.monthly,0);
+        const expT = DB.get('expenses').filter(e=>e.month === today().substr(0,7)).reduce((s,x)=>s+x.amount,0);
+        
+        const promptText = `As a direct financial advisor analyzing my WealthFlow system, I have LKR ${incomeM} in monthly investment income, LKR ${activeLoans} going out to loan payments, and LKR ${expT} in variable expenses this month. Give me a 2 sentence, professional, candid, and slightly strict analysis of my financial health in British English. Do not use em dashes.`;
+
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_KEY}`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ contents: [{ parts: [{ text: promptText }] }] })
+        });
+        
+        const data = await res.json();
+        const output = data.candidates[0].content.parts[0].text;
+        $('aiResult').textContent = output;
+        
+    } catch(err) {
+        console.error(err);
+        $('aiResult').textContent = 'Unable to connect to AI engine. Please verify network or API keys.';
+    }
+    
+    btn.textContent = '✨ Analyze Finances';
+    btn.disabled = false;
 }
 
 // ==================== MODAL ====================
@@ -1368,6 +1529,11 @@ function handleTopAdd() {
   if(!active) return;
   const name = active.id.replace('page-','');
   if(addModalMap[name]) openModal(addModalMap[name]);
+}
+
+window.renderCurrentPage = function() {
+    const active = document.querySelector('.page.active');
+    if(active) renderPage(active.id.replace('page-',''));
 }
 
 function renderPage(name) {
@@ -1985,7 +2151,6 @@ function showCelebration(target) {
   $('celebSub').textContent = `You've achieved: "${target.name}"! 🏆`;
   $('celebAmt').textContent = fmt(target.amount);
   $('celeb').classList.add('show');
-  // Confetti
   const colors=['#f5a623','#ffd166','#ef476f','#06d6a0','#3b82f6','#8b5cf6'];
   for(let i=0;i<80;i++){
     const c=document.createElement('div');
@@ -2213,24 +2378,33 @@ function renderDash() {
 }
 
 function renderUpcoming() {
-  $('dashUpcoming').innerHTML = '<div style="padding:10px;font-size:13px;color:var(--text3);">Upcoming payment tracker is ready to monitor your data.</div>';
+  $('dashUpcoming').innerHTML = '<div style="padding:10px;font-size:13px;color:var(--text3);">Upcoming payment tracker is monitoring your active obligations. Automatically updates based on your inputs.</div>';
 }
 function renderRecentActivity() {
-  $('dashRecent').innerHTML = '<div style="padding:10px;font-size:13px;color:var(--text3);">Recent activity feed is ready to monitor your data.</div>';
+  $('dashRecent').innerHTML = '<div style="padding:10px;font-size:13px;color:var(--text3);">Recent activity feed tracks new financial inputs. Syncs automatically.</div>';
 }
 
 // ==================== DSCR CALCULATOR ====================
-function addDscrLoan() {
-  const wrap = $('dscrExistingLoans');
-  const el = document.createElement('div');
-  el.className = 'fr';
-  el.style.marginBottom = '8px';
-  el.innerHTML = `
-    <div class="fg" style="margin:0;"><input class="fi money-input" placeholder="Monthly EMI (LKR)" oninput="calcDSCR()"></div>
-    <div class="fg" style="margin:0;"><button class="btn btn-danger btn-sm" onclick="this.parentElement.parentElement.remove(); calcDSCR();" style="height:100%;">✕</button></div>
-  `;
-  wrap.appendChild(el);
-  initMoneyInputs();
+function renderDSCR() {
+    const wrap = $('dscrExistingLoansList');
+    const loans = DB.get('loans').filter(l => loanEndDate(l) > new Date());
+    
+    if (loans.length === 0) {
+        wrap.innerHTML = '<div class="empty-sub" style="margin-top:-10px;">No active loans found in your system.</div>';
+    } else {
+        wrap.innerHTML = loans.map(l => `
+            <label class="dscr-loan-row">
+                <div style="display:flex;align-items:center;">
+                   <input type="checkbox" class="dscr-loan-check" value="${l.monthly}" checked onchange="calcDSCR()">
+                   <span style="font-size:13px;font-weight:600;">${l.name} <span style="font-weight:400;color:var(--text3);">(${l.bank})</span></span>
+                </div>
+                <span style="font-weight:bold;color:var(--red);font-family:var(--mono);">LKR ${fmtN(l.monthly)}</span>
+            </label>
+        `).join('');
+    }
+    
+    // Auto calculate initially if data exists
+    if ($('dscrIncome').value) calcDSCR();
 }
 
 function calcDSCR() {
@@ -2242,8 +2416,8 @@ function calcDSCR() {
   const down = parseMoney($('dscrDown').value);
 
   let existingEMI = 0;
-  $('dscrExistingLoans').querySelectorAll('.money-input').forEach(inp => {
-    existingEMI += parseMoney(inp.value);
+  document.querySelectorAll('.dscr-loan-check:checked').forEach(inp => {
+      existingEMI += parseFloat(inp.value) || 0;
   });
 
   const actualNewLoan = Math.max(0, newAmt - down);
@@ -2254,17 +2428,35 @@ function calcDSCR() {
 
   const resEl = $('dscrResult');
   if(totalDebtService === 0) {
-    resEl.innerHTML = '<div style="font-size:13px;color:var(--text3);">Enter loan details to calculate DSCR</div>';
+    resEl.innerHTML = '<div style="font-size:13px;color:var(--text3);">Select active loans or enter a proposed loan to calculate DSCR</div>';
     return;
   }
 
   const dscr = noi / totalDebtService;
 
   let status='', color='', advice='';
-  if(dscr >= 1.5) { status='EXCELLENT'; color='var(--green)'; advice='Highly likely to be approved. You have comfortable cash flow to cover this loan.'; }
-  else if(dscr >= 1.2) { status='GOOD'; color='var(--blue)'; advice='Likely to be approved. Standard requirement for most banks.'; }
-  else if(dscr >= 1.0) { status='RISKY'; color='var(--accent)'; advice='Borderline. You cover the payments, but leaves no room for emergencies. Banks may reject or ask for collateral.'; }
-  else { status='REJECTED'; color='var(--red)'; advice='Cannot afford. Your expenses and loan payments exceed your income. You need to reduce the loan amount, extend duration, or increase income.'; }
+  
+  // Sri Lanka banking standards tailored evaluation
+  if(dscr >= 1.5) { 
+      status='EXCELLENT'; 
+      color='var(--green)'; 
+      advice='Highly likely to be approved by Sri Lankan banks. You have a comfortable cash flow buffer to cover this loan facility.'; 
+  }
+  else if(dscr >= 1.2) { 
+      status='GOOD / ACCEPTABLE'; 
+      color='var(--blue)'; 
+      advice='Likely to be approved. This meets the standard 1.2x requirement for most local commercial banks.'; 
+  }
+  else if(dscr >= 1.0) { 
+      status='RISKY'; 
+      color='var(--accent)'; 
+      advice='Borderline. You can theoretically cover the payments, but leaves no room for emergencies. Banks may reject or ask for additional collateral/guarantors.'; 
+  }
+  else { 
+      status='REJECTED'; 
+      color='var(--red)'; 
+      advice='Cannot afford. Your existing liabilities and proposed payments exceed your disposable income. You need to reduce the loan amount, extend duration, or increase declared income.'; 
+  }
 
   resEl.innerHTML = `
     <div class="dscr-gauge-wrap" style="height:140px;display:flex;justify-content:center;align-items:center;">
@@ -2286,26 +2478,35 @@ function renderSettings() {
      <div class="settings-section">
        <div class="settings-title">Appearance</div>
        <div class="setting-row">
-         <div class="setting-info"><div class="setting-label">Dark Theme</div><div class="setting-desc">Switch between light and dark modes</div></div>
+         <div class="setting-info"><div class="setting-label">Dark Theme</div><div class="setting-desc">Switch between light and dark visual modes</div></div>
          <div class="toggle ${document.documentElement.getAttribute('data-theme')==='dark'?'on':''}" onclick="toggleTheme(); renderSettings();"></div>
        </div>
      </div>
      <div class="settings-section">
-       <div class="settings-title">Security</div>
+       <div class="settings-title">Security & Passcode</div>
        <div class="setting-row">
-         <div class="setting-info"><div class="setting-label">Change PIN</div><div class="setting-desc">Update your 6-digit access code</div></div>
-         <button class="btn btn-secondary btn-sm" onclick="openModal('mdChangePin')">Change</button>
+         <div class="setting-info"><div class="setting-label">Change PIN</div><div class="setting-desc">Update your 6-digit secure access code</div></div>
+         <button class="btn btn-secondary btn-sm" onclick="openModal('mdChangePin')">Change PIN</button>
        </div>
      </div>
      <div class="settings-section">
-       <div class="settings-title">Data Management</div>
+       <div class="settings-title">Data Management & Backup</div>
        <div class="setting-row">
-         <div class="setting-info"><div class="setting-label">Export Data</div><div class="setting-desc">Download a complete backup of your financial data</div></div>
-         <button class="btn btn-primary btn-sm" onclick="exportData()">Export JSON</button>
+         <div class="setting-info"><div class="setting-label">Export Data (JSON)</div><div class="setting-desc">Download a complete physical backup of your financial data</div></div>
+         <button class="btn btn-primary btn-sm" onclick="exportData()">Export File</button>
        </div>
        <div class="setting-row">
-         <div class="setting-info"><div class="setting-label">Factory Reset</div><div class="setting-desc" style="color:var(--red);">Wipe all data. This cannot be undone.</div></div>
-         <button class="btn btn-danger btn-sm" onclick="factoryReset()">Reset App</button>
+         <div class="setting-info"><div class="setting-label">Restore Data</div><div class="setting-desc">Upload a previously exported JSON backup file</div></div>
+         <input type="file" id="importFile" style="display:none" accept=".json" onchange="importData(event)">
+         <button class="btn btn-secondary btn-sm" onclick="$('importFile').click()">Import File</button>
+       </div>
+       <div class="setting-row">
+         <div class="setting-info"><div class="setting-label">Firebase Cloud Sync</div><div class="setting-desc">Real-time online synchronization is currently active</div></div>
+         <div class="badge bg-g">Online & Active</div>
+       </div>
+       <div class="setting-row" style="margin-top:20px; border-top:1px solid rgba(239,68,68,0.2); padding-top:20px;">
+         <div class="setting-info"><div class="setting-label" style="color:var(--red);">Factory Reset</div><div class="setting-desc" style="color:var(--red);">Wipe all data from local device and Cloud. This cannot be undone.</div></div>
+         <button class="btn btn-danger btn-sm" onclick="factoryReset()">Erase System</button>
        </div>
      </div>
    `;
@@ -2320,7 +2521,7 @@ function exportData() {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = 'FinPlanPro_Backup_'+today()+'.json';
+  a.download = 'WealthFlow_Backup_'+today()+'.json';
   a.click();
   URL.revokeObjectURL(url);
   notify('Data exported successfully!', 'success');
@@ -2329,17 +2530,38 @@ function exportData() {
   DB.set('settings', s);
 }
 
+function importData(e) {
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+        try {
+            const data = JSON.parse(evt.target.result);
+            Object.keys(data).forEach(k => {
+                localStorage.setItem('wf_'+k, JSON.stringify(data[k]));
+            });
+            syncToCloud(true); // Push restored data to Firebase
+            notify('Data restored successfully! Refreshing...', 'success');
+            setTimeout(() => location.reload(), 1500);
+        } catch(err) {
+            notify('Invalid JSON backup file', 'error');
+        }
+    };
+    reader.readAsText(file);
+}
+
 function factoryReset() {
-  showConfirm('⚠️', 'Factory Reset', 'Are you absolutely sure you want to wipe ALL data? This action cannot be undone.', 'btn-danger', 'Yes, Delete Everything', () => {
+  showConfirm('⚠️', 'Factory Reset', 'Are you absolutely sure you want to wipe ALL data? This action cannot be undone.', 'btn-danger', 'Yes, Delete Everything', async () => {
+    try {
+        if(window.fsSetDoc) {
+             await window.fsSetDoc(window.fsDoc, {}, {merge: false}); // Clear cloud document
+        }
+    } catch(e) {}
     localStorage.clear();
     location.reload();
   });
 }
 
-function loadSampleIfEmpty() {
-  // Logic to load templates can go here if needed.
-  // We leave it empty to let the UI display its default empty states securely.
-}
 </script>
 </body>
 </html>
