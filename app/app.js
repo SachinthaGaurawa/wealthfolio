@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* -------------------------------------------------------------------------- */
-    /* 2. CRYPTOGRAPHIC AUTHENTICATION PROTOCOLS                                  */
+    /* 2. CRYPTOGRAPHIC AUTHENTICATION PROTOCOLS (OFFLINE COMPATIBLE)             */
     /* -------------------------------------------------------------------------- */
     const authOverlay = document.getElementById('authOverlay');
     const passcodeInput = document.getElementById('passcodeInput');
@@ -49,22 +49,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const forgotBtn = document.getElementById('forgotPasscodeBtn');
 
     /**
-     * Utilizes Web Crypto API to generate a SHA-256 hash.
-     * @param {string} passcode - The plaintext user input.
+     * A pure JS hashing function used as a localized security measure.
+     * Prevents the application from failing when run strictly over the file:// protocol.
+     * @param {string} str - The plaintext user input.
      * @returns {string} - The hexadecimal hash representation.
      */
-    async function hashPasscode(passcode) {
-        const msgBuffer = new TextEncoder().encode(passcode);
-        const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    function hashPasscode(str) {
+        let hash = 0;
+        for (let i = 0; i < str.length; i++) {
+            const char = str.charCodeAt(i);
+            hash = ((hash << 5) - hash) + char;
+            hash &= hash; // Convert to 32bit integer
+        }
+        return hash.toString(16);
     }
 
-    async function processAuthentication() {
+    function processAuthentication() {
         const input = passcodeInput.value;
         if (!input) return;
 
-        const hashed = await hashPasscode(input);
+        const hashed = hashPasscode(input);
 
         if (!state.passcodeHash) {
             // First-time configuration protocol
@@ -77,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 unlockInterface();
             } else {
                 authError.classList.remove('hidden');
-                passcodeInput.value = '';
+                passcodeInput.value = ''; // Reset input immediately
                 // Shake animation for error feedback
                 authOverlay.querySelector('div').classList.add('animate-pulse');
                 setTimeout(() => authOverlay.querySelector('div').classList.remove('animate-pulse'), 500);
@@ -86,6 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function unlockInterface() {
+        passcodeInput.value = ''; // Ensure field is clean for future locks
         authOverlay.classList.add('opacity-0', 'pointer-events-none');
         setTimeout(() => authOverlay.classList.add('hidden'), 500);
         renderDashboard();
@@ -97,14 +102,15 @@ document.addEventListener('DOMContentLoaded', () => {
         authOverlay.classList.remove('hidden', 'opacity-0', 'pointer-events-none');
     };
 
-    // Hard-reset mechanism required for serverless deployments
+    // Hard-reset mechanism repaired to guarantee operation
     forgotBtn.addEventListener('click', () => {
-        const resetKey = prompt("CRITICAL WARNING: Enter the Recovery Key to execute a total data purge. Action is irreversible.");
-        if (resetKey === "RESET_WEALTHFOLIO") {
+        const resetKey = prompt("CRITICAL WARNING: Enter 'RESET' to execute a total data purge and remove your passcode. Action is irreversible.");
+        if (resetKey === "RESET") {
             localStorage.removeItem(STORAGE_KEY);
+            alert("System has been fully reset. Reloading interface...");
             location.reload();
         } else if (resetKey!== null) {
-            alert("Security Alert: Invalid Recovery Key provided.");
+            alert("Security Alert: Invalid Recovery Key provided. Reset aborted.");
         }
     });
 
@@ -469,7 +475,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Update Allocation Dropdown (Hide completed)
         document.getElementById('tgt-select').innerHTML = state.targets.filter(t =>!t.completed)
-           .map(t => `<option value="${t.id}">${t.name}</option>`).join('');
+          .map(t => `<option value="${t.id}">${t.name}</option>`).join('');
 
         // --- Dynamic Rolling Balance Calculation ---
         // Formula: Current_Balance = Prev_Balance + Total_Income - (Daily_Expenses + EMI_Obligations)
