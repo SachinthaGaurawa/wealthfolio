@@ -409,7 +409,6 @@ tbody td{padding:9px 12px;vertical-align:middle;}
 </head>
 <body>
 
-<!-- ========== SPLASH ========== -->
 <div id="splash">
   <div class="sp-bg"><div class="sp-orb sp-o1"></div><div class="sp-orb sp-o2"></div></div>
   <div class="sp-logo">₩</div>
@@ -419,11 +418,9 @@ tbody td{padding:9px 12px;vertical-align:middle;}
   <div class="sp-status" id="spStatus">Connecting to cloud...</div>
 </div>
 
-<!-- ========== AUTH ========== -->
 <div id="authWrap">
   <div class="auth-bg"><div class="a-orb a-orb1"></div><div class="a-orb a-orb2"></div></div>
 
-  <!-- Login -->
   <div class="auth-card" id="aLogin">
     <div class="auth-logo">₩</div>
     <div class="auth-title">Welcome Back</div>
@@ -435,7 +432,6 @@ tbody td{padding:9px 12px;vertical-align:middle;}
     <div class="auth-link" onclick="showAuth('aForgot')">🔑 Forgot PIN?</div>
   </div>
 
-  <!-- Setup PIN -->
   <div class="auth-card" id="aSetup" style="display:none;">
     <div class="auth-logo">🔐</div>
     <div class="auth-title">Create Your PIN</div>
@@ -445,7 +441,6 @@ tbody td{padding:9px 12px;vertical-align:middle;}
     <div class="auth-err" id="setupErr"></div>
   </div>
 
-  <!-- Security Question -->
   <div class="auth-card" id="aSecQ" style="display:none;">
     <div class="auth-logo">🛡️</div>
     <div class="auth-title">Security Setup</div>
@@ -469,18 +464,16 @@ tbody td{padding:9px 12px;vertical-align:middle;}
     <div class="auth-err" id="secQErr"></div>
   </div>
 
-  <!-- Recovery Code -->
   <div class="auth-card" id="aRecovCode" style="display:none;">
     <div class="auth-logo">📋</div>
     <div class="auth-title">Save Recovery Code</div>
-    <div class="auth-sub">Store this safely — required if you forget your PIN</div>
+    <div class="auth-sub">Store this safely - required if you forget your PIN</div>
     <div class="recov-code" id="recovCodeDisp"></div>
     <div style="font-size:12px;color:var(--red);margin-bottom:14px;">⚠️ This is shown only ONCE. Save it now!</div>
     <button class="auth-btn" onclick="copyRecov()">📋 Copy Code</button>
     <button class="auth-btn ghost" onclick="confirmRecovSaved()">✅ I've Saved It</button>
   </div>
 
-  <!-- Forgot PIN -->
   <div class="auth-card" id="aForgot" style="display:none;">
     <div class="auth-logo">🔓</div>
     <div class="auth-title">Account Recovery</div>
@@ -496,7 +489,6 @@ tbody td{padding:9px 12px;vertical-align:middle;}
     <div class="auth-err" id="recovErr"></div>
   </div>
 
-  <!-- New PIN after Recovery -->
   <div class="auth-card" id="aNewPin" style="display:none;">
     <div class="auth-logo">✅</div>
     <div class="auth-title">Create New PIN</div>
@@ -507,7 +499,6 @@ tbody td{padding:9px 12px;vertical-align:middle;}
   </div>
 </div>
 
-<!-- ========== APP ========== -->
 <div id="app">
   <div class="sb-overlay" id="sbOL" onclick="closeSb()"></div>
   <aside class="sidebar" id="sidebar">
@@ -535,7 +526,7 @@ tbody td{padding:9px 12px;vertical-align:middle;}
     </nav>
     <div class="sb-foot">
       <div class="sb-user">👤 Sachintha Gaurawa</div>
-      <div class="sb-date" id="sbDate">—</div>
+      <div class="sb-date" id="sbDate">-</div>
       <div class="sb-ver">WealthFlow v2.1 · Firebase Sync</div>
     </div>
   </aside>
@@ -552,14 +543,13 @@ tbody td{padding:9px 12px;vertical-align:middle;}
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
         </button>
         <button class="icon-btn" onclick="toggleTheme()" id="themeBtn" title="Toggle Theme">🌙</button>
-        <div class="mb-badge" id="mbBadge">—</div>
+        <div class="mb-badge" id="mbBadge">-</div>
         <button class="btn btn-primary btn-sm" id="topAddBtn" style="display:none;" onclick="handleTopAdd()">+ Add</button>
       </div>
     </header>
     <div class="content">
-      <div id="offlineBanner">📡 Offline — changes queued and will sync when connected.</div>
+      <div id="offlineBanner">📡 Offline - changes queued and will sync when connected.</div>
 
-      <!-- DASHBOARD -->
       <div class="page active" id="page-dashboard">
         <div class="g5" id="dashStats" style="margin-bottom:14px;"></div>
         <div class="dash-cr">
@@ -587,14 +577,12 @@ tbody td{padding:9px 12px;vertical-align:middle;}
         </div>
       </div>
 
-      <!-- MONTHLY PLAN -->
       <div class="page" id="page-monthly">
         <div class="sh"><div class="sh-title">Monthly Financial Plan</div><div class="sh-acts"><select class="fi" style="width:100px;" id="mpYear" onchange="renderMonthly()"></select></div></div>
         <div class="mtabs" id="monthTabs"></div>
         <div id="monthlyContent"></div>
       </div>
 
-      <!-- INCOME -->
       <div class="page" id="page-income">
         <div class="sh"><div class="sh-title">Income & Investments</div><div class="sh-acts">
           <div class="sort-bar"><span class="sb-lbl">Sort:</span><span class="sb-btn active" onclick="sortK('income','name',this)">Name</span><span class="sb-btn" onclick="sortK('income','amount',this)">Amount</span><span class="sb-btn" onclick="sortK('income','rate',this)">Rate</span></div>
@@ -603,7 +591,6 @@ tbody td{padding:9px 12px;vertical-align:middle;}
         <div id="incomeList"></div>
       </div>
 
-      <!-- LOANS -->
       <div class="page" id="page-loans">
         <div class="sh"><div class="sh-title">Bank Loans</div><div class="sh-acts">
           <div class="sort-bar"><span class="sb-lbl">Sort:</span><span class="sb-btn active" onclick="sortK('loans','name',this)">Name</span><span class="sb-btn" onclick="sortK('loans','monthly',this)">Monthly</span><span class="sb-btn" onclick="sortK('loans','amount',this)">Amount</span></div>
@@ -612,7 +599,6 @@ tbody td{padding:9px 12px;vertical-align:middle;}
         <div id="loansList"></div>
       </div>
 
-      <!-- CC INSTALLMENTS -->
       <div class="page" id="page-ccinstall">
         <div class="sh"><div class="sh-title">CC Installments</div><div class="sh-acts">
           <div class="sort-bar"><span class="sb-lbl">Sort:</span><span class="sb-btn active" onclick="sortK('cci','product',this)">Product</span><span class="sb-btn" onclick="sortK('cci','monthly',this)">Monthly</span><span class="sb-btn" onclick="sortK('cci','date',this)">Date</span></div>
@@ -623,7 +609,6 @@ tbody td{padding:9px 12px;vertical-align:middle;}
         <div class="tbl"><table><thead><tr><th>Product</th><th>Buyer</th><th>Bank</th><th>Total</th><th>Rate</th><th>Monthly</th><th>Duration</th><th>Purchased</th><th>Progress</th><th>Status</th><th>Actions</th></tr></thead><tbody id="cciBody"></tbody></table></div>
       </div>
 
-      <!-- CC ONE-TIME -->
       <div class="page" id="page-cconetime">
         <div class="sh"><div class="sh-title">CC One-Time Payments</div><div class="sh-acts">
           <div class="sort-bar"><span class="sb-btn active" onclick="sortK('ccot','days',this)">Days Left</span><span class="sb-btn" onclick="sortK('ccot','amount',this)">Amount</span></div>
@@ -633,7 +618,6 @@ tbody td{padding:9px 12px;vertical-align:middle;}
         <div class="tbl"><table><thead><tr><th>Description</th><th>Bank</th><th>Type</th><th>Amount</th><th>Purchase Date</th><th>Deadline</th><th>Days Left</th><th>Status</th><th>Actions</th></tr></thead><tbody id="ccotBody"></tbody></table></div>
       </div>
 
-      <!-- CHEQUES -->
       <div class="page" id="page-cheques">
         <div class="sh"><div class="sh-title">Cheque Tracker</div><div class="sh-acts">
           <div class="sort-bar"><span class="sb-btn active" onclick="sortK('cheques','release',this)">Release</span><span class="sb-btn" onclick="sortK('cheques','amount',this)">Amount</span></div>
@@ -643,7 +627,6 @@ tbody td{padding:9px 12px;vertical-align:middle;}
         <div class="tbl"><table><thead><tr><th>Cheque No.</th><th>Party</th><th>Bank</th><th>Type</th><th>Amount</th><th>Issue Date</th><th>Release Date</th><th>Until Release</th><th>Status</th><th>Notes</th><th>Actions</th></tr></thead><tbody id="chequeBody"></tbody></table></div>
       </div>
 
-      <!-- EXPENSES -->
       <div class="page" id="page-expenses">
         <div class="sh"><div class="sh-title">Monthly Expenses</div><div class="sh-acts">
           <select class="fi" style="width:125px;" id="expMonthSel" onchange="renderExpenses()"><option value="">All Months</option></select>
@@ -654,7 +637,6 @@ tbody td{padding:9px 12px;vertical-align:middle;}
         <div class="tbl"><table><thead><tr><th>Description</th><th>Category</th><th>Month</th><th>Amount</th><th>Recurring</th><th>Status</th><th>Actions</th></tr></thead><tbody id="expBody"></tbody></table></div>
       </div>
 
-      <!-- TARGETS -->
       <div class="page" id="page-targets">
         <div class="sh"><div class="sh-title">Targets & Savings</div><div class="sh-acts">
           <button class="btn btn-secondary btn-sm" onclick="openM('mSaving')">+ Add Saving</button>
@@ -663,7 +645,6 @@ tbody td{padding:9px 12px;vertical-align:middle;}
         <div id="targetsList"></div>
       </div>
 
-      <!-- BALANCE -->
       <div class="page" id="page-balance">
         <div class="sh"><div class="sh-title">Balance Tracker</div><div class="sh-acts">
           <button class="btn btn-secondary btn-sm" onclick="openM('mBalFlow')">+ Log Flow</button>
@@ -681,9 +662,8 @@ tbody td{padding:9px 12px;vertical-align:middle;}
         </div>
       </div>
 
-      <!-- DSCR -->
       <div class="page" id="page-dscr">
-        <div class="sh"><div class="sh-title">DSCR Calculator — Sri Lanka</div></div>
+        <div class="sh"><div class="sh-title">DSCR Calculator - Sri Lanka</div></div>
         <div class="g2">
           <div class="card">
             <div class="card-hdr"><div class="card-title">Your Financial Profile</div><div class="card-sub">Sri Lanka Banking Standards</div></div>
@@ -713,19 +693,12 @@ tbody td{padding:9px 12px;vertical-align:middle;}
         </div>
       </div>
 
-      <!-- SETTINGS -->
       <div class="page" id="page-settings">
         <div class="sh"><div class="sh-title">Settings</div></div>
         <div id="settingsContent"></div>
       </div>
 
-    </div><!-- /content -->
-  </div><!-- /main -->
-</div><!-- /app -->
-
-<!-- ========== MODALS ========== -->
-<!-- Income -->
-<div class="mo" id="mIncome"><div class="md"><div class="md-hdr"><div class="md-title" id="mIncomeTit">Add Income / Investment</div><button class="md-x" onclick="closeM('mIncome')">✕</button></div>
+    </div></div></div><div class="mo" id="mIncome"><div class="md"><div class="md-hdr"><div class="md-title" id="mIncomeTit">Add Income / Investment</div><button class="md-x" onclick="closeM('mIncome')">✕</button></div>
   <div class="fr"><div class="fg"><label class="fl">Source Name *</label><input class="fi" id="i_name" placeholder="Fixed Deposit - Bank"></div><div class="fg"><label class="fl">Company / Person *</label><input class="fi" id="i_company" placeholder="Commercial Bank"></div></div>
   <div class="fr"><div class="fg"><label class="fl">Invested Amount (LKR) *</label><input class="fi mi" id="i_amount" placeholder="13,700,000" oninput="cInc()"></div><div class="fg"><label class="fl">Annual Rate (%) *</label><input class="fi" id="i_rate" type="number" placeholder="57" step="0.1" oninput="cInc()"></div></div>
   <div class="fr"><div class="fg"><label class="fl">Start Date *</label><input class="fi" id="i_start" type="date"></div><div class="fg"><label class="fl">End Date</label><input class="fi" id="i_end" type="date"></div></div>
@@ -736,7 +709,6 @@ tbody td{padding:9px 12px;vertical-align:middle;}
   <div class="md-ftr"><button class="btn btn-ghost" onclick="closeM('mIncome')">Cancel</button><button class="btn btn-primary" onclick="saveIncome()">💾 Save</button></div>
 </div></div>
 
-<!-- Loan -->
 <div class="mo" id="mLoan"><div class="md"><div class="md-hdr"><div class="md-title" id="mLoanTit">Add Bank Loan</div><button class="md-x" onclick="closeM('mLoan')">✕</button></div>
   <div class="fr"><div class="fg"><label class="fl">Loan Name *</label><input class="fi" id="l_name" placeholder="Bank Loan for Land"></div><div class="fg"><label class="fl">Bank *</label><select class="fs" id="l_bank"></select></div></div>
   <div class="fr"><div class="fg"><label class="fl">Loan Amount (LKR) *</label><input class="fi mi" id="l_amount" placeholder="10,000,000" oninput="cLoan()"></div><div class="fg"><label class="fl">Annual Rate (%) *</label><input class="fi" id="l_rate" type="number" placeholder="14" step="0.1" oninput="cLoan()"></div></div>
@@ -747,7 +719,6 @@ tbody td{padding:9px 12px;vertical-align:middle;}
   <div class="md-ftr"><button class="btn btn-ghost" onclick="closeM('mLoan')">Cancel</button><button class="btn btn-primary" onclick="saveLoan()">💾 Save</button></div>
 </div></div>
 
-<!-- CCI -->
 <div class="mo" id="mCCI"><div class="md"><div class="md-hdr"><div class="md-title" id="mCCITit">Add CC Installment</div><button class="md-x" onclick="closeM('mCCI')">✕</button></div>
   <div class="fr"><div class="fg"><label class="fl">Product Name *</label><input class="fi" id="c_product" placeholder="75-inch TV"></div><div class="fg"><label class="fl">Buyer</label><input class="fi" id="c_buyer" placeholder="Self"></div></div>
   <div class="fr"><div class="fg"><label class="fl">Bank / Card *</label><select class="fs" id="c_bank"></select></div><div class="fg"><label class="fl">Purchase Date *</label><input class="fi" id="c_date" type="date"></div></div>
@@ -758,7 +729,6 @@ tbody td{padding:9px 12px;vertical-align:middle;}
   <div class="md-ftr"><button class="btn btn-ghost" onclick="closeM('mCCI')">Cancel</button><button class="btn btn-primary" onclick="saveCCI()">💾 Save</button></div>
 </div></div>
 
-<!-- Skip Month -->
 <div class="mo" id="mSkip"><div class="md md-sm"><div class="md-hdr"><div class="md-title">Skip Installment Month</div><button class="md-x" onclick="closeM('mSkip')">✕</button></div>
   <p style="font-size:13px;color:var(--text2);margin-bottom:12px;">Select a plan and month to skip. The skipped installment will automatically double in the following month.</p>
   <div class="fg"><label class="fl">Installment Plan *</label><select class="fs" id="skip_plan"></select></div>
@@ -766,7 +736,6 @@ tbody td{padding:9px 12px;vertical-align:middle;}
   <div class="md-ftr"><button class="btn btn-ghost" onclick="closeM('mSkip')">Cancel</button><button class="btn btn-danger" onclick="skipMonth()">⏭ Skip Month</button></div>
 </div></div>
 
-<!-- CCOT -->
 <div class="mo" id="mCCOT"><div class="md md-sm"><div class="md-hdr"><div class="md-title" id="mCCOTTit">Add CC One-Time Payment</div><button class="md-x" onclick="closeM('mCCOT')">✕</button></div>
   <div class="fr"><div class="fg"><label class="fl">Description *</label><input class="fi" id="ot_desc" placeholder="Supermarket, Medicine..."></div><div class="fg"><label class="fl">Bank *</label><select class="fs" id="ot_bank"></select></div></div>
   <div class="fr"><div class="fg"><label class="fl">Type</label><select class="fs" id="ot_type"><option value="purchase">Purchase</option><option value="cash_advance">Cash Advance</option></select></div><div class="fg"><label class="fl">Amount (LKR) *</label><input class="fi mi" id="ot_amount" placeholder="15,000"></div></div>
@@ -776,7 +745,6 @@ tbody td{padding:9px 12px;vertical-align:middle;}
   <div class="md-ftr"><button class="btn btn-ghost" onclick="closeM('mCCOT')">Cancel</button><button class="btn btn-primary" onclick="saveCCOT()">💾 Save</button></div>
 </div></div>
 
-<!-- Cheque -->
 <div class="mo" id="mCheque"><div class="md md-sm"><div class="md-hdr"><div class="md-title" id="mChequeT">Add Cheque</div><button class="md-x" onclick="closeM('mCheque')">✕</button></div>
   <div class="fr"><div class="fg"><label class="fl">Cheque No. *</label><input class="fi" id="chq_no" placeholder="CHQ-001234"></div><div class="fg"><label class="fl">Party Name *</label><input class="fi" id="chq_party" placeholder="From / To"></div></div>
   <div class="fr"><div class="fg"><label class="fl">Bank *</label><select class="fs" id="chq_bank"></select></div><div class="fg"><label class="fl">Type</label><select class="fs" id="chq_type"><option value="received">Received</option><option value="issued">Issued</option></select></div></div>
@@ -786,15 +754,13 @@ tbody td{padding:9px 12px;vertical-align:middle;}
   <div class="md-ftr"><button class="btn btn-ghost" onclick="closeM('mCheque')">Cancel</button><button class="btn btn-primary" onclick="saveCheque()">💾 Save</button></div>
 </div></div>
 
-<!-- Expense -->
 <div class="mo" id="mExpense"><div class="md md-sm"><div class="md-hdr"><div class="md-title" id="mExpTit">Add Monthly Expense</div><button class="md-x" onclick="closeM('mExpense')">✕</button></div>
   <div class="fr"><div class="fg"><label class="fl">Description *</label><input class="fi" id="e_desc" placeholder="Electricity Bill"></div><div class="fg"><label class="fl">Category *</label><select class="fs" id="e_cat"><option>Food & Groceries</option><option>Transport</option><option>Utilities</option><option>Medical</option><option>Education</option><option>Entertainment</option><option>Clothing</option><option>Other</option></select></div></div>
   <div class="fr"><div class="fg"><label class="fl">Amount (LKR) *</label><input class="fi mi" id="e_amount" placeholder="15,000"></div><div class="fg"><label class="fl">Month *</label><input class="fi" id="e_month" type="month"></div></div>
-  <div class="fr"><div class="fg"><label class="fl">Recurring Monthly?</label><select class="fs" id="e_recurring"><option value="0">No — One time</option><option value="1">Yes — Every month</option></select></div><div class="fg"><label class="fl">Notes</label><input class="fi" id="e_notes" placeholder="Optional"></div></div>
+  <div class="fr"><div class="fg"><label class="fl">Recurring Monthly?</label><select class="fs" id="e_recurring"><option value="0">No - One time</option><option value="1">Yes - Every month</option></select></div><div class="fg"><label class="fl">Notes</label><input class="fi" id="e_notes" placeholder="Optional"></div></div>
   <div class="md-ftr"><button class="btn btn-ghost" onclick="closeM('mExpense')">Cancel</button><button class="btn btn-primary" onclick="saveExpense()">💾 Save</button></div>
 </div></div>
 
-<!-- Target -->
 <div class="mo" id="mTarget"><div class="md md-sm"><div class="md-hdr"><div class="md-title" id="mTargetT">Create Savings Target</div><button class="md-x" onclick="closeM('mTarget')">✕</button></div>
   <div class="fg"><label class="fl">Target Name *</label><input class="fi" id="t_name" placeholder="House Completion Fund"></div>
   <div class="fr"><div class="fg"><label class="fl">Target Amount (LKR) *</label><input class="fi mi" id="t_amount" placeholder="10,000,000"></div><div class="fg"><label class="fl">Start Date *</label><input class="fi" id="t_start" type="date"></div></div>
@@ -803,7 +769,6 @@ tbody td{padding:9px 12px;vertical-align:middle;}
   <div class="md-ftr"><button class="btn btn-ghost" onclick="closeM('mTarget')">Cancel</button><button class="btn btn-primary" onclick="saveTarget()">🎯 Create</button></div>
 </div></div>
 
-<!-- Saving -->
 <div class="mo" id="mSaving"><div class="md md-sm"><div class="md-hdr"><div class="md-title">Add Saving Entry</div><button class="md-x" onclick="closeM('mSaving')">✕</button></div>
   <div class="fg"><label class="fl">Target *</label><select class="fs" id="sav_tgt"></select></div>
   <div class="fr"><div class="fg"><label class="fl">Amount (LKR) *</label><input class="fi mi" id="sav_amt" placeholder="500,000"></div><div class="fg"><label class="fl">Date *</label><input class="fi" id="sav_date" type="date"></div></div>
@@ -811,17 +776,14 @@ tbody td{padding:9px 12px;vertical-align:middle;}
   <div class="md-ftr"><button class="btn btn-ghost" onclick="closeM('mSaving')">Cancel</button><button class="btn btn-success" onclick="saveSaving()">💚 Add</button></div>
 </div></div>
 
-<!-- Savings History Modal -->
 <div class="mo" id="mSavHistory"><div class="md"><div class="md-hdr"><div class="md-title" id="savHistTit">Savings History</div><button class="md-x" onclick="closeM('mSavHistory')">✕</button></div><div id="savHistContent"></div><div class="md-ftr"><button class="btn btn-ghost" onclick="closeM('mSavHistory')">← Back</button></div></div></div>
 
-<!-- Balance Set -->
 <div class="mo" id="mBalSet"><div class="md md-sm"><div class="md-hdr"><div class="md-title">Set Balance</div><button class="md-x" onclick="closeM('mBalSet')">✕</button></div>
   <div class="fg"><label class="fl">Total Balance (LKR) *</label><input class="fi mi" id="bs_tot" placeholder="15,000,000"></div>
   <div class="fr"><div class="fg"><label class="fl">Date</label><input class="fi" id="bs_date" type="date"></div><div class="fg"><label class="fl">Notes</label><input class="fi" id="bs_notes" placeholder="Balance updated"></div></div>
   <div class="md-ftr"><button class="btn btn-ghost" onclick="closeM('mBalSet')">Cancel</button><button class="btn btn-primary" onclick="setBalance()">Set</button></div>
 </div></div>
 
-<!-- Balance Flow -->
 <div class="mo" id="mBalFlow"><div class="md md-sm"><div class="md-hdr"><div class="md-title">Log Balance Flow</div><button class="md-x" onclick="closeM('mBalFlow')">✕</button></div>
   <div class="fg"><label class="fl">Type *</label><select class="fs" id="bf_type"><option value="out">Investment Out</option><option value="in">Return / Income In</option></select></div>
   <div class="fr"><div class="fg"><label class="fl">Company / Person *</label><input class="fi" id="bf_co" placeholder="Where invested / from"></div><div class="fg"><label class="fl">Amount (LKR) *</label><input class="fi mi" id="bf_amt" placeholder="7,000,000"></div></div>
@@ -829,13 +791,11 @@ tbody td{padding:9px 12px;vertical-align:middle;}
   <div class="md-ftr"><button class="btn btn-ghost" onclick="closeM('mBalFlow')">Cancel</button><button class="btn btn-primary" onclick="saveBalFlow()">Log</button></div>
 </div></div>
 
-<!-- Confirm -->
 <div class="mo" id="mConfirm"><div class="md md-sm"><div class="md-hdr" style="justify-content:flex-end;"><button class="md-x" onclick="closeM('mConfirm')">✕</button></div>
   <div class="conf-ico" id="confIco">✅</div><div class="conf-msg" id="confMsg">Are you sure?</div><div class="conf-det" id="confDet"></div>
   <div class="md-ftr" style="justify-content:center;"><button class="btn btn-ghost" onclick="closeM('mConfirm')">Cancel</button><button class="btn btn-success" id="confBtn">✅ Confirm</button></div>
 </div></div>
 
-<!-- Change PIN (in settings) -->
 <div class="mo" id="mChangePin"><div class="md md-sm"><div class="md-hdr"><div class="md-title">Change PIN</div><button class="md-x" onclick="closeM('mChangePin')">✕</button></div>
   <div class="fg"><label class="fl">Current PIN *</label><input class="fi" id="cp_curr" type="password" maxlength="6" placeholder="••••••"></div>
   <div class="fg"><label class="fl">New PIN *</label><input class="fi" id="cp_new" type="password" maxlength="6" placeholder="••••••"></div>
@@ -844,7 +804,6 @@ tbody td{padding:9px 12px;vertical-align:middle;}
   <div class="md-ftr"><button class="btn btn-ghost" onclick="closeM('mChangePin')">Cancel</button><button class="btn btn-primary" onclick="changePin()">🔐 Change</button></div>
 </div></div>
 
-<!-- Export Modal -->
 <div class="mo" id="mExport"><div class="md md-sm"><div class="md-hdr"><div class="md-title">Export Data</div><button class="md-x" onclick="closeM('mExport')">✕</button></div>
   <div class="fg"><label class="fl">Export Type</label><select class="fs" id="exp_type"><option value="all">All Data</option><option value="month">Specific Month</option><option value="year">Specific Year</option></select></div>
   <div id="exp_month_wrap" class="fg" style="display:none;"><label class="fl">Select Month</label><input class="fi" id="exp_month" type="month"></div>
@@ -853,7 +812,6 @@ tbody td{padding:9px 12px;vertical-align:middle;}
   <div class="md-ftr"><button class="btn btn-ghost" onclick="closeM('mExport')">Cancel</button><button class="btn btn-primary" onclick="doExport()">📥 Export</button></div>
 </div></div>
 
-<!-- Import Modal -->
 <div class="mo" id="mImport"><div class="md md-sm"><div class="md-hdr"><div class="md-title">Import Data</div><button class="md-x" onclick="closeM('mImport')">✕</button></div>
   <div style="background:rgba(245,166,35,.07);border:1px solid rgba(245,166,35,.2);border-radius:var(--r2);padding:11px 14px;margin-bottom:14px;font-size:12.5px;color:var(--text2);">⚠️ Importing will <strong>replace</strong> all current data with the imported file.</div>
   <div class="fg"><label class="fl">Select JSON File</label><input type="file" accept=".json" id="importFile" onchange="previewImport()" style="width:100%;color:var(--text);font-size:13px;"></div>
@@ -861,7 +819,6 @@ tbody td{padding:9px 12px;vertical-align:middle;}
   <div class="md-ftr"><button class="btn btn-ghost" onclick="closeM('mImport')">Cancel</button><button class="btn btn-danger" id="importBtn" onclick="doImport()" disabled>⬆️ Import & Replace</button></div>
 </div></div>
 
-<!-- CELEBRATION -->
 <div id="celeb">
   <div class="celeb-box">
     <div class="celeb-x" onclick="closeCeleb()">✕</div>
@@ -874,7 +831,6 @@ tbody td{padding:9px 12px;vertical-align:middle;}
 </div>
 <div id="notifs"></div>
 
-<!-- ========== FIREBASE + APP SCRIPT ========== -->
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import { getFirestore, doc, setDoc, getDoc, onSnapshot, updateDoc, enableIndexedDbPersistence, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
@@ -921,7 +877,7 @@ const fmt=n=>'LKR '+fmtN(n);
 const fmtS=n=>{const a=Math.abs(parseFloat(n)||0);if(a>=1000000)return'LKR '+(n/1000000).toFixed(2)+'M';if(a>=100000)return'LKR '+(n/100000).toFixed(2)+'L';return'LKR '+fmtN(n);};
 const pM=s=>parseFloat(String(s).replace(/,/g,''))||0;
 const emi=(p,r,n)=>r===0?p/n:p*(r/100/12)*Math.pow(1+r/100/12,n)/(Math.pow(1+r/100/12,n)-1);
-const monthStr=ym=>{if(!ym)return'—';const[y,m]=ym.split('-');return MONTHS_S[parseInt(m)-1]+' '+y;};
+const monthStr=ym=>{if(!ym)return'-';const[y,m]=ym.split('-');return MONTHS_S[parseInt(m)-1]+' '+y;};
 const emptyHtml=(ico,t,s)=>`<div class="empty"><div class="empty-ico">${ico}</div><div class="empty-title">${t}</div><div class="empty-sub">${s}</div></div>`;
 let editMode=null, confirmCb=null;
 
@@ -1365,19 +1321,19 @@ function renderIncome(){
   if(s?.field) arr.sort((a,b)=>s.field==='name'?s.dir*a.name.localeCompare(b.name):s.field==='amount'?s.dir*(b.amount-a.amount):s.field==='rate'?s.dir*(b.rate-a.rate):0);
   const el=$('incomeList');
   if(!arr.length){el.innerHTML=emptyHtml('💰','No income sources yet','Add your investments and income streams');return;}
-  const tM=arr.reduce((s,x)=>s+x.monthly,0),tI=arr.reduce((s,x)=>s+x.amount,0);
+  const tM=arr.reduce((st,x)=>st+x.monthly,0),tI=arr.reduce((st,x)=>st+x.amount,0);
   el.innerHTML=`<div class="g3" style="margin-bottom:14px;"><div class="sc sc-g"><div class="stat-lbl">Total Monthly Income</div><div class="stat-val">${fmtS(tM)}</div><div class="stat-meta">${fmt(tM)}</div></div><div class="sc sc-a"><div class="stat-lbl">Total Invested Capital</div><div class="stat-val">${fmtS(tI)}</div><div class="stat-meta">${fmt(tI)}</div></div><div class="sc sc-b"><div class="stat-lbl">Sources</div><div class="stat-val">${arr.length}</div><div class="stat-meta">Active streams</div></div></div>`
-  +arr.map(s=>{
-    const now=new Date(),end=s.end?new Date(s.end+'T00:00:00'):null,active=!end||end>now;
-    const fL={monthly:'Monthly',annual:'Annual',quarterly:'Quarterly'}[s.freq]||s.freq;
+  +arr.map(st=>{
+    const now=new Date(),end=st.end?new Date(st.end+'T00:00:00'):null,active=!end||end>now;
+    const fL={monthly:'Monthly',annual:'Annual',quarterly:'Quarterly'}[st.freq]||st.freq;
     const dL=end?Math.ceil((end-now)/86400000):null;
     return`<div class="item-card"><div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;">
-      <div><div style="font-size:14px;font-weight:700;">${s.name}</div><div style="font-size:11px;color:var(--text3);margin-top:2px;">🏛️ ${s.company} · ${s.start}${s.end?' → '+s.end:''}</div></div>
-      <div style="display:flex;gap:8px;align-items:flex-start;"><div style="text-align:right;"><div style="font-size:20px;font-weight:800;font-family:var(--mono);color:var(--green);">${fmt(s.monthly)}</div><div style="font-size:10px;color:var(--text3);">${fL} · Day ${s.day}</div></div>
-      <div class="ab"><button class="ib e" onclick="editIncome('${s.id}')">✏️</button><button class="ib d" onclick="deleteIncome('${s.id}')">🗑️</button></div></div>
+      <div><div style="font-size:14px;font-weight:700;">${st.name}</div><div style="font-size:11px;color:var(--text3);margin-top:2px;">🏛️ ${st.company} · ${st.start}${st.end?' → '+st.end:''}</div></div>
+      <div style="display:flex;gap:8px;align-items:flex-start;"><div style="text-align:right;"><div style="font-size:20px;font-weight:800;font-family:var(--mono);color:var(--green);">${fmt(st.monthly)}</div><div style="font-size:10px;color:var(--text3);">${fL} · Day ${st.day}</div></div>
+      <div class="ab"><button class="ib e" onclick="editIncome('${st.id}')">✏️</button><button class="ib d" onclick="deleteIncome('${st.id}')">🗑️</button></div></div>
     </div>
-    <div style="display:flex;flex-wrap:wrap;"><div class="ld"><div class="ld-l">INVESTED</div><div class="ld-v" style="color:var(--accent);">${fmt(s.amount)}</div></div><div class="ld"><div class="ld-l">RATE</div><div class="ld-v">${s.rate}%</div></div><div class="ld"><div class="ld-l">STATUS</div><div class="ld-v">${active?'<span class="badge bg-g">● Active</span>':'<span class="badge bg-gr">Ended</span>'}</div></div>${dL!==null?`<div class="ld"><div class="ld-l">DAYS LEFT</div><div class="ld-v" style="${dL<60?'color:var(--red)':''}">${dL>0?dL+'d':'Ended'}</div></div>`:''}</div>
-    ${s.notes?`<div style="margin-top:8px;font-size:11.5px;color:var(--text3);padding:6px 10px;background:var(--bg2);border-radius:6px;">${s.notes}</div>`:''}
+    <div style="display:flex;flex-wrap:wrap;"><div class="ld"><div class="ld-l">INVESTED</div><div class="ld-v" style="color:var(--accent);">${fmt(st.amount)}</div></div><div class="ld"><div class="ld-l">RATE</div><div class="ld-v">${st.rate}%</div></div><div class="ld"><div class="ld-l">STATUS</div><div class="ld-v">${active?'<span class="badge bg-g">● Active</span>':'<span class="badge bg-gr">Ended</span>'}</div></div>${dL!==null?`<div class="ld"><div class="ld-l">DAYS LEFT</div><div class="ld-v" style="${dL<60?'color:var(--red)':''}">${dL>0?dL+'d':'Ended'}</div></div>`:''}</div>
+    ${st.notes?`<div style="margin-top:8px;font-size:11.5px;color:var(--text3);padding:6px 10px;background:var(--bg2);border-radius:6px;">${st.notes}</div>`:''}
     </div>`;
   }).join('');
 }
@@ -1403,8 +1359,8 @@ function renderLoans(){
   if(s?.field) arr.sort((a,b)=>s.field==='name'?s.dir*a.name.localeCompare(b.name):s.field==='monthly'?s.dir*(b.monthly-a.monthly):s.field==='amount'?s.dir*(b.amount-a.amount):0);
   const el=$('loansList');
   if(!arr.length){el.innerHTML=emptyHtml('🏦','No loans added','Add your bank loans to track monthly payments');return;}
-  const tM=arr.reduce((s,l)=>{const e=loanEnd(l);return e>new Date()?s+l.monthly:s;},0);
-  el.innerHTML=`<div class="g3" style="margin-bottom:14px;"><div class="sc sc-r"><div class="stat-lbl">Monthly Payments</div><div class="stat-val">${fmtS(tM)}</div><div class="stat-meta">${fmt(tM)}</div></div><div class="sc sc-b"><div class="stat-lbl">Total Principal</div><div class="stat-val">${fmtS(arr.reduce((s,l)=>s+l.amount,0))}</div></div><div class="sc sc-p"><div class="stat-lbl">Active Loans</div><div class="stat-val">${arr.length}</div></div></div>`
+  const tM=arr.reduce((st,l)=>{const e=loanEnd(l);return e>new Date()?st+l.monthly:st;},0);
+  el.innerHTML=`<div class="g3" style="margin-bottom:14px;"><div class="sc sc-r"><div class="stat-lbl">Monthly Payments</div><div class="stat-val">${fmtS(tM)}</div><div class="stat-meta">${fmt(tM)}</div></div><div class="sc sc-b"><div class="stat-lbl">Total Principal</div><div class="stat-val">${fmtS(arr.reduce((st,l)=>st+l.amount,0))}</div></div><div class="sc sc-p"><div class="stat-lbl">Active Loans</div><div class="stat-val">${arr.length}</div></div></div>`
   +arr.map(l=>{
     const prog=loanProg(l),end=loanEnd(l),active=end>new Date();
     const remain=Math.max(0,l.amount*(l.duration-prog.paid)/l.duration);
@@ -1446,7 +1402,7 @@ window.skipMonth=async function(){
   if(APP.ccinstall[i].skipped.includes(month)){notify('Already skipped','warn');return;}
   APP.ccinstall[i].skipped.push(month);
   await saveData(); closeM('mSkip');
-  notify(`Month ${month} skipped — next month will show 2× installment`,'warn');
+  notify(`Month ${month} skipped - next month will show 2x installment`,'warn');
 };
 
 const getCCIMForDate=(item,y,m)=>{
@@ -1461,7 +1417,7 @@ function renderCCI(){
   let arr=[...APP.ccinstall]; const s=sortState['cci'];
   if(s?.field) arr.sort((a,b)=>s.field==='product'?s.dir*a.product.localeCompare(b.product):s.field==='monthly'?s.dir*(b.monthly-a.monthly):s.field==='date'?s.dir*(new Date(a.date)-new Date(b.date)):0);
   const active=arr.filter(x=>!x.completed);
-  const tM=active.reduce((s,x)=>s+x.monthly,0),tV=active.reduce((s,x)=>s+x.total,0);
+  const tM=active.reduce((st,x)=>st+x.monthly,0),tV=active.reduce((st,x)=>st+x.total,0);
   $('cciStats').innerHTML=`<div class="sc sc-r"><div class="stat-lbl">Monthly Payments</div><div class="stat-val">${fmtS(tM)}</div><div class="stat-meta">${fmt(tM)}</div></div><div class="sc sc-a"><div class="stat-lbl">Total Financed</div><div class="stat-val">${fmtS(tV)}</div></div><div class="sc sc-b"><div class="stat-lbl">Active Plans</div><div class="stat-val">${active.length}</div></div><div class="sc sc-p" style="opacity:.7;"><div class="stat-lbl">Completed</div><div class="stat-val">${arr.length-active.length}</div></div>`;
   $('skip_plan').innerHTML='<option value="">Select plan...</option>'+active.map(x=>`<option value="${x.id}">${x.product} (${x.bank})</option>`).join('');
   const tbody=$('cciBody');
@@ -1541,9 +1497,9 @@ window.markChequeBounced=function(id){showConfirm('⚠️','Mark Bounced?','','b
 function renderCheques(){
   let arr=[...APP.cheques]; const s=sortState['cheques'];
   if(s?.field) arr.sort((a,b)=>s.field==='release'?s.dir*(new Date(a.release)-new Date(b.release)):s.field==='amount'?s.dir*(b.amount-a.amount):0);
-  const pending=arr.filter(x=>x.status==='pending'),tP=pending.reduce((s,x)=>s+x.amount,0);
+  const pending=arr.filter(x=>x.status==='pending'),tP=pending.reduce((st,x)=>st+x.amount,0);
   const rcv=arr.filter(x=>x.type==='received'),iss=arr.filter(x=>x.type==='issued');
-  $('chequeStats').innerHTML=`<div class="sc sc-c"><div class="stat-lbl">Pending</div><div class="stat-val">${pending.length}</div><div class="stat-meta">${fmt(tP)}</div></div><div class="sc sc-g"><div class="stat-lbl">Received</div><div class="stat-val">${rcv.length}</div><div class="stat-meta">${fmt(rcv.reduce((s,x)=>s+x.amount,0))}</div></div><div class="sc sc-r"><div class="stat-lbl">Issued</div><div class="stat-val">${iss.length}</div><div class="stat-meta">${fmt(iss.reduce((s,x)=>s+x.amount,0))}</div></div><div class="sc sc-p"><div class="stat-lbl">Total</div><div class="stat-val">${arr.length}</div></div>`;
+  $('chequeStats').innerHTML=`<div class="sc sc-c"><div class="stat-lbl">Pending</div><div class="stat-val">${pending.length}</div><div class="stat-meta">${fmt(tP)}</div></div><div class="sc sc-g"><div class="stat-lbl">Received</div><div class="stat-val">${rcv.length}</div><div class="stat-meta">${fmt(rcv.reduce((st,x)=>st+x.amount,0))}</div></div><div class="sc sc-r"><div class="stat-lbl">Issued</div><div class="stat-val">${iss.length}</div><div class="stat-meta">${fmt(iss.reduce((st,x)=>st+x.amount,0))}</div></div><div class="sc sc-p"><div class="stat-lbl">Total</div><div class="stat-val">${arr.length}</div></div>`;
   const tbody=$('chequeBody');
   if(!arr.length){tbody.innerHTML=`<tr><td colspan="11">${emptyHtml('📄','No cheques','Track received and issued cheques')}</td></tr>`;return;}
   const td=today();
@@ -1561,7 +1517,7 @@ function renderCheques(){
       <td><span class="badge ${c.type==='received'?'bg-g':'bg-r'}">${c.type==='received'?'📥 Received':'📤 Issued'}</span></td>
       <td class="td-a">${fmt(c.amount)}</td><td class="td-m">${c.issue}</td><td class="td-m">${c.release}</td>
       <td><span class="cd ${cdC}">${cdT}</span></td>
-      <td>${stMap[c.status]||''}</td><td class="td-m">${c.notes||'—'}</td>
+      <td>${stMap[c.status]||''}</td><td class="td-m">${c.notes||'-'}</td>
       <td><div class="ab">${c.status==='pending'?`<button class="ib c" onclick="markChequeCleared('${c.id}')" title="Clear">✅</button><button class="ib d" onclick="markChequeBounced('${c.id}')" title="Bounce" style="font-size:10px;">⚠️</button>`:''}
         <button class="ib e" onclick="editCheque('${c.id}')">✏️</button><button class="ib d" onclick="deleteCheque('${c.id}')">🗑️</button></div></td>
     </tr>`;
@@ -1588,9 +1544,9 @@ function renderExpenses(){
   let filtered=cv?arr.filter(x=>x.month===cv):arr;
   const s=sortState['expenses'];
   if(s?.field) filtered.sort((a,b)=>s.field==='date'?s.dir*a.month.localeCompare(b.month):s.field==='amount'?s.dir*(b.amount-a.amount):0);
-  const tA=filtered.reduce((s,x)=>s+x.amount,0);
+  const tA=filtered.reduce((st,x)=>st+x.amount,0);
   const cMap={};filtered.forEach(x=>{cMap[x.cat]=(cMap[x.cat]||0)+x.amount;});
-  const top=Object.entries(cMap).sort((a,b)=>b[1]-a[1])[0]||['—',0];
+  const top=Object.entries(cMap).sort((a,b)=>b[1]-a[1])[0]||['-',0];
   $('expStats').innerHTML=`<div class="sc sc-r"><div class="stat-lbl">Total</div><div class="stat-val">${fmtS(tA)}</div><div class="stat-meta">${fmt(tA)}</div></div><div class="sc sc-b"><div class="stat-lbl">Count</div><div class="stat-val">${filtered.length}</div></div><div class="sc sc-a"><div class="stat-lbl">Top Category</div><div class="stat-val" style="font-size:14px;">${top[0]}</div><div class="stat-meta">${fmtS(top[1])}</div></div><div class="sc sc-g"><div class="stat-lbl">Paid</div><div class="stat-val">${filtered.filter(x=>x.completed).length}</div><div class="stat-meta">of ${filtered.length}</div></div>`;
   const catBadge={Food:'bg-g','Food & Groceries':'bg-g',Transport:'bg-b',Utilities:'bg-a',Medical:'bg-r',Education:'bg-p',Entertainment:'bg-c',Clothing:'bg-gr',Other:'bg-gr'};
   const tbody=$('expBody');
@@ -1605,6 +1561,7 @@ function renderExpenses(){
       <button class="ib d" onclick="deleteExpense('${x.id}')">🗑️</button></div></td>
   </tr>`).join('');
 }
+window.renderExpenses = renderExpenses;
 
 // ===================== TARGETS =====================
 window.saveTarget=async function(){
@@ -1624,14 +1581,14 @@ window.saveSaving=async function(){
   APP.targets[i].savings.push({id:uid(),amount:amt,date,note:$('sav_note').value});
   await saveData(); closeM('mSaving');
   ['sav_amt','sav_note'].forEach(id=>$(id).value=''); $('sav_date').value=today();
-  const saved=APP.targets[i].savings.reduce((s,x)=>s+x.amount,0);
+  const saved=APP.targets[i].savings.reduce((st,x)=>st+x.amount,0);
   renderTargets();
   if(saved>=APP.targets[i].amount) setTimeout(()=>showCeleb(APP.targets[i]),200);
   else notify('Saving added! 💚');
 };
 window.deleteTarget=function(id){showConfirm('🗑️','Delete Target?','All savings will also be deleted.','btn-danger','🗑️ Delete',async()=>{APP.targets=APP.targets.filter(x=>x.id!==id);await saveData();notify('Deleted','info');});};
 window.deleteSaving=async function(tid,sid){const i=APP.targets.findIndex(x=>x.id===tid);if(i<0)return;APP.targets[i].savings=APP.targets[i].savings.filter(x=>x.id!==sid);await saveData();renderTargets();notify('Removed','info');};
-window.showSavHistory=function(tid){const t=APP.targets.find(x=>x.id===tid);if(!t)return;$('savHistTit').textContent=t.name+' — Full History';$('savHistContent').innerHTML=t.savings.length?[...t.savings].reverse().map(s=>`<div class="sav-entry"><span style="color:var(--text2);">${s.date}${s.note?' · '+s.note:''}</span><div style="display:flex;align-items:center;gap:7px;"><span style="color:var(--green);font-family:var(--mono);font-weight:700;">+${fmt(s.amount)}</span><button class="ib d" onclick="deleteSaving('${tid}','${s.id}')">✕</button></div></div>`).join(''):emptyHtml('📋','No savings yet','');openM('mSavHistory');};
+window.showSavHistory=function(tid){const t=APP.targets.find(x=>x.id===tid);if(!t)return;$('savHistTit').textContent=t.name+' - Full History';$('savHistContent').innerHTML=t.savings.length?[...t.savings].reverse().map(s=>`<div class="sav-entry"><span style="color:var(--text2);">${s.date}${s.note?' · '+s.note:''}</span><div style="display:flex;align-items:center;gap:7px;"><span style="color:var(--green);font-family:var(--mono);font-weight:700;">+${fmt(s.amount)}</span><button class="ib d" onclick="deleteSaving('${tid}','${s.id}')">✕</button></div></div>`).join(''):emptyHtml('📋','No savings yet','');openM('mSavHistory');};
 
 function showCeleb(target){
   $('celebSub').textContent=`You achieved: "${target.name}"! 🏆`;
@@ -1648,7 +1605,7 @@ function renderTargets(){
   const el=$('targetsList');
   if(!arr.length){el.innerHTML=emptyHtml('🎯','No targets yet','Create savings targets to track your goals');return;}
   el.innerHTML=arr.map(t=>{
-    const saved=t.savings.reduce((s,x)=>s+x.amount,0),remain=Math.max(0,t.amount-saved);
+    const saved=t.savings.reduce((st,x)=>st+x.amount,0),remain=Math.max(0,t.amount-saved);
     const pct=Math.min(100,Math.round(saved/t.amount*100));
     const now=new Date(),end=new Date(t.end+'T00:00:00');
     const dR=Math.ceil((end-now)/86400000),done=saved>=t.amount;
@@ -1690,8 +1647,8 @@ window.deleteBalFlow=function(id){showConfirm('🗑️','Delete?','','btn-danger
 
 function renderBalance(){
   const bal=APP.balance||{total:0,flows:[]};
-  const out=bal.flows.filter(x=>x.type==='out').reduce((s,x)=>s+x.amount,0);
-  const inc=bal.flows.filter(x=>x.type==='in').reduce((s,x)=>s+x.amount,0);
+  const out=bal.flows.filter(x=>x.type==='out').reduce((st,x)=>st+x.amount,0);
+  const inc=bal.flows.filter(x=>x.type==='in').reduce((st,x)=>st+x.amount,0);
   const net=bal.total-out+inc;
   $('balBase').textContent=fmtS(bal.total);$('balOut').textContent=fmtS(out);$('balNet').textContent=fmtS(net);
   const bigEl=$('balBig');bigEl.style.color=net>=0?'var(--green)':'var(--red)';bigEl.textContent=fmt(net);
@@ -1704,7 +1661,7 @@ function renderBalance(){
 function getMonthData(year, month){
   const dt=new Date(year,month,1);
   let income=0;
-  APP.income.forEach(s=>{const start=new Date(s.start+'T00:00:00'),end=s.end?new Date(s.end+'T00:00:00'):null;if(start<=dt&&(!end||end>=dt))income+=s.monthly;});
+  APP.income.forEach(st=>{const start=new Date(st.start+'T00:00:00'),end=st.end?new Date(st.end+'T00:00:00'):null;if(start<=dt&&(!end||end>=dt))income+=st.monthly;});
   let loanTotal=0,loanItems=[];
   APP.loans.forEach(l=>{const start=new Date(l.start+'T00:00:00'),end=loanEnd(l);if(start<=dt&&end>dt){loanTotal+=l.monthly;loanItems.push({name:l.name,bank:l.bank,amount:l.monthly});}});
   let ccTotal=0,ccItems=[];
@@ -1724,6 +1681,8 @@ function renderMonthly(){
   const curM=year===now.getFullYear()?now.getMonth():0;
   showMonthDetail(year,curM,$('monthTabs').children[curM]);
 }
+window.renderMonthly = renderMonthly;
+
 window.showMonthDetail=function(year,month,tabEl){
   document.querySelectorAll('.mtab').forEach(t=>t.classList.remove('active'));
   if(tabEl) tabEl.classList.add('active');
@@ -1733,7 +1692,7 @@ window.showMonthDetail=function(year,month,tabEl){
   <div class="g2"><div class="card"><div class="card-hdr"><div class="card-title">🏦 Loan Payments</div><div class="card-sub">${fmt(data.loanTotal)}</div></div>${data.loanItems.length?data.loanItems.map(x=>`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:12.5px;"><span>${x.name} <span style="color:var(--text3);font-size:10.5px;">(${x.bank})</span></span><span class="td-r">${fmt(x.amount)}</span></div>`).join(''):emptyHtml('','-','No loan payments')}</div>
   <div class="card"><div class="card-hdr"><div class="card-title">💳 CC Installments</div><div class="card-sub">${fmt(data.ccTotal)}</div></div>${data.ccItems.length?data.ccItems.map(x=>`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:12.5px;"><span>${x.name} <span style="color:var(--text3);font-size:10.5px;">(${x.bank})</span></span><span class="td-r">${fmt(x.amount)}</span></div>`).join(''):emptyHtml('','-','No installments')}</div>
   <div class="card"><div class="card-hdr"><div class="card-title">🧾 Other Expenses</div><div class="card-sub">${fmt(data.expTotal)}</div></div>${data.expItems.length?data.expItems.map(x=>`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:12.5px;"><span>${x.name}</span><span class="td-r">${fmt(x.amount)}</span></div>`).join(''):emptyHtml('','-','No expenses')}</div>
-  <div class="card"><div class="card-hdr"><div class="card-title">💰 Income</div><div class="card-sub">${fmt(data.income)}</div></div>${APP.income.filter(s=>{const start=new Date(s.start+'T00:00:00'),end=s.end?new Date(s.end+'T00:00:00'):null,dt=new Date(year,month,1);return start<=dt&&(!end||end>=dt);}).map(s=>`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:12.5px;"><span>${s.name}</span><span class="td-g">${fmt(s.monthly)}</span></div>`).join('')||emptyHtml('','-','No income sources')}</div></div>`;
+  <div class="card"><div class="card-hdr"><div class="card-title">💰 Income</div><div class="card-sub">${fmt(data.income)}</div></div>${APP.income.filter(st=>{const start=new Date(st.start+'T00:00:00'),end=st.end?new Date(st.end+'T00:00:00'):null,dt=new Date(year,month,1);return start<=dt&&(!end||end>=dt);}).map(st=>`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:12.5px;"><span>${st.name}</span><span class="td-g">${fmt(st.monthly)}</span></div>`).join('')||emptyHtml('','-','No income sources')}</div></div>`;
 };
 
 // ===================== DASHBOARD =====================
@@ -1742,10 +1701,10 @@ function renderDash(){
   const now=new Date();
   const year=parseInt($('dashYear')?.value||now.getFullYear());
   // Stats
-  const tIncome=APP.income.reduce((s,x)=>s+x.monthly,0);
-  const tLoans=APP.loans.reduce((s,l)=>{const e=loanEnd(l);return e>now?s+l.monthly:s;},0);
-  const tCC=APP.ccinstall.filter(x=>!x.completed).reduce((s,x)=>{const e=new Date(x.date+'T00:00:00');e.setMonth(e.getMonth()+x.duration);return e>now?s+x.monthly:s;},0);
-  const tExp=APP.expenses.filter(x=>x.recurring).reduce((s,x)=>s+x.amount,0);
+  const tIncome=APP.income.reduce((st,x)=>st+x.monthly,0);
+  const tLoans=APP.loans.reduce((st,l)=>{const e=loanEnd(l);return e>now?st+l.monthly:st;},0);
+  const tCC=APP.ccinstall.filter(x=>!x.completed).reduce((st,x)=>{const e=new Date(x.date+'T00:00:00');e.setMonth(e.getMonth()+x.duration);return e>now?st+x.monthly:st;},0);
+  const tExp=APP.expenses.filter(x=>x.recurring).reduce((st,x)=>st+x.amount,0);
   const bal=tIncome-tLoans-tCC-tExp;
   $('dashStats').innerHTML=`<div class="sc sc-g"><div class="stat-lbl">Monthly Income</div><div class="stat-val">${fmtS(tIncome)}</div><div class="stat-meta">${APP.income.length} sources</div></div><div class="sc sc-r"><div class="stat-lbl">Loan Payments</div><div class="stat-val">${fmtS(tLoans)}</div><div class="stat-meta">${APP.loans.length} loans</div></div><div class="sc sc-a"><div class="stat-lbl">CC Installments</div><div class="stat-val">${fmtS(tCC)}</div><div class="stat-meta">${APP.ccinstall.filter(x=>!x.completed).length} plans</div></div><div class="sc sc-${bal>=0?'b':'r'}"><div class="stat-lbl">Monthly Balance</div><div class="stat-val">${fmtS(bal)}</div><div class="stat-meta">After all payments</div></div><div class="sc sc-p"><div class="stat-lbl">Pending CC</div><div class="stat-val">${APP.cconetime.filter(x=>!x.paid).length}</div><div class="stat-meta">One-time payments</div></div>`;
   // Bar chart
@@ -1769,6 +1728,7 @@ function renderDash(){
   renderDashUpcoming();
   renderDashRecent();
 }
+window.renderDash = renderDash;
 
 function renderDashUpcoming(){
   const upcoming=[];
@@ -1791,7 +1751,7 @@ function renderDashUpcoming(){
 
 function renderDashRecent(){
   const recent=[];
-  APP.income.slice(-3).forEach(s=>recent.push({date:s.start,text:'Income: '+s.name,type:'income',amount:s.monthly}));
+  APP.income.slice(-3).forEach(st=>recent.push({date:st.start,text:'Income: '+st.name,type:'income',amount:st.monthly}));
   APP.loans.slice(-3).forEach(l=>recent.push({date:l.start,text:'Loan: '+l.name,type:'loan',amount:-l.monthly}));
   APP.ccinstall.slice(-3).forEach(x=>recent.push({date:x.date,text:'CC Install: '+x.product,type:'cc',amount:-x.monthly}));
   APP.cheques.slice(-3).forEach(x=>recent.push({date:x.issue,text:'Cheque: '+x.no,type:'cheque',amount:x.type==='received'?x.amount:-x.amount}));
@@ -1827,7 +1787,7 @@ window.calcDSCR=function(){
   if(!grossIncome||!assetVal||!down||!rate||!dur){$('dscrResult').innerHTML='<div style="font-size:13px;color:var(--text3);">Fill all required fields</div>';return;}
   // Loan amount
   const loanAmt=assetVal-down;
-  if(loanAmt<=0){$('dscrResult').innerHTML='<div style="font-size:13px;color:var(--green);">✅ Down payment covers full value — no loan needed!</div>';return;}
+  if(loanAmt<=0){$('dscrResult').innerHTML='<div style="font-size:13px;color:var(--green);">✅ Down payment covers full value - no loan needed!</div>';return;}
   // New loan EMI
   const newEMI=emi(loanAmt,rate,dur);
   // Existing debt service from selected loans
@@ -1928,10 +1888,10 @@ function renderSettings(){
   </div>
   <div class="settings-sec"><div class="settings-title">🔐 Security</div>
     <div class="s-row"><div class="s-info"><div class="s-lbl">Change PIN</div><div class="s-desc">Update your 6-digit security PIN</div></div><button class="btn btn-secondary btn-sm" onclick="openM('mChangePin')">Change PIN</button></div>
-    <div class="s-row"><div class="s-info"><div class="s-lbl">PIN Storage</div><div class="s-desc">Stored securely in Firebase — same PIN across all devices</div></div><span class="badge bg-g">🔒 Secure</span></div>
+    <div class="s-row"><div class="s-info"><div class="s-lbl">PIN Storage</div><div class="s-desc">Stored securely in Firebase - same PIN across all devices</div></div><span class="badge bg-g">🔒 Secure</span></div>
   </div>
   <div class="settings-sec"><div class="settings-title">💾 Backup & Restore</div>
-    <div class="backup-info" id="lastBackupInfo">${s.lastBackup?`Last backup: ${new Date(s.lastBackup).toLocaleString()}`:'No backup yet — consider exporting your data.'}</div>
+    <div class="backup-info" id="lastBackupInfo">${s.lastBackup?`Last backup: ${new Date(s.lastBackup).toLocaleString()}`:'No backup yet - consider exporting your data.'}</div>
     <div class="s-row"><div class="s-info"><div class="s-lbl">Auto Backup Reminder</div><div class="s-desc">Get reminded to backup periodically</div></div><div class="toggle ${s.autoBackup?'on':''}" onclick="toggleAutoBackup()"></div></div>
     <div class="s-row"><div class="s-info"><div class="s-lbl">Backup Frequency</div><div class="s-desc">How often to remind you to backup</div></div>
       <select class="fi" style="width:110px;padding:4px 7px;font-size:12px;" onchange="setBackupFreq(this.value)">
