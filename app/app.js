@@ -5,9 +5,9 @@ document.addEventListener('DOMContentLoaded', () => {
     /* -------------------------------------------------------------------------- */
     /* 1. STATE MANAGEMENT & LOCAL STORAGE ARCHITECTURE                           */
     /* -------------------------------------------------------------------------- */
-    const STORAGE_KEY = 'wealthfolio_core_db_v1';
+    const STORAGE_KEY = 'wealthfolio_core_db_v2';
     
-    // Centralized Application State
+    // Centralized Application State (Explicitly initializing empty arrays to prevent syntax crashes)
     let state = {
         balance: 0,
         incomes:,
@@ -25,7 +25,13 @@ document.addEventListener('DOMContentLoaded', () => {
     function loadState() {
         const stored = localStorage.getItem(STORAGE_KEY);
         if (stored) {
-            state = JSON.parse(stored);
+            try {
+                // Merge stored object with default arrays to ensure backwards compatibility
+                const parsed = JSON.parse(stored);
+                state = {...state,...parsed };
+            } catch (e) {
+                console.error("Local storage corruption detected.");
+            }
         }
     }
 
@@ -52,10 +58,11 @@ document.addEventListener('DOMContentLoaded', () => {
         // Activate target tab and button
         document.getElementById(`tab-${tabId}`).classList.remove('hidden');
         const activeBtn = document.getElementById(`nav-${tabId}`);
-        activeBtn.classList.add('active');
+        if(activeBtn) activeBtn.classList.add('active');
         
         // Update contextual header
-        document.getElementById('pageTitle').innerText = activeBtn.innerText;
+        const pageTitleElement = document.getElementById('pageTitle');
+        if (activeBtn) pageTitleElement.innerText = activeBtn.innerText;
         renderDashboard();
     };
 
@@ -247,6 +254,16 @@ document.addEventListener('DOMContentLoaded', () => {
         saveState(); // Re-render with sorted data
     }
 
+    // Live Search Filter for Expenses
+    window.filterExpenses = function() {
+        const query = document.getElementById('search-expenses').value.toLowerCase();
+        const rows = document.querySelectorAll('#table-expenses tr');
+        rows.forEach(row => {
+            const desc = row.querySelector('td:nth-child(2)').innerText.toLowerCase();
+            row.style.display = desc.includes(query)? '' : 'none';
+        });
+    }
+
     function renderDashboard() {
         const currentDate = new Date();
         const currentMonthKey = `${currentDate.getFullYear()}-${currentDate.getMonth()}`;
@@ -393,12 +410,26 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Update Allocation Dropdown (Hide completed)
         document.getElementById('tgt-select').innerHTML = state.targets.filter(t =>!t.completed)
-         .map(t => `<option value="${t.id}">${t.name}</option>`).join('');
+        .map(t => `<option value="${t.id}">${t.name}</option>`).join('');
 
-        // --- Dynamic Rolling Balance Calculation ---
-        // Formula: Current_Balance = Prev_Balance + Total_Income - (Daily_Expenses + EMI_Obligations)
+        // --- Dynamic Rolling Balance & Health Score Calculation ---
         state.balance = state.balance + aggregateMonthlyIncome - aggregateMonthlyExpense - aggregateObligations;
         
+        // Financial Health Score Algorithm
+        const totalOut = aggregateMonthlyExpense + aggregateObligations;
+        let healthScore = 0;
+        if(aggregateMonthlyIncome > 0) {
+            // Lower expenditure relative to income yields higher score
+            const ratio = totalOut / aggregateMonthlyIncome;
+            healthScore = Math.max(0, Math.min(100, (1 - ratio) * 100)).toFixed(0);
+        } else if (totalOut === 0) {
+            healthScore = 100;
+        }
+        
+        const healthEl = document.getElementById('healthScoreDisplay');
+        healthEl.innerText = `${healthScore}/100`;
+        healthEl.className = `text-3xl font-black ${healthScore > 70? 'text-green-500' : healthScore > 40? 'text-orange-500' : 'text-red-500'}`;
+
         // Inject top metrics into DOM
         document.getElementById('dashBalance').innerText = formatCurrency(state.balance);
         document.getElementById('dashIncome').innerText = '+' + formatCurrency(aggregateMonthlyIncome);
@@ -452,7 +483,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* -------------------------------------------------------------------------- */
-    /* 6. MODALS, TASK ENGINE & VISUAL GAMIFICATION                               */
+    /* 6. MODALS, DATA EXPORT & VISUAL GAMIFICATION                               */
     /* -------------------------------------------------------------------------- */
     
     window.executeDeletion = function(arrayName, objectId) {
@@ -536,6 +567,24 @@ document.addEventListener('DOMContentLoaded', () => {
     window.processTaskCompletion = function(taskIdentifier) {
         state.tasks.push(taskIdentifier);
         saveState();
+    };
+
+    // --- SYSTEM DATA MANAGEMENT ---
+    window.exportData = function() {
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state));
+        const downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href", dataStr);
+        downloadAnchorNode.setAttribute("download", "wealthfolio_backup.json");
+        document.body.appendChild(downloadAnchorNode); 
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
+    };
+
+    window.wipeData = function() {
+        executeModalAction('CRITICAL: This will permanently delete all financial data. Continue?', () => {
+            localStorage.removeItem(STORAGE_KEY);
+            location.reload();
+        });
     };
 
     /**
