@@ -1,0 +1,64 @@
+/* app/style.css */
+
+/* Global Smoothness */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Custom Scrollbar Implementation for Modern UI UX */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+    border-radius: 20px;
+}
+.custom-scrollbar:hover::-webkit-scrollbar-thumb {
+    background-color: #94a3b8;
+}
+
+/* Form Input Semantic Abstraction via Tailwind @apply */
+.form-input {
+    @apply w-full bg-white border border-gray-300 text-gray-800 rounded-xl px-4 py-2.5 focus:outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/20 transition-all shadow-sm;
+}
+
+/* Active State for Lateral Navigation */
+.nav-btn.active {
+    @apply bg-brand-500 text-white shadow-lg shadow-brand-500/40;
+}
+.nav-btn.active i {
+    @apply text-white;
+}
+.nav-btn:not(.active) i {
+    @apply text-brand-400;
+}
+
+/* High-Urgency Pulse Animation for the 50-Day Grace Period Countdown */
+@keyframes urgent-pulse {
+    0%, 100% { 
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); 
+        border-color: #ef4444; 
+    }
+    50% { 
+        box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); 
+        border-color: #f87171; 
+    }
+}
+
+.animate-urgent {
+    animation: urgent-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    background-color: #fef2f2;
+}
+
+/* Simple entry fade-in for tabs */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in {
+    animation: fadeIn 0.3s ease-out forwards;
+}
