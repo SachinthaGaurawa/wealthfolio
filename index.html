@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wealthfolio - Advanced Financial Dashboard</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <link rel="stylesheet" href="app/style.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            900: '#0f172a',
+                            800: '#1e293b',
+                            700: '#334155',
+                            500: '#3b82f6',
+                            400: '#60a5fa'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans h-screen overflow-hidden flex">
+
+    <div id="authOverlay" class="fixed inset-0 z-50 bg-brand-900 flex flex-col justify-center items-center text-white transition-opacity duration-500">
+        <div class="bg-brand-800 p-8 rounded-2xl shadow-2xl w-96 text-center border border-gray-700">
+            <i class="ph ph-shield-check text-6xl text-brand-400 mb-4"></i>
+            <h2 id="authTitle" class="text-2xl font-bold mb-6 tracking-wide">Enter Passcode</h2>
+            <input type="password" id="passcodeInput" class="w-full bg-brand-900 border border-gray-600 rounded-lg px-4 py-3 text-center text-2xl tracking-[0.5em] focus:outline-none focus:border-brand-400 mb-4 transition-colors" placeholder="••••">
+            <p id="authError" class="text-red-400 text-sm mb-4 hidden font-medium">Authentication Failed. Try Again.</p>
+            <button id="authBtn" class="w-full bg-brand-500 hover:bg-brand-400 text-white font-bold py-3 rounded-lg transition-all shadow-lg hover:shadow-brand-500/50">Unlock System</button>
+            <button id="forgotPasscodeBtn" class="mt-6 text-sm text-gray-400 hover:text-white transition-colors underline underline-offset-4">Forgot Passcode?</button>
+        </div>
+    </div>
+
+    <div id="confirmModal" class="fixed inset-0 z- bg-black bg-opacity-60 hidden flex justify-center items-center backdrop-blur-sm transition-opacity">
+        <div class="bg-white rounded-xl shadow-2xl w-96 overflow-hidden transform scale-95 transition-transform duration-200" id="confirmModalContent">
+            <div class="flex justify-between items-center bg-gray-100 px-6 py-4 border-b border-gray-200">
+                <h3 class="font-bold text-gray-800 text-lg flex items-center gap-2">
+                    <i class="ph ph-warning-circle text-brand-500"></i> Confirm Action
+                </h3>
+                <button id="closeModalIcon" class="text-gray-400 hover:text-red-500 transition-colors"><i class="ph ph-x text-xl font-bold"></i></button>
+            </div>
+            <div class="p-6">
+                <p id="confirmModalMessage" class="text-gray-600 mb-8 font-medium">Are you sure you want to mark this task as completed?</p>
+                <div class="flex justify-end space-x-3">
+                    <button id="cancelModalBtn" class="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition-colors">Cancel</button>
+                    <button id="submitModalBtn" class="px-5 py-2 bg-green-500 hover:bg-green-600 text-white font-bold rounded-lg transition-colors shadow-md shadow-green-500/30">Complete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <aside class="w-64 bg-brand-900 text-gray-300 flex flex-col shadow-2xl z-10 h-full border-r border-gray-800">
+        <div class="p-6 flex items-center space-x-3 border-b border-gray-800">
+            <div class="bg-brand-500 p-2 rounded-lg shadow-lg shadow-brand-500/30">
+                <i class="ph ph-chart-polar text-white text-2xl"></i>
+            </div>
+            <h1 class="text-2xl font-black text-white tracking-wider">Wealthfolio</h1>
+        </div>
+        
+        <nav class="flex-1 px-4 space-y-2 mt-6 overflow-y-auto custom-scrollbar">
+            <div class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3 px-2">Analytics</div>
+            <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn active w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all">
+                <i class="ph ph-squares-four text-xl"></i><span class="font-medium">Overview Dashboard</span>
+            </button>
+            
+            <div class="text-xs font-bold text-gray-500 uppercase tracking-widest mt-6 mb-3 px-2">Cash Flow</div>
+            <button onclick="switchTab('incomes')" id="nav-incomes" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-brand-800 transition-all">
+                <i class="ph ph-trend-up text-xl"></i><span class="font-medium">Incomes & Dividends</span>
+            </button>
+            <button onclick="switchTab('expenses')" id="nav-expenses" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-brand-800 transition-all">
+                <i class="ph ph-receipt text-xl"></i><span class="font-medium">Monthly Expenses</span>
+            </button>
+            
+            <div class="text-xs font-bold text-gray-500 uppercase tracking-widest mt-6 mb-3 px-2">Liabilities</div>
+            <button onclick="switchTab('loans')" id="nav-loans" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-brand-800 transition-all">
+                <i class="ph ph-bank text-xl"></i><span class="font-medium">Bank Loans</span>
+            </button>
+            <button onclick="switchTab('installments')" id="nav-installments" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-brand-800 transition-all">
+                <i class="ph ph-credit-card text-xl"></i><span class="font-medium">CC Installments</span>
+            </button>
+            <button onclick="switchTab('grace')" id="nav-grace" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-brand-800 transition-all relative">
+                <i class="ph ph-hourglass-high text-xl"></i><span class="font-medium">50-Day Grace Re-Pay</span>
+                <span id="graceBadge" class="absolute right-3 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full hidden">!</span>
+            </button>
+            
+            <div class="text-xs font-bold text-gray-500 uppercase tracking-widest mt-6 mb-3 px-2">Future Planning</div>
+            <button onclick="switchTab('targets')" id="nav-targets" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-brand-800 transition-all">
+                <i class="ph ph-target text-xl"></i><span class="font-medium">Targets & Savings</span>
+            </button>
+        </nav>
+        
+        <div class="p-6 border-t border-gray-800">
+            <button onclick="lockSystem()" class="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-brand-800 hover:bg-gray-700 text-white rounded-xl transition-colors shadow-md">
+                <i class="ph ph-lock-key text-lg"></i><span class="font-bold">Lock System</span>
+            </button>
+        </div>
+    </aside>
+
+    <main class="flex-1 bg-gray-50 flex flex-col h-full overflow-hidden relative">
+        
+        <header class="h-20 bg-white shadow-sm flex items-center justify-between px-10 z-0 border-b border-gray-200">
+            <h2 id="pageTitle" class="text-2xl font-black text-gray-800 tracking-tight">Overview Dashboard</h2>
+            <div class="flex items-center gap-4">
+                <div class="bg-blue-50 text-brand-500 px-4 py-2 rounded-lg text-sm font-bold shadow-sm border border-blue-100 flex items-center gap-2">
+                    <i class="ph ph-calendar-blank text-lg"></i>
+                    <span id="currentDateDisplay"></span>
+                </div>
+            </div>
+        </header>
+
+        <div class="flex-1 overflow-y-auto p-10 custom-scrollbar relative">
+            
+            <div id="tab-dashboard" class="tab-content block space-y-8 animate-fade-in">
+                
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 flex flex-col justify-center relative overflow-hidden group">
+                        <div class="absolute -right-6 -top-6 text-gray-50 opacity-50 group-hover:scale-110 transition-transform"><i class="ph ph-vault text-9xl"></i></div>
+                        <div class="text-gray-500 text-sm font-bold uppercase tracking-wider mb-2 relative z-10">Liquid Rolling Balance</div>
+                        <div class="text-4xl font-black text-brand-900 relative z-10" id="dashBalance">0.00</div>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 flex flex-col justify-center">
+                        <div class="text-gray-500 text-sm font-bold uppercase tracking-wider mb-2">Monthly Incomes</div>
+                        <div class="text-3xl font-black text-green-600 flex items-center gap-2">
+                            <i class="ph ph-arrow-up-right text-2xl"></i> <span id="dashIncome">0.00</span>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 flex flex-col justify-center">
+                        <div class="text-gray-500 text-sm font-bold uppercase tracking-wider mb-2">Monthly Expenses</div>
+                        <div class="text-3xl font-black text-red-500 flex items-center gap-2">
+                            <i class="ph ph-arrow-down-right text-2xl"></i> <span id="dashExpenses">0.00</span>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 flex flex-col justify-center">
+                        <div class="text-gray-500 text-sm font-bold uppercase tracking-wider mb-2">Installments & Loans</div>
+                        <div class="text-3xl font-black text-orange-500 flex items-center gap-2">
+                            <i class="ph ph-arrows-merge text-2xl"></i> <span id="dashObligations">0.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2 bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="font-bold text-gray-800 text-lg">Expenditure Distribution Analysis</h3>
+                            <span class="text-xs font-bold bg-gray-100 text-gray-500 px-3 py-1 rounded-full">Current Month</span>
+                        </div>
+                        <div class="relative h-72 w-full">
+                            <canvas id="expenseChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-200 flex flex-col h-[400px]">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="font-bold text-gray-800 text-lg">Pending Automations</h3>
+                            <span class="flex h-3 w-3 relative">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-3 w-3 bg-brand-500"></span>
+                            </span>
+                        </div>
+                        <div id="taskList" class="flex-1 overflow-y-auto space-y-4 custom-scrollbar pr-2 pb-4">
+                            </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-incomes" class="tab-content hidden space-y-8 animate-fade-in">
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
+                    <h3 class="font-bold text-gray-800 text-lg mb-6 border-b pb-4">Register New Income Stream</h3>
+                    <form id="form-income" class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                        <div class="space-y-1 md:col-span-2">
+                            <label class="text-xs font-bold text-gray-500 uppercase">Source / Entity Name</label>
+                            <input type="text" id="inc-source" placeholder="e.g., Enterprise Holdings Ltd." class="form-input" required>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-xs font-bold text-gray-500 uppercase">Invested Capital</label>
+                            <input type="number" id="inc-invested" placeholder="Amount (Deducted from balance)" class="form-input">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-xs font-bold text-gray-500 uppercase">Periodic Return</label>
+                            <input type="number" id="inc-monthly" placeholder="Return Amount" class="form-input" required>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-xs font-bold text-gray-500 uppercase">Annual Div %</label>
+                            <input type="number" id="inc-dividend-pct" placeholder="Percentage" class="form-input" step="0.01">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-xs font-bold text-gray-500 uppercase">Investment Date</label>
+                            <input type="date" id="inc-start" class="form-input" required>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-xs font-bold text-gray-500 uppercase">Maturity Date</label>
+                            <input type="date" id="inc-end" class="form-input">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-xs font-bold text-gray-500 uppercase">Frequency</label>
+                            <select id="inc-freq" class="form-input">
+                                <option value="monthly">Monthly</option>
+                                <option value="annually">Annually</option>
+                            </select>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-xs font-bold text-gray-500 uppercase">Payout Day</label>
+                            <input type="number" id="inc-payout-day" placeholder="Day of month (1-31)" min="1" max="31" class="form-input" required>
+                        </div>
+                        <div class="md:col-span-3 flex items-end justify-end">
+                            <button type="submit" class="bg-brand-500 hover:bg-brand-600 text-white font-bold py-3 px-8 rounded-xl transition-all shadow-lg shadow-brand-500/30 flex items-center gap-2">
+                                <i class="ph ph-plus-circle text-xl"></i> Register Income
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="flex justify-between items-center bg-gray-50 px-6 py-4 border-b border-gray-200">
+                        <h4 class="font-bold text-gray-700">Active Income Portfolio</h4>
+                        <button onclick="sortTable('incomes')" class="text-sm font-bold text-brand-500 hover:text-brand-700 flex items-center gap-1">
+                            <i class="ph ph-sort-ascending"></i> Sort by Value
+                        </button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-gray-100 text-gray-500 text-xs uppercase tracking-widest border-b border-gray-200">
+                                    <th class="p-5">Entity / Source</th>
+                                    <th class="p-5">Capital Invested</th>
+                                    <th class="p-5">Periodic Yield</th>
+                                    <th class="p-5">Yield %</th>
+                                    <th class="p-5">Payout Schedule</th>
+                                    <th class="p-5 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-incomes" class="divide-y divide-gray-100 text-sm"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-expenses" class="tab-content hidden space-y-8 animate-fade-in">
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
+                    <h3 class="font-bold text-gray-800 text-lg mb-6 border-b pb-4">Log Daily/Monthly Expense</h3>
+                    <form id="form-expense" class="flex flex-col md:flex-row gap-4 items-end">
+                        <div class="space-y-1 flex-1">
+                            <label class="text-xs font-bold text-gray-500 uppercase">Expense Description</label>
+                            <input type="text" id="exp-name" placeholder="e.g., Electricity Bill, Groceries" class="form-input" required>
+                        </div>
+                        <div class="space-y-1 w-full md:w-48">
+                            <label class="text-xs font-bold text-gray-500 uppercase">Amount</label>
+                            <input type="number" id="exp-amount" placeholder="0.00" class="form-input" required>
+                        </div>
+                        <div class="space-y-1 w-full md:w-48">
+                            <label class="text-xs font-bold text-gray-500 uppercase">Transaction Date</label>
+                            <input type="date" id="exp-date" class="form-input" required>
+                        </div>
+                        <button type="submit" class="bg-brand-500 hover:bg-brand-600 text-white px-8 py-3 rounded-xl font-bold shadow-lg shadow-brand-500/30 transition-all w-full md:w-auto h-[42px] flex items-center justify-center">
+                            Log Expense
+                        </button>
+                    </form>
+                </div>
+                
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-gray-100 text-gray-500 text-xs uppercase tracking-widest border-b border-gray-200">
+                                <th class="p-5 w-32">Date</th>
+                                <th class="p-5">Description</th>
+                                <th class="p-5 w-48">Amount</th>
+                                <th class="p-5 w-24 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-expenses" class="divide-y divide-gray-100 text-sm"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="tab-loans" class="tab-content hidden space-y-8 animate-fade-in">
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
+                    <h3 class="font-bold text-gray-800 text-lg mb-6 border-b pb-4">Register Liability: Bank Loan</h3>
+                    <form id="form-loan" class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                        <div class="space-y-1">
+                            <label class="text-xs font-bold text-gray-500 uppercase">Financial Institution</label>
+                            <select id="loan-bank" class="form-input" required>
+                                <option value="">Select Bank</option>
+                                <option value="BOC">BOC</option>
+                                <option value="Commercial Bank">Commercial Bank</option>
+                                <option value="HNB">HNB</option>
+                                <option value="Sampath Bank">Sampath Bank</option>
+                                <option value="DFCC">DFCC</option>
+                                <option value="NTB">Nations Trust</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="space-y-1 md:col-span-2">
+                            <label class="text-xs font-bold text-gray-500 uppercase">Purpose of Facility</label>
+                            <input type="text" id="loan-purpose" placeholder="e.g., Housing Construction" class="form-input" required>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-xs font-bold text-gray-500 uppercase">Principal Amount</label>
+                            <input type="number" id="loan-amount" placeholder="Total Value" class="form-input" required>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-xs font-bold text-gray-500 uppercase">Fixed Installment</label>
+                            <input type="number" id="loan-installment" placeholder="Monthly Payment" class="form-input" required>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-xs font-bold text-gray-500 uppercase">Interest Rate</label>
+                            <input type="number" id="loan-interest" placeholder="Annual %" class="form-input" step="0.01">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-xs font-bold text-gray-500 uppercase">Term Duration</label>
+                            <input type="number" id="loan-duration" placeholder="Total Months" class="form-input" required>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-xs font-bold text-gray-500 uppercase">Disbursement Date</label>
+                            <input type="date" id="loan-start" class="form-input" required>
+                        </div>
+                        <div class="md:col-span-4 flex justify-end mt-2">
+                            <button type="submit" class="bg-brand-500 hover:bg-brand-600 text-white font-bold py-3 px-8 rounded-xl transition-all shadow-lg shadow-brand-500/30">
+                                Register Loan Facility
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-gray-100 text-gray-500 text-xs uppercase tracking-widest border-b border-gray-200">
+                                    <th class="p-5">Institution</th>
+                                    <th class="p-5">Facility Purpose</th>
+                                    <th class="p-5">Principal</th>
+                                    <th class="p-5">EMI</th>
+                                    <th class="p-5">Amortization Progress</th>
+                                    <th class="p-5 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-loans" class="divide-y divide-gray-100 text-sm"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-installments" class="tab-content hidden space-y-8 animate-fade-in">
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
+                    <h3 class="font-bold text-gray-800 text-lg mb-6 border-b pb-4">Log Credit Card Easy Payment Plan</h3>
+                    <form id="form-install" class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                        <div class="space-y-1">
+                            <label class="text-xs font-bold text-gray-500 uppercase">Card Issuer</label>
+                            <select id="inst-bank" class="form-input" required>
+                                <option value="">Select Bank Card</option>
+                                <option value="AMEX">Nations Trust AMEX</option>
+                                <option value="DFCC">DFCC Credit</option>
+                                <option value="Seylan">Seylan Bank</option>
+                                <option value="Union">Union Bank</option>
+                                <option value="Commercial">Commercial Bank</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="space-y-1 md:col-span-2">
+                            <label class="text-xs font-bold text-gray-500 uppercase">Product Description</label>
+                            <input type="text" id="inst-product" placeholder="e.g., iPhone 15 Pro Max" class="form-input" required>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-xs font-bold text-gray-500 uppercase">Purchaser / Buyer</label>
+                            <input type="text" id="inst-buyer" placeholder="Name of buyer" class="form-input" required>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-xs font-bold text-gray-500 uppercase">Transaction Value</label>
+                            <input type="number" id="inst-total" placeholder="Total Amount" class="form-input" required>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-xs font-bold text-gray-500 uppercase">Interest Rate</label>
+                            <input type="number" id="inst-interest" placeholder="Annual % (0 for 0%)" class="form-input" required step="0.01">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-xs font-bold text-gray-500 uppercase">Tenure</label>
+                            <input type="number" id="inst-duration" placeholder="Months" class="form-input" required>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-xs font-bold text-gray-500 uppercase">Transaction Date</label>
+                            <input type="date" id="inst-date" class="form-input" required>
+                        </div>
+                        <div class="md:col-span-4 flex justify-end mt-2">
+                            <button type="submit" class="bg-brand-500 hover:bg-brand-600 text-white font-bold py-3 px-8 rounded-xl transition-all shadow-lg shadow-brand-500/30">
+                                Compute & Log Installment
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-gray-100 text-gray-500 text-xs uppercase tracking-widest border-b border-gray-200">
+                                    <th class="p-5">Issuer</th>
+                                    <th class="p-5">Product & Buyer</th>
+                                    <th class="p-5">Total Value</th>
+                                    <th class="p-5">Computed EMI</th>
+                                    <th class="p-5">Lifecycle Progress</th>
+                                    <th class="p-5 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-installments" class="divide-y divide-gray-100 text-sm"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-grace" class="tab-content hidden space-y-8 animate-fade-in">
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
+                    <div class="flex items-center gap-3 mb-6 border-b pb-4">
+                        <i class="ph ph-warning text-2xl text-red-500"></i>
+                        <h3 class="font-bold text-gray-800 text-lg">50-Day Settlement Tracking (Non-Installments)</h3>
+                    </div>
+                    <form id="form-grace" class="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
+                        <div class="space-y-1">
+                            <label class="text-xs font-bold text-gray-500 uppercase">Card Used</label>
+                            <select id="grc-bank" class="form-input" required>
+                                <option value="">Select Bank Card</option>
+                                <option value="AMEX">Nations Trust AMEX</option>
+                                <option value="DFCC">DFCC Credit</option>
+                                <option value="Seylan">Seylan Bank</option>
+                                <option value="Commercial">Commercial Bank</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-xs font-bold text-gray-500 uppercase">Merchant / Description</label>
+                            <input type="text" id="grc-desc" placeholder="e.g., Keells Supermarket" class="form-input" required>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-xs font-bold text-gray-500 uppercase">Amount Swiped</label>
+                            <input type="number" id="grc-amount" placeholder="0.00" class="form-input" required>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-xs font-bold text-gray-500 uppercase">Date of Swipe</label>
+                            <input type="date" id="grc-date" class="form-input" required>
+                        </div>
+                        <div class="md:col-span-4 flex justify-end mt-2">
+                            <button type="submit" class="bg-brand-500 hover:bg-brand-600 text-white font-bold py-3 px-8 rounded-xl transition-all shadow-lg shadow-brand-500/30">
+                                Start Countdown
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="graceCardsContainer">
+                    </div>
+            </div>
+
+            <div id="tab-targets" class="tab-content hidden space-y-8 animate-fade-in">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
+                        <h3 class="font-bold text-gray-800 text-lg mb-6 border-b pb-4 flex items-center gap-2">
+                            <i class="ph ph-flag-pennant text-brand-500 text-xl"></i> Establish Macro Target
+                        </h3>
+                        <form id="form-target" class="space-y-5">
+                            <div class="space-y-1">
+                                <label class="text-xs font-bold text-gray-500 uppercase">Target Objective</label>
+                                <input type="text" id="tgt-name" placeholder="e.g., Vehicle Purchase" class="form-input" required>
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-xs font-bold text-gray-500 uppercase">Capital Required</label>
+                                <input type="number" id="tgt-amount" placeholder="e.g., 10000000" class="form-input text-lg font-bold" required>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="space-y-1">
+                                    <label class="text-xs font-bold text-gray-500 uppercase">Initiation Date</label>
+                                    <input type="date" id="tgt-start" class="form-input" required>
+                                </div>
+                                <div class="space-y-1">
+                                    <label class="text-xs font-bold text-gray-500 uppercase">Projected End</label>
+                                    <input type="date" id="tgt-end" class="form-input" required>
+                                </div>
+                            </div>
+                            <button type="submit" class="w-full bg-brand-500 hover:bg-brand-600 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-brand-500/30">
+                                Initialize Target Parameters
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-200 border-t-4 border-t-green-500">
+                        <h3 class="font-bold text-gray-800 text-lg mb-6 border-b pb-4 flex items-center gap-2">
+                            <i class="ph ph-piggy-bank text-green-500 text-xl"></i> Capital Allocation
+                        </h3>
+                        <p class="text-sm text-gray-500 mb-6">Divert liquidity from your rolling balance into specific targets to track completion progression.</p>
+                        <form id="form-tgt-save" class="space-y-5">
+                            <div class="space-y-1">
+                                <label class="text-xs font-bold text-gray-500 uppercase">Select Target</label>
+                                <select id="tgt-select" class="form-input bg-gray-50" required>
+                                    </select>
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-xs font-bold text-gray-500 uppercase">Allocation Amount</label>
+                                <input type="number" id="tgt-save-amount" placeholder="0.00" class="form-input text-lg font-bold" required>
+                            </div>
+                            <button type="submit" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-green-500/30 flex justify-center items-center gap-2">
+                                <i class="ph ph-check-circle text-xl"></i> Commit Funds
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <div id="targetsContainer" class="grid grid-cols-1 gap-6">
+                    </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="app/app.js"></script>
+</body>
+</html>
