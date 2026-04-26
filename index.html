@@ -35,17 +35,6 @@
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans h-screen overflow-hidden flex">
 
-    <div id="authOverlay" class="fixed inset-0 z-50 bg-brand-900 flex flex-col justify-center items-center text-white transition-opacity duration-500">
-        <div class="bg-brand-800 p-8 rounded-2xl shadow-2xl w-96 text-center border border-gray-700">
-            <i class="ph ph-shield-check text-6xl text-brand-400 mb-4"></i>
-            <h2 id="authTitle" class="text-2xl font-bold mb-6 tracking-wide">Enter Passcode</h2>
-            <input type="password" id="passcodeInput" class="w-full bg-brand-900 border border-gray-600 rounded-lg px-4 py-3 text-center text-2xl tracking-[0.5em] focus:outline-none focus:border-brand-400 mb-4 transition-colors" placeholder="••••">
-            <p id="authError" class="text-red-400 text-sm mb-4 hidden font-medium">Authentication Failed. Try Again.</p>
-            <button id="authBtn" class="w-full bg-brand-500 hover:bg-brand-400 text-white font-bold py-3 rounded-lg transition-all shadow-lg hover:shadow-brand-500/50">Unlock System</button>
-            <button id="forgotPasscodeBtn" class="mt-6 text-sm text-gray-400 hover:text-white transition-colors underline underline-offset-4">Forgot Passcode?</button>
-        </div>
-    </div>
-
     <div id="confirmModal" class="fixed inset-0 z-50 bg-black bg-opacity-60 hidden flex justify-center items-center backdrop-blur-sm transition-opacity">
         <div class="bg-white rounded-xl shadow-2xl w-96 overflow-hidden transform scale-95 transition-transform duration-200" id="confirmModalContent">
             <div class="flex justify-between items-center bg-gray-100 px-6 py-4 border-b border-gray-200">
@@ -103,12 +92,6 @@
                 <i class="ph ph-target text-xl"></i><span class="font-medium">Targets & Savings</span>
             </button>
         </nav>
-        
-        <div class="p-6 border-t border-gray-800">
-            <button onclick="lockSystem()" class="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-brand-800 hover:bg-gray-700 text-white rounded-xl transition-colors shadow-md">
-                <i class="ph ph-lock-key text-lg"></i><span class="font-bold">Lock System</span>
-            </button>
-        </div>
     </aside>
 
     <main class="flex-1 bg-gray-50 flex flex-col h-full overflow-hidden relative">
