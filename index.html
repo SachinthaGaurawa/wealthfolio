@@ -1,553 +1,2074 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wealthfolio - Advanced Financial Dashboard</title>
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    
-    <link rel="stylesheet" href="app/style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FinPlan Pro — Personal Financial Management</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root {
+  --bg: #060a14;
+  --bg2: #0b1120;
+  --card: #0f1729;
+  --card2: #151f35;
+  --card3: #1a2540;
+  --border: #1e2d45;
+  --border2: #263650;
+  --accent: #f5a623;
+  --accent2: #ffd166;
+  --accent3: #e8931a;
+  --green: #10b981;
+  --green2: #34d399;
+  --red: #ef4444;
+  --red2: #f87171;
+  --blue: #3b82f6;
+  --blue2: #60a5fa;
+  --purple: #8b5cf6;
+  --purple2: #a78bfa;
+  --cyan: #06b6d4;
+  --text: #e2e8f0;
+  --text2: #94a3b8;
+  --text3: #475569;
+  --font: 'Outfit', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+  --r: 12px;
+  --r2: 8px;
+  --r3: 20px;
+  --shadow: 0 8px 32px rgba(0,0,0,0.5);
+  --shadow2: 0 2px 12px rgba(0,0,0,0.3);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;display:flex;overflow-x:hidden;}
 
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            900: '#0f172a',
-                            800: '#1e293b',
-                            700: '#334155',
-                            500: '#3b82f6',
-                            400: '#60a5fa'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+/* SIDEBAR */
+.sidebar{width:256px;min-height:100vh;background:var(--bg2);border-right:1px solid var(--border);position:fixed;left:0;top:0;bottom:0;display:flex;flex-direction:column;z-index:100;transition:transform .3s cubic-bezier(.4,0,.2,1);}
+.sidebar-logo{padding:24px 20px 18px;border-bottom:1px solid var(--border);}
+.logo-mark{display:flex;align-items:center;gap:10px;}
+.logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--accent),var(--accent3));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;color:#000;}
+.logo-text .title{font-size:20px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-.5px;}
+.logo-text .sub{font-size:10px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;}
+.sidebar-nav{flex:1;padding:12px 10px;overflow-y:auto;}
+.nav-group-label{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:2px;text-transform:uppercase;padding:10px 10px 4px;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:var(--r2);cursor:pointer;transition:all .18s;color:var(--text2);font-size:13.5px;font-weight:500;margin:1px 0;user-select:none;position:relative;}
+.nav-item:hover{background:rgba(255,255,255,.05);color:var(--text);}
+.nav-item.active{background:linear-gradient(135deg,rgba(245,166,35,.18),rgba(255,209,102,.08));color:var(--accent);border:1px solid rgba(245,166,35,.22);}
+.nav-item .nav-icon{font-size:15px;width:20px;text-align:center;flex-shrink:0;}
+.nav-badge{margin-left:auto;background:var(--red);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;min-width:18px;text-align:center;}
+.sidebar-footer{padding:14px 20px;border-top:1px solid var(--border);}
+.sidebar-footer .sinfo{font-size:11px;color:var(--text3);line-height:1.7;}
+.sidebar-footer .sdate{font-size:12px;font-weight:600;color:var(--accent);font-family:var(--mono);}
+
+/* MAIN */
+.main{margin-left:256px;flex:1;min-height:100vh;display:flex;flex-direction:column;}
+.topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;gap:12px;}
+.topbar-left{display:flex;align-items:center;gap:12px;}
+.mobile-menu-btn{display:none;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:7px 9px;cursor:pointer;color:var(--text);font-size:17px;align-items:center;justify-content:center;}
+.page-title{font-size:18px;font-weight:700;}
+.page-title span{color:var(--accent);}
+.topbar-right{display:flex;align-items:center;gap:10px;}
+.current-month-badge{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:12px;font-weight:600;color:var(--text2);font-family:var(--mono);}
+.content{padding:24px 28px;flex:1;}
+.page{display:none;}
+.page.active{display:block;animation:fadeUp .3s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+/* BUTTONS */
+.btn{padding:8px 16px;border-radius:var(--r2);border:none;cursor:pointer;font-family:var(--font);font-size:13px;font-weight:600;transition:all .18s;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent3));color:#000;}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(245,166,35,.35);}
+.btn-secondary{background:var(--card2);color:var(--text);border:1px solid var(--border);}
+.btn-secondary:hover{background:var(--card3);border-color:var(--accent);}
+.btn-danger{background:rgba(239,68,68,.12);color:var(--red);border:1px solid rgba(239,68,68,.25);}
+.btn-danger:hover{background:rgba(239,68,68,.22);}
+.btn-success{background:rgba(16,185,129,.12);color:var(--green);border:1px solid rgba(16,185,129,.25);}
+.btn-success:hover{background:rgba(16,185,129,.22);}
+.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border);}
+.btn-ghost:hover{color:var(--text);border-color:var(--text3);}
+.btn-sm{padding:5px 10px;font-size:12px;}
+.btn-xs{padding:3px 8px;font-size:11px;}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important;}
+
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:22px;box-shadow:var(--shadow2);transition:border-color .2s;}
+.card:hover{border-color:var(--border2);}
+.card-sm{padding:16px;}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+.card-title{font-size:14px;font-weight:700;}
+.card-subtitle{font-size:11px;color:var(--text3);margin-top:2px;}
+.card-actions{display:flex;gap:8px;align-items:center;}
+
+/* STAT CARDS */
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px 22px;position:relative;overflow:hidden;transition:all .2s;cursor:default;}
+.stat-card:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:var(--shadow);}
+.stat-card::after{content:'';position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-radius:50%;opacity:.07;}
+.stat-card.gold::after{background:var(--accent);}
+.stat-card.green::after{background:var(--green);}
+.stat-card.red::after{background:var(--red);}
+.stat-card.blue::after{background:var(--blue);}
+.stat-card.purple::after{background:var(--purple);}
+.stat-card.cyan::after{background:var(--cyan);}
+.stat-label{font-size:11px;color:var(--text3);font-weight:600;letter-spacing:.5px;text-transform:uppercase;}
+.stat-value{font-size:22px;font-weight:800;font-family:var(--mono);margin:6px 0 4px;letter-spacing:-1px;line-height:1;}
+.stat-card.gold .stat-value{color:var(--accent);}
+.stat-card.green .stat-value{color:var(--green);}
+.stat-card.red .stat-value{color:var(--red);}
+.stat-card.blue .stat-value{color:var(--blue);}
+.stat-card.purple .stat-value{color:var(--purple);}
+.stat-card.cyan .stat-value{color:var(--cyan);}
+.stat-meta{font-size:11px;color:var(--text3);}
+.stat-icon{position:absolute;top:18px;right:18px;font-size:22px;opacity:.5;}
+
+/* GRID */
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;}
+.grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:18px;}
+
+/* TABLE */
+.table-wrap{overflow-x:auto;border-radius:var(--r2);border:1px solid var(--border);}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+thead th{background:var(--bg2);color:var(--text3);font-size:10.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;padding:10px 14px;text-align:left;white-space:nowrap;}
+thead th.sortable{cursor:pointer;user-select:none;}
+thead th.sortable:hover{color:var(--accent);}
+thead th .sort-arrow{opacity:.4;margin-left:4px;}
+thead th.sort-asc .sort-arrow::after{content:'↑';}
+thead th.sort-desc .sort-arrow::after{content:'↓';}
+thead th:not(.sort-asc):not(.sort-desc) .sort-arrow::after{content:'↕';}
+tbody tr{border-top:1px solid rgba(255,255,255,.04);transition:background .12s;}
+tbody tr:hover{background:rgba(255,255,255,.025);}
+tbody td{padding:11px 14px;color:var(--text);vertical-align:middle;}
+.td-mono{font-family:var(--mono);font-size:12.5px;}
+.td-green{color:var(--green);font-family:var(--mono);}
+.td-red{color:var(--red);font-family:var(--mono);}
+.td-gold{color:var(--accent);font-family:var(--mono);}
+.td-muted{color:var(--text3);font-size:12px;}
+tbody tr.completed-row{opacity:.45;}
+tbody tr.completed-row td{text-decoration:line-through;text-decoration-color:rgba(255,255,255,.2);}
+
+/* BADGE */
+.badge{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap;}
+.badge-green{background:rgba(16,185,129,.14);color:var(--green);}
+.badge-red{background:rgba(239,68,68,.14);color:var(--red);}
+.badge-gold{background:rgba(245,166,35,.14);color:var(--accent);}
+.badge-blue{background:rgba(59,130,246,.14);color:var(--blue);}
+.badge-gray{background:rgba(148,163,184,.1);color:var(--text2);}
+.badge-purple{background:rgba(139,92,246,.14);color:var(--purple);}
+.badge-cyan{background:rgba(6,182,212,.14);color:var(--cyan);}
+
+/* FORM */
+.form-group{margin-bottom:15px;}
+.form-label{font-size:11.5px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px;letter-spacing:.3px;}
+.form-input,.form-select,.form-textarea{width:100%;background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--r2);padding:8px 11px;color:var(--text);font-family:var(--font);font-size:13px;transition:border-color .18s;outline:none;}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(245,166,35,.1);}
+.form-select option{background:var(--bg2);}
+.form-textarea{resize:vertical;min-height:80px;}
+.form-row{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));}
+.form-hint{font-size:11px;color:var(--text3);margin-top:4px;}
+.form-calc{font-size:12px;color:var(--accent);margin-top:4px;font-family:var(--mono);}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(5px);z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s;padding:16px;}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal{background:var(--card);border:1px solid var(--border2);border-radius:16px;padding:26px;width:100%;max-width:620px;max-height:88vh;overflow-y:auto;transform:scale(.95) translateY(12px);transition:transform .25s cubic-bezier(.34,1.56,.64,1);position:relative;box-shadow:0 24px 64px rgba(0,0,0,.6);}
+.modal-overlay.open .modal{transform:scale(1) translateY(0);}
+.modal-sm{max-width:420px;}
+.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;}
+.modal-title{font-size:17px;font-weight:700;}
+.modal-close{background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:8px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text2);font-size:15px;transition:all .18s;flex-shrink:0;}
+.modal-close:hover{background:rgba(239,68,68,.15);color:var(--red);border-color:var(--red);}
+.modal-footer{display:flex;gap:10px;justify-content:flex-end;margin-top:22px;padding-top:18px;border-top:1px solid var(--border);}
+
+/* CONFIRM */
+.confirm-icon{font-size:52px;text-align:center;margin-bottom:14px;}
+.confirm-message{text-align:center;color:var(--text2);font-size:14px;line-height:1.65;margin-bottom:6px;}
+.confirm-detail{text-align:center;color:var(--text3);font-size:12px;}
+
+/* PROGRESS */
+.progress-bar{height:7px;background:var(--bg2);border-radius:100px;overflow:hidden;}
+.progress-fill{height:100%;border-radius:100px;transition:width .6s cubic-bezier(.4,0,.2,1);}
+.progress-fill.gold{background:linear-gradient(90deg,var(--accent),var(--accent2));}
+.progress-fill.green{background:linear-gradient(90deg,var(--green),var(--green2));}
+.progress-fill.red{background:linear-gradient(90deg,var(--red),var(--red2));}
+.progress-fill.blue{background:linear-gradient(90deg,var(--blue),var(--blue2));}
+
+/* MONTH TABS */
+.month-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px;}
+.month-tab{padding:5px 13px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;transition:all .18s;background:var(--card2);color:var(--text2);border:1px solid var(--border);}
+.month-tab:hover{border-color:var(--accent);color:var(--accent);}
+.month-tab.active{background:var(--accent);color:#000;border-color:var(--accent);}
+
+/* COUNTDOWN */
+.countdown{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11.5px;font-weight:700;font-family:var(--mono);}
+.countdown.safe{background:rgba(16,185,129,.13);color:var(--green);}
+.countdown.warn{background:rgba(245,166,35,.13);color:var(--accent);}
+.countdown.danger{background:rgba(239,68,68,.18);color:var(--red);animation:blink 1.4s infinite;}
+.countdown.done{background:rgba(148,163,184,.1);color:var(--text3);}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.55;}}
+
+/* CELEBRATION */
+#celebration-overlay{position:fixed;inset:0;z-index:1000;pointer-events:none;display:none;background:rgba(0,0,0,.5);backdrop-filter:blur(3px);}
+#celebration-overlay.show{display:flex;align-items:center;justify-content:center;}
+.celebration-box{background:var(--card);border:2px solid rgba(245,166,35,.4);border-radius:24px;padding:40px 60px;text-align:center;animation:celebPop .5s cubic-bezier(.34,1.56,.64,1);box-shadow:0 0 60px rgba(245,166,35,.25),var(--shadow);}
+@keyframes celebPop{from{transform:scale(.4);opacity:0;}to{transform:scale(1);opacity:1;}}
+.celeb-emoji{font-size:64px;animation:celebBounce .5s infinite alternate;}
+@keyframes celebBounce{to{transform:translateY(-16px);}}
+.celeb-title{font-size:36px;font-weight:900;background:linear-gradient(135deg,#ffd166,#f5a623,#ef476f);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin:10px 0 4px;}
+.celeb-sub{font-size:14px;color:var(--text2);}
+.celeb-target{font-size:20px;font-weight:800;font-family:var(--mono);color:var(--green);margin-top:10px;}
+.confetti{position:fixed;pointer-events:none;}
+@keyframes confettiFall{0%{transform:translateY(-80px) rotate(0deg);opacity:1;}100%{transform:translateY(110vh) rotate(720deg);opacity:0;}}
+
+/* NOTIFICATIONS */
+#notification{position:fixed;bottom:24px;right:24px;max-width:320px;z-index:600;display:flex;flex-direction:column;gap:8px;}
+.notif{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:12px 16px;display:flex;align-items:center;gap:10px;box-shadow:var(--shadow);transform:translateX(360px);opacity:0;transition:all .3s ease;font-size:13px;}
+.notif.show{transform:translateX(0);opacity:1;}
+.notif.success{border-left:3px solid var(--green);}
+.notif.error{border-left:3px solid var(--red);}
+.notif.info{border-left:3px solid var(--blue);}
+.notif.warn{border-left:3px solid var(--accent);}
+.notif-icon{font-size:16px;flex-shrink:0;}
+
+/* SECTION HEADER */
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;gap:12px;flex-wrap:wrap;}
+.section-title{font-size:17px;font-weight:700;}
+.section-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:48px 24px;}
+.empty-icon{font-size:44px;margin-bottom:12px;opacity:.6;}
+.empty-title{font-size:15px;font-weight:600;color:var(--text2);margin-bottom:6px;}
+.empty-sub{font-size:12px;color:var(--text3);}
+
+/* DIVIDER */
+.divider{height:1px;background:var(--border);margin:20px 0;}
+
+/* ACTION BUTTONS */
+.action-btns{display:flex;gap:5px;}
+.icon-btn{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;border:1px solid transparent;background:transparent;color:var(--text3);transition:all .15s;}
+.icon-btn:hover{background:rgba(255,255,255,.07);color:var(--text);}
+.icon-btn.edit:hover{color:var(--blue);border-color:rgba(59,130,246,.3);}
+.icon-btn.del:hover{color:var(--red);border-color:rgba(239,68,68,.3);}
+.icon-btn.check:hover{color:var(--green);border-color:rgba(16,185,129,.3);}
+
+/* CHART */
+.chart-wrap{position:relative;}
+
+/* SORT BAR */
+.sort-bar{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:14px;}
+.sort-btn{padding:4px 10px;background:var(--card2);border:1px solid var(--border);border-radius:6px;font-size:11px;font-weight:600;color:var(--text3);cursor:pointer;transition:all .18s;}
+.sort-btn:hover,.sort-btn.active{background:rgba(245,166,35,.1);color:var(--accent);border-color:rgba(245,166,35,.3);}
+.sort-label{font-size:11px;color:var(--text3);}
+
+/* MONTH OVERVIEW */
+.month-hero{background:linear-gradient(135deg,#0d1629,#111f3d);border:1px solid var(--border2);border-radius:var(--r);padding:22px 26px;margin-bottom:20px;position:relative;overflow:hidden;}
+.month-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 80% 50%,rgba(245,166,35,.04) 0%,transparent 60%);pointer-events:none;}
+.month-hero-month{font-size:11px;font-weight:700;color:var(--accent);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;}
+.month-hero-balance{font-size:40px;font-weight:900;font-family:var(--mono);letter-spacing:-2px;line-height:1;}
+.month-hero-balance.pos{color:var(--green);}
+.month-hero-balance.neg{color:var(--red);}
+.month-hero-row{display:flex;gap:24px;margin-top:16px;flex-wrap:wrap;}
+.mhr-item{flex:1;min-width:100px;}
+.mhr-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;}
+.mhr-value{font-size:17px;font-weight:700;font-family:var(--mono);margin-top:2px;}
+.mhr-value.pos{color:var(--green);}
+.mhr-value.neg{color:var(--red);}
+.mhr-value.gold{color:var(--accent);}
+
+/* TARGET CARDS */
+.target-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:22px;margin-bottom:14px;transition:border-color .2s;}
+.target-card:hover{border-color:rgba(245,166,35,.25);}
+.target-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;}
+.target-name{font-size:15px;font-weight:700;}
+.target-dates{font-size:11px;color:var(--text3);margin-top:3px;}
+.target-amounts{text-align:right;}
+.target-big{font-size:22px;font-weight:800;font-family:var(--mono);color:var(--accent);}
+.target-remain{font-size:14px;font-weight:700;font-family:var(--mono);color:var(--green);margin-top:2px;}
+.target-stats{display:flex;gap:18px;margin-top:12px;flex-wrap:wrap;}
+.ts-item .ts-label{font-size:10px;color:var(--text3);}
+.ts-item .ts-value{font-size:13px;font-weight:600;font-family:var(--mono);margin-top:2px;}
+
+/* INVESTMENT FLOW */
+.flow-item{background:var(--card2);border:1px solid var(--border);border-radius:var(--r2);padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:14px;transition:border-color .2s;}
+.flow-item:hover{border-color:var(--border2);}
+.flow-dot{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.flow-dot.out{background:rgba(239,68,68,.14);}
+.flow-dot.in{background:rgba(16,185,129,.14);}
+.flow-info{flex:1;min-width:0;}
+.flow-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.flow-date{font-size:11px;color:var(--text3);margin-top:1px;}
+.flow-right{text-align:right;flex-shrink:0;}
+.flow-amount{font-size:15px;font-weight:700;font-family:var(--mono);}
+.flow-amount.out{color:var(--red);}
+.flow-amount.in{color:var(--green);}
+.flow-type{font-size:10px;margin-top:2px;}
+
+/* BALANCE TRACKER */
+.balance-big{font-size:48px;font-weight:900;font-family:var(--mono);letter-spacing:-3px;line-height:1;}
+.balance-big.pos{color:var(--green);}
+.balance-big.neg{color:var(--red);}
+
+/* DASHBOARD */
+.dashboard-chart-row{display:grid;grid-template-columns:2fr 1fr;gap:18px;margin-bottom:18px;}
+
+/* LOAN CARD */
+.loan-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:14px;transition:border-color .2s;}
+.loan-card:hover{border-color:var(--border2);}
+.loan-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;}
+.loan-name{font-size:14px;font-weight:700;}
+.loan-bank{font-size:11px;color:var(--text3);margin-top:2px;}
+.loan-monthly{font-size:20px;font-weight:800;font-family:var(--mono);color:var(--red);}
+.loan-details{display:flex;gap:18px;flex-wrap:wrap;margin-top:12px;}
+.ld{}.ld .ld-l{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;}.ld .ld-v{font-size:13px;font-weight:600;font-family:var(--mono);margin-top:2px;}
+
+/* INCOME SOURCE CARD */
+.income-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:14px;transition:border-color .2s;}
+.income-card:hover{border-color:rgba(16,185,129,.25);}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .sidebar{transform:translateX(-100%);}
+  .sidebar.open{transform:translateX(0);}
+  .main{margin-left:0;}
+  .mobile-menu-btn{display:flex;}
+  .grid-5,.grid-4{grid-template-columns:repeat(2,1fr);}
+  .grid-3{grid-template-columns:repeat(2,1fr);}
+  .dashboard-chart-row{grid-template-columns:1fr;}
+  .content{padding:16px;}
+  .topbar{padding:12px 16px;}
+  .balance-big{font-size:32px;}
+}
+@media(max-width:520px){
+  .grid-4,.grid-3,.grid-2{grid-template-columns:1fr;}
+}
+
+/* OVERLAY for mobile sidebar */
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99;}
+.sidebar-overlay.show{display:block;}
+</style>
 </head>
-<body class="bg-gray-50 text-gray-800 font-sans h-screen overflow-hidden flex">
+<body>
 
-    <div id="confirmModal" class="fixed inset-0 z-50 bg-black bg-opacity-60 hidden flex justify-center items-center backdrop-blur-sm transition-opacity">
-        <div class="bg-white rounded-xl shadow-2xl w-96 overflow-hidden transform scale-95 transition-transform duration-200" id="confirmModalContent">
-            <div class="flex justify-between items-center bg-gray-100 px-6 py-4 border-b border-gray-200">
-                <h3 class="font-bold text-gray-800 text-lg flex items-center gap-2">
-                    <i class="ph ph-warning-circle text-brand-500"></i> Confirm Action
-                </h3>
-                <button id="closeModalIcon" class="text-gray-400 hover:text-red-500 transition-colors"><i class="ph ph-x text-xl font-bold"></i></button>
-            </div>
-            <div class="p-6">
-                <p id="confirmModalMessage" class="text-gray-600 mb-8 font-medium">Are you sure you want to mark this task as completed?</p>
-                <div class="flex justify-end space-x-3">
-                    <button id="cancelModalBtn" class="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition-colors">Cancel</button>
-                    <button id="submitModalBtn" class="px-5 py-2 bg-green-500 hover:bg-green-600 text-white font-bold rounded-lg transition-colors shadow-md shadow-green-500/30">Confirm</button>
-                </div>
-            </div>
-        </div>
+<!-- SIDEBAR OVERLAY (mobile) -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-mark">
+      <div class="logo-icon">₣</div>
+      <div class="logo-text">
+        <div class="title">FinPlan Pro</div>
+        <div class="sub">Financial System</div>
+      </div>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-group-label">Overview</div>
+    <div class="nav-item active" onclick="showPage('dashboard',this)">
+      <span class="nav-icon">📊</span> Dashboard
+    </div>
+    <div class="nav-item" onclick="showPage('monthly',this)">
+      <span class="nav-icon">📅</span> Monthly Plan
     </div>
 
-    <aside class="w-64 bg-brand-900 text-gray-300 flex flex-col shadow-2xl z-10 h-full border-r border-gray-800">
-        <div class="p-6 flex items-center space-x-3 border-b border-gray-800">
-            <div class="bg-brand-500 p-2 rounded-lg shadow-lg shadow-brand-500/30">
-                <i class="ph ph-chart-polar text-white text-2xl"></i>
-            </div>
-            <h1 class="text-2xl font-black text-white tracking-wider">Wealthfolio</h1>
+    <div class="nav-group-label">Finance</div>
+    <div class="nav-item" onclick="showPage('income',this)">
+      <span class="nav-icon">💰</span> Income & Investments
+    </div>
+    <div class="nav-item" onclick="showPage('loans',this)">
+      <span class="nav-icon">🏦</span> Bank Loans
+    </div>
+    <div class="nav-item" onclick="showPage('ccinstall',this)">
+      <span class="nav-icon">💳</span> CC Installments
+    </div>
+    <div class="nav-item" onclick="showPage('cconetime',this)">
+      <span class="nav-icon">⏱️</span> CC One-Time Payments
+      <span class="nav-badge" id="nb-cconetime" style="display:none">!</span>
+    </div>
+
+    <div class="nav-group-label">Tracking</div>
+    <div class="nav-item" onclick="showPage('expenses',this)">
+      <span class="nav-icon">🧾</span> Monthly Expenses
+    </div>
+    <div class="nav-item" onclick="showPage('targets',this)">
+      <span class="nav-icon">🎯</span> Targets & Savings
+    </div>
+    <div class="nav-item" onclick="showPage('balance',this)">
+      <span class="nav-icon">⚖️</span> Balance Tracker
+    </div>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="sdate" id="sidebarDate">—</div>
+    <div class="sinfo" style="margin-top:4px;">FinPlan Pro v2.0<br>All data saved locally</div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="mobile-menu-btn" onclick="openSidebar()">☰</button>
+      <div class="page-title" id="pageTitle">📊 <span>Dashboard</span></div>
+    </div>
+    <div class="topbar-right">
+      <div class="current-month-badge" id="currentMonthBadge">—</div>
+      <button class="btn btn-primary btn-sm" id="topAddBtn" onclick="handleTopAdd()">+ Add New</button>
+    </div>
+  </header>
+
+  <div class="content">
+
+    <!-- ==================== DASHBOARD ==================== -->
+    <div class="page active" id="page-dashboard">
+      <div class="grid-5" style="margin-bottom:18px;" id="dashStats"></div>
+      <div class="dashboard-chart-row">
+        <div class="card">
+          <div class="card-header">
+            <div><div class="card-title">Monthly Overview</div><div class="card-subtitle">Income vs Expenses by month</div></div>
+            <select class="form-select" style="width:120px;padding:5px 8px;font-size:12px;" id="dashChartYear" onchange="renderDashboard()"></select>
+          </div>
+          <div class="chart-wrap" style="height:220px;"><canvas id="dashChart"></canvas></div>
         </div>
-        
-        <nav class="flex-1 px-4 space-y-2 mt-6 overflow-y-auto custom-scrollbar">
-            <div class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3 px-2">Analytics</div>
-            <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn active w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all">
-                <i class="ph ph-squares-four text-xl"></i><span class="font-medium">Overview Dashboard</span>
-            </button>
-            
-            <div class="text-xs font-bold text-gray-500 uppercase tracking-widest mt-6 mb-3 px-2">Cash Flow</div>
-            <button onclick="switchTab('incomes')" id="nav-incomes" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-brand-800 transition-all">
-                <i class="ph ph-trend-up text-xl"></i><span class="font-medium">Incomes & Dividends</span>
-            </button>
-            <button onclick="switchTab('expenses')" id="nav-expenses" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-brand-800 transition-all">
-                <i class="ph ph-receipt text-xl"></i><span class="font-medium">Monthly Expenses</span>
-            </button>
-            
-            <div class="text-xs font-bold text-gray-500 uppercase tracking-widest mt-6 mb-3 px-2">Liabilities</div>
-            <button onclick="switchTab('loans')" id="nav-loans" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-brand-800 transition-all">
-                <i class="ph ph-bank text-xl"></i><span class="font-medium">Bank Loans</span>
-            </button>
-            <button onclick="switchTab('installments')" id="nav-installments" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-brand-800 transition-all">
-                <i class="ph ph-credit-card text-xl"></i><span class="font-medium">CC Installments</span>
-            </button>
-            <button onclick="switchTab('grace')" id="nav-grace" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-brand-800 transition-all relative">
-                <i class="ph ph-hourglass-high text-xl"></i><span class="font-medium">50-Day Grace Re-Pay</span>
-                <span id="graceBadge" class="absolute right-3 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full hidden">!</span>
-            </button>
-            
-            <div class="text-xs font-bold text-gray-500 uppercase tracking-widest mt-6 mb-3 px-2">Future Planning</div>
-            <button onclick="switchTab('targets')" id="nav-targets" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-brand-800 transition-all">
-                <i class="ph ph-target text-xl"></i><span class="font-medium">Targets & Savings</span>
-            </button>
-
-            <div class="text-xs font-bold text-gray-500 uppercase tracking-widest mt-6 mb-3 px-2">System</div>
-            <button onclick="switchTab('settings')" id="nav-settings" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-brand-800 transition-all">
-                <i class="ph ph-gear text-xl"></i><span class="font-medium">Settings & Backup</span>
-            </button>
-        </nav>
-    </aside>
-
-    <main class="flex-1 bg-gray-50 flex flex-col h-full overflow-hidden relative">
-        
-        <header class="h-20 bg-white shadow-sm flex items-center justify-between px-10 z-0 border-b border-gray-200">
-            <h2 id="pageTitle" class="text-2xl font-black text-gray-800 tracking-tight">Overview Dashboard</h2>
-            <div class="flex items-center gap-4">
-                <div class="bg-blue-50 text-brand-500 px-4 py-2 rounded-lg text-sm font-bold shadow-sm border border-blue-100 flex items-center gap-2">
-                    <i class="ph ph-calendar-blank text-lg"></i>
-                    <span id="currentDateDisplay"></span>
-                </div>
-            </div>
-        </header>
-
-        <div class="flex-1 overflow-y-auto p-10 custom-scrollbar relative">
-            
-            <div id="tab-dashboard" class="tab-content block space-y-8 animate-fade-in">
-                
-                <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
-                    <div class="md:col-span-2 bg-gradient-to-br from-brand-800 to-brand-900 p-6 rounded-2xl shadow-sm border border-gray-700 flex flex-col justify-center relative overflow-hidden group">
-                        <div class="absolute -right-6 -top-6 text-brand-700 opacity-30 group-hover:scale-110 transition-transform"><i class="ph ph-vault text-9xl"></i></div>
-                        <div class="text-brand-400 text-sm font-bold uppercase tracking-wider mb-2 relative z-10">Liquid Rolling Balance</div>
-                        <div class="text-4xl font-black text-white relative z-10" id="dashBalance">0.00</div>
-                    </div>
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 flex flex-col justify-center">
-                        <div class="text-gray-500 text-sm font-bold uppercase tracking-wider mb-2">Monthly Incomes</div>
-                        <div class="text-2xl font-black text-green-600 flex items-center gap-2">
-                            <i class="ph ph-arrow-up-right text-xl"></i> <span id="dashIncome">0.00</span>
-                        </div>
-                    </div>
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 flex flex-col justify-center">
-                        <div class="text-gray-500 text-sm font-bold uppercase tracking-wider mb-2">Monthly Expenses</div>
-                        <div class="text-2xl font-black text-red-500 flex items-center gap-2">
-                            <i class="ph ph-arrow-down-right text-xl"></i> <span id="dashExpenses">0.00</span>
-                        </div>
-                    </div>
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 flex flex-col justify-center">
-                        <div class="text-gray-500 text-sm font-bold uppercase tracking-wider mb-2">Installments & Loans</div>
-                        <div class="text-2xl font-black text-orange-500 flex items-center gap-2">
-                            <i class="ph ph-arrows-merge text-xl"></i> <span id="dashObligations">0.00</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <div class="lg:col-span-2 bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
-                        <div class="flex justify-between items-center mb-6">
-                            <h3 class="font-bold text-gray-800 text-lg">Expenditure Distribution Analysis</h3>
-                            <span class="text-xs font-bold bg-gray-100 text-gray-500 px-3 py-1 rounded-full">Current Month</span>
-                        </div>
-                        <div class="relative h-72 w-full">
-                            <canvas id="expenseChart"></canvas>
-                        </div>
-                    </div>
-                    
-                    <div class="space-y-8 h-[400px] flex flex-col">
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 flex items-center justify-between">
-                            <div>
-                                <h3 class="font-bold text-gray-800 text-sm uppercase tracking-wider mb-1">Financial Health Score</h3>
-                                <p class="text-xs text-gray-500">Based on Income vs Liabilities</p>
-                            </div>
-                            <div class="text-3xl font-black text-brand-500" id="healthScoreDisplay">0/100</div>
-                        </div>
-
-                        <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-200 flex flex-col flex-1 overflow-hidden">
-                            <div class="flex justify-between items-center mb-6">
-                                <h3 class="font-bold text-gray-800 text-lg">Pending Automations</h3>
-                                <span class="flex h-3 w-3 relative">
-                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-400 opacity-75"></span>
-                                    <span class="relative inline-flex rounded-full h-3 w-3 bg-brand-500"></span>
-                                </span>
-                            </div>
-                            <div id="taskList" class="flex-1 overflow-y-auto space-y-4 custom-scrollbar pr-2 pb-4">
-                                </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="tab-incomes" class="tab-content hidden space-y-8 animate-fade-in">
-                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
-                    <h3 class="font-bold text-gray-800 text-lg mb-6 border-b pb-4">Register New Income Stream</h3>
-                    <form id="form-income" class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                        <div class="space-y-1 md:col-span-2">
-                            <label class="text-xs font-bold text-gray-500 uppercase">Source / Entity Name</label>
-                            <input type="text" id="inc-source" placeholder="e.g., Enterprise Holdings Ltd." class="form-input" required>
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-xs font-bold text-gray-500 uppercase">Invested Capital</label>
-                            <input type="number" id="inc-invested" placeholder="Amount (Deducted from balance)" class="form-input">
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-xs font-bold text-gray-500 uppercase">Periodic Return</label>
-                            <input type="number" id="inc-monthly" placeholder="Return Amount" class="form-input" required>
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-xs font-bold text-gray-500 uppercase">Annual Div %</label>
-                            <input type="number" id="inc-dividend-pct" placeholder="Percentage" class="form-input" step="0.01">
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-xs font-bold text-gray-500 uppercase">Investment Date</label>
-                            <input type="date" id="inc-start" class="form-input" required>
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-xs font-bold text-gray-500 uppercase">Maturity Date</label>
-                            <input type="date" id="inc-end" class="form-input">
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-xs font-bold text-gray-500 uppercase">Frequency</label>
-                            <select id="inc-freq" class="form-input">
-                                <option value="monthly">Monthly</option>
-                                <option value="annually">Annually</option>
-                            </select>
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-xs font-bold text-gray-500 uppercase">Payout Day</label>
-                            <input type="number" id="inc-payout-day" placeholder="Day of month (1-31)" min="1" max="31" class="form-input" required>
-                        </div>
-                        <div class="md:col-span-3 flex items-end justify-end">
-                            <button type="submit" class="bg-brand-500 hover:bg-brand-600 text-white font-bold py-3 px-8 rounded-xl transition-all shadow-lg shadow-brand-500/30 flex items-center gap-2">
-                                <i class="ph ph-plus-circle text-xl"></i> Register Income
-                            </button>
-                        </div>
-                    </form>
-                </div>
-                
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-                    <div class="flex justify-between items-center bg-gray-50 px-6 py-4 border-b border-gray-200">
-                        <h4 class="font-bold text-gray-700">Active Income Portfolio</h4>
-                        <button onclick="sortTable('incomes')" class="text-sm font-bold text-brand-500 hover:text-brand-700 flex items-center gap-1">
-                            <i class="ph ph-sort-ascending"></i> Sort by Value
-                        </button>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse">
-                            <thead>
-                                <tr class="bg-gray-100 text-gray-500 text-xs uppercase tracking-widest border-b border-gray-200">
-                                    <th class="p-5">Entity / Source</th>
-                                    <th class="p-5">Capital Invested</th>
-                                    <th class="p-5">Periodic Yield</th>
-                                    <th class="p-5">Yield %</th>
-                                    <th class="p-5">Payout Schedule</th>
-                                    <th class="p-5 text-right">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="table-incomes" class="divide-y divide-gray-100 text-sm"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <div id="tab-expenses" class="tab-content hidden space-y-8 animate-fade-in">
-                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
-                    <h3 class="font-bold text-gray-800 text-lg mb-6 border-b pb-4">Log Daily/Monthly Expense</h3>
-                    <form id="form-expense" class="flex flex-col md:flex-row gap-4 items-end">
-                        <div class="space-y-1 flex-1">
-                            <label class="text-xs font-bold text-gray-500 uppercase">Expense Description</label>
-                            <input type="text" id="exp-name" placeholder="e.g., Electricity Bill, Groceries" class="form-input" required>
-                        </div>
-                        <div class="space-y-1 w-full md:w-48">
-                            <label class="text-xs font-bold text-gray-500 uppercase">Amount</label>
-                            <input type="number" id="exp-amount" placeholder="0.00" class="form-input" required>
-                        </div>
-                        <div class="space-y-1 w-full md:w-48">
-                            <label class="text-xs font-bold text-gray-500 uppercase">Transaction Date</label>
-                            <input type="date" id="exp-date" class="form-input" required>
-                        </div>
-                        <button type="submit" class="bg-brand-500 hover:bg-brand-600 text-white px-8 py-3 rounded-xl font-bold shadow-lg shadow-brand-500/30 transition-all w-full md:w-auto h-[42px] flex items-center justify-center">
-                            Log Expense
-                        </button>
-                    </form>
-                </div>
-                
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-                    <div class="flex justify-between items-center bg-gray-50 px-6 py-4 border-b border-gray-200">
-                        <h4 class="font-bold text-gray-700">Expense Ledger</h4>
-                        <div class="relative">
-                            <i class="ph ph-magnifying-glass absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                            <input type="text" id="search-expenses" placeholder="Search expenses..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-500 transition-colors" oninput="filterExpenses()">
-                        </div>
-                    </div>
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="bg-gray-100 text-gray-500 text-xs uppercase tracking-widest border-b border-gray-200">
-                                <th class="p-5 w-32">Date</th>
-                                <th class="p-5">Description</th>
-                                <th class="p-5 w-48">Amount</th>
-                                <th class="p-5 w-24 text-right">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="table-expenses" class="divide-y divide-gray-100 text-sm"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div id="tab-loans" class="tab-content hidden space-y-8 animate-fade-in">
-                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
-                    <h3 class="font-bold text-gray-800 text-lg mb-6 border-b pb-4">Register Liability: Bank Loan</h3>
-                    <form id="form-loan" class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                        <div class="space-y-1">
-                            <label class="text-xs font-bold text-gray-500 uppercase">Financial Institution</label>
-                            <select id="loan-bank" class="form-input" required>
-                                <option value="">Select Bank</option>
-                                <option value="BOC">BOC</option>
-                                <option value="Commercial Bank">Commercial Bank</option>
-                                <option value="HNB">HNB</option>
-                                <option value="Sampath Bank">Sampath Bank</option>
-                                <option value="DFCC">DFCC</option>
-                                <option value="NTB">Nations Trust</option>
-                                <option value="Other">Other</option>
-                            </select>
-                        </div>
-                        <div class="space-y-1 md:col-span-2">
-                            <label class="text-xs font-bold text-gray-500 uppercase">Purpose of Facility</label>
-                            <input type="text" id="loan-purpose" placeholder="e.g., Housing Construction" class="form-input" required>
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-xs font-bold text-gray-500 uppercase">Principal Amount</label>
-                            <input type="number" id="loan-amount" placeholder="Total Value" class="form-input" required>
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-xs font-bold text-gray-500 uppercase">Fixed Installment</label>
-                            <input type="number" id="loan-installment" placeholder="Monthly Payment" class="form-input" required>
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-xs font-bold text-gray-500 uppercase">Interest Rate</label>
-                            <input type="number" id="loan-interest" placeholder="Annual %" class="form-input" step="0.01">
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-xs font-bold text-gray-500 uppercase">Term Duration</label>
-                            <input type="number" id="loan-duration" placeholder="Total Months" class="form-input" required>
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-xs font-bold text-gray-500 uppercase">Disbursement Date</label>
-                            <input type="date" id="loan-start" class="form-input" required>
-                        </div>
-                        <div class="md:col-span-4 flex justify-end mt-2">
-                            <button type="submit" class="bg-brand-500 hover:bg-brand-600 text-white font-bold py-3 px-8 rounded-xl transition-all shadow-lg shadow-brand-500/30">
-                                Register Loan Facility
-                            </button>
-                        </div>
-                    </form>
-                </div>
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse">
-                            <thead>
-                                <tr class="bg-gray-100 text-gray-500 text-xs uppercase tracking-widest border-b border-gray-200">
-                                    <th class="p-5">Institution</th>
-                                    <th class="p-5">Facility Purpose</th>
-                                    <th class="p-5">Principal</th>
-                                    <th class="p-5">EMI</th>
-                                    <th class="p-5">Amortization Progress</th>
-                                    <th class="p-5 text-right">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="table-loans" class="divide-y divide-gray-100 text-sm"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <div id="tab-installments" class="tab-content hidden space-y-8 animate-fade-in">
-                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
-                    <h3 class="font-bold text-gray-800 text-lg mb-6 border-b pb-4">Log Credit Card Easy Payment Plan</h3>
-                    <form id="form-install" class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                        <div class="space-y-1">
-                            <label class="text-xs font-bold text-gray-500 uppercase">Card Issuer</label>
-                            <select id="inst-bank" class="form-input" required>
-                                <option value="">Select Bank Card</option>
-                                <option value="AMEX">Nations Trust AMEX</option>
-                                <option value="DFCC">DFCC Credit</option>
-                                <option value="Seylan">Seylan Bank</option>
-                                <option value="Union">Union Bank</option>
-                                <option value="Commercial">Commercial Bank</option>
-                                <option value="Other">Other</option>
-                            </select>
-                        </div>
-                        <div class="space-y-1 md:col-span-2">
-                            <label class="text-xs font-bold text-gray-500 uppercase">Product Description</label>
-                            <input type="text" id="inst-product" placeholder="e.g., iPhone 15 Pro Max" class="form-input" required>
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-xs font-bold text-gray-500 uppercase">Purchaser / Buyer</label>
-                            <input type="text" id="inst-buyer" placeholder="Name of buyer" class="form-input" required>
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-xs font-bold text-gray-500 uppercase">Transaction Value</label>
-                            <input type="number" id="inst-total" placeholder="Total Amount" class="form-input" required>
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-xs font-bold text-gray-500 uppercase">Interest Rate</label>
-                            <input type="number" id="inst-interest" placeholder="Annual % (0 for 0%)" class="form-input" required step="0.01">
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-xs font-bold text-gray-500 uppercase">Tenure</label>
-                            <input type="number" id="inst-duration" placeholder="Months" class="form-input" required>
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-xs font-bold text-gray-500 uppercase">Transaction Date</label>
-                            <input type="date" id="inst-date" class="form-input" required>
-                        </div>
-                        <div class="md:col-span-4 flex justify-end mt-2">
-                            <button type="submit" class="bg-brand-500 hover:bg-brand-600 text-white font-bold py-3 px-8 rounded-xl transition-all shadow-lg shadow-brand-500/30">
-                                Compute & Log Installment
-                            </button>
-                        </div>
-                    </form>
-                </div>
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse">
-                            <thead>
-                                <tr class="bg-gray-100 text-gray-500 text-xs uppercase tracking-widest border-b border-gray-200">
-                                    <th class="p-5">Issuer</th>
-                                    <th class="p-5">Product & Buyer</th>
-                                    <th class="p-5">Total Value</th>
-                                    <th class="p-5">Computed EMI</th>
-                                    <th class="p-5">Lifecycle Progress</th>
-                                    <th class="p-5 text-right">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="table-installments" class="divide-y divide-gray-100 text-sm"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <div id="tab-grace" class="tab-content hidden space-y-8 animate-fade-in">
-                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
-                    <div class="flex items-center gap-3 mb-6 border-b pb-4">
-                        <i class="ph ph-warning text-2xl text-red-500"></i>
-                        <h3 class="font-bold text-gray-800 text-lg">50-Day Settlement Tracking (Non-Installments)</h3>
-                    </div>
-                    <form id="form-grace" class="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
-                        <div class="space-y-1">
-                            <label class="text-xs font-bold text-gray-500 uppercase">Card Used</label>
-                            <select id="grc-bank" class="form-input" required>
-                                <option value="">Select Bank Card</option>
-                                <option value="AMEX">Nations Trust AMEX</option>
-                                <option value="DFCC">DFCC Credit</option>
-                                <option value="Seylan">Seylan Bank</option>
-                                <option value="Commercial">Commercial Bank</option>
-                                <option value="Other">Other</option>
-                            </select>
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-xs font-bold text-gray-500 uppercase">Merchant / Description</label>
-                            <input type="text" id="grc-desc" placeholder="e.g., Keells Supermarket" class="form-input" required>
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-xs font-bold text-gray-500 uppercase">Amount Swiped</label>
-                            <input type="number" id="grc-amount" placeholder="0.00" class="form-input" required>
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-xs font-bold text-gray-500 uppercase">Date of Swipe</label>
-                            <input type="date" id="grc-date" class="form-input" required>
-                        </div>
-                        <div class="md:col-span-4 flex justify-end mt-2">
-                            <button type="submit" class="bg-brand-500 hover:bg-brand-600 text-white font-bold py-3 px-8 rounded-xl transition-all shadow-lg shadow-brand-500/30">
-                                Start Countdown
-                            </button>
-                        </div>
-                    </form>
-                </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="graceCardsContainer">
-                    </div>
-            </div>
-
-            <div id="tab-targets" class="tab-content hidden space-y-8 animate-fade-in">
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
-                        <h3 class="font-bold text-gray-800 text-lg mb-6 border-b pb-4 flex items-center gap-2">
-                            <i class="ph ph-flag-pennant text-brand-500 text-xl"></i> Establish Macro Target
-                        </h3>
-                        <form id="form-target" class="space-y-5">
-                            <div class="space-y-1">
-                                <label class="text-xs font-bold text-gray-500 uppercase">Target Objective</label>
-                                <input type="text" id="tgt-name" placeholder="e.g., Vehicle Purchase" class="form-input" required>
-                            </div>
-                            <div class="space-y-1">
-                                <label class="text-xs font-bold text-gray-500 uppercase">Capital Required</label>
-                                <input type="number" id="tgt-amount" placeholder="e.g., 10000000" class="form-input text-lg font-bold" required>
-                            </div>
-                            <div class="grid grid-cols-2 gap-4">
-                                <div class="space-y-1">
-                                    <label class="text-xs font-bold text-gray-500 uppercase">Initiation Date</label>
-                                    <input type="date" id="tgt-start" class="form-input" required>
-                                </div>
-                                <div class="space-y-1">
-                                    <label class="text-xs font-bold text-gray-500 uppercase">Projected End</label>
-                                    <input type="date" id="tgt-end" class="form-input" required>
-                                </div>
-                            </div>
-                            <button type="submit" class="w-full bg-brand-500 hover:bg-brand-600 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-brand-500/30">
-                                Initialize Target Parameters
-                            </button>
-                        </form>
-                    </div>
-
-                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-200 border-t-4 border-t-green-500">
-                        <h3 class="font-bold text-gray-800 text-lg mb-6 border-b pb-4 flex items-center gap-2">
-                            <i class="ph ph-piggy-bank text-green-500 text-xl"></i> Capital Allocation
-                        </h3>
-                        <p class="text-sm text-gray-500 mb-6">Divert liquidity from your rolling balance into specific targets to track completion progression.</p>
-                        <form id="form-tgt-save" class="space-y-5">
-                            <div class="space-y-1">
-                                <label class="text-xs font-bold text-gray-500 uppercase">Select Target</label>
-                                <select id="tgt-select" class="form-input bg-gray-50" required>
-                                    </select>
-                            </div>
-                            <div class="space-y-1">
-                                <label class="text-xs font-bold text-gray-500 uppercase">Allocation Amount</label>
-                                <input type="number" id="tgt-save-amount" placeholder="0.00" class="form-input text-lg font-bold" required>
-                            </div>
-                            <button type="submit" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-green-500/30 flex justify-center items-center gap-2">
-                                <i class="ph ph-check-circle text-xl"></i> Commit Funds
-                            </button>
-                        </form>
-                    </div>
-                </div>
-
-                <div id="targetsContainer" class="grid grid-cols-1 gap-6">
-                    </div>
-            </div>
-
-            <div id="tab-settings" class="tab-content hidden space-y-8 animate-fade-in">
-                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
-                    <h3 class="font-bold text-gray-800 text-lg mb-6 border-b pb-4">Data Management & Backup</h3>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div class="bg-blue-50 p-6 rounded-xl border border-blue-100">
-                            <h4 class="font-bold text-brand-900 mb-2">Export Database</h4>
-                            <p class="text-sm text-gray-600 mb-4">Download a complete JSON backup of your financial data. Keep this file safe.</p>
-                            <button onclick="exportData()" class="bg-brand-500 hover:bg-brand-600 text-white font-bold py-2 px-6 rounded-lg transition-colors shadow-md">
-                                <i class="ph ph-download-simple mr-2"></i>Export to JSON
-                            </button>
-                        </div>
-                        
-                        <div class="bg-red-50 p-6 rounded-xl border border-red-100">
-                            <h4 class="font-bold text-red-900 mb-2">Danger Zone</h4>
-                            <p class="text-sm text-red-600 mb-4">Permanently delete all financial data from this browser's local storage.</p>
-                            <button onclick="wipeData()" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded-lg transition-colors shadow-md">
-                                <i class="ph ph-warning mr-2"></i>Wipe All Data
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+        <div class="card">
+          <div class="card-header"><div class="card-title">Expense Breakdown</div></div>
+          <div class="chart-wrap" style="height:220px;"><canvas id="dashPie"></canvas></div>
         </div>
-    </main>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header"><div class="card-title">⚠️ Upcoming Payments</div><div class="card-subtitle">Next 30 days</div></div>
+          <div id="dashUpcoming"></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">📋 Recent Activity</div></div>
+          <div id="dashRecent"></div>
+        </div>
+      </div>
+    </div>
 
-    <script src="app/app.js"></script>
+    <!-- ==================== MONTHLY PLAN ==================== -->
+    <div class="page" id="page-monthly">
+      <div class="section-header">
+        <div class="section-title">Monthly Plan</div>
+        <div class="section-actions">
+          <select class="form-select" style="width:110px;" id="mpYear" onchange="renderMonthly()"></select>
+        </div>
+      </div>
+      <div class="month-tabs" id="monthTabs"></div>
+      <div id="monthlyContent"></div>
+    </div>
+
+    <!-- ==================== INCOME & INVESTMENTS ==================== -->
+    <div class="page" id="page-income">
+      <div class="section-header">
+        <div class="section-title">Income & Investments</div>
+        <div class="section-actions">
+          <div class="sort-bar">
+            <span class="sort-label">Sort:</span>
+            <span class="sort-btn active" onclick="sortIncome('name',this)">Name</span>
+            <span class="sort-btn" onclick="sortIncome('amount',this)">Amount</span>
+            <span class="sort-btn" onclick="sortIncome('rate',this)">Rate</span>
+            <span class="sort-btn" onclick="sortIncome('date',this)">Date</span>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="openModal('incomeModal')">+ Add Source</button>
+        </div>
+      </div>
+      <div id="incomeList"></div>
+    </div>
+
+    <!-- ==================== LOANS ==================== -->
+    <div class="page" id="page-loans">
+      <div class="section-header">
+        <div class="section-title">Bank Loans</div>
+        <div class="section-actions">
+          <div class="sort-bar">
+            <span class="sort-label">Sort:</span>
+            <span class="sort-btn active" onclick="sortLoans('name',this)">Name</span>
+            <span class="sort-btn" onclick="sortLoans('amount',this)">Amount</span>
+            <span class="sort-btn" onclick="sortLoans('monthly',this)">Monthly</span>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="openModal('loanModal')">+ Add Loan</button>
+        </div>
+      </div>
+      <div id="loansList"></div>
+    </div>
+
+    <!-- ==================== CC INSTALLMENTS ==================== -->
+    <div class="page" id="page-ccinstall">
+      <div class="section-header">
+        <div class="section-title">Credit Card Installments</div>
+        <div class="section-actions">
+          <div class="sort-bar">
+            <span class="sort-label">Sort:</span>
+            <span class="sort-btn active" onclick="sortCCI('product',this)">Product</span>
+            <span class="sort-btn" onclick="sortCCI('bank',this)">Bank</span>
+            <span class="sort-btn" onclick="sortCCI('monthly',this)">Monthly</span>
+            <span class="sort-btn" onclick="sortCCI('date',this)">Date</span>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="openModal('cciModal')">+ Add Installment</button>
+        </div>
+      </div>
+      <div class="grid-4" style="margin-bottom:18px;" id="cciStats"></div>
+      <div class="table-wrap"><table>
+        <thead><tr>
+          <th>Product</th><th>Buyer</th><th>Bank</th>
+          <th class="sortable" onclick="sortCCI('total',this)">Total <span class="sort-arrow"></span></th>
+          <th>Rate/yr</th>
+          <th class="sortable" onclick="sortCCI('monthly',this)">Monthly <span class="sort-arrow"></span></th>
+          <th>Duration</th><th>Purchase Date</th><th>Progress</th><th>Status</th><th>Actions</th>
+        </tr></thead>
+        <tbody id="cciTableBody"></tbody>
+      </table></div>
+    </div>
+
+    <!-- ==================== CC ONE-TIME ==================== -->
+    <div class="page" id="page-cconetime">
+      <div class="section-header">
+        <div class="section-title">Credit Card One-Time Payments</div>
+        <div class="section-actions">
+          <div class="sort-bar">
+            <span class="sort-label">Sort:</span>
+            <span class="sort-btn active" onclick="sortCCOT('days',this)">Days Left</span>
+            <span class="sort-btn" onclick="sortCCOT('amount',this)">Amount</span>
+            <span class="sort-btn" onclick="sortCCOT('date',this)">Date</span>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="openModal('ccotModal')">+ Add Payment</button>
+        </div>
+      </div>
+      <div style="background:rgba(245,166,35,.07);border:1px solid rgba(245,166,35,.2);border-radius:var(--r2);padding:12px 16px;margin-bottom:18px;font-size:13px;color:var(--text2);">
+        💡 <strong style="color:var(--accent);">50-Day Rule:</strong> One-time credit card purchases must be repaid within 50 days. Last 10 days will show a red warning. Mark as paid when done.
+      </div>
+      <div class="table-wrap"><table>
+        <thead><tr>
+          <th>Description</th><th>Bank</th><th>Type</th>
+          <th class="sortable" onclick="sortCCOT('amount',this)">Amount <span class="sort-arrow"></span></th>
+          <th>Purchase Date</th><th>Deadline</th>
+          <th class="sortable" onclick="sortCCOT('days',this)">Days Left <span class="sort-arrow"></span></th>
+          <th>Status</th><th>Actions</th>
+        </tr></thead>
+        <tbody id="ccotTableBody"></tbody>
+      </table></div>
+    </div>
+
+    <!-- ==================== MONTHLY EXPENSES ==================== -->
+    <div class="page" id="page-expenses">
+      <div class="section-header">
+        <div class="section-title">Monthly Expenses</div>
+        <div class="section-actions">
+          <select class="form-select" style="width:130px;" id="expMonth" onchange="renderExpenses()">
+            <option value="">All Months</option>
+          </select>
+          <div class="sort-bar">
+            <span class="sort-btn active" onclick="sortExp('date',this)">Date</span>
+            <span class="sort-btn" onclick="sortExp('amount',this)">Amount</span>
+            <span class="sort-btn" onclick="sortExp('category',this)">Category</span>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="openModal('expenseModal')">+ Add Expense</button>
+        </div>
+      </div>
+      <div class="grid-4" style="margin-bottom:18px;" id="expStats"></div>
+      <div class="table-wrap"><table>
+        <thead><tr>
+          <th>Description</th><th>Category</th><th>Month</th>
+          <th class="sortable" onclick="sortExp('amount',this)">Amount <span class="sort-arrow"></span></th>
+          <th>Recurring</th><th>Status</th><th>Actions</th>
+        </tr></thead>
+        <tbody id="expTableBody"></tbody>
+      </table></div>
+    </div>
+
+    <!-- ==================== TARGETS ==================== -->
+    <div class="page" id="page-targets">
+      <div class="section-header">
+        <div class="section-title">Targets & Savings</div>
+        <div class="section-actions">
+          <button class="btn btn-secondary btn-sm" onclick="openModal('savingModal')">+ Add Saving Entry</button>
+          <button class="btn btn-primary btn-sm" onclick="openModal('targetModal')">+ New Target</button>
+        </div>
+      </div>
+      <div id="targetsList"></div>
+    </div>
+
+    <!-- ==================== BALANCE TRACKER ==================== -->
+    <div class="page" id="page-balance">
+      <div class="section-header">
+        <div class="section-title">Balance Tracker</div>
+        <div class="section-actions">
+          <button class="btn btn-secondary btn-sm" onclick="openModal('balFlowModal')">+ Log Flow</button>
+          <button class="btn btn-primary btn-sm" onclick="openModal('balSetModal')">Set Balance</button>
+        </div>
+      </div>
+      <div class="grid-3" style="margin-bottom:18px;">
+        <div class="stat-card green card-sm">
+          <div class="stat-label">Total Balance</div>
+          <div class="stat-value" id="balTotal">LKR 0</div>
+          <div class="stat-meta">Your current total</div>
+        </div>
+        <div class="stat-card red card-sm">
+          <div class="stat-label">Total Invested Out</div>
+          <div class="stat-value" id="balOut">LKR 0</div>
+          <div class="stat-meta">Capital deployed</div>
+        </div>
+        <div class="stat-card gold card-sm">
+          <div class="stat-label">Remaining Balance</div>
+          <div class="stat-value" id="balRemain">LKR 0</div>
+          <div class="stat-meta">Available on hand</div>
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:18px;">
+        <div class="card-header"><div class="card-title">Balance History</div></div>
+        <div style="display:flex;align-items:center;justify-content:center;padding:20px 0;">
+          <div class="balance-big pos" id="balBig">LKR 0</div>
+        </div>
+        <div id="balFlows"></div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- ==================== MODALS ==================== -->
+
+<!-- Income Modal -->
+<div class="modal-overlay" id="incomeModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="incomeModalTitle">Add Income / Investment Source</div>
+      <button class="modal-close" onclick="closeModal('incomeModal')">✕</button>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Source Name *</label><input class="form-input" id="inc_name" placeholder="e.g. Fixed Deposit - Commercial Bank"></div>
+      <div class="form-group"><label class="form-label">Company / Person *</label><input class="form-input" id="inc_company" placeholder="e.g. Commercial Bank"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Invested Amount (LKR) *</label><input class="form-input" id="inc_amount" type="number" placeholder="0.00" oninput="calcIncomeMonthly()"></div>
+      <div class="form-group"><label class="form-label">Annual Dividend Rate (%) *</label><input class="form-input" id="inc_rate" type="number" placeholder="57" step="0.1" oninput="calcIncomeMonthly()"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Investment Date *</label><input class="form-input" id="inc_start" type="date"></div>
+      <div class="form-group"><label class="form-label">End Date</label><input class="form-input" id="inc_end" type="date"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Dividend Frequency *</label>
+        <select class="form-select" id="inc_freq" onchange="calcIncomeMonthly()">
+          <option value="monthly">Monthly</option>
+          <option value="annual">Annual</option>
+          <option value="quarterly">Quarterly</option>
+        </select>
+      </div>
+      <div class="form-group"><label class="form-label">Dividend Day (of month)</label><input class="form-input" id="inc_day" type="number" min="1" max="31" placeholder="15"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Override Monthly Amount (optional)</label><input class="form-input" id="inc_override" type="number" placeholder="Leave blank to auto-calculate"></div>
+    <div id="inc_calc" class="form-calc"></div>
+    <div class="form-group"><label class="form-label">Notes</label><textarea class="form-textarea" id="inc_notes" placeholder="Additional details..."></textarea></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('incomeModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveIncome()">💾 Save Source</button>
+    </div>
+  </div>
+</div>
+
+<!-- Loan Modal -->
+<div class="modal-overlay" id="loanModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="loanModalTitle">Add Bank Loan</div>
+      <button class="modal-close" onclick="closeModal('loanModal')">✕</button>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Loan Name *</label><input class="form-input" id="loan_name" placeholder="e.g. Bank Loan for Land"></div>
+      <div class="form-group"><label class="form-label">Bank *</label>
+        <select class="form-select" id="loan_bank">
+          <option value="">Select Bank...</option>
+          <option>Commercial Bank</option><option>BOC</option><option>Peoples Bank</option>
+          <option>HNB</option><option>Sampath Bank</option><option>Seylan Bank</option>
+          <option>NTB</option><option>DFCC Bank</option><option>Nations Trust Bank</option>
+          <option>Pan Asia Bank</option><option>Hatton National Bank</option><option>Other</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Loan Amount (LKR) *</label><input class="form-input" id="loan_amount" type="number" placeholder="0" oninput="calcLoan()"></div>
+      <div class="form-group"><label class="form-label">Annual Interest Rate (%) *</label><input class="form-input" id="loan_rate" type="number" placeholder="14" step="0.1" oninput="calcLoan()"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Duration (months) *</label><input class="form-input" id="loan_duration" type="number" placeholder="60" oninput="calcLoan()"></div>
+      <div class="form-group"><label class="form-label">Override Monthly Payment</label><input class="form-input" id="loan_monthly" type="number" placeholder="Auto-calculated"></div>
+    </div>
+    <div id="loan_calc" class="form-calc"></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Start Date *</label><input class="form-input" id="loan_start" type="date"></div>
+      <div class="form-group"><label class="form-label">Loan Purpose</label><input class="form-input" id="loan_purpose" placeholder="e.g. Land Purchase"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Notes</label><textarea class="form-textarea" id="loan_notes" placeholder="Additional details..."></textarea></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('loanModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveLoan()">💾 Save Loan</button>
+    </div>
+  </div>
+</div>
+
+<!-- CC Installment Modal -->
+<div class="modal-overlay" id="cciModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="cciModalTitle">Add Credit Card Installment</div>
+      <button class="modal-close" onclick="closeModal('cciModal')">✕</button>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Product Name *</label><input class="form-input" id="cci_product" placeholder="e.g. 75-inch TV"></div>
+      <div class="form-group"><label class="form-label">Buyer</label><input class="form-input" id="cci_buyer" placeholder="e.g. Self"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Bank / Card *</label>
+        <select class="form-select" id="cci_bank">
+          <option value="">Select Bank...</option>
+          <option>DFCC Bank</option><option>Commercial Bank</option><option>BOC</option>
+          <option>Peoples Bank</option><option>HNB</option><option>Sampath Bank</option>
+          <option>Seylan Bank</option><option>NTB</option><option>AMEX</option>
+          <option>Nations Trust Bank</option><option>Pan Asia Bank</option><option>Other</option>
+        </select>
+      </div>
+      <div class="form-group"><label class="form-label">Purchase Date *</label><input class="form-input" id="cci_date" type="date"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Total Amount (LKR) *</label><input class="form-input" id="cci_total" type="number" placeholder="0" oninput="calcCCI()"></div>
+      <div class="form-group"><label class="form-label">Annual Interest Rate (%)</label><input class="form-input" id="cci_rate" type="number" placeholder="0 (interest-free)" step="0.1" oninput="calcCCI()"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Duration (months) *</label><input class="form-input" id="cci_duration" type="number" placeholder="24" oninput="calcCCI()"></div>
+      <div class="form-group"><label class="form-label">Override Monthly Payment</label><input class="form-input" id="cci_monthly" type="number" placeholder="Auto-calculated"></div>
+    </div>
+    <div id="cci_calc" class="form-calc"></div>
+    <div class="form-group"><label class="form-label">Notes</label><textarea class="form-textarea" id="cci_notes" placeholder="Additional details..."></textarea></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('cciModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveCCI()">💾 Save Installment</button>
+    </div>
+  </div>
+</div>
+
+<!-- CC One-Time Modal -->
+<div class="modal-overlay" id="ccotModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="ccotModalTitle">Add CC One-Time Payment</div>
+      <button class="modal-close" onclick="closeModal('ccotModal')">✕</button>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Description *</label><input class="form-input" id="ccot_desc" placeholder="e.g. Supermarket, Medicine..."></div>
+      <div class="form-group"><label class="form-label">Bank / Card *</label>
+        <select class="form-select" id="ccot_bank">
+          <option value="">Select Bank...</option>
+          <option>DFCC Bank</option><option>Commercial Bank</option><option>BOC</option>
+          <option>Peoples Bank</option><option>HNB</option><option>Sampath Bank</option>
+          <option>Seylan Bank</option><option>NTB</option><option>AMEX</option>
+          <option>Nations Trust Bank</option><option>Other</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Payment Type</label>
+        <select class="form-select" id="ccot_type">
+          <option value="purchase">Purchase</option>
+          <option value="cash_advance">Cash Advance</option>
+        </select>
+      </div>
+      <div class="form-group"><label class="form-label">Amount (LKR) *</label><input class="form-input" id="ccot_amount" type="number" placeholder="0"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Purchase Date *</label><input class="form-input" id="ccot_date" type="date"></div>
+    <div class="form-hint">Repayment deadline is automatically calculated as 50 days from purchase date.</div>
+    <div class="form-group" style="margin-top:12px;"><label class="form-label">Notes</label><textarea class="form-textarea" id="ccot_notes" placeholder="Additional details..."></textarea></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('ccotModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveCCOT()">💾 Save Payment</button>
+    </div>
+  </div>
+</div>
+
+<!-- Expense Modal -->
+<div class="modal-overlay" id="expenseModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="expenseModalTitle">Add Monthly Expense</div>
+      <button class="modal-close" onclick="closeModal('expenseModal')">✕</button>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Description *</label><input class="form-input" id="exp_desc" placeholder="e.g. Electricity Bill"></div>
+      <div class="form-group"><label class="form-label">Category *</label>
+        <select class="form-select" id="exp_cat">
+          <option value="Food">Food & Groceries</option>
+          <option value="Transport">Transport</option>
+          <option value="Utilities">Utilities</option>
+          <option value="Medical">Medical</option>
+          <option value="Education">Education</option>
+          <option value="Entertainment">Entertainment</option>
+          <option value="Clothing">Clothing</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Amount (LKR) *</label><input class="form-input" id="exp_amount" type="number" placeholder="0"></div>
+      <div class="form-group"><label class="form-label">Month (YYYY-MM) *</label><input class="form-input" id="exp_month" type="month"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Recurring Monthly?</label>
+        <select class="form-select" id="exp_recurring">
+          <option value="0">No - One time</option>
+          <option value="1">Yes - Every month</option>
+        </select>
+      </div>
+      <div class="form-group"><label class="form-label">Notes</label><input class="form-input" id="exp_notes" placeholder="Optional notes..."></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('expenseModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveExpense()">💾 Save Expense</button>
+    </div>
+  </div>
+</div>
+
+<!-- Target Modal -->
+<div class="modal-overlay" id="targetModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="targetModalTitle">Create Savings Target</div>
+      <button class="modal-close" onclick="closeModal('targetModal')">✕</button>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Target Name *</label><input class="form-input" id="tgt_name" placeholder="e.g. House Fund"></div>
+      <div class="form-group"><label class="form-label">Target Amount (LKR) *</label><input class="form-input" id="tgt_amount" type="number" placeholder="10000000"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Start Date *</label><input class="form-input" id="tgt_start" type="date"></div>
+      <div class="form-group"><label class="form-label">Target End Date *</label><input class="form-input" id="tgt_end" type="date"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Notes</label><textarea class="form-textarea" id="tgt_notes" placeholder="What is this target for?"></textarea></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('targetModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveTarget()">🎯 Create Target</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Saving Modal -->
+<div class="modal-overlay" id="savingModal">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <div class="modal-title">Add Saving Entry</div>
+      <button class="modal-close" onclick="closeModal('savingModal')">✕</button>
+    </div>
+    <div class="form-group"><label class="form-label">Target *</label>
+      <select class="form-select" id="sav_target"></select>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Amount (LKR) *</label><input class="form-input" id="sav_amount" type="number" placeholder="0"></div>
+      <div class="form-group"><label class="form-label">Date *</label><input class="form-input" id="sav_date" type="date"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Note</label><input class="form-input" id="sav_note" placeholder="e.g. Monthly saving"></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('savingModal')">Cancel</button>
+      <button class="btn btn-success" onclick="saveSaving()">💚 Add Saving</button>
+    </div>
+  </div>
+</div>
+
+<!-- Balance Set Modal -->
+<div class="modal-overlay" id="balSetModal">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <div class="modal-title">Set Total Balance</div>
+      <button class="modal-close" onclick="closeModal('balSetModal')">✕</button>
+    </div>
+    <div class="form-group"><label class="form-label">Total Balance (LKR) *</label><input class="form-input" id="bal_total" type="number" placeholder="15000000"></div>
+    <div class="form-group"><label class="form-label">Date</label><input class="form-input" id="bal_date" type="date"></div>
+    <div class="form-group"><label class="form-label">Notes</label><input class="form-input" id="bal_notes" placeholder="e.g. End of month balance"></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('balSetModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="setBalance()">Set Balance</button>
+    </div>
+  </div>
+</div>
+
+<!-- Balance Flow Modal -->
+<div class="modal-overlay" id="balFlowModal">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <div class="modal-title">Log Balance Flow</div>
+      <button class="modal-close" onclick="closeModal('balFlowModal')">✕</button>
+    </div>
+    <div class="form-group"><label class="form-label">Flow Type *</label>
+      <select class="form-select" id="bflow_type">
+        <option value="out">Investment Out (Reduce Balance)</option>
+        <option value="in">Return / Income In (Add to Balance)</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Company / Person *</label><input class="form-input" id="bflow_company" placeholder="Where invested/from"></div>
+      <div class="form-group"><label class="form-label">Amount (LKR) *</label><input class="form-input" id="bflow_amount" type="number" placeholder="0"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Date *</label><input class="form-input" id="bflow_date" type="date"></div>
+    <div class="form-group"><label class="form-label">Notes</label><input class="form-input" id="bflow_notes" placeholder="Optional notes..."></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('balFlowModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveBalFlow()">Log Flow</button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm Modal -->
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal modal-sm">
+    <div class="modal-header" style="justify-content:flex-end;">
+      <button class="modal-close" onclick="closeModal('confirmModal')">✕</button>
+    </div>
+    <div class="confirm-icon" id="confirmIcon">✅</div>
+    <div class="confirm-message" id="confirmMessage">Are you sure you want to mark this as completed?</div>
+    <div class="confirm-detail" id="confirmDetail"></div>
+    <div class="modal-footer" style="justify-content:center;">
+      <button class="btn btn-ghost" onclick="closeModal('confirmModal')">Cancel</button>
+      <button class="btn btn-success" id="confirmBtn" onclick="">✅ Complete</button>
+    </div>
+  </div>
+</div>
+
+<!-- CELEBRATION OVERLAY -->
+<div id="celebration-overlay">
+  <div class="celebration-box">
+    <div class="celeb-emoji">🎉</div>
+    <div class="celeb-title">TARGET ACHIEVED!</div>
+    <div class="celeb-sub" id="celebSub">Congratulations! You've reached your goal!</div>
+    <div class="celeb-target" id="celebTarget"></div>
+    <button class="btn btn-primary" style="margin-top:20px;" onclick="closeCelebration()">🎊 Awesome!</button>
+  </div>
+</div>
+
+<!-- NOTIFICATIONS -->
+<div id="notification"></div>
+
+<script>
+// ==================== UTILITIES ====================
+const $ = (id) => document.getElementById(id);
+const fmt = (n) => 'LKR ' + Number(n||0).toLocaleString('en-US', {minimumFractionDigits:2,maximumFractionDigits:2});
+const fmtShort = (n) => {
+  n = Number(n||0);
+  if(Math.abs(n)>=1000000) return 'LKR '+(n/1000000).toFixed(2)+'M';
+  if(Math.abs(n)>=100000) return 'LKR '+(n/100000).toFixed(2)+'L';
+  return 'LKR '+n.toLocaleString('en-US',{minimumFractionDigits:0});
+};
+const uid = () => '_'+Math.random().toString(36).substr(2,9);
+const today = () => new Date().toISOString().split('T')[0];
+const monthStr = (d) => { const dt=new Date(d+'T00:00:00'); return dt.toLocaleDateString('en-US',{month:'short',year:'numeric'}); };
+const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const monthsShort = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+// STORAGE
+const DB = {
+  get: (k,def=[]) => { try{ return JSON.parse(localStorage.getItem('fp_'+k))||def; }catch(e){ return def; } },
+  set: (k,v) => localStorage.setItem('fp_'+k,JSON.stringify(v)),
+  getObj: (k,def={}) => { try{ return JSON.parse(localStorage.getItem('fp_'+k))||def; }catch(e){ return def; } }
+};
+
+// ==================== NOTIFICATION ====================
+function notify(msg, type='success') {
+  const el = document.createElement('div');
+  el.className = `notif ${type}`;
+  const icons = {success:'✅',error:'❌',info:'ℹ️',warn:'⚠️'};
+  el.innerHTML = `<span class="notif-icon">${icons[type]||'ℹ️'}</span><span>${msg}</span>`;
+  $('notification').appendChild(el);
+  requestAnimationFrame(()=>{ el.classList.add('show'); });
+  setTimeout(()=>{ el.classList.remove('show'); setTimeout(()=>el.remove(),400); }, 3500);
+}
+
+// ==================== MODAL ====================
+let editMode = null;
+function openModal(id) {
+  $(id).classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeModal(id) {
+  $(id).classList.remove('open');
+  document.body.style.overflow='';
+  editMode = null;
+}
+document.addEventListener('keydown', e => { if(e.key==='Escape') document.querySelectorAll('.modal-overlay.open').forEach(m=>{ m.classList.remove('open'); document.body.style.overflow=''; }); });
+
+// ==================== PAGE NAVIGATION ====================
+const pageTitles = {
+  dashboard:'📊 Dashboard', monthly:'📅 Monthly Plan', income:'💰 Income & Investments',
+  loans:'🏦 Bank Loans', ccinstall:'💳 CC Installments', cconetime:'⏱️ CC One-Time Payments',
+  expenses:'🧾 Monthly Expenses', targets:'🎯 Targets & Savings', balance:'⚖️ Balance Tracker'
+};
+const addBtnLabels = {
+  dashboard:'', monthly:'', income:'+ Income Source', loans:'+ Add Loan',
+  ccinstall:'+ Add Installment', cconetime:'+ Add Payment', expenses:'+ Add Expense',
+  targets:'+ New Target', balance:'Set Balance'
+};
+
+function showPage(name, navEl) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  $('page-'+name).classList.add('active');
+  if(navEl) navEl.classList.add('active');
+  $('pageTitle').innerHTML = pageTitles[name]||name;
+  const tb = $('topAddBtn');
+  if(addBtnLabels[name]) { tb.style.display=''; tb.textContent=addBtnLabels[name]; }
+  else tb.style.display='none';
+  closeSidebar();
+  renderPage(name);
+}
+
+function handleTopAdd() {
+  const active = document.querySelector('.page.active');
+  if(!active) return;
+  const id = active.id.replace('page-','');
+  const modalMap = {income:'incomeModal',loans:'loanModal',ccinstall:'cciModal',
+    cconetime:'ccotModal',expenses:'expenseModal',targets:'targetModal',balance:'balSetModal'};
+  if(modalMap[id]) openModal(modalMap[id]);
+}
+
+function renderPage(name) {
+  if(name==='dashboard') renderDashboard();
+  else if(name==='monthly') renderMonthly();
+  else if(name==='income') renderIncome();
+  else if(name==='loans') renderLoans();
+  else if(name==='ccinstall') renderCCI();
+  else if(name==='cconetime') renderCCOT();
+  else if(name==='expenses') renderExpenses();
+  else if(name==='targets') renderTargets();
+  else if(name==='balance') renderBalance();
+}
+
+// ==================== SIDEBAR MOBILE ====================
+function openSidebar() { $('sidebar').classList.add('open'); $('sidebarOverlay').classList.add('show'); }
+function closeSidebar() { $('sidebar').classList.remove('open'); $('sidebarOverlay').classList.remove('show'); }
+
+// ==================== INIT ====================
+document.addEventListener('DOMContentLoaded', () => {
+  const now = new Date();
+  $('sidebarDate').textContent = now.toLocaleDateString('en-US',{weekday:'short',month:'long',day:'numeric',year:'numeric'});
+  $('currentMonthBadge').textContent = months[now.getMonth()]+' '+now.getFullYear();
+
+  // Populate year selects
+  const curYear = now.getFullYear();
+  ['dashChartYear','mpYear'].forEach(id => {
+    const el = $(id);
+    if(!el) return;
+    for(let y=curYear-1;y<=curYear+3;y++) {
+      const opt = document.createElement('option');
+      opt.value=y; opt.textContent=y;
+      if(y===curYear) opt.selected=true;
+      el.appendChild(opt);
+    }
+  });
+
+  // Set today's date on forms
+  ['ccot_date','exp_month','sav_date','bflow_date','bal_date'].forEach(id => {
+    const el = $(id);
+    if(!el) return;
+    if(id==='exp_month') el.value = now.toISOString().substr(0,7);
+    else el.value = today();
+  });
+
+  renderPage('dashboard');
+  updateCCOTBadge();
+});
+
+// ==================== CALCULATIONS ====================
+function calcIncomeMonthly() {
+  const amt = parseFloat($('inc_amount').value)||0;
+  const rate = parseFloat($('inc_rate').value)||0;
+  const freq = $('inc_freq').value;
+  let monthly = 0;
+  if(freq==='monthly') monthly = amt * rate / 100 / 12;
+  else if(freq==='annual') monthly = amt * rate / 100;
+  else if(freq==='quarterly') monthly = amt * rate / 100 / 4;
+  $('inc_calc').textContent = monthly>0 ? `→ Calculated ${freq==='annual'?'annual':'monthly'} return: LKR ${monthly.toLocaleString('en-US',{minimumFractionDigits:2})}` : '';
+}
+
+function calcLoan() {
+  const amt = parseFloat($('loan_amount').value)||0;
+  const rate = parseFloat($('loan_rate').value)||0;
+  const dur = parseInt($('loan_duration').value)||0;
+  if(amt>0 && dur>0) {
+    let monthly;
+    if(rate===0) monthly = amt/dur;
+    else {
+      const r = rate/100/12;
+      monthly = amt * r * Math.pow(1+r,dur) / (Math.pow(1+r,dur)-1);
+    }
+    $('loan_calc').textContent = `→ Estimated monthly payment: LKR ${monthly.toLocaleString('en-US',{minimumFractionDigits:2})} | Total: LKR ${(monthly*dur).toLocaleString('en-US',{minimumFractionDigits:2})}`;
+    if(!$('loan_monthly').value) $('loan_monthly').placeholder = Math.round(monthly).toLocaleString();
+  } else $('loan_calc').textContent='';
+}
+
+function calcCCI() {
+  const total = parseFloat($('cci_total').value)||0;
+  const rate = parseFloat($('cci_rate').value)||0;
+  const dur = parseInt($('cci_duration').value)||0;
+  if(total>0 && dur>0) {
+    let monthly;
+    if(rate===0) monthly = total/dur;
+    else {
+      const r = rate/100/12;
+      monthly = total * r * Math.pow(1+r,dur) / (Math.pow(1+r,dur)-1);
+    }
+    $('cci_calc').textContent = `→ Monthly installment: LKR ${monthly.toLocaleString('en-US',{minimumFractionDigits:2})} | Total payable: LKR ${(monthly*dur).toLocaleString('en-US',{minimumFractionDigits:2})}`;
+  } else $('cci_calc').textContent='';
+}
+
+// ==================== INCOME ====================
+let incomeSortKey='name', incomeSortDir=1;
+function sortIncome(key, btn) {
+  if(incomeSortKey===key) incomeSortDir*=-1; else { incomeSortKey=key; incomeSortDir=1; }
+  document.querySelectorAll('#page-income .sort-btn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  renderIncome();
+}
+
+function saveIncome() {
+  const name = $('inc_name').value.trim();
+  const company = $('inc_company').value.trim();
+  const amount = parseFloat($('inc_amount').value)||0;
+  const rate = parseFloat($('inc_rate').value)||0;
+  if(!name||!company||!amount||!rate) { notify('Please fill required fields','error'); return; }
+  const freq = $('inc_freq').value;
+  let calc = 0;
+  if(freq==='monthly') calc = amount*rate/100/12;
+  else if(freq==='annual') calc = amount*rate/100;
+  else if(freq==='quarterly') calc = amount*rate/100/4;
+  const override = parseFloat($('inc_override').value)||0;
+  const sources = DB.get('income');
+  const record = {
+    id: editMode||uid(), name, company, amount, rate,
+    start: $('inc_start').value, end: $('inc_end').value,
+    freq, day: parseInt($('inc_day').value)||15,
+    monthly: override||calc, notes: $('inc_notes').value
+  };
+  if(editMode) {
+    const idx = sources.findIndex(s=>s.id===editMode);
+    if(idx>-1) sources[idx]=record;
+  } else sources.push(record);
+  DB.set('income',sources);
+  closeModal('incomeModal');
+  clearIncomeForm();
+  renderIncome();
+  renderDashboard();
+  notify(editMode?'Income source updated!':'Income source added!');
+}
+
+function clearIncomeForm() {
+  ['inc_name','inc_company','inc_amount','inc_rate','inc_start','inc_end','inc_override','inc_notes'].forEach(id=>$(id).value='');
+  $('inc_freq').value='monthly'; $('inc_day').value=''; $('inc_calc').textContent='';
+  $('incomeModalTitle').textContent='Add Income / Investment Source';
+}
+
+function editIncome(id) {
+  const sources = DB.get('income');
+  const s = sources.find(x=>x.id===id); if(!s) return;
+  editMode=id; $('incomeModalTitle').textContent='Edit Income Source';
+  $('inc_name').value=s.name; $('inc_company').value=s.company; $('inc_amount').value=s.amount;
+  $('inc_rate').value=s.rate; $('inc_start').value=s.start; $('inc_end').value=s.end||'';
+  $('inc_freq').value=s.freq; $('inc_day').value=s.day; $('inc_override').value=s.monthly||'';
+  $('inc_notes').value=s.notes||'';
+  calcIncomeMonthly();
+  openModal('incomeModal');
+}
+
+function deleteIncome(id) {
+  showConfirm('🗑️','Delete Income Source?','This action cannot be undone.','btn-danger','🗑️ Delete',()=>{
+    const sources = DB.get('income').filter(s=>s.id!==id);
+    DB.set('income',sources); renderIncome(); renderDashboard(); notify('Income source deleted','info');
+  });
+}
+
+function renderIncome() {
+  let sources = DB.get('income');
+  sources.sort((a,b)=>{
+    if(incomeSortKey==='name') return incomeSortDir*(a.name.localeCompare(b.name));
+    if(incomeSortKey==='amount') return incomeSortDir*(b.amount-a.amount);
+    if(incomeSortKey==='rate') return incomeSortDir*(b.rate-a.rate);
+    if(incomeSortKey==='date') return incomeSortDir*(new Date(a.start)-new Date(b.start));
+    return 0;
+  });
+  const el = $('incomeList');
+  if(!sources.length) { el.innerHTML=`<div class="empty-state"><div class="empty-icon">💰</div><div class="empty-title">No income sources yet</div><div class="empty-sub">Add your investment sources and income streams</div></div>`; return; }
+  const totalMonthly = sources.reduce((s,x)=>s+x.monthly,0);
+  const totalInvested = sources.reduce((s,x)=>s+x.amount,0);
+  el.innerHTML = `<div class="grid-3" style="margin-bottom:18px;">
+    <div class="stat-card green"><div class="stat-label">Total Monthly Income</div><div class="stat-value">${fmtShort(totalMonthly)}</div><div class="stat-meta">${fmt(totalMonthly)}</div></div>
+    <div class="stat-card gold"><div class="stat-label">Total Invested Capital</div><div class="stat-value">${fmtShort(totalInvested)}</div><div class="stat-meta">${fmt(totalInvested)}</div></div>
+    <div class="stat-card blue"><div class="stat-label">Sources</div><div class="stat-value">${sources.length}</div><div class="stat-meta">Active investment sources</div></div>
+  </div>` + sources.map(s => {
+    const now = new Date(); const end = s.end ? new Date(s.end) : null;
+    const active = !end || end > now;
+    const freqLabel = {monthly:'Monthly',annual:'Annual',quarterly:'Quarterly'}[s.freq]||s.freq;
+    const daysLeft = end ? Math.ceil((end-now)/(1000*86400)) : null;
+    return `<div class="income-card">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;">
+        <div>
+          <div style="font-size:15px;font-weight:700;">${s.name}</div>
+          <div style="font-size:12px;color:var(--text3);margin-top:2px;">🏛️ ${s.company} · Invested ${s.start} ${s.end?'→ '+s.end:''}</div>
+        </div>
+        <div style="text-align:right;display:flex;gap:10px;align-items:flex-start;">
+          <div>
+            <div style="font-size:22px;font-weight:800;font-family:var(--mono);color:var(--green);">${fmt(s.monthly)}</div>
+            <div style="font-size:11px;color:var(--text3);margin-top:2px;">${freqLabel} · Day ${s.day}</div>
+          </div>
+          <div class="action-btns">
+            <button class="icon-btn edit" onclick="editIncome('${s.id}')" title="Edit">✏️</button>
+            <button class="icon-btn del" onclick="deleteIncome('${s.id}')" title="Delete">🗑️</button>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;gap:20px;flex-wrap:wrap;">
+        <div class="ld"><div class="ld-l">INVESTED</div><div class="ld-v" style="color:var(--accent);">${fmt(s.amount)}</div></div>
+        <div class="ld"><div class="ld-l">ANNUAL RATE</div><div class="ld-v">${s.rate}%</div></div>
+        <div class="ld"><div class="ld-l">FREQUENCY</div><div class="ld-v">${freqLabel}</div></div>
+        <div class="ld"><div class="ld-l">STATUS</div><div class="ld-v">${active?'<span class="badge badge-green">● Active</span>':'<span class="badge badge-gray">Ended</span>'}</div></div>
+        ${daysLeft!==null?`<div class="ld"><div class="ld-l">DAYS LEFT</div><div class="ld-v ${daysLeft<30?'color:var(--red)':''}">${daysLeft>0?daysLeft+' days':'Ended'}</div></div>`:''}
+      </div>
+      ${s.notes?`<div style="margin-top:10px;font-size:12px;color:var(--text3);padding:8px 12px;background:var(--bg2);border-radius:6px;">${s.notes}</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+// ==================== LOANS ====================
+let loanSortKey='name', loanSortDir=1;
+function sortLoans(key, btn) {
+  if(loanSortKey===key) loanSortDir*=-1; else { loanSortKey=key; loanSortDir=1; }
+  document.querySelectorAll('#page-loans .sort-btn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  renderLoans();
+}
+
+function saveLoan() {
+  const name=$('loan_name').value.trim(), bank=$('loan_bank').value, amount=parseFloat($('loan_amount').value)||0,
+    rate=parseFloat($('loan_rate').value)||0, dur=parseInt($('loan_duration').value)||0, start=$('loan_start').value;
+  if(!name||!bank||!amount||!dur||!start) { notify('Please fill required fields','error'); return; }
+  let calc;
+  if(rate===0) calc=amount/dur;
+  else { const r=rate/100/12; calc=amount*r*Math.pow(1+r,dur)/(Math.pow(1+r,dur)-1); }
+  const monthly = parseFloat($('loan_monthly').value)||Math.round(calc);
+  const loans = DB.get('loans');
+  const record = { id:editMode||uid(), name, bank, amount, rate, duration:dur, monthly, start, purpose:$('loan_purpose').value, notes:$('loan_notes').value };
+  if(editMode) { const idx=loans.findIndex(l=>l.id===editMode); if(idx>-1) loans[idx]=record; }
+  else loans.push(record);
+  DB.set('loans',loans);
+  closeModal('loanModal');
+  clearLoanForm();
+  renderLoans(); renderDashboard();
+  notify(editMode?'Loan updated!':'Loan added!');
+}
+
+function clearLoanForm() {
+  ['loan_name','loan_amount','loan_rate','loan_duration','loan_monthly','loan_start','loan_purpose','loan_notes'].forEach(id=>$(id).value='');
+  $('loan_bank').value=''; $('loan_calc').textContent='';
+  $('loanModalTitle').textContent='Add Bank Loan';
+}
+
+function editLoan(id) {
+  const loans=DB.get('loans'); const l=loans.find(x=>x.id===id); if(!l) return;
+  editMode=id; $('loanModalTitle').textContent='Edit Loan';
+  $('loan_name').value=l.name; $('loan_bank').value=l.bank; $('loan_amount').value=l.amount;
+  $('loan_rate').value=l.rate; $('loan_duration').value=l.duration; $('loan_monthly').value=l.monthly;
+  $('loan_start').value=l.start; $('loan_purpose').value=l.purpose||''; $('loan_notes').value=l.notes||'';
+  openModal('loanModal');
+}
+
+function deleteLoan(id) {
+  showConfirm('🗑️','Delete Loan?','All associated monthly payments will no longer be tracked.','btn-danger','🗑️ Delete',()=>{
+    DB.set('loans',DB.get('loans').filter(l=>l.id!==id));
+    renderLoans(); renderDashboard(); notify('Loan deleted','info');
+  });
+}
+
+function getLoanEndDate(loan) {
+  const start = new Date(loan.start+'T00:00:00');
+  start.setMonth(start.getMonth()+loan.duration);
+  return start;
+}
+
+function getLoanProgress(loan) {
+  const start=new Date(loan.start+'T00:00:00'), end=getLoanEndDate(loan), now=new Date();
+  if(now<start) return {paid:0,total:loan.duration,pct:0};
+  const paid=Math.min(Math.floor((now-start)/(1000*60*60*24*30.44)),loan.duration);
+  return {paid,total:loan.duration,pct:Math.round(paid/loan.duration*100)};
+}
+
+function renderLoans() {
+  let loans = DB.get('loans');
+  loans.sort((a,b)=>{
+    if(loanSortKey==='name') return loanSortDir*a.name.localeCompare(b.name);
+    if(loanSortKey==='amount') return loanSortDir*(b.amount-a.amount);
+    if(loanSortKey==='monthly') return loanSortDir*(b.monthly-a.monthly);
+    return 0;
+  });
+  const el=$('loansList');
+  if(!loans.length) { el.innerHTML=`<div class="empty-state"><div class="empty-icon">🏦</div><div class="empty-title">No loans added yet</div><div class="empty-sub">Add your bank loans to track monthly payments</div></div>`; return; }
+  const totalMonthly=loans.reduce((s,l)=>s+l.monthly,0);
+  const totalAmount=loans.reduce((s,l)=>s+l.amount,0);
+  el.innerHTML=`<div class="grid-3" style="margin-bottom:18px;">
+    <div class="stat-card red"><div class="stat-label">Total Monthly Payments</div><div class="stat-value">${fmtShort(totalMonthly)}</div><div class="stat-meta">${fmt(totalMonthly)}</div></div>
+    <div class="stat-card blue"><div class="stat-label">Total Loan Principal</div><div class="stat-value">${fmtShort(totalAmount)}</div></div>
+    <div class="stat-card purple"><div class="stat-label">Active Loans</div><div class="stat-value">${loans.length}</div></div>
+  </div>` + loans.map(l => {
+    const prog=getLoanProgress(l);
+    const endDate=getLoanEndDate(l);
+    const isActive=endDate>new Date();
+    const paidAmount=prog.paid*l.monthly;
+    const remainAmount=l.amount-paidAmount;
+    return `<div class="loan-card">
+      <div class="loan-top">
+        <div>
+          <div class="loan-name">${l.name}</div>
+          <div class="loan-bank">🏦 ${l.bank} ${l.purpose?'· '+l.purpose:''}</div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:10px;">
+          <div style="text-align:right;">
+            <div class="loan-monthly">${fmt(l.monthly)}<span style="font-size:12px;font-weight:400;color:var(--text3);">/mo</span></div>
+            <div style="font-size:11px;color:var(--text3);">${isActive?'<span class="badge badge-green">Active</span>':'<span class="badge badge-gray">Completed</span>'}</div>
+          </div>
+          <div class="action-btns">
+            <button class="icon-btn edit" onclick="editLoan('${l.id}')">✏️</button>
+            <button class="icon-btn del" onclick="deleteLoan('${l.id}')">🗑️</button>
+          </div>
+        </div>
+      </div>
+      <div class="progress-bar" style="margin-bottom:8px;"><div class="progress-fill ${prog.pct>80?'red':prog.pct>50?'gold':'green'}" style="width:${prog.pct}%"></div></div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-bottom:12px;">
+        <span>${prog.paid} of ${prog.total} installments paid (${prog.pct}%)</span>
+        <span>Ends ${endDate.toLocaleDateString('en-US',{month:'short',year:'numeric'})}</span>
+      </div>
+      <div class="loan-details">
+        <div class="ld"><div class="ld-l">PRINCIPAL</div><div class="ld-v">${fmt(l.amount)}</div></div>
+        <div class="ld"><div class="ld-l">INTEREST</div><div class="ld-v">${l.rate}% p.a.</div></div>
+        <div class="ld"><div class="ld-l">DURATION</div><div class="ld-v">${l.duration} months</div></div>
+        <div class="ld"><div class="ld-l">STARTED</div><div class="ld-v">${l.start}</div></div>
+        <div class="ld"><div class="ld-l">PAID AMOUNT</div><div class="ld-v" style="color:var(--green);">${fmtShort(paidAmount)}</div></div>
+        <div class="ld"><div class="ld-l">REMAINING</div><div class="ld-v" style="color:var(--red);">${fmtShort(Math.max(0,remainAmount))}</div></div>
+      </div>
+      ${l.notes?`<div style="margin-top:10px;font-size:12px;color:var(--text3);padding:8px 12px;background:var(--bg2);border-radius:6px;">${l.notes}</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+// ==================== CC INSTALLMENTS ====================
+let cciSortKey='product', cciSortDir=1;
+function sortCCI(key, btn) {
+  if(cciSortKey===key) cciSortDir*=-1; else { cciSortKey=key; cciSortDir=1; }
+  if(btn) { document.querySelectorAll('#page-ccinstall .sort-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); }
+  renderCCI();
+}
+
+function saveCCI() {
+  const product=$('cci_product').value.trim(), bank=$('cci_bank').value, total=parseFloat($('cci_total').value)||0,
+    dur=parseInt($('cci_duration').value)||0, purchaseDate=$('cci_date').value;
+  if(!product||!bank||!total||!dur||!purchaseDate) { notify('Please fill required fields','error'); return; }
+  const rate=parseFloat($('cci_rate').value)||0;
+  let calc;
+  if(rate===0) calc=total/dur;
+  else { const r=rate/100/12; calc=total*r*Math.pow(1+r,dur)/(Math.pow(1+r,dur)-1); }
+  const monthly=parseFloat($('cci_monthly').value)||Math.round(calc);
+  const items=DB.get('ccinstall');
+  const record={id:editMode||uid(),product,buyer:$('cci_buyer').value||'Self',bank,total,rate,duration:dur,monthly,date:purchaseDate,notes:$('cci_notes').value,completed:false};
+  if(editMode){const idx=items.findIndex(i=>i.id===editMode);if(idx>-1)items[idx]=record;}
+  else items.push(record);
+  DB.set('ccinstall',items);
+  closeModal('cciModal');
+  clearCCIForm();
+  renderCCI(); renderDashboard();
+  notify(editMode?'Installment updated!':'Installment added!');
+}
+
+function clearCCIForm(){
+  ['cci_product','cci_buyer','cci_total','cci_rate','cci_duration','cci_monthly','cci_date','cci_notes'].forEach(id=>$(id).value='');
+  $('cci_bank').value=''; $('cci_calc').textContent='';
+  $('cciModalTitle').textContent='Add Credit Card Installment';
+}
+
+function editCCI(id){
+  const items=DB.get('ccinstall'); const item=items.find(x=>x.id===id); if(!item) return;
+  editMode=id; $('cciModalTitle').textContent='Edit Installment';
+  $('cci_product').value=item.product; $('cci_buyer').value=item.buyer; $('cci_bank').value=item.bank;
+  $('cci_total').value=item.total; $('cci_rate').value=item.rate; $('cci_duration').value=item.duration;
+  $('cci_monthly').value=item.monthly; $('cci_date').value=item.date; $('cci_notes').value=item.notes||'';
+  openModal('cciModal');
+}
+
+function deleteCCI(id){
+  showConfirm('🗑️','Delete Installment?','This installment will no longer appear in monthly expenses.','btn-danger','🗑️ Delete',()=>{
+    DB.set('ccinstall',DB.get('ccinstall').filter(i=>i.id!==id));
+    renderCCI(); renderDashboard(); notify('Installment deleted','info');
+  });
+}
+
+function markCCIComplete(id){
+  showConfirm('✅','Mark as Completed?','Mark this installment plan as fully paid?','btn-success','✅ Complete',()=>{
+    const items=DB.get('ccinstall'); const idx=items.findIndex(i=>i.id===id);
+    if(idx>-1){items[idx].completed=true; DB.set('ccinstall',items); renderCCI(); notify('Installment marked complete!'); }
+  });
+}
+
+function getCCIProgress(item){
+  const start=new Date(item.date+'T00:00:00'); const now=new Date();
+  if(now<start) return {paid:0,total:item.duration,pct:0};
+  const paid=Math.min(Math.floor((now-start)/(1000*60*60*24*30.44)),item.duration);
+  return {paid,total:item.duration,pct:Math.round(paid/item.duration*100)};
+}
+
+function renderCCI(){
+  let items=DB.get('ccinstall');
+  items.sort((a,b)=>{
+    if(cciSortKey==='product') return cciSortDir*a.product.localeCompare(b.product);
+    if(cciSortKey==='bank') return cciSortDir*a.bank.localeCompare(b.bank);
+    if(cciSortKey==='monthly') return cciSortDir*(b.monthly-a.monthly);
+    if(cciSortKey==='total') return cciSortDir*(b.total-a.total);
+    if(cciSortKey==='date') return cciSortDir*(new Date(a.date)-new Date(b.date));
+    return 0;
+  });
+  const activeItems=items.filter(i=>!i.completed);
+  const totalMonthly=activeItems.reduce((s,i)=>s+i.monthly,0);
+  const totalValue=activeItems.reduce((s,i)=>s+i.total,0);
+  $('cciStats').innerHTML=`
+    <div class="stat-card red"><div class="stat-label">Monthly CC Payments</div><div class="stat-value">${fmtShort(totalMonthly)}</div><div class="stat-meta">${fmt(totalMonthly)}</div></div>
+    <div class="stat-card gold"><div class="stat-label">Total CC Financed</div><div class="stat-value">${fmtShort(totalValue)}</div></div>
+    <div class="stat-card blue"><div class="stat-label">Active Plans</div><div class="stat-value">${activeItems.length}</div></div>
+    <div class="stat-card gray" style="background:var(--card);border:1px solid var(--border)"><div class="stat-label" style="color:var(--text3)">Completed Plans</div><div class="stat-value" style="color:var(--text2);">${items.length-activeItems.length}</div></div>
+  `;
+  const tbody=$('cciTableBody');
+  if(!items.length){ tbody.innerHTML=`<tr><td colspan="11"><div class="empty-state"><div class="empty-icon">💳</div><div class="empty-title">No installments yet</div></div></td></tr>`; return; }
+  tbody.innerHTML=items.map(item=>{
+    const prog=getCCIProgress(item);
+    const endDate=new Date(item.date+'T00:00:00'); endDate.setMonth(endDate.getMonth()+item.duration);
+    const active=endDate>new Date()&&!item.completed;
+    return `<tr class="${item.completed?'completed-row':''}">
+      <td><div style="font-weight:600;">${item.product}</div>${item.notes?`<div class="td-muted">${item.notes}</div>`:''}</td>
+      <td>${item.buyer}</td>
+      <td><span class="badge badge-blue">${item.bank}</span></td>
+      <td class="td-gold">${fmt(item.total)}</td>
+      <td class="td-mono">${item.rate>0?item.rate+'%':'0% (Free)'}</td>
+      <td class="td-red">${fmt(item.monthly)}</td>
+      <td class="td-mono">${item.duration}M</td>
+      <td class="td-muted">${item.date}</td>
+      <td style="min-width:120px;">
+        <div class="progress-bar" style="margin-bottom:4px;"><div class="progress-fill ${prog.pct>80?'red':prog.pct>50?'gold':'green'}" style="width:${Math.min(100,prog.pct)}%"></div></div>
+        <div style="font-size:10px;color:var(--text3);">${prog.paid}/${prog.total} (${prog.pct}%)</div>
+      </td>
+      <td>${item.completed?'<span class="badge badge-gray">Done</span>':active?'<span class="badge badge-green">Active</span>':'<span class="badge badge-red">Overdue</span>'}</td>
+      <td>
+        <div class="action-btns">
+          ${!item.completed?`<button class="icon-btn check" onclick="markCCIComplete('${item.id}')" title="Mark Complete">✅</button>`:''}
+          <button class="icon-btn edit" onclick="editCCI('${item.id}')" title="Edit">✏️</button>
+          <button class="icon-btn del" onclick="deleteCCI('${item.id}')" title="Delete">🗑️</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+// ==================== CC ONE-TIME ====================
+let ccotSortKey='days', ccotSortDir=1;
+function sortCCOT(key,btn){
+  if(ccotSortKey===key) ccotSortDir*=-1; else { ccotSortKey=key; ccotSortDir=1; }
+  if(btn){ document.querySelectorAll('#page-cconetime .sort-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); }
+  renderCCOT();
+}
+
+function saveCCOT(){
+  const desc=$('ccot_desc').value.trim(), bank=$('ccot_bank').value, amount=parseFloat($('ccot_amount').value)||0, date=$('ccot_date').value;
+  if(!desc||!bank||!amount||!date) { notify('Please fill required fields','error'); return; }
+  const deadline=new Date(date+'T00:00:00'); deadline.setDate(deadline.getDate()+50);
+  const items=DB.get('cconetime');
+  const record={id:editMode||uid(),desc,bank,type:$('ccot_type').value,amount,date,deadline:deadline.toISOString().split('T')[0],notes:$('ccot_notes').value,paid:false};
+  if(editMode){const idx=items.findIndex(i=>i.id===editMode);if(idx>-1)items[idx]=record;}
+  else items.push(record);
+  DB.set('cconetime',items);
+  closeModal('ccotModal');
+  clearCCOTForm();
+  renderCCOT(); updateCCOTBadge();
+  notify(editMode?'Payment updated!':'Payment added!');
+}
+
+function clearCCOTForm(){
+  ['ccot_desc','ccot_amount','ccot_notes'].forEach(id=>$(id).value='');
+  $('ccot_bank').value=''; $('ccot_type').value='purchase';
+  $('ccot_date').value=today();
+  $('ccotModalTitle').textContent='Add CC One-Time Payment';
+}
+
+function markCCOTPaid(id){
+  showConfirm('💳','Mark as Paid?','Confirm this payment has been repaid to the bank.','btn-success','✅ Mark Paid',()=>{
+    const items=DB.get('cconetime'); const idx=items.findIndex(i=>i.id===id);
+    if(idx>-1){items[idx].paid=true; DB.set('cconetime',items); renderCCOT(); updateCCOTBadge(); notify('Payment marked as paid!'); }
+  });
+}
+
+function deleteCCOT(id){
+  showConfirm('🗑️','Delete Payment?','','btn-danger','🗑️ Delete',()=>{
+    DB.set('cconetime',DB.get('cconetime').filter(i=>i.id!==id));
+    renderCCOT(); updateCCOTBadge(); notify('Payment deleted','info');
+  });
+}
+
+function daysLeft(deadline){
+  const d=new Date(deadline+'T00:00:00'); const now=new Date();
+  now.setHours(0,0,0,0);
+  return Math.ceil((d-now)/(1000*86400));
+}
+
+function updateCCOTBadge(){
+  const items=DB.get('cconetime');
+  const urgent=items.filter(i=>!i.paid&&daysLeft(i.deadline)<=10&&daysLeft(i.deadline)>=0).length;
+  const nb=$('nb-cconetime');
+  if(urgent>0){nb.style.display='';nb.textContent=urgent;}else nb.style.display='none';
+}
+
+function renderCCOT(){
+  let items=DB.get('cconetime');
+  items.sort((a,b)=>{
+    if(ccotSortKey==='days') return ccotSortDir*(daysLeft(a.deadline)-daysLeft(b.deadline));
+    if(ccotSortKey==='amount') return ccotSortDir*(b.amount-a.amount);
+    if(ccotSortKey==='date') return ccotSortDir*(new Date(a.date)-new Date(b.date));
+    return 0;
+  });
+  const tbody=$('ccotTableBody');
+  if(!items.length){ tbody.innerHTML=`<tr><td colspan="9"><div class="empty-state"><div class="empty-icon">⏱️</div><div class="empty-title">No one-time payments</div><div class="empty-sub">Track your credit card purchases with 50-day repayment deadline</div></div></td></tr>`; return; }
+  tbody.innerHTML=items.map(item=>{
+    const dl=daysLeft(item.deadline);
+    let cdClass='safe', cdText=dl+' days';
+    if(item.paid){cdClass='done';cdText='Paid';}
+    else if(dl<0){cdClass='danger';cdText='Overdue '+Math.abs(dl)+'d';}
+    else if(dl<=10){cdClass='danger';cdText=dl+' days ⚠️';}
+    else if(dl<=20){cdClass='warn';cdText=dl+' days';}
+    const typeLabel={purchase:'Purchase',cash_advance:'Cash Advance'}[item.type]||item.type;
+    return `<tr class="${item.paid?'completed-row':''}">
+      <td><div style="font-weight:600;">${item.desc}</div>${item.notes?`<div class="td-muted">${item.notes}</div>`:''}</td>
+      <td><span class="badge badge-blue">${item.bank}</span></td>
+      <td><span class="badge badge-gray">${typeLabel}</span></td>
+      <td class="td-gold">${fmt(item.amount)}</td>
+      <td class="td-muted">${item.date}</td>
+      <td class="td-muted">${item.deadline}</td>
+      <td><span class="countdown ${cdClass}">${cdText}</span></td>
+      <td>${item.paid?'<span class="badge badge-green">✅ Paid</span>':dl<0?'<span class="badge badge-red">⚠️ Overdue</span>':'<span class="badge badge-gold">Pending</span>'}</td>
+      <td>
+        <div class="action-btns">
+          ${!item.paid?`<button class="icon-btn check" onclick="markCCOTPaid('${item.id}')" title="Mark Paid">✅</button>`:''}
+          <button class="icon-btn del" onclick="deleteCCOT('${item.id}')" title="Delete">🗑️</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+// ==================== EXPENSES ====================
+let expSortKey='date', expSortDir=-1;
+function sortExp(key,btn){
+  if(expSortKey===key) expSortDir*=-1; else { expSortKey=key; expSortDir=1; }
+  if(btn){ document.querySelectorAll('#page-expenses .sort-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); }
+  renderExpenses();
+}
+
+function saveExpense(){
+  const desc=$('exp_desc').value.trim(), cat=$('exp_cat').value, amount=parseFloat($('exp_amount').value)||0, month=$('exp_month').value;
+  if(!desc||!amount||!month) { notify('Please fill required fields','error'); return; }
+  const items=DB.get('expenses');
+  const record={id:editMode||uid(),desc,cat,amount,month,recurring:$('exp_recurring').value==='1',notes:$('exp_notes').value,completed:false};
+  if(editMode){const idx=items.findIndex(i=>i.id===editMode);if(idx>-1)items[idx]=record;}
+  else items.push(record);
+  DB.set('expenses',items);
+  closeModal('expenseModal');
+  renderExpenses(); renderDashboard();
+  notify(editMode?'Expense updated!':'Expense added!');
+  editMode=null;
+}
+
+function deleteExpense(id){
+  showConfirm('🗑️','Delete Expense?','','btn-danger','🗑️ Delete',()=>{
+    DB.set('expenses',DB.get('expenses').filter(i=>i.id!==id));
+    renderExpenses(); renderDashboard(); notify('Expense deleted','info');
+  });
+}
+
+function markExpenseComplete(id){
+  showConfirm('✅','Mark Expense Complete?','Confirm this expense has been paid.','btn-success','✅ Complete',()=>{
+    const items=DB.get('expenses'); const idx=items.findIndex(i=>i.id===id);
+    if(idx>-1){items[idx].completed=true; DB.set('expenses',items); renderExpenses(); notify('Expense marked complete!'); }
+  });
+}
+
+function renderExpenses(){
+  let items=DB.get('expenses');
+  // populate month filter
+  const allMonths=[...new Set(items.map(i=>i.month))].sort().reverse();
+  const sel=$('expMonth');
+  const curVal=sel.value;
+  sel.innerHTML='<option value="">All Months</option>'+allMonths.map(m=>`<option value="${m}" ${m===curVal?'selected':''}>${monthStr(m+'-01')}</option>`).join('');
+
+  const filterMonth=sel.value;
+  let filtered=filterMonth?items.filter(i=>i.month===filterMonth):items;
+
+  filtered.sort((a,b)=>{
+    if(expSortKey==='date') return expSortDir*a.month.localeCompare(b.month);
+    if(expSortKey==='amount') return expSortDir*(b.amount-a.amount);
+    if(expSortKey==='category') return expSortDir*a.cat.localeCompare(b.cat);
+    return 0;
+  });
+
+  const totalAmt=filtered.reduce((s,i)=>s+i.amount,0);
+  const catMap={};
+  filtered.forEach(i=>{ catMap[i.cat]=(catMap[i.cat]||0)+i.amount; });
+  const topCat=Object.entries(catMap).sort((a,b)=>b[1]-a[1])[0]||['—',0];
+
+  $('expStats').innerHTML=`
+    <div class="stat-card red"><div class="stat-label">Total Expenses</div><div class="stat-value">${fmtShort(totalAmt)}</div><div class="stat-meta">${fmt(totalAmt)}</div></div>
+    <div class="stat-card blue"><div class="stat-label">Expense Count</div><div class="stat-value">${filtered.length}</div></div>
+    <div class="stat-card gold"><div class="stat-label">Top Category</div><div class="stat-value" style="font-size:16px;">${topCat[0]}</div><div class="stat-meta">${fmtShort(topCat[1])}</div></div>
+    <div class="stat-card green"><div class="stat-label">Completed</div><div class="stat-value">${filtered.filter(i=>i.completed).length}</div><div class="stat-meta">of ${filtered.length} expenses</div></div>
+  `;
+
+  const tbody=$('expTableBody');
+  if(!filtered.length){ tbody.innerHTML=`<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">🧾</div><div class="empty-title">No expenses</div></div></td></tr>`; return; }
+  const catColors={Food:'badge-green',Transport:'badge-blue',Utilities:'badge-gold',Medical:'badge-red',Education:'badge-purple',Entertainment:'badge-cyan',Clothing:'badge-gray',Other:'badge-gray'};
+  tbody.innerHTML=filtered.map(item=>`<tr class="${item.completed?'completed-row':''}">
+    <td><div style="font-weight:600;">${item.desc}</div>${item.notes?`<div class="td-muted">${item.notes}</div>`:''}</td>
+    <td><span class="badge ${catColors[item.cat]||'badge-gray'}">${item.cat}</span></td>
+    <td class="td-muted">${monthStr(item.month+'-01')}</td>
+    <td class="td-red">${fmt(item.amount)}</td>
+    <td>${item.recurring?'<span class="badge badge-blue">🔄 Monthly</span>':'<span class="badge badge-gray">Once</span>'}</td>
+    <td>${item.completed?'<span class="badge badge-green">✅ Done</span>':'<span class="badge badge-gold">Pending</span>'}</td>
+    <td>
+      <div class="action-btns">
+        ${!item.completed?`<button class="icon-btn check" onclick="markExpenseComplete('${item.id}')" title="Mark Complete">✅</button>`:''}
+        <button class="icon-btn del" onclick="deleteExpense('${item.id}')" title="Delete">🗑️</button>
+      </div>
+    </td>
+  </tr>`).join('');
+}
+
+// ==================== TARGETS ====================
+function saveTarget(){
+  const name=$('tgt_name').value.trim(), amount=parseFloat($('tgt_amount').value)||0,
+    start=$('tgt_start').value, end=$('tgt_end').value;
+  if(!name||!amount||!start||!end) { notify('Please fill required fields','error'); return; }
+  const targets=DB.get('targets');
+  const record={id:editMode||uid(),name,amount,start,end,notes:$('tgt_notes').value,savings:[]};
+  if(editMode){const idx=targets.findIndex(t=>t.id===editMode);if(idx>-1){record.savings=targets[idx].savings;targets[idx]=record;}}
+  else targets.push(record);
+  DB.set('targets',targets);
+  closeModal('targetModal');
+  ['tgt_name','tgt_amount','tgt_start','tgt_end','tgt_notes'].forEach(id=>$(id).value='');
+  renderTargets(); notify('Target created!');
+}
+
+function saveSaving(){
+  const tid=$('sav_target').value, amount=parseFloat($('sav_amount').value)||0, date=$('sav_date').value;
+  if(!tid||!amount||!date) { notify('Please fill required fields','error'); return; }
+  const targets=DB.get('targets'); const idx=targets.findIndex(t=>t.id===tid);
+  if(idx<0) { notify('Target not found','error'); return; }
+  targets[idx].savings.push({id:uid(),amount,date,note:$('sav_note').value});
+  DB.set('targets',targets);
+  closeModal('savingModal');
+  ['sav_amount','sav_note'].forEach(id=>$(id).value='');
+  $('sav_date').value=today();
+  const savedTotal=targets[idx].savings.reduce((s,x)=>s+x.amount,0);
+  renderTargets();
+  if(savedTotal>=targets[idx].amount) { showCelebration(targets[idx]); }
+  else notify('Saving added! 💚');
+}
+
+function deleteTarget(id){
+  showConfirm('🗑️','Delete Target?','All savings entries for this target will also be deleted.','btn-danger','🗑️ Delete',()=>{
+    DB.set('targets',DB.get('targets').filter(t=>t.id!==id));
+    renderTargets(); notify('Target deleted','info');
+  });
+}
+
+function deleteSaving(tid,sid){
+  const targets=DB.get('targets'); const idx=targets.findIndex(t=>t.id===tid);
+  if(idx<0) return;
+  targets[idx].savings=targets[idx].savings.filter(s=>s.id!==sid);
+  DB.set('targets',targets); renderTargets(); notify('Saving entry removed','info');
+}
+
+function showCelebration(target){
+  $('celebSub').textContent=`You've achieved your target: "${target.name}"!`;
+  $('celebTarget').textContent=fmt(target.amount);
+  const overlay=$('celebration-overlay');
+  overlay.classList.add('show');
+  // Confetti
+  const colors=['#f5a623','#ffd166','#ef476f','#06d6a0','#118ab2','#8338ec'];
+  for(let i=0;i<80;i++){
+    const c=document.createElement('div');
+    c.className='confetti';
+    c.style.cssText=`left:${Math.random()*100}vw;top:-10px;width:${6+Math.random()*8}px;height:${6+Math.random()*8}px;background:${colors[Math.floor(Math.random()*colors.length)]};animation:confettiFall ${2+Math.random()*3}s ${Math.random()*2}s linear forwards;border-radius:${Math.random()>0.5?'50%':'2px'};`;
+    overlay.appendChild(c);
+  }
+}
+function closeCelebration(){
+  const overlay=$('celebration-overlay');
+  overlay.classList.remove('show');
+  overlay.querySelectorAll('.confetti').forEach(c=>c.remove());
+}
+
+function renderTargets(){
+  // Populate saving target select
+  const targets=DB.get('targets');
+  $('sav_target').innerHTML=targets.map(t=>`<option value="${t.id}">${t.name}</option>`).join('');
+
+  const el=$('targetsList');
+  if(!targets.length){ el.innerHTML=`<div class="empty-state"><div class="empty-icon">🎯</div><div class="empty-title">No targets yet</div><div class="empty-sub">Create a savings target to track your progress</div></div>`; return; }
+
+  el.innerHTML=targets.map(t=>{
+    const saved=t.savings.reduce((s,x)=>s+x.amount,0);
+    const remaining=Math.max(0,t.amount-saved);
+    const pct=Math.min(100,Math.round(saved/t.amount*100));
+    const now=new Date(); const end=new Date(t.end+'T00:00:00');
+    const daysRem=Math.ceil((end-now)/(1000*86400));
+    const completed=saved>=t.amount;
+    return `<div class="target-card ${completed?'border-color:rgba(16,185,129,.4);':''}">
+      <div class="target-top">
+        <div>
+          <div class="target-name">${completed?'🏆 ':''} ${t.name}</div>
+          <div class="target-dates">📅 ${t.start} → ${t.end} ${daysRem>0?`· ${daysRem} days remaining`:'· Ended'}</div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:flex-start;">
+          <div class="target-amounts">
+            <div class="target-big">${fmtShort(t.amount)}</div>
+            <div style="font-size:11px;color:var(--text3);margin-top:2px;">Target · ${fmt(t.amount)}</div>
+            <div class="target-remain">${fmtShort(remaining)}</div>
+            <div style="font-size:11px;color:var(--text3);">Remaining</div>
+          </div>
+          <div class="action-btns" style="margin-top:4px;">
+            <button class="icon-btn del" onclick="deleteTarget('${t.id}')">🗑️</button>
+          </div>
+        </div>
+      </div>
+      <div class="progress-bar" style="margin-bottom:8px;height:10px;"><div class="progress-fill ${completed?'green':pct>60?'gold':'blue'}" style="width:${pct}%"></div></div>
+      <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text3);margin-bottom:16px;">
+        <span>${fmtShort(saved)} saved (${pct}%)</span>
+        <span>${completed?'🎉 COMPLETED!':fmtShort(remaining)+' to go'}</span>
+      </div>
+      <div class="target-stats">
+        <div class="ts-item"><div class="ts-label">TOTAL TARGET</div><div class="ts-value" style="color:var(--accent);">${fmt(t.amount)}</div></div>
+        <div class="ts-item"><div class="ts-label">TOTAL SAVED</div><div class="ts-value" style="color:var(--green);">${fmt(saved)}</div></div>
+        <div class="ts-item"><div class="ts-label">ENTRIES</div><div class="ts-value">${t.savings.length}</div></div>
+        <div class="ts-item"><div class="ts-label">PROGRESS</div><div class="ts-value">${pct}%</div></div>
+      </div>
+      ${t.savings.length>0?`
+      <div style="margin-top:16px;">
+        <div style="font-size:12px;font-weight:700;color:var(--text3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px;">Savings History</div>
+        ${t.savings.slice().reverse().slice(0,5).map(s=>`
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--bg2);border-radius:6px;margin-bottom:4px;font-size:12px;">
+            <span style="color:var(--text2);">${s.date} ${s.note?'· '+s.note:''}</span>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="color:var(--green);font-family:var(--mono);font-weight:700;">+${fmt(s.amount)}</span>
+              <button class="icon-btn del" onclick="deleteSaving('${t.id}','${s.id}')" style="width:22px;height:22px;font-size:11px;">✕</button>
+            </div>
+          </div>`).join('')}
+        ${t.savings.length>5?`<div style="font-size:11px;color:var(--text3);text-align:center;margin-top:4px;">+${t.savings.length-5} more entries</div>`:''}
+      </div>`:''}
+      ${t.notes?`<div style="margin-top:10px;font-size:12px;color:var(--text3);padding:8px 12px;background:var(--bg2);border-radius:6px;">${t.notes}</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+// ==================== BALANCE TRACKER ====================
+function setBalance(){
+  const total=parseFloat($('bal_total').value)||0;
+  if(!total){ notify('Enter a valid amount','error'); return; }
+  const data=DB.getObj('balance',{total:0,flows:[]});
+  data.total=total;
+  data.flows.push({id:uid(),type:'set',company:'Balance Set',amount:total,date:$('bal_date').value||today(),notes:$('bal_notes').value||'Balance updated'});
+  DB.set('balance',data);
+  closeModal('balSetModal');
+  ['bal_total','bal_notes'].forEach(id=>$(id).value='');
+  renderBalance(); notify('Balance updated!');
+}
+
+function saveBalFlow(){
+  const type=$('bflow_type').value, company=$('bflow_company').value.trim(), amount=parseFloat($('bflow_amount').value)||0, date=$('bflow_date').value;
+  if(!company||!amount||!date){ notify('Please fill required fields','error'); return; }
+  const data=DB.getObj('balance',{total:0,flows:[]});
+  data.flows.push({id:uid(),type,company,amount,date,notes:$('bflow_notes').value});
+  DB.set('balance',data);
+  closeModal('balFlowModal');
+  ['bflow_company','bflow_amount','bflow_notes'].forEach(id=>$(id).value='');
+  $('bflow_date').value=today();
+  renderBalance(); notify(type==='out'?'Investment logged!':'Income logged!');
+}
+
+function deleteBalFlow(id){
+  showConfirm('🗑️','Delete Flow Entry?','','btn-danger','🗑️ Delete',()=>{
+    const data=DB.getObj('balance',{total:0,flows:[]});
+    data.flows=data.flows.filter(f=>f.id!==id);
+    DB.set('balance',data); renderBalance(); notify('Flow deleted','info');
+  });
+}
+
+function renderBalance(){
+  const data=DB.getObj('balance',{total:0,flows:[]});
+  const totalOut=data.flows.filter(f=>f.type==='out').reduce((s,f)=>s+f.amount,0);
+  const totalIn=data.flows.filter(f=>f.type==='in').reduce((s,f)=>s+f.amount,0);
+  const remaining=data.total-totalOut+totalIn;
+  $('balTotal').textContent=fmtShort(data.total);
+  $('balOut').textContent=fmtShort(totalOut);
+  $('balRemain').textContent=fmtShort(remaining);
+  $('balBig').className='balance-big '+(remaining>=0?'pos':'neg');
+  $('balBig').textContent=fmt(remaining);
+
+  const flows=data.flows.slice().sort((a,b)=>new Date(b.date)-new Date(a.date));
+  if(!flows.length){ $('balFlows').innerHTML=`<div class="empty-state"><div class="empty-icon">⚖️</div><div class="empty-title">No balance flows yet</div><div class="empty-sub">Set your balance and log investment flows</div></div>`; return; }
+  $('balFlows').innerHTML=flows.map(f=>`
+    <div class="flow-item">
+      <div class="flow-dot ${f.type==='set'?'in':f.type}">${f.type==='set'?'💰':f.type==='out'?'📤':'📥'}</div>
+      <div class="flow-info">
+        <div class="flow-name">${f.company}</div>
+        <div class="flow-date">${f.date} ${f.notes?'· '+f.notes:''}</div>
+      </div>
+      <div class="flow-right">
+        <div class="flow-amount ${f.type==='out'?'out':'in'}">${f.type==='out'?'-':'+'}${fmt(f.amount)}</div>
+        <div class="flow-type"><span class="badge ${f.type==='out'?'badge-red':f.type==='in'?'badge-green':'badge-gold'}">${f.type==='set'?'Balance Set':f.type==='out'?'Invested Out':'Return In'}</span></div>
+      </div>
+      <button class="icon-btn del" onclick="deleteBalFlow('${f.id}')">🗑️</button>
+    </div>`).join('');
+}
+
+// ==================== MONTHLY PLAN ====================
+function getMonthlyData(year, month) {
+  const sources=DB.get('income');
+  const loans=DB.get('loans');
+  const ccItems=DB.get('ccinstall');
+  const expenses=DB.get('expenses');
+  const dt=new Date(year, month, 1);
+
+  let income=0;
+  sources.forEach(s=>{
+    const start=new Date(s.start+'T00:00:00');
+    const end=s.end?new Date(s.end+'T00:00:00'):null;
+    if(start<=dt && (!end||end>=dt)) {
+      if(s.freq==='monthly') income+=s.monthly;
+      else if(s.freq==='annual' && new Date(s.start).getMonth()===month) income+=s.monthly;
+      else if(s.freq==='quarterly' && (month-new Date(s.start).getMonth())%3===0) income+=s.monthly;
+    }
+  });
+
+  let loanTotal=0, loanItems=[];
+  loans.forEach(l=>{
+    const start=new Date(l.start+'T00:00:00');
+    const end=new Date(l.start+'T00:00:00'); end.setMonth(end.getMonth()+l.duration);
+    if(start<=dt && end>dt) { loanTotal+=l.monthly; loanItems.push({name:l.name,bank:l.bank,amount:l.monthly}); }
+  });
+
+  let ccTotal=0, ccItemsList=[];
+  ccItems.forEach(i=>{
+    const start=new Date(i.date+'T00:00:00');
+    const end=new Date(i.date+'T00:00:00'); end.setMonth(end.getMonth()+i.duration);
+    if(start<=dt && end>dt && !i.completed) { ccTotal+=i.monthly; ccItemsList.push({name:i.product,bank:i.bank,amount:i.monthly}); }
+  });
+
+  const mStr=`${year}-${String(month+1).padStart(2,'0')}`;
+  let expTotal=0, expItems=[];
+  expenses.forEach(e=>{
+    if(e.month===mStr||(e.recurring&&e.month<=mStr)) { expTotal+=e.amount; expItems.push({name:e.desc,cat:e.cat,amount:e.amount}); }
+  });
+
+  const totalExpenses=loanTotal+ccTotal+expTotal;
+  const balance=income-totalExpenses;
+  return {income,loanTotal,ccTotal,expTotal,totalExpenses,balance,loanItems,ccItemsList,expItems};
+}
+
+function renderMonthly(){
+  const yearEl=$('mpYear'); if(!yearEl) return;
+  const year=parseInt(yearEl.value)||new Date().getFullYear();
+  const monthTabsEl=$('monthTabs');
+  const now=new Date();
+  monthTabsEl.innerHTML=months.map((m,i)=>`<div class="month-tab ${i===now.getMonth()&&year===now.getFullYear()?'active':''}" onclick="showMonthDetail(${year},${i},this)">${monthsShort[i]}</div>`).join('');
+  // show current month
+  const activeTab=monthTabsEl.querySelector('.month-tab.active')||monthTabsEl.firstChild;
+  const initMonth=activeTab?months.indexOf(activeTab.textContent.trim().slice(0,3)):now.getMonth();
+  showMonthDetail(year, now.getMonth(), activeTab);
+}
+
+function showMonthDetail(year, month, tabEl){
+  document.querySelectorAll('.month-tab').forEach(t=>t.classList.remove('active'));
+  if(tabEl) tabEl.classList.add('active');
+  const data=getMonthlyData(year, month);
+  const el=$('monthlyContent');
+  const mName=months[month]+' '+year;
+
+  el.innerHTML=`
+    <div class="month-hero">
+      <div class="month-hero-month">${mName}</div>
+      <div class="month-hero-balance ${data.balance>=0?'pos':'neg'}">${fmt(data.balance)}</div>
+      <div style="font-size:12px;color:var(--text3);margin-top:4px;">Monthly Balance</div>
+      <div class="month-hero-row">
+        <div class="mhr-item"><div class="mhr-label">Income</div><div class="mhr-value pos">${fmt(data.income)}</div></div>
+        <div class="mhr-item"><div class="mhr-label">Loan Payments</div><div class="mhr-value neg">${fmt(data.loanTotal)}</div></div>
+        <div class="mhr-item"><div class="mhr-label">CC Installments</div><div class="mhr-value neg">${fmt(data.ccTotal)}</div></div>
+        <div class="mhr-item"><div class="mhr-label">Other Expenses</div><div class="mhr-value neg">${fmt(data.expTotal)}</div></div>
+        <div class="mhr-item"><div class="mhr-label">Total Expenses</div><div class="mhr-value neg">${fmt(data.totalExpenses)}</div></div>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><div class="card-title">🏦 Loan Payments</div><div class="card-subtitle">${fmt(data.loanTotal)}/month</div></div>
+        ${data.loanItems.length?data.loanItems.map(i=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;"><span>${i.name} <span style="color:var(--text3);font-size:11px;">(${i.bank})</span></span><span class="td-red">${fmt(i.amount)}</span></div>`).join(''):`<div class="empty-state" style="padding:20px;"><div class="empty-sub">No loan payments this month</div></div>`}
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">💳 CC Installments</div><div class="card-subtitle">${fmt(data.ccTotal)}/month</div></div>
+        ${data.ccItemsList.length?data.ccItemsList.map(i=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;"><span>${i.name} <span style="color:var(--text3);font-size:11px;">(${i.bank})</span></span><span class="td-red">${fmt(i.amount)}</span></div>`).join(''):`<div class="empty-state" style="padding:20px;"><div class="empty-sub">No installments this month</div></div>`}
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">🧾 Other Expenses</div><div class="card-subtitle">${fmt(data.expTotal)}/month</div></div>
+        ${data.expItems.length?data.expItems.map(i=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;"><span>${i.name} <span class="badge badge-gray" style="font-size:10px;">${i.cat}</span></span><span class="td-red">${fmt(i.amount)}</span></div>`).join(''):`<div class="empty-state" style="padding:20px;"><div class="empty-sub">No other expenses this month</div></div>`}
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">💰 Income Sources</div><div class="card-subtitle">${fmt(data.income)}/month</div></div>
+        ${DB.get('income').filter(s=>{ const start=new Date(s.start+'T00:00:00');const end=s.end?new Date(s.end+'T00:00:00'):null;const dt=new Date(year,month,1);return start<=dt&&(!end||end>=dt);}).map(s=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;"><span>${s.name} <span style="color:var(--text3);font-size:11px;">(${s.company})</span></span><span class="td-green">${fmt(s.monthly)}</span></div>`).join('')||'<div class="empty-state" style="padding:20px;"><div class="empty-sub">No income sources this month</div></div>'}
+      </div>
+    </div>`;
+}
+
+// ==================== DASHBOARD ====================
+let dashChartInstance=null, dashPieInstance=null;
+
+function renderDashboard(){
+  const now=new Date();
+  const year=parseInt($('dashChartYear')?.value||now.getFullYear());
+
+  // Stats
+  const sources=DB.get('income');
+  const loans=DB.get('loans');
+  const ccItems=DB.get('ccinstall').filter(i=>!i.completed);
+  const ccot=DB.get('cconetime').filter(i=>!i.paid);
+  const targets=DB.get('targets');
+
+  const totalMonthlyIncome=sources.reduce((s,x)=>s+x.monthly,0);
+  const totalLoanPayments=loans.reduce((s,l)=>{
+    const e=getLoanEndDate(l); if(e>now) return s+l.monthly; return s;
+  },0);
+  const totalCCInstall=ccItems.reduce((s,i)=>{ const e=new Date(i.date+'T00:00:00'); e.setMonth(e.getMonth()+i.duration); return e>now?s+i.monthly:s; },0);
+  const monthlyBalance=totalMonthlyIncome-totalLoanPayments-totalCCInstall;
+
+  $('dashStats').innerHTML=`
+    <div class="stat-card green"><div class="stat-icon">💰</div><div class="stat-label">Monthly Income</div><div class="stat-value">${fmtShort(totalMonthlyIncome)}</div><div class="stat-meta">${sources.length} sources</div></div>
+    <div class="stat-card red"><div class="stat-icon">🏦</div><div class="stat-label">Loan Payments</div><div class="stat-value">${fmtShort(totalLoanPayments)}</div><div class="stat-meta">${loans.length} active loans</div></div>
+    <div class="stat-card gold"><div class="stat-icon">💳</div><div class="stat-label">CC Installments</div><div class="stat-value">${fmtShort(totalCCInstall)}</div><div class="stat-meta">${ccItems.length} plans</div></div>
+    <div class="stat-card ${monthlyBalance>=0?'blue':'red'}"><div class="stat-icon">⚖️</div><div class="stat-label">Monthly Balance</div><div class="stat-value">${fmtShort(monthlyBalance)}</div><div class="stat-meta">After all deductions</div></div>
+    <div class="stat-card purple"><div class="stat-icon">⏱️</div><div class="stat-label">Pending CC</div><div class="stat-value">${ccot.length}</div><div class="stat-meta">One-time payments</div></div>
+  `;
+
+  // Bar chart
+  const labels=monthsShort;
+  const incomeData=[], expData=[];
+  for(let m=0;m<12;m++){
+    const d=getMonthlyData(year,m);
+    incomeData.push(d.income); expData.push(d.totalExpenses);
+  }
+
+  if(dashChartInstance) dashChartInstance.destroy();
+  const ctx=$('dashChart').getContext('2d');
+  dashChartInstance=new Chart(ctx,{
+    type:'bar',
+    data:{labels,datasets:[
+      {label:'Income',data:incomeData,backgroundColor:'rgba(16,185,129,.6)',borderColor:'rgba(16,185,129,1)',borderWidth:1,borderRadius:4},
+      {label:'Expenses',data:expData,backgroundColor:'rgba(239,68,68,.5)',borderColor:'rgba(239,68,68,1)',borderWidth:1,borderRadius:4}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#94a3b8',font:{size:11}}},tooltip:{callbacks:{label:c=>fmt(c.parsed.y)}}},scales:{x:{ticks:{color:'#64748b'},grid:{color:'rgba(255,255,255,.04)'}},y:{ticks:{color:'#64748b',callback:v=>fmtShort(v)},grid:{color:'rgba(255,255,255,.04)'}}}}
+  });
+
+  // Pie chart
+  const pieData={Loans:totalLoanPayments,'CC Installments':totalCCInstall};
+  DB.get('expenses').filter(e=>{const m=now.getMonth(),y=now.getFullYear();const ym=e.month.split('-');return parseInt(ym[0])===y&&parseInt(ym[1])-1===m;}).forEach(e=>{ pieData[e.cat]=(pieData[e.cat]||0)+e.amount; });
+
+  if(dashPieInstance) dashPieInstance.destroy();
+  const ctx2=$('dashPie').getContext('2d');
+  const pieLabels=Object.keys(pieData).filter(k=>pieData[k]>0);
+  const pieVals=pieLabels.map(k=>pieData[k]);
+  const pieColors=['#ef4444','#f5a623','#3b82f6','#10b981','#8b5cf6','#06b6d4','#f59e0b','#ec4899'];
+  dashPieInstance=new Chart(ctx2,{
+    type:'doughnut',
+    data:{labels:pieLabels,datasets:[{data:pieVals,backgroundColor:pieColors.slice(0,pieLabels.length),borderWidth:0,hoverOffset:4}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{position:'bottom',labels:{color:'#94a3b8',font:{size:10},boxWidth:10,padding:8}},tooltip:{callbacks:{label:c=>c.label+': '+fmt(c.parsed)}}}}
+  });
+
+  // Upcoming payments
+  const upcoming=[];
+  const n=new Date(); const n30=new Date(); n30.setDate(n30.getDate()+30);
+  ccot.forEach(i=>{ const dl=daysLeft(i.deadline); if(dl>=0&&dl<=30) upcoming.push({name:i.desc,amount:i.amount,date:i.deadline,type:'CC Payment',urgent:dl<=10}); });
+  upcoming.sort((a,b)=>new Date(a.date)-new Date(b.date));
+  $('dashUpcoming').innerHTML=upcoming.length?upcoming.slice(0,5).map(u=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;">
+    <div><div style="font-weight:600;">${u.name}</div><div style="font-size:11px;color:var(--text3);">${u.type} · ${u.date}</div></div>
+    <div style="text-align:right;"><div class="td-red">${fmt(u.amount)}</div>${u.urgent?'<span class="badge badge-red" style="font-size:10px;">⚠️ Urgent</span>':''}</div>
+  </div>`).join(''):`<div class="empty-state" style="padding:20px;"><div class="empty-sub">No upcoming payments in 30 days</div></div>`;
+
+  // Recent activity
+  const recent=[];
+  DB.get('income').forEach(s=>recent.push({date:s.start,text:`Income source: ${s.name}`,type:'income',amount:s.monthly}));
+  DB.get('loans').forEach(l=>recent.push({date:l.start,text:`Loan: ${l.name}`,type:'loan',amount:-l.monthly}));
+  DB.get('ccinstall').forEach(i=>recent.push({date:i.date,text:`CC Install: ${i.product}`,type:'cc',amount:-i.monthly}));
+  recent.sort((a,b)=>new Date(b.date)-new Date(a.date));
+  $('dashRecent').innerHTML=recent.length?recent.slice(0,6).map(r=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:12px;">
+    <div><div style="font-weight:500;">${r.text}</div><div style="font-size:11px;color:var(--text3);">${r.date}</div></div>
+    <span class="${r.amount>=0?'td-green':'td-red'}">${r.amount>=0?'+':''}${fmtShort(r.amount)}</span>
+  </div>`).join(''):`<div class="empty-state" style="padding:20px;"><div class="empty-sub">No recent activity. Start by adding data!</div></div>`;
+}
+
+// ==================== CONFIRM MODAL ====================
+let confirmCallback=null;
+function showConfirm(icon,msg,detail,btnClass,btnText,cb){
+  $('confirmIcon').textContent=icon;
+  $('confirmMessage').textContent=msg;
+  $('confirmDetail').textContent=detail;
+  $('confirmBtn').className=`btn ${btnClass}`;
+  $('confirmBtn').textContent=btnText;
+  confirmCallback=cb;
+  $('confirmBtn').onclick=()=>{ closeModal('confirmModal'); if(confirmCallback) confirmCallback(); };
+  openModal('confirmModal');
+}
+
+// ==================== SAMPLE DATA (optional) ====================
+function loadSampleData(){
+  if(DB.get('income').length>0) return; // don't overwrite existing data
+  const y=new Date().getFullYear();
+  DB.set('income',[
+    {id:uid(),name:'Fixed Deposit 13.7Mn',company:'Commercial Bank',amount:13700000,rate:57,start:`${y}-01-01`,end:`${y+2}-12-31`,freq:'monthly',day:15,monthly:650500,notes:'Main FD investment'},
+    {id:uid(),name:'Fixed Deposit 7Mn',company:'Peoples Bank',amount:7000000,rate:57,start:`${y}-01-01`,end:`${y+2}-12-31`,freq:'monthly',day:15,monthly:332500,notes:''},
+    {id:uid(),name:'Fixed Deposit 2Mn',company:'HNB',amount:2000000,rate:57,start:`${y}-01-01`,end:`${y+2}-12-31`,freq:'monthly',day:20,monthly:95000,notes:''},
+    {id:uid(),name:'Fixed Deposit 1Mn',company:'Sampath Bank',amount:1000000,rate:57,start:`${y}-04-01`,end:`${y+2}-12-31`,freq:'monthly',day:20,monthly:47500,notes:''},
+  ]);
+  DB.set('loans',[
+    {id:uid(),name:'Bank Loan for Land',bank:'Commercial Bank',amount:10000000,rate:14,duration:60,monthly:180000,start:`${y}-01-01`,purpose:'Land Purchase',notes:''},
+    {id:uid(),name:'Bank Loan for House',bank:'Peoples Bank',amount:22000000,rate:13.5,duration:84,monthly:340000,start:`${y}-01-01`,purpose:'House Construction',notes:'Completed house estimate: LKR 24.5Mn'},
+  ]);
+  DB.set('ccinstall',[
+    {id:uid(),product:"75\" TV",buyer:'Self',bank:'DFCC Bank',total:480000,rate:0,duration:24,monthly:20000,date:`${y}-01-01`,notes:'Living Room',completed:false},
+    {id:uid(),product:'55" TV',buyer:'Self',bank:'DFCC Bank',total:204000,rate:0,duration:24,monthly:8500,date:`${y}-01-01`,notes:'Bedroom',completed:false},
+    {id:uid(),product:'Refrigerator',buyer:'Self',bank:'DFCC Bank',total:360000,rate:0,duration:24,monthly:15000,date:`${y}-01-01`,notes:'',completed:false},
+    {id:uid(),product:'Washing Machine',buyer:'Self',bank:'DFCC Bank',total:216000,rate:0,duration:36,monthly:6000,date:`${y}-01-01`,notes:'',completed:false},
+    {id:uid(),product:'Home Theater',buyer:'Self',bank:'AMEX',total:144000,rate:0,duration:12,monthly:12000,date:`${y}-01-01`,notes:'',completed:false},
+    {id:uid(),product:'5kW Solar System',buyer:'Self',bank:'DFCC Bank',total:2160000,rate:0,duration:48,monthly:45000,date:`${y}-08-01`,notes:'Hybrid system',completed:false},
+  ]);
+  DB.set('targets',[
+    {id:uid(),name:'House Completion Fund',amount:10000000,start:`${y}-01-01`,end:`${y+1}-12-31`,notes:'Save for house finishing',savings:[{id:uid(),amount:500000,date:`${y}-04-01`,note:'April saving'},{id:uid(),amount:420000,date:`${y}-03-01`,note:'March saving'}]},
+  ]);
+  DB.set('balance',{total:15000000,flows:[
+    {id:uid(),type:'set',company:'Balance Set',amount:15000000,date:`${y}-01-01`,notes:'Opening balance'},
+    {id:uid(),type:'out',company:'Commercial Bank FD',amount:13700000,date:`${y}-01-01`,notes:'13.7Mn FD investment'},
+    {id:uid(),type:'out',company:'Peoples Bank FD',amount:7000000,date:`${y}-01-01`,notes:'7Mn FD investment'},
+  ]});
+}
+
+// Load sample data on first run
+loadSampleData();
+</script>
 </body>
 </html>
