@@ -6,7 +6,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>WealthFlow — Sachintha Gaurawa</title>
+<title>WealthFlow - Sachintha Gaurawa</title>
 <link rel="icon" type="image/x-icon" href="https://res.cloudinary.com/dzrfpc9be/image/upload/v1777219304/Fav_img_rkpnbl.ico">
 <link rel="icon" type="image/png" href="https://res.cloudinary.com/dzrfpc9be/image/upload/v1777219344/Fav_img_bagjfj.png">
 <link rel="apple-touch-icon" href="https://res.cloudinary.com/dzrfpc9be/image/upload/v1777219344/Fav_img_bagjfj.png">
@@ -513,7 +513,7 @@ tbody td{padding:9px 12px;vertical-align:middle;}
       <div class="sb-grp">Finance</div>
       <div class="ni" onclick="nav('income',this)"><span class="ni-ico">💰</span>Income & Investments</div>
       <div class="ni" onclick="nav('loans',this)"><span class="ni-ico">🏦</span>Bank Loans</div>
-      <div class="ni" onclick="nav('ccinstall',this)"><span class="ni-ico">💳</span>CC Installments</div>
+      <div class="ni" onclick="nav('ccinstall',this)"><span class="ni-ico">💳</span>CC Instalments</div>
       <div class="ni" onclick="nav('cconetime',this)"><span class="ni-ico">⏱️</span>CC One-Time <span class="nb" id="nb-ccot" style="display:none">!</span></div>
       <div class="ni" onclick="nav('cheques',this)"><span class="ni-ico">📄</span>Cheques <span class="nb" id="nb-chq" style="display:none">!</span></div>
       <div class="sb-grp">Tracking</div>
@@ -600,7 +600,7 @@ tbody td{padding:9px 12px;vertical-align:middle;}
       </div>
 
       <div class="page" id="page-ccinstall">
-        <div class="sh"><div class="sh-title">CC Installments</div><div class="sh-acts">
+        <div class="sh"><div class="sh-title">CC Instalments</div><div class="sh-acts">
           <div class="sort-bar"><span class="sb-lbl">Sort:</span><span class="sb-btn active" onclick="sortK('cci','product',this)">Product</span><span class="sb-btn" onclick="sortK('cci','monthly',this)">Monthly</span><span class="sb-btn" onclick="sortK('cci','date',this)">Date</span></div>
           <button class="btn btn-secondary btn-sm" onclick="openM('mSkip')">⏭ Skip Month</button>
           <button class="btn btn-primary btn-sm" onclick="openM('mCCI')">+ Add</button>
@@ -719,7 +719,7 @@ tbody td{padding:9px 12px;vertical-align:middle;}
   <div class="md-ftr"><button class="btn btn-ghost" onclick="closeM('mLoan')">Cancel</button><button class="btn btn-primary" onclick="saveLoan()">💾 Save</button></div>
 </div></div>
 
-<div class="mo" id="mCCI"><div class="md"><div class="md-hdr"><div class="md-title" id="mCCITit">Add CC Installment</div><button class="md-x" onclick="closeM('mCCI')">✕</button></div>
+<div class="mo" id="mCCI"><div class="md"><div class="md-hdr"><div class="md-title" id="mCCITit">Add CC Instalment</div><button class="md-x" onclick="closeM('mCCI')">✕</button></div>
   <div class="fr"><div class="fg"><label class="fl">Product Name *</label><input class="fi" id="c_product" placeholder="75-inch TV"></div><div class="fg"><label class="fl">Buyer</label><input class="fi" id="c_buyer" placeholder="Self"></div></div>
   <div class="fr"><div class="fg"><label class="fl">Bank / Card *</label><select class="fs" id="c_bank"></select></div><div class="fg"><label class="fl">Purchase Date *</label><input class="fi" id="c_date" type="date"></div></div>
   <div class="fr"><div class="fg"><label class="fl">Total Amount (LKR) *</label><input class="fi mi" id="c_total" placeholder="480,000" oninput="cCCI()"></div><div class="fg"><label class="fl">Annual Rate (%) (0=free)</label><input class="fi" id="c_rate" type="number" placeholder="0" step="0.1" oninput="cCCI()"></div></div>
@@ -729,9 +729,9 @@ tbody td{padding:9px 12px;vertical-align:middle;}
   <div class="md-ftr"><button class="btn btn-ghost" onclick="closeM('mCCI')">Cancel</button><button class="btn btn-primary" onclick="saveCCI()">💾 Save</button></div>
 </div></div>
 
-<div class="mo" id="mSkip"><div class="md md-sm"><div class="md-hdr"><div class="md-title">Skip Installment Month</div><button class="md-x" onclick="closeM('mSkip')">✕</button></div>
-  <p style="font-size:13px;color:var(--text2);margin-bottom:12px;">Select a plan and month to skip. The skipped installment will automatically double in the following month.</p>
-  <div class="fg"><label class="fl">Installment Plan *</label><select class="fs" id="skip_plan"></select></div>
+<div class="mo" id="mSkip"><div class="md md-sm"><div class="md-hdr"><div class="md-title">Skip Instalment Month</div><button class="md-x" onclick="closeM('mSkip')">✕</button></div>
+  <p style="font-size:13px;color:var(--text2);margin-bottom:12px;">Select a plan and month to skip. The skipped instalment will automatically double in the following month.</p>
+  <div class="fg"><label class="fl">Instalment Plan *</label><select class="fs" id="skip_plan"></select></div>
   <div class="fg"><label class="fl">Month to Skip *</label><input class="fi" id="skip_month" type="month"></div>
   <div class="md-ftr"><button class="btn btn-ghost" onclick="closeM('mSkip')">Cancel</button><button class="btn btn-danger" onclick="skipMonth()">⏭ Skip Month</button></div>
 </div></div>
@@ -836,6 +836,8 @@ import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebas
 import { getFirestore, doc, setDoc, getDoc, onSnapshot, updateDoc, enableIndexedDbPersistence, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { getAnalytics } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js';
 
+// NOTE: Keys are preserved as requested to ensure instant local execution. 
+// Standard best practice dictates server-side secrets management.
 const firebaseConfig = {
   apiKey:"AIzaSyBpIRHoNQJTeMIVYime_oVjBXiQWNH18K4",
   authDomain:"wealthflow-6dffb.firebaseapp.com",
@@ -1160,7 +1162,7 @@ async function launchApp(){
 }
 
 // ===================== NAVIGATION =====================
-const PG_TITLES={dashboard:'📊 Dashboard',monthly:'📅 Monthly Plan',income:'💰 Income & Investments',loans:'🏦 Bank Loans',ccinstall:'💳 CC Installments',cconetime:'⏱️ CC One-Time',cheques:'📄 Cheques',expenses:'🧾 Monthly Expenses',targets:'🎯 Targets & Savings',balance:'⚖️ Balance Tracker',dscr:'📐 DSCR Calculator',settings:'⚙️ Settings'};
+const PG_TITLES={dashboard:'📊 Dashboard',monthly:'📅 Monthly Plan',income:'💰 Income & Investments',loans:'🏦 Bank Loans',ccinstall:'💳 CC Instalments',cconetime:'⏱️ CC One-Time',cheques:'📄 Cheques',expenses:'🧾 Monthly Expenses',targets:'🎯 Targets & Savings',balance:'⚖️ Balance Tracker',dscr:'📐 DSCR Calculator',settings:'⚙️ Settings'};
 const ADD_MODAL={income:'mIncome',loans:'mLoan',ccinstall:'mCCI',cconetime:'mCCOT',cheques:'mCheque',expenses:'mExpense',targets:'mTarget',balance:'mBalSet'};
 
 window.nav=function(name, el){
@@ -1222,7 +1224,7 @@ function initMoneyInputs(){
       let raw=this.value.replace(/[^0-9.]/g,'');
       let parts=raw.split('.');
       let int=parts[0].replace(/\B(?=(\d{3})+(?!\d))/g,',');
-      let dec=parts.length>1?'.'+parts[1].slice(0,2):'';
+      let dec=parts.length>1?'.'+parts[1].substring(0,2):'';
       let pos=this.selectionStart;
       this.value=int+dec;
     });
@@ -1240,7 +1242,7 @@ function updateDateTime(){
 function setTodayDefaults(){
   const t=today();
   ['ot_date','sav_date','bf_date','bs_date','chq_issue','chq_release'].forEach(id=>{ const e=$(id); if(e) e.value=t; });
-  const m=t.substr(0,7);
+  const m=t.substring(0,7);
   ['e_month'].forEach(id=>{ const e=$(id); if(e) e.value=m; });
 }
 function initYearSelects(){
@@ -1321,19 +1323,19 @@ function renderIncome(){
   if(s?.field) arr.sort((a,b)=>s.field==='name'?s.dir*a.name.localeCompare(b.name):s.field==='amount'?s.dir*(b.amount-a.amount):s.field==='rate'?s.dir*(b.rate-a.rate):0);
   const el=$('incomeList');
   if(!arr.length){el.innerHTML=emptyHtml('💰','No income sources yet','Add your investments and income streams');return;}
-  const tM=arr.reduce((st,x)=>st+x.monthly,0),tI=arr.reduce((st,x)=>st+x.amount,0);
+  const tM=arr.reduce((s,x)=>s+x.monthly,0),tI=arr.reduce((s,x)=>s+x.amount,0);
   el.innerHTML=`<div class="g3" style="margin-bottom:14px;"><div class="sc sc-g"><div class="stat-lbl">Total Monthly Income</div><div class="stat-val">${fmtS(tM)}</div><div class="stat-meta">${fmt(tM)}</div></div><div class="sc sc-a"><div class="stat-lbl">Total Invested Capital</div><div class="stat-val">${fmtS(tI)}</div><div class="stat-meta">${fmt(tI)}</div></div><div class="sc sc-b"><div class="stat-lbl">Sources</div><div class="stat-val">${arr.length}</div><div class="stat-meta">Active streams</div></div></div>`
-  +arr.map(st=>{
-    const now=new Date(),end=st.end?new Date(st.end+'T00:00:00'):null,active=!end||end>now;
-    const fL={monthly:'Monthly',annual:'Annual',quarterly:'Quarterly'}[st.freq]||st.freq;
+  +arr.map(s=>{
+    const now=new Date(),end=s.end?new Date(s.end+'T00:00:00'):null,active=!end||end>now;
+    const fL={monthly:'Monthly',annual:'Annual',quarterly:'Quarterly'}[s.freq]||s.freq;
     const dL=end?Math.ceil((end-now)/86400000):null;
     return`<div class="item-card"><div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;">
-      <div><div style="font-size:14px;font-weight:700;">${st.name}</div><div style="font-size:11px;color:var(--text3);margin-top:2px;">🏛️ ${st.company} · ${st.start}${st.end?' → '+st.end:''}</div></div>
-      <div style="display:flex;gap:8px;align-items:flex-start;"><div style="text-align:right;"><div style="font-size:20px;font-weight:800;font-family:var(--mono);color:var(--green);">${fmt(st.monthly)}</div><div style="font-size:10px;color:var(--text3);">${fL} · Day ${st.day}</div></div>
-      <div class="ab"><button class="ib e" onclick="editIncome('${st.id}')">✏️</button><button class="ib d" onclick="deleteIncome('${st.id}')">🗑️</button></div></div>
+      <div><div style="font-size:14px;font-weight:700;">${s.name}</div><div style="font-size:11px;color:var(--text3);margin-top:2px;">🏛️ ${s.company} · ${s.start}${s.end?' - '+s.end:''}</div></div>
+      <div style="display:flex;gap:8px;align-items:flex-start;"><div style="text-align:right;"><div style="font-size:20px;font-weight:800;font-family:var(--mono);color:var(--green);">${fmt(s.monthly)}</div><div style="font-size:10px;color:var(--text3);">${fL} · Day ${s.day}</div></div>
+      <div class="ab"><button class="ib e" onclick="editIncome('${s.id}')">✏️</button><button class="ib d" onclick="deleteIncome('${s.id}')">🗑️</button></div></div>
     </div>
-    <div style="display:flex;flex-wrap:wrap;"><div class="ld"><div class="ld-l">INVESTED</div><div class="ld-v" style="color:var(--accent);">${fmt(st.amount)}</div></div><div class="ld"><div class="ld-l">RATE</div><div class="ld-v">${st.rate}%</div></div><div class="ld"><div class="ld-l">STATUS</div><div class="ld-v">${active?'<span class="badge bg-g">● Active</span>':'<span class="badge bg-gr">Ended</span>'}</div></div>${dL!==null?`<div class="ld"><div class="ld-l">DAYS LEFT</div><div class="ld-v" style="${dL<60?'color:var(--red)':''}">${dL>0?dL+'d':'Ended'}</div></div>`:''}</div>
-    ${st.notes?`<div style="margin-top:8px;font-size:11.5px;color:var(--text3);padding:6px 10px;background:var(--bg2);border-radius:6px;">${st.notes}</div>`:''}
+    <div style="display:flex;flex-wrap:wrap;"><div class="ld"><div class="ld-l">INVESTED</div><div class="ld-v" style="color:var(--accent);">${fmt(s.amount)}</div></div><div class="ld"><div class="ld-l">RATE</div><div class="ld-v">${s.rate}%</div></div><div class="ld"><div class="ld-l">STATUS</div><div class="ld-v">${active?'<span class="badge bg-g">● Active</span>':'<span class="badge bg-gr">Ended</span>'}</div></div>${dL!==null?`<div class="ld"><div class="ld-l">DAYS LEFT</div><div class="ld-v" style="${dL<60?'color:var(--red)':''}">${dL>0?dL+'d':'Ended'}</div></div>`:''}</div>
+    ${s.notes?`<div style="margin-top:8px;font-size:11.5px;color:var(--text3);padding:6px 10px;background:var(--bg2);border-radius:6px;">${s.notes}</div>`:''}
     </div>`;
   }).join('');
 }
@@ -1359,8 +1361,8 @@ function renderLoans(){
   if(s?.field) arr.sort((a,b)=>s.field==='name'?s.dir*a.name.localeCompare(b.name):s.field==='monthly'?s.dir*(b.monthly-a.monthly):s.field==='amount'?s.dir*(b.amount-a.amount):0);
   const el=$('loansList');
   if(!arr.length){el.innerHTML=emptyHtml('🏦','No loans added','Add your bank loans to track monthly payments');return;}
-  const tM=arr.reduce((st,l)=>{const e=loanEnd(l);return e>new Date()?st+l.monthly:st;},0);
-  el.innerHTML=`<div class="g3" style="margin-bottom:14px;"><div class="sc sc-r"><div class="stat-lbl">Monthly Payments</div><div class="stat-val">${fmtS(tM)}</div><div class="stat-meta">${fmt(tM)}</div></div><div class="sc sc-b"><div class="stat-lbl">Total Principal</div><div class="stat-val">${fmtS(arr.reduce((st,l)=>st+l.amount,0))}</div></div><div class="sc sc-p"><div class="stat-lbl">Active Loans</div><div class="stat-val">${arr.length}</div></div></div>`
+  const tM=arr.reduce((s,l)=>{const e=loanEnd(l);return e>new Date()?s+l.monthly:s;},0);
+  el.innerHTML=`<div class="g3" style="margin-bottom:14px;"><div class="sc sc-r"><div class="stat-lbl">Monthly Payments</div><div class="stat-val">${fmtS(tM)}</div><div class="stat-meta">${fmt(tM)}</div></div><div class="sc sc-b"><div class="stat-lbl">Total Principal</div><div class="stat-val">${fmtS(arr.reduce((s,l)=>s+l.amount,0))}</div></div><div class="sc sc-p"><div class="stat-lbl">Active Loans</div><div class="stat-val">${arr.length}</div></div></div>`
   +arr.map(l=>{
     const prog=loanProg(l),end=loanEnd(l),active=end>new Date();
     const remain=Math.max(0,l.amount*(l.duration-prog.paid)/l.duration);
@@ -1377,7 +1379,7 @@ function renderLoans(){
   }).join('');
 }
 
-// ===================== CC INSTALLMENTS =====================
+// ===================== CC INSTALMENTS =====================
 window.saveCCI=async function(){
   const product=$('c_product').value.trim(),bank=$('c_bank').value,total=pM($('c_total').value),dur=parseInt($('c_dur').value)||0,date=$('c_date').value;
   if(!product||!bank||!total||!dur||!date){notify('Fill required fields','error');return;}
@@ -1386,12 +1388,12 @@ window.saveCCI=async function(){
   const rec={id:editMode||uid(),product,buyer:$('c_buyer').value||'Self',bank,total,rate,duration:dur,monthly,date,notes:$('c_notes').value,completed:false,skipped:[]};
   if(editMode){const i=APP.ccinstall.findIndex(x=>x.id===editMode);if(i>-1){rec.skipped=APP.ccinstall[i].skipped||[];APP.ccinstall[i]=rec;}}else APP.ccinstall.push(rec);
   await saveData(); closeM('mCCI'); clearCCIF();
-  notify(editMode?'Updated!':'Installment added!');
+  notify(editMode?'Updated!':'Instalment added!');
 };
-function clearCCIF(){['c_product','c_buyer','c_total','c_rate','c_dur','c_monthly','c_date','c_notes'].forEach(id=>$(id).value='');$('c_bank').value='';$('c_calc').textContent='';$('mCCITit').textContent='Add CC Installment';}
-window.editCCI=function(id){const item=APP.ccinstall.find(x=>x.id===id);if(!item)return;editMode=id;$('mCCITit').textContent='Edit Installment';$('c_product').value=item.product;$('c_buyer').value=item.buyer;$('c_bank').value=item.bank;$('c_total').value=fmtN(item.total);$('c_rate').value=item.rate;$('c_dur').value=item.duration;$('c_monthly').value=fmtN(item.monthly);$('c_date').value=item.date;$('c_notes').value=item.notes||'';openM('mCCI');};
-window.deleteCCI=function(id){showConfirm('🗑️','Delete Installment?','','btn-danger','🗑️ Delete',async()=>{APP.ccinstall=APP.ccinstall.filter(x=>x.id!==id);await saveData();notify('Deleted','info');});};
-window.markCCIDone=function(id){showConfirm('✅','Mark Complete?','Mark this installment as fully paid?','btn-success','✅ Complete',async()=>{const i=APP.ccinstall.findIndex(x=>x.id===id);if(i>-1){APP.ccinstall[i].completed=true;await saveData();notify('Marked complete!');}});};
+function clearCCIF(){['c_product','c_buyer','c_total','c_rate','c_dur','c_monthly','c_date','c_notes'].forEach(id=>$(id).value='');$('c_bank').value='';$('c_calc').textContent='';$('mCCITit').textContent='Add CC Instalment';}
+window.editCCI=function(id){const item=APP.ccinstall.find(x=>x.id===id);if(!item)return;editMode=id;$('mCCITit').textContent='Edit Instalment';$('c_product').value=item.product;$('c_buyer').value=item.buyer;$('c_bank').value=item.bank;$('c_total').value=fmtN(item.total);$('c_rate').value=item.rate;$('c_dur').value=item.duration;$('c_monthly').value=fmtN(item.monthly);$('c_date').value=item.date;$('c_notes').value=item.notes||'';openM('mCCI');};
+window.deleteCCI=function(id){showConfirm('🗑️','Delete Instalment?','','btn-danger','🗑️ Delete',async()=>{APP.ccinstall=APP.ccinstall.filter(x=>x.id!==id);await saveData();notify('Deleted','info');});};
+window.markCCIDone=function(id){showConfirm('✅','Mark Complete?','Mark this instalment as fully paid?','btn-success','✅ Complete',async()=>{const i=APP.ccinstall.findIndex(x=>x.id===id);if(i>-1){APP.ccinstall[i].completed=true;await saveData();notify('Marked complete!');}});};
 
 window.skipMonth=async function(){
   const pid=$('skip_plan').value,month=$('skip_month').value;
@@ -1402,7 +1404,7 @@ window.skipMonth=async function(){
   if(APP.ccinstall[i].skipped.includes(month)){notify('Already skipped','warn');return;}
   APP.ccinstall[i].skipped.push(month);
   await saveData(); closeM('mSkip');
-  notify(`Month ${month} skipped - next month will show 2x installment`,'warn');
+  notify(`Month ${month} skipped - next month will show 2× instalment`,'warn');
 };
 
 const getCCIMForDate=(item,y,m)=>{
@@ -1417,11 +1419,11 @@ function renderCCI(){
   let arr=[...APP.ccinstall]; const s=sortState['cci'];
   if(s?.field) arr.sort((a,b)=>s.field==='product'?s.dir*a.product.localeCompare(b.product):s.field==='monthly'?s.dir*(b.monthly-a.monthly):s.field==='date'?s.dir*(new Date(a.date)-new Date(b.date)):0);
   const active=arr.filter(x=>!x.completed);
-  const tM=active.reduce((st,x)=>st+x.monthly,0),tV=active.reduce((st,x)=>st+x.total,0);
+  const tM=active.reduce((s,x)=>s+x.monthly,0),tV=active.reduce((s,x)=>s+x.total,0);
   $('cciStats').innerHTML=`<div class="sc sc-r"><div class="stat-lbl">Monthly Payments</div><div class="stat-val">${fmtS(tM)}</div><div class="stat-meta">${fmt(tM)}</div></div><div class="sc sc-a"><div class="stat-lbl">Total Financed</div><div class="stat-val">${fmtS(tV)}</div></div><div class="sc sc-b"><div class="stat-lbl">Active Plans</div><div class="stat-val">${active.length}</div></div><div class="sc sc-p" style="opacity:.7;"><div class="stat-lbl">Completed</div><div class="stat-val">${arr.length-active.length}</div></div>`;
   $('skip_plan').innerHTML='<option value="">Select plan...</option>'+active.map(x=>`<option value="${x.id}">${x.product} (${x.bank})</option>`).join('');
   const tbody=$('cciBody');
-  if(!arr.length){tbody.innerHTML=`<tr><td colspan="11">${emptyHtml('💳','No installments','Add credit card installment plans')}</td></tr>`;return;}
+  if(!arr.length){tbody.innerHTML=`<tr><td colspan="11">${emptyHtml('💳','No instalments','Add credit card instalment plans')}</td></tr>`;return;}
   tbody.innerHTML=arr.map(item=>{
     const prog=cciProg(item);
     const end=new Date(item.date+'T00:00:00');end.setMonth(end.getMonth()+item.duration);
@@ -1489,7 +1491,7 @@ window.saveCheque=async function(){
   notify('Cheque added!');
 };
 function clearCheqF(){['chq_no','chq_party','chq_amount','chq_notes'].forEach(id=>$(id).value='');$('chq_bank').value='';$('chq_type').value='received';$('chq_issue').value=today();$('chq_release').value=today();$('mChequeT').textContent='Add Cheque';}
-window.editCheque=function(id){const c=APP.cheques.find(x=>x.id===id);if(!c)return;editMode=id;$('mChequeT').textContent='Edit Cheque';$('chq_no').value=c.no;$('chq_party').value=c.party;$('chq_bank').value=c.bank;$('chq_type').value=c.type;$('chq_amount').value=fmtN(c.amount);$('chq_issue').value=c.issue;$('chq_release').value=c.release;$('chq_notes').value=c.notes||'';openM('mCheque');};
+window.editCheque=function(id){const c=APP.cheques.find(x=>x.id===id);if(!c)return;editMode=id;$('mChequeT').textContent='Edit Cheque';$('chq_no').value=c.no;$('chq_party').value=c.bank;$('chq_bank').value=c.bank;$('chq_type').value=c.type;$('chq_amount').value=fmtN(c.amount);$('chq_issue').value=c.issue;$('chq_release').value=c.release;$('chq_notes').value=c.notes||'';openM('mCheque');};
 window.deleteCheque=function(id){showConfirm('🗑️','Delete Cheque?','','btn-danger','🗑️ Delete',async()=>{APP.cheques=APP.cheques.filter(x=>x.id!==id);await saveData();updateBadges();notify('Deleted','info');});};
 window.markChequeCleared=function(id){showConfirm('✅','Mark Cleared?','','btn-success','✅ Cleared',async()=>{const i=APP.cheques.findIndex(x=>x.id===id);if(i>-1){APP.cheques[i].status='cleared';await saveData();updateBadges();notify('Cheque cleared!');}});};
 window.markChequeBounced=function(id){showConfirm('⚠️','Mark Bounced?','','btn-danger','⚠️ Bounced',async()=>{const i=APP.cheques.findIndex(x=>x.id===id);if(i>-1){APP.cheques[i].status='bounced';await saveData();updateBadges();notify('Marked as bounced','warn');}});};
@@ -1497,9 +1499,9 @@ window.markChequeBounced=function(id){showConfirm('⚠️','Mark Bounced?','','b
 function renderCheques(){
   let arr=[...APP.cheques]; const s=sortState['cheques'];
   if(s?.field) arr.sort((a,b)=>s.field==='release'?s.dir*(new Date(a.release)-new Date(b.release)):s.field==='amount'?s.dir*(b.amount-a.amount):0);
-  const pending=arr.filter(x=>x.status==='pending'),tP=pending.reduce((st,x)=>st+x.amount,0);
+  const pending=arr.filter(x=>x.status==='pending'),tP=pending.reduce((s,x)=>s+x.amount,0);
   const rcv=arr.filter(x=>x.type==='received'),iss=arr.filter(x=>x.type==='issued');
-  $('chequeStats').innerHTML=`<div class="sc sc-c"><div class="stat-lbl">Pending</div><div class="stat-val">${pending.length}</div><div class="stat-meta">${fmt(tP)}</div></div><div class="sc sc-g"><div class="stat-lbl">Received</div><div class="stat-val">${rcv.length}</div><div class="stat-meta">${fmt(rcv.reduce((st,x)=>st+x.amount,0))}</div></div><div class="sc sc-r"><div class="stat-lbl">Issued</div><div class="stat-val">${iss.length}</div><div class="stat-meta">${fmt(iss.reduce((st,x)=>st+x.amount,0))}</div></div><div class="sc sc-p"><div class="stat-lbl">Total</div><div class="stat-val">${arr.length}</div></div>`;
+  $('chequeStats').innerHTML=`<div class="sc sc-c"><div class="stat-lbl">Pending</div><div class="stat-val">${pending.length}</div><div class="stat-meta">${fmt(tP)}</div></div><div class="sc sc-g"><div class="stat-lbl">Received</div><div class="stat-val">${rcv.length}</div><div class="stat-meta">${fmt(rcv.reduce((s,x)=>s+x.amount,0))}</div></div><div class="sc sc-r"><div class="stat-lbl">Issued</div><div class="stat-val">${iss.length}</div><div class="stat-meta">${fmt(iss.reduce((s,x)=>s+x.amount,0))}</div></div><div class="sc sc-p"><div class="stat-lbl">Total</div><div class="stat-val">${arr.length}</div></div>`;
   const tbody=$('chequeBody');
   if(!arr.length){tbody.innerHTML=`<tr><td colspan="11">${emptyHtml('📄','No cheques','Track received and issued cheques')}</td></tr>`;return;}
   const td=today();
@@ -1544,7 +1546,7 @@ function renderExpenses(){
   let filtered=cv?arr.filter(x=>x.month===cv):arr;
   const s=sortState['expenses'];
   if(s?.field) filtered.sort((a,b)=>s.field==='date'?s.dir*a.month.localeCompare(b.month):s.field==='amount'?s.dir*(b.amount-a.amount):0);
-  const tA=filtered.reduce((st,x)=>st+x.amount,0);
+  const tA=filtered.reduce((s,x)=>s+x.amount,0);
   const cMap={};filtered.forEach(x=>{cMap[x.cat]=(cMap[x.cat]||0)+x.amount;});
   const top=Object.entries(cMap).sort((a,b)=>b[1]-a[1])[0]||['-',0];
   $('expStats').innerHTML=`<div class="sc sc-r"><div class="stat-lbl">Total</div><div class="stat-val">${fmtS(tA)}</div><div class="stat-meta">${fmt(tA)}</div></div><div class="sc sc-b"><div class="stat-lbl">Count</div><div class="stat-val">${filtered.length}</div></div><div class="sc sc-a"><div class="stat-lbl">Top Category</div><div class="stat-val" style="font-size:14px;">${top[0]}</div><div class="stat-meta">${fmtS(top[1])}</div></div><div class="sc sc-g"><div class="stat-lbl">Paid</div><div class="stat-val">${filtered.filter(x=>x.completed).length}</div><div class="stat-meta">of ${filtered.length}</div></div>`;
@@ -1561,7 +1563,6 @@ function renderExpenses(){
       <button class="ib d" onclick="deleteExpense('${x.id}')">🗑️</button></div></td>
   </tr>`).join('');
 }
-window.renderExpenses = renderExpenses;
 
 // ===================== TARGETS =====================
 window.saveTarget=async function(){
@@ -1581,14 +1582,14 @@ window.saveSaving=async function(){
   APP.targets[i].savings.push({id:uid(),amount:amt,date,note:$('sav_note').value});
   await saveData(); closeM('mSaving');
   ['sav_amt','sav_note'].forEach(id=>$(id).value=''); $('sav_date').value=today();
-  const saved=APP.targets[i].savings.reduce((st,x)=>st+x.amount,0);
+  const saved=APP.targets[i].savings.reduce((s,x)=>s+x.amount,0);
   renderTargets();
   if(saved>=APP.targets[i].amount) setTimeout(()=>showCeleb(APP.targets[i]),200);
   else notify('Saving added! 💚');
 };
 window.deleteTarget=function(id){showConfirm('🗑️','Delete Target?','All savings will also be deleted.','btn-danger','🗑️ Delete',async()=>{APP.targets=APP.targets.filter(x=>x.id!==id);await saveData();notify('Deleted','info');});};
 window.deleteSaving=async function(tid,sid){const i=APP.targets.findIndex(x=>x.id===tid);if(i<0)return;APP.targets[i].savings=APP.targets[i].savings.filter(x=>x.id!==sid);await saveData();renderTargets();notify('Removed','info');};
-window.showSavHistory=function(tid){const t=APP.targets.find(x=>x.id===tid);if(!t)return;$('savHistTit').textContent=t.name+' - Full History';$('savHistContent').innerHTML=t.savings.length?[...t.savings].reverse().map(s=>`<div class="sav-entry"><span style="color:var(--text2);">${s.date}${s.note?' · '+s.note:''}</span><div style="display:flex;align-items:center;gap:7px;"><span style="color:var(--green);font-family:var(--mono);font-weight:700;">+${fmt(s.amount)}</span><button class="ib d" onclick="deleteSaving('${tid}','${s.id}')">✕</button></div></div>`).join(''):emptyHtml('📋','No savings yet','');openM('mSavHistory');};
+window.showSavHistory=function(tid){const t=APP.targets.find(x=>x.id===tid);if(!t)return;$('savHistTit').textContent=t.name+' - Full History';$('savHistContent').innerHTML=t.savings.length?[...t.savings].reverse().map(s=>`<div class="sav-entry"><span style="color:var(--text2);">${s.date}${s.note?' - '+s.note:''}</span><div style="display:flex;align-items:center;gap:7px;"><span style="color:var(--green);font-family:var(--mono);font-weight:700;">+${fmt(s.amount)}</span><button class="ib d" onclick="deleteSaving('${tid}','${s.id}')">✕</button></div></div>`).join(''):emptyHtml('📋','No savings yet','');openM('mSavHistory');};
 
 function showCeleb(target){
   $('celebSub').textContent=`You achieved: "${target.name}"! 🏆`;
@@ -1605,21 +1606,21 @@ function renderTargets(){
   const el=$('targetsList');
   if(!arr.length){el.innerHTML=emptyHtml('🎯','No targets yet','Create savings targets to track your goals');return;}
   el.innerHTML=arr.map(t=>{
-    const saved=t.savings.reduce((st,x)=>st+x.amount,0),remain=Math.max(0,t.amount-saved);
+    const saved=t.savings.reduce((s,x)=>s+x.amount,0),remain=Math.max(0,t.amount-saved);
     const pct=Math.min(100,Math.round(saved/t.amount*100));
     const now=new Date(),end=new Date(t.end+'T00:00:00');
     const dR=Math.ceil((end-now)/86400000),done=saved>=t.amount;
     const recent=[...t.savings].reverse().slice(0,3);
     return`<div class="tgt-card">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;">
-        <div><div style="font-size:14px;font-weight:700;">${done?'🏆 ':''}${t.name}</div><div style="font-size:11px;color:var(--text3);margin-top:2px;">📅 ${t.start} → ${t.end} ${dR>0?'· '+dR+'d left':'· Ended'}</div></div>
+        <div><div style="font-size:14px;font-weight:700;">${done?'🏆 ':''}${t.name}</div><div style="font-size:11px;color:var(--text3);margin-top:2px;">📅 ${t.start} -> ${t.end} ${dR>0?'- '+dR+'d left':'- Ended'}</div></div>
         <div style="display:flex;align-items:flex-start;gap:8px;"><div style="text-align:right;"><div style="font-size:20px;font-weight:800;font-family:var(--mono);color:var(--accent);">${fmtS(t.amount)}</div><div style="font-size:10px;color:var(--text3);">Target</div><div style="font-size:14px;font-weight:700;font-family:var(--mono);color:var(--green);">${fmtS(remain)}</div><div style="font-size:10px;color:var(--text3);">Remaining</div></div>
         <button class="ib d" onclick="deleteTarget('${t.id}')">🗑️</button></div>
       </div>
       <div class="pb" style="margin-bottom:5px;height:8px;"><div class="pf ${done?'pf-g':pct>60?'pf-a':'pf-b'}" style="width:${pct}%"></div></div>
       <div style="display:flex;justify-content:space-between;font-size:11.5px;color:var(--text3);margin-bottom:12px;"><span>${fmt(saved)} saved (${pct}%)</span><span>${done?'🎉 COMPLETED!':fmt(remain)+' to go'}</span></div>
       <div style="display:flex;flex-wrap:wrap;margin-bottom:12px;"><div class="ld"><div class="ld-l">TARGET</div><div class="ld-v" style="color:var(--accent);">${fmt(t.amount)}</div></div><div class="ld"><div class="ld-l">SAVED</div><div class="ld-v" style="color:var(--green);">${fmt(saved)}</div></div><div class="ld"><div class="ld-l">ENTRIES</div><div class="ld-v">${t.savings.length}</div></div><div class="ld"><div class="ld-l">PROGRESS</div><div class="ld-v">${pct}%</div></div></div>
-      ${recent.length?`<div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:7px;text-transform:uppercase;letter-spacing:.5px;">Recent Savings</div>${recent.map(s=>`<div class="sav-entry"><span style="color:var(--text2);">${s.date}${s.note?' · '+s.note:''}</span><span style="color:var(--green);font-family:var(--mono);font-weight:700;">+${fmt(s.amount)}</span></div>`).join('')}${t.savings.length>3?`<button class="btn btn-ghost btn-sm" style="width:100%;justify-content:center;margin-top:7px;" onclick="showSavHistory('${t.id}')">📋 See All ${t.savings.length} Entries</button>`:''}`:''} 
+      ${recent.length?`<div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:7px;text-transform:uppercase;letter-spacing:.5px;">Recent Savings</div>${recent.map(s=>`<div class="sav-entry"><span style="color:var(--text2);">${s.date}${s.note?' - '+s.note:''}</span><span style="color:var(--green);font-family:var(--mono);font-weight:700;">+${fmt(s.amount)}</span></div>`).join('')}${t.savings.length>3?`<button class="btn btn-ghost btn-sm" style="width:100%;justify-content:center;margin-top:7px;" onclick="showSavHistory('${t.id}')">📋 See All ${t.savings.length} Entries</button>`:''}`:''} 
       ${t.notes?`<div style="margin-top:8px;font-size:11px;color:var(--text3);padding:6px 10px;background:var(--bg2);border-radius:6px;">${t.notes}</div>`:''}
     </div>`;
   }).join('');
@@ -1647,21 +1648,21 @@ window.deleteBalFlow=function(id){showConfirm('🗑️','Delete?','','btn-danger
 
 function renderBalance(){
   const bal=APP.balance||{total:0,flows:[]};
-  const out=bal.flows.filter(x=>x.type==='out').reduce((st,x)=>st+x.amount,0);
-  const inc=bal.flows.filter(x=>x.type==='in').reduce((st,x)=>st+x.amount,0);
+  const out=bal.flows.filter(x=>x.type==='out').reduce((s,x)=>s+x.amount,0);
+  const inc=bal.flows.filter(x=>x.type==='in').reduce((s,x)=>s+x.amount,0);
   const net=bal.total-out+inc;
   $('balBase').textContent=fmtS(bal.total);$('balOut').textContent=fmtS(out);$('balNet').textContent=fmtS(net);
   const bigEl=$('balBig');bigEl.style.color=net>=0?'var(--green)':'var(--red)';bigEl.textContent=fmt(net);
   const flows=[...bal.flows].sort((a,b)=>new Date(b.date)-new Date(a.date));
   if(!flows.length){$('balFlows').innerHTML=emptyHtml('⚖️','No flows','Set your balance and log investment flows');return;}
-  $('balFlows').innerHTML=flows.map(f=>`<div class="flow-item"><div class="flow-dot ${f.type==='set'?'in':f.type}">${f.type==='set'?'💰':f.type==='out'?'📤':'📥'}</div><div class="flow-info"><div class="flow-nm">${f.company}</div><div class="flow-dt">${f.date}${f.notes?' · '+f.notes:''}</div></div><div class="flow-right"><div class="flow-amt ${f.type==='out'?'out':'in'}">${f.type==='out'?'-':'+'}${fmt(f.amount)}</div><div><span class="badge ${f.type==='set'?'bg-a':f.type==='out'?'bg-r':'bg-g'}">${f.type==='set'?'Set':f.type==='out'?'Out':'In'}</span></div></div><button class="ib d" onclick="deleteBalFlow('${f.id}')">🗑️</button></div>`).join('');
+  $('balFlows').innerHTML=flows.map(f=>`<div class="flow-item"><div class="flow-dot ${f.type==='set'?'in':f.type}">${f.type==='set'?'💰':f.type==='out'?'📤':'📥'}</div><div class="flow-info"><div class="flow-nm">${f.company}</div><div class="flow-dt">${f.date}${f.notes?' - '+f.notes:''}</div></div><div class="flow-right"><div class="flow-amt ${f.type==='out'?'out':'in'}">${f.type==='out'?'-':'+'}${fmt(f.amount)}</div><div><span class="badge ${f.type==='set'?'bg-a':f.type==='out'?'bg-r':'bg-g'}">${f.type==='set'?'Set':f.type==='out'?'Out':'In'}</span></div></div><button class="ib d" onclick="deleteBalFlow('${f.id}')">🗑️</button></div>`).join('');
 }
 
 // ===================== MONTHLY DATA =====================
 function getMonthData(year, month){
   const dt=new Date(year,month,1);
   let income=0;
-  APP.income.forEach(st=>{const start=new Date(st.start+'T00:00:00'),end=st.end?new Date(st.end+'T00:00:00'):null;if(start<=dt&&(!end||end>=dt))income+=st.monthly;});
+  APP.income.forEach(s=>{const start=new Date(s.start+'T00:00:00'),end=s.end?new Date(s.end+'T00:00:00'):null;if(start<=dt&&(!end||end>=dt))income+=s.monthly;});
   let loanTotal=0,loanItems=[];
   APP.loans.forEach(l=>{const start=new Date(l.start+'T00:00:00'),end=loanEnd(l);if(start<=dt&&end>dt){loanTotal+=l.monthly;loanItems.push({name:l.name,bank:l.bank,amount:l.monthly});}});
   let ccTotal=0,ccItems=[];
@@ -1681,18 +1682,16 @@ function renderMonthly(){
   const curM=year===now.getFullYear()?now.getMonth():0;
   showMonthDetail(year,curM,$('monthTabs').children[curM]);
 }
-window.renderMonthly = renderMonthly;
-
 window.showMonthDetail=function(year,month,tabEl){
   document.querySelectorAll('.mtab').forEach(t=>t.classList.remove('active'));
   if(tabEl) tabEl.classList.add('active');
   const data=getMonthData(year,month);
   const mName=MONTHS[month]+' '+year;
-  $('monthlyContent').innerHTML=`<div class="mhero"><div class="mh-lbl">${mName}</div><div class="mh-bal ${data.balance>=0?'mh-p':'mh-n'}">${fmt(data.balance)}</div><div style="font-size:11px;color:var(--text3);margin-top:2px;">Monthly Balance</div><div class="mh-row"><div class="mhi"><div class="mhi-lbl">Income</div><div class="mhi-val" style="color:var(--green);">${fmt(data.income)}</div></div><div class="mhi"><div class="mhi-lbl">Loans</div><div class="mhi-val" style="color:var(--red);">${fmt(data.loanTotal)}</div></div><div class="mhi"><div class="mhi-lbl">CC Installments</div><div class="mhi-val" style="color:var(--red);">${fmt(data.ccTotal)}</div></div><div class="mhi"><div class="mhi-lbl">Other Expenses</div><div class="mhi-val" style="color:var(--red);">${fmt(data.expTotal)}</div></div><div class="mhi"><div class="mhi-lbl">Total Expenses</div><div class="mhi-val" style="color:var(--red);">${fmt(data.totalExp)}</div></div></div></div>
+  $('monthlyContent').innerHTML=`<div class="mhero"><div class="mh-lbl">${mName}</div><div class="mh-bal ${data.balance>=0?'mh-p':'mh-n'}">${fmt(data.balance)}</div><div style="font-size:11px;color:var(--text3);margin-top:2px;">Monthly Balance</div><div class="mh-row"><div class="mhi"><div class="mhi-lbl">Income</div><div class="mhi-val" style="color:var(--green);">${fmt(data.income)}</div></div><div class="mhi"><div class="mhi-lbl">Loans</div><div class="mhi-val" style="color:var(--red);">${fmt(data.loanTotal)}</div></div><div class="mhi"><div class="mhi-lbl">CC Instalments</div><div class="mhi-val" style="color:var(--red);">${fmt(data.ccTotal)}</div></div><div class="mhi"><div class="mhi-lbl">Other Expenses</div><div class="mhi-val" style="color:var(--red);">${fmt(data.expTotal)}</div></div><div class="mhi"><div class="mhi-lbl">Total Expenses</div><div class="mhi-val" style="color:var(--red);">${fmt(data.totalExp)}</div></div></div></div>
   <div class="g2"><div class="card"><div class="card-hdr"><div class="card-title">🏦 Loan Payments</div><div class="card-sub">${fmt(data.loanTotal)}</div></div>${data.loanItems.length?data.loanItems.map(x=>`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:12.5px;"><span>${x.name} <span style="color:var(--text3);font-size:10.5px;">(${x.bank})</span></span><span class="td-r">${fmt(x.amount)}</span></div>`).join(''):emptyHtml('','-','No loan payments')}</div>
-  <div class="card"><div class="card-hdr"><div class="card-title">💳 CC Installments</div><div class="card-sub">${fmt(data.ccTotal)}</div></div>${data.ccItems.length?data.ccItems.map(x=>`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:12.5px;"><span>${x.name} <span style="color:var(--text3);font-size:10.5px;">(${x.bank})</span></span><span class="td-r">${fmt(x.amount)}</span></div>`).join(''):emptyHtml('','-','No installments')}</div>
+  <div class="card"><div class="card-hdr"><div class="card-title">💳 CC Instalments</div><div class="card-sub">${fmt(data.ccTotal)}</div></div>${data.ccItems.length?data.ccItems.map(x=>`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:12.5px;"><span>${x.name} <span style="color:var(--text3);font-size:10.5px;">(${x.bank})</span></span><span class="td-r">${fmt(x.amount)}</span></div>`).join(''):emptyHtml('','-','No instalments')}</div>
   <div class="card"><div class="card-hdr"><div class="card-title">🧾 Other Expenses</div><div class="card-sub">${fmt(data.expTotal)}</div></div>${data.expItems.length?data.expItems.map(x=>`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:12.5px;"><span>${x.name}</span><span class="td-r">${fmt(x.amount)}</span></div>`).join(''):emptyHtml('','-','No expenses')}</div>
-  <div class="card"><div class="card-hdr"><div class="card-title">💰 Income</div><div class="card-sub">${fmt(data.income)}</div></div>${APP.income.filter(st=>{const start=new Date(st.start+'T00:00:00'),end=st.end?new Date(st.end+'T00:00:00'):null,dt=new Date(year,month,1);return start<=dt&&(!end||end>=dt);}).map(st=>`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:12.5px;"><span>${st.name}</span><span class="td-g">${fmt(st.monthly)}</span></div>`).join('')||emptyHtml('','-','No income sources')}</div></div>`;
+  <div class="card"><div class="card-hdr"><div class="card-title">💰 Income</div><div class="card-sub">${fmt(data.income)}</div></div>${APP.income.filter(s=>{const start=new Date(s.start+'T00:00:00'),end=s.end?new Date(s.end+'T00:00:00'):null,dt=new Date(year,month,1);return start<=dt&&(!end||end>=dt);}).map(s=>`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:12.5px;"><span>${s.name}</span><span class="td-g">${fmt(s.monthly)}</span></div>`).join('')||emptyHtml('','-','No income sources')}</div></div>`;
 };
 
 // ===================== DASHBOARD =====================
@@ -1701,12 +1700,12 @@ function renderDash(){
   const now=new Date();
   const year=parseInt($('dashYear')?.value||now.getFullYear());
   // Stats
-  const tIncome=APP.income.reduce((st,x)=>st+x.monthly,0);
-  const tLoans=APP.loans.reduce((st,l)=>{const e=loanEnd(l);return e>now?st+l.monthly:st;},0);
-  const tCC=APP.ccinstall.filter(x=>!x.completed).reduce((st,x)=>{const e=new Date(x.date+'T00:00:00');e.setMonth(e.getMonth()+x.duration);return e>now?st+x.monthly:st;},0);
-  const tExp=APP.expenses.filter(x=>x.recurring).reduce((st,x)=>st+x.amount,0);
+  const tIncome=APP.income.reduce((s,x)=>s+x.monthly,0);
+  const tLoans=APP.loans.reduce((s,l)=>{const e=loanEnd(l);return e>now?s+l.monthly:s;},0);
+  const tCC=APP.ccinstall.filter(x=>!x.completed).reduce((s,x)=>{const e=new Date(x.date+'T00:00:00');e.setMonth(e.getMonth()+x.duration);return e>now?s+x.monthly:s;},0);
+  const tExp=APP.expenses.filter(x=>x.recurring).reduce((s,x)=>s+x.amount,0);
   const bal=tIncome-tLoans-tCC-tExp;
-  $('dashStats').innerHTML=`<div class="sc sc-g"><div class="stat-lbl">Monthly Income</div><div class="stat-val">${fmtS(tIncome)}</div><div class="stat-meta">${APP.income.length} sources</div></div><div class="sc sc-r"><div class="stat-lbl">Loan Payments</div><div class="stat-val">${fmtS(tLoans)}</div><div class="stat-meta">${APP.loans.length} loans</div></div><div class="sc sc-a"><div class="stat-lbl">CC Installments</div><div class="stat-val">${fmtS(tCC)}</div><div class="stat-meta">${APP.ccinstall.filter(x=>!x.completed).length} plans</div></div><div class="sc sc-${bal>=0?'b':'r'}"><div class="stat-lbl">Monthly Balance</div><div class="stat-val">${fmtS(bal)}</div><div class="stat-meta">After all payments</div></div><div class="sc sc-p"><div class="stat-lbl">Pending CC</div><div class="stat-val">${APP.cconetime.filter(x=>!x.paid).length}</div><div class="stat-meta">One-time payments</div></div>`;
+  $('dashStats').innerHTML=`<div class="sc sc-g"><div class="stat-lbl">Monthly Income</div><div class="stat-val">${fmtS(tIncome)}</div><div class="stat-meta">${APP.income.length} sources</div></div><div class="sc sc-r"><div class="stat-lbl">Loan Payments</div><div class="stat-val">${fmtS(tLoans)}</div><div class="stat-meta">${APP.loans.length} loans</div></div><div class="sc sc-a"><div class="stat-lbl">CC Instalments</div><div class="stat-val">${fmtS(tCC)}</div><div class="stat-meta">${APP.ccinstall.filter(x=>!x.completed).length} plans</div></div><div class="sc sc-${bal>=0?'b':'r'}"><div class="stat-lbl">Monthly Balance</div><div class="stat-val">${fmtS(bal)}</div><div class="stat-meta">After all payments</div></div><div class="sc sc-p"><div class="stat-lbl">Pending CC</div><div class="stat-val">${APP.cconetime.filter(x=>!x.paid).length}</div><div class="stat-meta">One-time payments</div></div>`;
   // Bar chart
   const labels=MONTHS_S;
   const incData=[],expData=[];
@@ -1715,7 +1714,7 @@ function renderDash(){
   const ctx=$('dashChart')?.getContext('2d'); if(!ctx) return;
   dashChartInst=new Chart(ctx,{type:'bar',data:{labels,datasets:[{label:'Income',data:incData,backgroundColor:'rgba(16,185,129,.55)',borderColor:'rgba(16,185,129,1)',borderWidth:1,borderRadius:3},{label:'Expenses',data:expData,backgroundColor:'rgba(239,68,68,.45)',borderColor:'rgba(239,68,68,1)',borderWidth:1,borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#94a3b8',font:{size:10}}},tooltip:{callbacks:{label:c=>fmt(c.parsed.y)}}},scales:{x:{ticks:{color:'#64748b',font:{size:10}},grid:{color:'rgba(255,255,255,.03)'}},y:{ticks:{color:'#64748b',callback:v=>fmtS(v),font:{size:10}},grid:{color:'rgba(255,255,255,.03)'}}}}});
   // Pie chart
-  const pieData={Loans:tLoans,'CC Installments':tCC};
+  const pieData={Loans:tLoans,'CC Instalments':tCC};
   const curM=now.getMonth(),curY=now.getFullYear();
   APP.expenses.filter(e=>{const[y,m]=e.month.split('-');return parseInt(y)===curY&&parseInt(m)-1===curM;}).forEach(e=>{pieData[e.cat]=(pieData[e.cat]||0)+e.amount;});
   if(dashPieInst) dashPieInst.destroy();
@@ -1728,7 +1727,6 @@ function renderDash(){
   renderDashUpcoming();
   renderDashRecent();
 }
-window.renderDash = renderDash;
 
 function renderDashUpcoming(){
   const upcoming=[];
@@ -1739,19 +1737,19 @@ function renderDashUpcoming(){
   // Cheques
   APP.cheques.filter(x=>x.status==='pending').forEach(x=>{const d=new Date(x.release+'T00:00:00');if(d>=now&&d<=n30){const dl=Math.ceil((d-now)/86400000);upcoming.push({name:'Cheque: '+x.party,amount:x.amount,date:x.release,type:'Cheque Release',urgent:dl<=3,daysLeft:dl});}});
   // Recurring expenses for current month
-  const curM=new Date().toISOString().substr(0,7);
+  const curM=new Date().toISOString().substring(0,7);
   APP.expenses.filter(x=>x.recurring&&!x.completed&&x.month<=curM).forEach(x=>upcoming.push({name:x.desc,amount:x.amount,date:curM+'-28',type:'Recurring Expense',urgent:false,daysLeft:0}));
   // Current month loans
-  APP.loans.forEach(l=>{const e=loanEnd(l);if(e>now) upcoming.push({name:l.name,amount:l.monthly,date:new Date().toISOString().substr(0,7)+'-28',type:'Loan Payment',urgent:false,daysLeft:0});});
-  // Current month CC installments
-  APP.ccinstall.filter(x=>!x.completed).forEach(x=>{const e=new Date(x.date+'T00:00:00');e.setMonth(e.getMonth()+x.duration);if(e>now) upcoming.push({name:x.product,amount:x.monthly,date:new Date().toISOString().substr(0,7)+'-25',type:'CC Installment',urgent:false,daysLeft:0});});
+  APP.loans.forEach(l=>{const e=loanEnd(l);if(e>now) upcoming.push({name:l.name,amount:l.monthly,date:new Date().toISOString().substring(0,7)+'-28',type:'Loan Payment',urgent:false,daysLeft:0});});
+  // Current month CC instalments
+  APP.ccinstall.filter(x=>!x.completed).forEach(x=>{const e=new Date(x.date+'T00:00:00');e.setMonth(e.getMonth()+x.duration);if(e>now) upcoming.push({name:x.product,amount:x.monthly,date:new Date().toISOString().substring(0,7)+'-25',type:'CC Instalment',urgent:false,daysLeft:0});});
   upcoming.sort((a,b)=>a.daysLeft-b.daysLeft);
   $('dashUpcoming').innerHTML=upcoming.length?upcoming.slice(0,6).map(u=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:12.5px;"><div><div style="font-weight:600;">${u.name}</div><div style="font-size:10.5px;color:var(--text3);">${u.type} · ${u.date}</div></div><div style="text-align:right;"><div class="td-r">${fmt(u.amount)}</div>${u.urgent?'<span class="badge bg-r" style="font-size:9px;">⚠️ Urgent</span>':''}</div></div>`).join(''):emptyHtml('','No upcoming payments','All clear for the next 30 days');
 }
 
 function renderDashRecent(){
   const recent=[];
-  APP.income.slice(-3).forEach(st=>recent.push({date:st.start,text:'Income: '+st.name,type:'income',amount:st.monthly}));
+  APP.income.slice(-3).forEach(s=>recent.push({date:s.start,text:'Income: '+s.name,type:'income',amount:s.monthly}));
   APP.loans.slice(-3).forEach(l=>recent.push({date:l.start,text:'Loan: '+l.name,type:'loan',amount:-l.monthly}));
   APP.ccinstall.slice(-3).forEach(x=>recent.push({date:x.date,text:'CC Install: '+x.product,type:'cc',amount:-x.monthly}));
   APP.cheques.slice(-3).forEach(x=>recent.push({date:x.issue,text:'Cheque: '+x.no,type:'cheque',amount:x.type==='received'?x.amount:-x.amount}));
@@ -1985,14 +1983,14 @@ function exportPDF(data, type, month, year){
       doc.setFontSize(9); doc.setTextColor(200,200,200);
       cols.forEach((c,i)=>doc.text(c,20+i*55,y));y+=6;
       doc.setTextColor(230,230,230);
-      rows.forEach(r=>{ if(y>270){doc.addPage();y=20;} r.forEach((c,i)=>doc.text(String(c).slice(0,20),20+i*55,y)); y+=5; });
+      rows.forEach(r=>{ if(y>270){doc.addPage();y=20;} r.forEach((c,i)=>doc.text(String(c).substring(0,20),20+i*55,y)); y+=5; });
       y+=5;
     };
     addSection('Income Sources',data.income,['Name','Company','Monthly','Rate %'],
       data.income.map(x=>[x.name,x.company,fmt(x.monthly),x.rate+'%']));
     addSection('Bank Loans',data.loans,['Name','Bank','Monthly','Status'],
       data.loans.map(x=>[x.name,x.bank,fmt(x.monthly),loanEnd(x)>new Date()?'Active':'Done']));
-    addSection('CC Installments',data.ccinstall,['Product','Bank','Monthly','Duration'],
+    addSection('CC Instalments',data.ccinstall,['Product','Bank','Monthly','Duration'],
       data.ccinstall.map(x=>[x.product,x.bank,fmt(x.monthly),x.duration+'M']));
     doc.save(`WealthFlow_Report_${new Date().toISOString().split('T')[0]}.pdf`);
     notify('PDF exported! 📄','success');
