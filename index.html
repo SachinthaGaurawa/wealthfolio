@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wealthfolio | Advanced Wealth Management</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <canvas id="confetti-canvas"></canvas>
+
+    <div id="auth-screen" class="screen active flex-center">
+        <div class="auth-card glass-panel">
+            <h1 class="logo-text">Wealthfolio<span class="dot">.</span></h1>
+            <p id="auth-subtitle" class="text-muted">Enter your highly secure AES-256 passcode</p>
+            
+            <div class="input-group">
+                <input type="password" id="passcode-input" placeholder="••••••••" autocomplete="new-password">
+            </div>
+            
+            <button id="auth-btn" class="btn btn-primary w-full mt-4">Unlock System</button>
+            
+            <div class="auth-links mt-4 text-center">
+                <button id="forgot-passcode-btn" class="btn-text text-muted text-sm">Forgot Passcode?</button>
+            </div>
+
+            <div id="recovery-section" class="hidden mt-4 pt-4 border-t">
+                <p class="text-sm text-warning mb-2">Warning: As this system uses zero-knowledge encryption, a forgotten passcode cannot be recovered. Inputting 'FACTORYRESET' will permanently delete all encrypted data and allow a fresh start.</p>
+                <input type="text" id="recovery-input" placeholder="Type FACTORYRESET" class="mb-2">
+                <button id="recover-btn" class="btn btn-warning w-full">Execute Factory Reset</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="app-screen" class="screen hidden">
+        
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2 class="logo-text text-xl">Wealthfolio<span class="dot">.</span></h2>
+            </div>
+            <nav class="sidebar-nav">
+                <button class="nav-btn active" data-target="tab-dashboard">Dashboard & Targets</button>
+                <button class="nav-btn" data-target="tab-income-invest">Income & Investments</button>
+                <button class="nav-btn" data-target="tab-credit-loans">Credit & Loans</button>
+                <button class="nav-btn" data-target="tab-expenses">Monthly Expenses & Analytics</button>
+                <button class="nav-btn" data-target="tab-settings">System Settings</button>
+            </nav>
+            <div class="sidebar-footer">
+                <button id="lock-btn" class="btn btn-secondary w-full">Lock System</button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            
+            <section id="tab-dashboard" class="tab-content active">
+                <header class="section-header">
+                    <h2>Financial Overview</h2>
+                    <div class="date-display text-muted text-sm" id="current-date-display"></div>
+                </header>
+
+                <div class="grid-cards">
+                    <div class="stat-card">
+                        <span class="stat-title">Liquid Cash Balance</span>
+                        <h3 class="stat-value text-green" id="stat-balance">0.00</h3>
+                        <span class="stat-subtitle">Aggregate Income - Active Investments</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-title">Monthly Cash Flow</span>
+                        <h3 class="stat-value" id="stat-cashflow">0.00</h3>
+                        <span class="stat-subtitle">Income + Dividends - Total Liabilities</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-title">Active Investments</span>
+                        <h3 class="stat-value text-blue" id="stat-investments">0.00</h3>
+                        <span class="stat-subtitle">Deployed Capital</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-title">Total Active Liabilities</span>
+                        <h3 class="stat-value text-red" id="stat-liabilities">0.00</h3>
+                        <span class="stat-subtitle">Loans & Credit Allocations</span>
+                    </div>
+                </div>
+
+                <div class="mt-8">
+                    <div class="flex-between align-center mb-4">
+                        <h3>Savings Target Tracker</h3>
+                        <button class="btn btn-sm btn-primary" onclick="UI.openModal('modal-target')">+ New Target</button>
+                    </div>
+                    <div id="targets-container" class="targets-list">
+                        </div>
+                </div>
+            </section>
+
+            <section id="tab-income-invest" class="tab-content hidden">
+                <header class="section-header">
+                    <h2>Income Streams & Capital Deployment</h2>
+                </header>
+                
+                <div class="grid-2">
+                    <div class="panel">
+                        <div class="flex-between mb-4">
+                            <h3>Monthly Income</h3>
+                            <button class="btn btn-sm btn-secondary" onclick="UI.openModal('modal-income')">+ Add Income</button>
+                        </div>
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th class="sortable" data-sort="string">Source ⇕</th>
+                                        <th class="sortable" data-sort="numeric">Amount ⇕</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="income-table-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <div class="flex-between mb-4">
+                            <h3>Active Investments</h3>
+                            <button class="btn btn-sm btn-secondary" onclick="UI.openModal('modal-invest')">+ Add Investment</button>
+                        </div>
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th class="sortable" data-sort="string">Entity ⇕</th>
+                                        <th class="sortable" data-sort="numeric">Principal ⇕</th>
+                                        <th>Yield (%)</th>
+                                        <th>Timeline</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="invest-table-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="tab-credit-loans" class="tab-content hidden">
+                <header class="section-header">
+                    <h2>Credit Facilities & Amortization</h2>
+                </header>
+
+                <div class="panel mb-6">
+                    <div class="flex-between mb-4">
+                        <h3>Standard Credit Card Purchases (50-Day Grace Period)</h3>
+                        <button class="btn btn-sm btn-secondary" onclick="UI.openModal('modal-cc-grace')">+ Add Purchase</button>
+                    </div>
+                    <p class="text-sm text-muted mb-4">Algorithmically tracked. Entries shift to warning status (Red) when 10 days or fewer remain before interest capitalizes.</p>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th class="sortable" data-sort="date">Purchase Date ⇕</th>
+                                    <th>Item / Buyer</th>
+                                    <th>Bank</th>
+                                    <th class="sortable" data-sort="numeric">Amount ⇕</th>
+                                    <th class="sortable" data-sort="numeric">Countdown ⇕</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cc-grace-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="panel">
+                        <div class="flex-between mb-4">
+                            <h3>Credit Card Installment Plans</h3>
+                            <button class="btn btn-sm btn-secondary" onclick="UI.openModal('modal-cc-install')">+ Add Installment</button>
+                        </div>
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Item</th>
+                                        <th>Bank</th>
+                                        <th>Mo. Payment</th>
+                                        <th>Duration</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="cc-install-table-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <div class="flex-between mb-4">
+                            <h3>Term Loans</h3>
+                            <button class="btn btn-sm btn-secondary" onclick="UI.openModal('modal-loan')">+ Add Loan</button>
+                        </div>
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Institution</th>
+                                        <th class="sortable" data-sort="numeric">Principal ⇕</th>
+                                        <th>Mo. Payment</th>
+                                        <th>Duration</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="loan-table-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="tab-expenses" class="tab-content hidden">
+                <header class="section-header">
+                    <h2>Monthly Expenditures & Visual Analytics</h2>
+                    <button class="btn btn-sm btn-primary" onclick="UI.openModal('modal-expense')">+ Add Expense</button>
+                </header>
+                
+                <div class="grid-2">
+                    <div class="panel">
+                        <h3>Day-to-Day Expenses</h3>
+                        <p class="text-sm text-muted mb-4">Standard recurring expenses. CC installments and loans are automatically factored into the visual analytics.</p>
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th class="sortable" data-sort="string">Category ⇕</th>
+                                        <th class="sortable" data-sort="numeric">Amount ⇕</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="expense-table-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div class="panel flex-center" style="flex-direction: column;">
+                        <h3 class="mb-4">Total Monthly Liabilities Chart</h3>
+                        <div style="position: relative; height:300px; width:100%">
+                            <canvas id="expenses-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+             <section id="tab-settings" class="tab-content hidden">
+                <header class="section-header">
+                    <h2>System & Security Configuration</h2>
+                </header>
+                <div class="panel max-w-md">
+                    <h3 class="text-red">Danger Zone</h3>
+                    <p class="text-sm text-muted mb-4">Wipe the localized AES-GCM database completely. This action is irreversible.</p>
+                    <button class="btn btn-warning" onclick="App.factoryReset()">Execute Factory Reset</button>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <div id="modal-overlay" class="modal-overlay hidden">
+        
+        <div id="modal-confirm" class="modal-card hidden">
+            <button class="modal-close" onclick="UI.closeAllModals()">❌</button>
+            <h3 class="mb-2">Confirm System Action</h3>
+            <p id="confirm-message" class="text-muted mb-6">Are you sure you want to mark this item as completed?</p>
+            <div class="flex-end gap-4">
+                <button class="btn btn-secondary" onclick="UI.closeAllModals()">Cancel</button>
+                <button id="confirm-submit-btn" class="btn btn-primary">Complete</button>
+            </div>
+        </div>
+
+        <div id="modal-target" class="modal-card hidden">
+            <button class="modal-close" onclick="UI.closeAllModals()">❌</button>
+            <h3 class="mb-4">Initialize Savings Target</h3>
+            <form id="form-target" class="form-grid">
+                <div class="form-group col-span-2">
+                    <label>Target Identifier</label>
+                    <input type="text" name="name" required>
+                </div>
+                <div class="form-group col-span-2">
+                    <label>Aggregate Target Amount</label>
+                    <input type="number" name="amount" required>
+                </div>
+                <div class="form-group">
+                    <label>Commencement Date</label>
+                    <input type="date" name="startDate" required>
+                </div>
+                <div class="form-group">
+                    <label>Conclusion Date</label>
+                    <input type="date" name="endDate" required>
+                </div>
+                <div class="col-span-2 flex-end mt-4">
+                    <button type="button" class="btn btn-secondary mr-2" onclick="UI.closeAllModals()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Initialize</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="modal-add-savings" class="modal-card hidden">
+            <button class="modal-close" onclick="UI.closeAllModals()">❌</button>
+            <h3 class="mb-4">Log Target Contribution</h3>
+            <form id="form-add-savings" class="form-grid">
+                <input type="hidden" name="targetId" id="savings-target-id">
+                <div class="form-group col-span-2">
+                    <label>Contribution Amount</label>
+                    <input type="number" name="amount" required>
+                </div>
+                <div class="col-span-2 flex-end mt-4">
+                    <button type="button" class="btn btn-secondary mr-2" onclick="UI.closeAllModals()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Deposit</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="modal-income" class="modal-card hidden">
+            <button class="modal-close" onclick="UI.closeAllModals()">❌</button>
+            <h3 class="mb-4">Define Monthly Income</h3>
+            <form id="form-income" class="form-grid">
+                <div class="form-group col-span-2">
+                    <label>Source Identifier</label>
+                    <input type="text" name="name" required>
+                </div>
+                <div class="form-group col-span-2">
+                    <label>Nominal Amount</label>
+                    <input type="number" name="amount" required>
+                </div>
+                <div class="col-span-2 flex-end mt-4">
+                    <button type="button" class="btn btn-secondary mr-2" onclick="UI.closeAllModals()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="modal-invest" class="modal-card hidden">
+            <button class="modal-close" onclick="UI.closeAllModals()">❌</button>
+            <h3 class="mb-4">Deploy Capital (Investment)</h3>
+            <form id="form-invest" class="form-grid">
+                <div class="form-group col-span-2">
+                    <label>Institution / Recipient</label>
+                    <input type="text" name="entity" required>
+                </div>
+                <div class="form-group">
+                    <label>Principal Deployed</label>
+                    <input type="number" name="amount" required>
+                </div>
+                <div class="form-group">
+                    <label>Annual Dividend Yield (%)</label>
+                    <input type="number" step="0.01" name="yield" required>
+                </div>
+                <div class="form-group">
+                    <label>Dividend Cadence</label>
+                    <select name="frequency" required>
+                        <option value="monthly">Monthly</option>
+                        <option value="yearly">Annually</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Payout Day (1-31)</label>
+                    <input type="number" min="1" max="31" name="payoutDay" required>
+                </div>
+                <div class="form-group">
+                    <label>Commencement Date</label>
+                    <input type="date" name="startDate" required>
+                </div>
+                <div class="form-group">
+                    <label>Maturity Date</label>
+                    <input type="date" name="endDate" required>
+                </div>
+                <div class="col-span-2 flex-end mt-4">
+                    <button type="button" class="btn btn-secondary mr-2" onclick="UI.closeAllModals()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Deploy</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="modal-cc-grace" class="modal-card hidden">
+            <button class="modal-close" onclick="UI.closeAllModals()">❌</button>
+            <h3 class="mb-4">Log Standard Credit Card Purchase</h3>
+            <form id="form-cc-grace" class="form-grid">
+                <div class="form-group">
+                    <label>Item / Buyer</label>
+                    <input type="text" name="product" required>
+                </div>
+                <div class="form-group">
+                    <label>Issuing Bank</label>
+                    <select name="bank" required>
+                        <option value="DFCC Bank">DFCC Bank</option>
+                        <option value="Seylan Bank">Seylan Bank</option>
+                        <option value="Union Bank">Union Bank</option>
+                        <option value="Commercial Bank">Commercial Bank</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Purchase Value</label>
+                    <input type="number" name="amount" required>
+                </div>
+                <div class="form-group">
+                    <label>Transaction Date</label>
+                    <input type="date" name="purchaseDate" required>
+                </div>
+                <div class="col-span-2 flex-end mt-4">
+                    <button type="button" class="btn btn-secondary mr-2" onclick="UI.closeAllModals()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="modal-cc-install" class="modal-card hidden">
+            <button class="modal-close" onclick="UI.closeAllModals()">❌</button>
+            <h3 class="mb-4">Establish CC Installment Plan</h3>
+            <form id="form-cc-install" class="form-grid">
+                <div class="form-group">
+                    <label>Item / Buyer</label>
+                    <input type="text" name="product" required>
+                </div>
+                <div class="form-group">
+                    <label>Issuing Bank</label>
+                    <select name="bank" required>
+                        <option value="DFCC Bank">DFCC Bank</option>
+                        <option value="Seylan Bank">Seylan Bank</option>
+                        <option value="Union Bank">Union Bank</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Principal Amount</label>
+                    <input type="number" name="amount" required>
+                </div>
+                <div class="form-group">
+                    <label>Annual Interest Rate (%)</label>
+                    <input type="number" step="0.01" name="rate" required>
+                </div>
+                <div class="form-group">
+                    <label>Duration (Months)</label>
+                    <input type="number" name="duration" required>
+                </div>
+                <div class="form-group">
+                    <label>Commencement Date</label>
+                    <input type="date" name="startDate" required>
+                </div>
+                <div class="col-span-2 flex-end mt-4">
+                    <button type="button" class="btn btn-secondary mr-2" onclick="UI.closeAllModals()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Establish</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="modal-loan" class="modal-card hidden">
+            <button class="modal-close" onclick="UI.closeAllModals()">❌</button>
+            <h3 class="mb-4">Initialize Term Loan</h3>
+            <form id="form-loan" class="form-grid">
+                <div class="form-group col-span-2">
+                    <label>Lending Institution</label>
+                    <select name="bank" required>
+                        <option value="DFCC Bank">DFCC Bank</option>
+                        <option value="Seylan Bank">Seylan Bank</option>
+                        <option value="Union Bank">Union Bank</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Principal Borrowed</label>
+                    <input type="number" name="amount" required>
+                </div>
+                <div class="form-group">
+                    <label>Annual Interest Rate (%)</label>
+                    <input type="number" step="0.01" name="rate" required>
+                </div>
+                <div class="form-group">
+                    <label>Amortization Period (Months)</label>
+                    <input type="number" name="duration" required>
+                </div>
+                <div class="form-group">
+                    <label>Commencement Date</label>
+                    <input type="date" name="startDate" required>
+                </div>
+                <div class="col-span-2 flex-end mt-4">
+                    <button type="button" class="btn btn-secondary mr-2" onclick="UI.closeAllModals()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Initialize</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="modal-expense" class="modal-card hidden">
+            <button class="modal-close" onclick="UI.closeAllModals()">❌</button>
+            <h3 class="mb-4">Log Recurring Expense</h3>
+            <form id="form-expense" class="form-grid">
+                <div class="form-group col-span-2">
+                    <label>Expense Classification</label>
+                    <input type="text" name="name" required>
+                </div>
+                <div class="form-group col-span-2">
+                    <label>Nominal Amount</label>
+                    <input type="number" name="amount" required>
+                </div>
+                <div class="col-span-2 flex-end mt-4">
+                    <button type="button" class="btn btn-secondary mr-2" onclick="UI.closeAllModals()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
