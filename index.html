@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wealthfolio - Professional Wealth Management</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        flexoki: {
+                            bg: '#100F0F',
+                            ui: '#1C1B1A',
+                            ui2: '#282726',
+                            tx: '#CECDC3',
+                            tx2: '#878580',
+                            red: '#AF3029',
+                            green: '#66800B',
+                            blue: '#205EA6',
+                            yellow: '#AD8301',
+                            purple: '#5E409D'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { 
+            background-color: #100F0F; 
+            color: #CECDC3; 
+            font-family: system-ui, -apple-system, sans-serif; 
+            overflow-x: hidden; 
+        }
+       .hidden-el { display: none!important; }
+        
+        /* Form Inputs */
+        input, select { 
+            background-color: #100F0F; 
+            border: 1px solid #282726; 
+            color: #CECDC3; 
+            padding: 0.6rem; 
+            border-radius: 0.375rem; 
+            width: 100%; 
+            outline: none; 
+            transition: border-color 0.2s;
+        }
+        input:focus, select:focus { border-color: #205EA6; }
+        
+        /* Buttons */
+        button.btn-primary { 
+            background-color: #205EA6; 
+            color: #CECDC3; 
+            padding: 0.6rem 1.2rem; 
+            border-radius: 0.375rem; 
+            font-weight: 600; 
+            transition: background 0.2s; 
+        }
+        button.btn-primary:hover { background-color: #1a4b85; }
+        
+        button.btn-danger { 
+            background-color: #AF3029; 
+            color: #CECDC3; 
+            padding: 0.6rem 1.2rem; 
+            border-radius: 0.375rem; 
+            font-weight: 600; 
+            transition: background 0.2s; 
+        }
+        button.btn-danger:hover { background-color: #8c2621; }
+
+        button.btn-success { 
+            background-color: #66800B; 
+            color: #CECDC3; 
+            padding: 0.6rem 1.2rem; 
+            border-radius: 0.375rem; 
+            font-weight: 600; 
+            transition: background 0.2s; 
+        }
+        button.btn-success:hover { background-color: #4f6309; }
+        
+        /* Tabular Data Grids */
+        table { width: 100%; text-align: left; border-collapse: collapse; font-size: 0.9rem; }
+        th { 
+            cursor: pointer; 
+            padding: 0.75rem; 
+            border-bottom: 2px solid #282726; 
+            color: #878580; 
+            user-select: none; 
+            font-weight: 600;
+        }
+        th:hover { color: #CECDC3; }
+        td { padding: 0.75rem; border-bottom: 1px solid #1C1B1A; }
+        tr:hover td { background-color: #1C1B1A; }
+        
+        /* Structural Panels */
+       .glass-panel { 
+            background-color: #1C1B1A; 
+            border: 1px solid #282726; 
+            border-radius: 0.5rem; 
+            padding: 1.5rem; 
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #100F0F; }
+        ::-webkit-scrollbar-thumb { background: #282726; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #878580; }
+    </style>
+</head>
+<body>
+
+    <div id="auth-screen" class="min-h-screen flex items-center justify-center">
+        <div class="glass-panel w-96 text-center shadow-2xl">
+            <i data-lucide="shield-check" class="mx-auto mb-4 w-12 h-12 text-flexoki-blue"></i>
+            <h2 class="text-2xl font-bold mb-6 tracking-wide" id="auth-title">System Locked</h2>
+            <input type="password" id="passcode-input" placeholder="Enter Secure Passcode" class="mb-6 text-center text-xl tracking-widest bg-flexoki-bg">
+            <button onclick="handleAuth()" class="btn-primary w-full mb-4">Unlock Vault</button>
+            <p class="text-sm text-flexoki-tx2 cursor-pointer hover:text-flexoki-tx transition" onclick="showRecovery()">Forgot Passcode?</p>
+            
+            <div id="setup-recovery-box" class="hidden-el mt-6 p-4 bg-flexoki-ui2 border border-flexoki-yellow rounded text-left text-sm">
+                <p class="text-flexoki-yellow mb-2 font-bold"><i data-lucide="alert-triangle" class="inline w-4 h-4 mr-1"></i> Save this 12-word recovery phrase.</p>
+                <p class="text-flexoki-tx2 mb-3">It is the ONLY way to recover your vault if you lose your passcode.</p>
+                <p id="recovery-phrase-display" class="font-mono text-flexoki-tx tracking-wide leading-relaxed p-2 bg-flexoki-bg rounded select-all"></p>
+                <button onclick="unlockSystem()" class="btn-success w-full mt-4">I Have Saved It</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="recovery-screen" class="hidden-el min-h-screen flex items-center justify-center">
+        <div class="glass-panel w-96 text-center shadow-2xl">
+            <i data-lucide="key" class="mx-auto mb-4 w-12 h-12 text-flexoki-yellow"></i>
+            <h2 class="text-2xl font-bold mb-6">Vault Recovery</h2>
+            <textarea id="recovery-input" placeholder="Enter 12-word phrase separated by spaces" class="mb-4 bg-flexoki-bg border border-flexoki-ui2 p-3 rounded w-full h-28 text-flexoki-tx outline-none resize-none"></textarea>
+            <input type="password" id="new-passcode-input" placeholder="Enter New Passcode" class="mb-6 text-center bg-flexoki-bg">
+            <button onclick="handleRecovery()" class="btn-primary w-full mb-4">Reset & Unlock</button>
+            <button onclick="cancelRecovery()" class="btn-danger w-full">Cancel</button>
+        </div>
+    </div>
+
+    <div id="app-screen" class="hidden-el flex h-screen overflow-hidden">
+        
+        <aside class="w-64 bg-flexoki-ui border-r border-flexoki-ui2 flex flex-col flex-shrink-0">
+            <div class="p-6 flex items-center gap-3 border-b border-flexoki-ui2">
+                <i data-lucide="wallet" class="text-flexoki-blue w-8 h-8"></i>
+                <div>
+                    <h1 class="text-xl font-bold tracking-wider">Wealthfolio</h1>
+                    <span class="text-xs text-flexoki-tx2">Local-First Engine</span>
+                </div>
+            </div>
+            <nav class="flex-1 py-6 px-4 space-y-2 overflow-y-auto">
+                <button onclick="navigate('dashboard')" class="nav-btn w-full text-left px-4 py-3 rounded flex items-center gap-3 hover:bg-flexoki-ui2 text-sm font-semibold transition"><i data-lucide="layout-dashboard" class="w-5 h-5 text-flexoki-tx2"></i> Dashboard</button>
+                <button onclick="navigate('incomes')" class="nav-btn w-full text-left px-4 py-3 rounded flex items-center gap-3 hover:bg-flexoki-ui2 text-sm font-semibold transition"><i data-lucide="trending-up" class="w-5 h-5 text-flexoki-green"></i> Incomes & Yields</button>
+                <button onclick="navigate('credit')" class="nav-btn w-full text-left px-4 py-3 rounded flex items-center gap-3 hover:bg-flexoki-ui2 text-sm font-semibold transition"><i data-lucide="credit-card" class="w-5 h-5 text-flexoki-blue"></i> Credit Cards</button>
+                <button onclick="navigate('loans')" class="nav-btn w-full text-left px-4 py-3 rounded flex items-center gap-3 hover:bg-flexoki-ui2 text-sm font-semibold transition"><i data-lucide="landmark" class="w-5 h-5 text-flexoki-purple"></i> Bank Loans</button>
+                <button onclick="navigate('expenses')" class="nav-btn w-full text-left px-4 py-3 rounded flex items-center gap-3 hover:bg-flexoki-ui2 text-sm font-semibold transition"><i data-lucide="receipt" class="w-5 h-5 text-flexoki-yellow"></i> Other Expenses</button>
+                <button onclick="navigate('targets')" class="nav-btn w-full text-left px-4 py-3 rounded flex items-center gap-3 hover:bg-flexoki-ui2 text-sm font-semibold transition"><i data-lucide="target" class="w-5 h-5 text-flexoki-red"></i> Savings Targets</button>
+            </nav>
+            <div class="p-4 border-t border-flexoki-ui2">
+                <button onclick="lockSystem()" class="w-full text-left px-4 py-3 rounded flex items-center gap-3 hover:bg-flexoki-red hover:text-white transition text-sm font-semibold"><i data-lucide="lock" class="w-5 h-5"></i> Lock Vault</button>
+            </div>
+        </aside>
+
+        <main class="flex-1 overflow-y-auto p-8 relative bg-flexoki-bg">
+            
+            <section id="view-dashboard" class="view-section">
+                <h2 class="text-3xl font-bold mb-8">Financial Overview</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
+                    <div class="glass-panel relative overflow-hidden">
+                        <div class="absolute top-0 right-0 p-4 opacity-10"><i data-lucide="coins" class="w-16 h-16"></i></div>
+                        <p class="text-flexoki-tx2 text-sm font-semibold">Dynamic Liquid Balance</p>
+                        <h3 class="text-3xl font-bold text-flexoki-blue mt-2" id="dash-liquid">0.00</h3>
+                        <button onclick="document.getElementById('liquid-modal').classList.remove('hidden-el')" class="mt-4 text-xs bg-flexoki-ui2 hover:bg-flexoki-blue text-flexoki-tx px-3 py-1 rounded transition">Adjust Capital</button>
+                    </div>
+                    <div class="glass-panel relative overflow-hidden">
+                        <div class="absolute top-0 right-0 p-4 opacity-10"><i data-lucide="trending-up" class="w-16 h-16"></i></div>
+                        <p class="text-flexoki-tx2 text-sm font-semibold">Active Invested Capital</p>
+                        <h3 class="text-3xl font-bold text-flexoki-green mt-2" id="dash-invest">0.00</h3>
+                    </div>
+                    <div class="glass-panel relative overflow-hidden">
+                        <div class="absolute top-0 right-0 p-4 opacity-10"><i data-lucide="arrow-down-circle" class="w-16 h-16"></i></div>
+                        <p class="text-flexoki-tx2 text-sm font-semibold">Estimated Monthly Yield</p>
+                        <h3 class="text-3xl font-bold text-flexoki-tx mt-2" id="dash-income">0.00</h3>
+                    </div>
+                    <div class="glass-panel relative overflow-hidden">
+                        <div class="absolute top-0 right-0 p-4 opacity-10"><i data-lucide="arrow-up-circle" class="w-16 h-16"></i></div>
+                        <p class="text-flexoki-tx2 text-sm font-semibold">Total Monthly Outflow</p>
+                        <h3 class="text-3xl font-bold text-flexoki-red mt-2" id="dash-outflow">0.00</h3>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                    <div class="glass-panel">
+                        <h3 class="text-xl font-bold mb-6 flex items-center gap-2"><i data-lucide="pie-chart" class="w-5 h-5 text-flexoki-tx2"></i> Outflow Distribution</h3>
+                        <div class="relative h-72"><canvas id="expenseChart"></canvas></div>
+                    </div>
+                    <div class="glass-panel flex flex-col">
+                        <h3 class="text-xl font-bold mb-6 flex items-center gap-2"><i data-lucide="alert-circle" class="w-5 h-5 text-flexoki-yellow"></i> Active 50-Day CC Deadlines</h3>
+                        <div class="overflow-y-auto flex-1 pr-2">
+                            <table id="dash-cc-table">
+                                <thead><tr><th>Item</th><th>Bank</th><th>Amount</th><th>Days Left</th></tr></thead>
+                                <tbody id="dash-cc-body"></tbody>
+                            </table>
+                            <p id="dash-cc-empty" class="text-center text-flexoki-tx2 mt-8 hidden-el">No pending 50-day credit obligations.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="view-incomes" class="view-section hidden-el">
+                <h2 class="text-3xl font-bold mb-8">Incomes & Investments</h2>
+                <div class="glass-panel mb-8 border-t-4 border-t-flexoki-green">
+                    <h3 class="text-lg font-bold mb-4">Register New Capital Allocation</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
+                        <div><label class="text-xs text-flexoki-tx2 mb-1 block">Company / Source</label><input type="text" id="inc-source" placeholder="e.g. Fixed Deposit"></div>
+                        <div><label class="text-xs text-flexoki-tx2 mb-1 block">Invested Amount</label><input type="number" id="inc-amount" placeholder="0.00"></div>
+                        <div><label class="text-xs text-flexoki-tx2 mb-1 block">Annual Yield / Dividend (%)</label><input type="number" id="inc-div" placeholder="0.0"></div>
+                        <div><label class="text-xs text-flexoki-tx2 mb-1 block">Maturity Date</label><input type="date" id="inc-end"></div>
+                        <button onclick="addIncome()" class="btn-success h-[42px]">Deploy Capital</button>
+                    </div>
+                    <div class="mt-4 flex items-center gap-2">
+                        <input type="checkbox" id="inc-deduct" class="w-4 h-4 accent-flexoki-blue bg-flexoki-bg border-flexoki-ui2" checked>
+                        <label for="inc-deduct" class="text-sm text-flexoki-tx2">Deduct this investment principal from Liquid Balance</label>
+                    </div>
+                </div>
+                <div class="glass-panel">
+                    <table id="table-incomes">
+                        <thead><tr>
+                            <th onclick="sortTable('table-incomes', 0, false)">Source <i data-lucide="chevrons-up-down" class="inline w-3 h-3"></i></th>
+                            <th onclick="sortTable('table-incomes', 1, true)">Invested <i data-lucide="chevrons-up-down" class="inline w-3 h-3"></i></th>
+                            <th onclick="sortTable('table-incomes', 2, true)">APR <i data-lucide="chevrons-up-down" class="inline w-3 h-3"></i></th>
+                            <th onclick="sortTable('table-incomes', 3, true)">Est. Monthly Yield <i data-lucide="chevrons-up-down" class="inline w-3 h-3"></i></th>
+                            <th onclick="sortTable('table-incomes', 4, false)">Maturity Date <i data-lucide="chevrons-up-down" class="inline w-3 h-3"></i></th>
+                            <th>Action</th>
+                        </tr></thead>
+                        <tbody id="body-incomes"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="view-credit" class="view-section hidden-el">
+                <h2 class="text-3xl font-bold mb-8">Credit Card Ledgers</h2>
+                
+                <div class="mb-10">
+                    <h3 class="text-xl font-bold mb-4 text-flexoki-yellow flex items-center gap-2"><i data-lucide="clock" class="w-5 h-5"></i> Non-Installment Purchases (50-Day Rule)</h3>
+                    <div class="glass-panel mb-4 border-t-4 border-t-flexoki-yellow">
+                        <div class="grid grid-cols-1 lg:grid-cols-6 gap-4 items-end">
+                            <div class="col-span-2"><label class="text-xs text-flexoki-tx2 mb-1 block">Product / Buyer</label><input type="text" id="cc-std-item" placeholder="e.g. Supermarket"></div>
+                            <div><label class="text-xs text-flexoki-tx2 mb-1 block">Bank</label><select id="cc-std-bank"><option>BOC</option><option>Commercial</option><option>DFCC</option><option>HNB</option><option>NDB</option><option>Sampath</option><option>Seylan</option><option>AMEX</option></select></div>
+                            <div><label class="text-xs text-flexoki-tx2 mb-1 block">Amount</label><input type="number" id="cc-std-amount" placeholder="0.00"></div>
+                            <div><label class="text-xs text-flexoki-tx2 mb-1 block">Purchase Date</label><input type="date" id="cc-std-date"></div>
+                            <button onclick="addCCStandard()" class="btn-primary h-[42px] bg-flexoki-yellow hover:bg-[#8a6800] text-flexoki-bg">Log Purchase</button>
+                        </div>
+                    </div>
+                    <div class="glass-panel">
+                        <table id="table-cc-std">
+                            <thead><tr>
+                                <th onclick="sortTable('table-cc-std', 0, false)">Item / Buyer <i data-lucide="chevrons-up-down" class="inline w-3 h-3"></i></th>
+                                <th onclick="sortTable('table-cc-std', 1, false)">Bank <i data-lucide="chevrons-up-down" class="inline w-3 h-3"></i></th>
+                                <th onclick="sortTable('table-cc-std', 2, true)">Amount <i data-lucide="chevrons-up-down" class="inline w-3 h-3"></i></th>
+                                <th onclick="sortTable('table-cc-std', 3, false)">Purchase Date <i data-lucide="chevrons-up-down" class="inline w-3 h-3"></i></th>
+                                <th onclick="sortTable('table-cc-std', 4, false)">Deadline <i data-lucide="chevrons-up-down" class="inline w-3 h-3"></i></th>
+                                <th onclick="sortTable('table-cc-std', 5, true)">Days Left <i data-lucide="chevrons-up-down" class="inline w-3 h-3"></i></th>
+                                <th>Action</th>
+                            </tr></thead>
+                            <tbody id="body-cc-std"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-bold mb-4 text-flexoki-blue flex items-center gap-2"><i data-lucide="calendar-days" class="w-5 h-5"></i> Installment Plans (Auto-Billed Monthly)</h3>
+                    <div class="glass-panel mb-4 border-t-4 border-t-flexoki-blue">
+                        <div class="grid grid-cols-1 lg:grid-cols-6 gap-4 items-end">
+                            <div><label class="text-xs text-flexoki-tx2 mb-1 block">Product</label><input type="text" id="cc-inst-item" placeholder="e.g. 75'' TV"></div>
+                            <div><label class="text-xs text-flexoki-tx2 mb-1 block">Bank</label><select id="cc-inst-bank"><option>BOC</option><option>Commercial</option><option>DFCC</option><option>HNB</option><option>NDB</option><option>Sampath</option><option>Seylan</option><option>AMEX</option></select></div>
+                            <div><label class="text-xs text-flexoki-tx2 mb-1 block">Total Amount</label><input type="number" id="cc-inst-amount" placeholder="0.00"></div>
+                            <div><label class="text-xs text-flexoki-tx2 mb-1 block">Duration (Months)</label><input type="number" id="cc-inst-dur" placeholder="0"></div>
+                            <div><label class="text-xs text-flexoki-tx2 mb-1 block">Interest (%)</label><input type="number" id="cc-inst-int" value="0" placeholder="0.0"></div>
+                            <button onclick="addCCInstallment()" class="btn-primary h-[42px]">Log Plan</button>
+                        </div>
+                    </div>
+                    <div class="glass-panel">
+                        <table id="table-cc-inst">
+                            <thead><tr>
+                                <th onclick="sortTable('table-cc-inst', 0, false)">Item <i data-lucide="chevrons-up-down" class="inline w-3 h-3"></i></th>
+                                <th onclick="sortTable('table-cc-inst', 1, false)">Bank <i data-lucide="chevrons-up-down" class="inline w-3 h-3"></i></th>
+                                <th onclick="sortTable('table-cc-inst', 2, true)">Total <i data-lucide="chevrons-up-down" class="inline w-3 h-3"></i></th>
+                                <th onclick="sortTable('table-cc-inst', 3, true)">Months Left <i data-lucide="chevrons-up-down" class="inline w-3 h-3"></i></th>
+                                <th onclick="sortTable('table-cc-inst', 4, true)">APR <i data-lucide="chevrons-up-down" class="inline w-3 h-3"></i></th>
+                                <th onclick="sortTable('table-cc-inst', 5, true)">Monthly Cost <i data-lucide="chevrons-up-down" class="inline w-3 h-3"></i></th>
+                                <th>Action</th>
+                            </tr></thead>
+                            <tbody id="body-cc-inst"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section id="view-loans" class="view-section hidden-el">
+                <h2 class="text-3xl font-bold mb-8">Bank & Gold Loans</h2>
+                <div class="glass-panel mb-8 border-t-4 border-t-flexoki-purple">
+                    <div class="grid grid-cols-1 md:grid-cols-6 gap-4 items-end">
+                        <div><label class="text-xs text-flexoki-tx2 mb-1 block">Bank</label><select id="loan-bank"><option>BOC</option><option>Commercial</option><option>DFCC</option><option>HNB</option><option>NDB</option><option>Sampath</option><option>Seylan</option><option>Union</option></select></div>
+                        <div><label class="text-xs text-flexoki-tx2 mb-1 block">Purpose</label><input type="text" id="loan-purpose" placeholder="e.g. Housing, Gold"></div>
+                        <div><label class="text-xs text-flexoki-tx2 mb-1 block">Principal Amount</label><input type="number" id="loan-amount" placeholder="0.00"></div>
+                        <div><label class="text-xs text-flexoki-tx2 mb-1 block">Duration (Months)</label><input type="number" id="loan-dur" placeholder="0"></div>
+                        <div><label class="text-xs text-flexoki-tx2 mb-1 block">Annual Interest (%)</label><input type="number" id="loan-int" placeholder="0.0"></div>
+                        <button onclick="addLoan()" class="btn-primary h-[42px] bg-flexoki-purple hover:bg-[#4a327d]">Register Loan</button>
+                    </div>
+                </div>
+                <div class="glass-panel">
+                    <table id="table-loans">
+                        <thead><tr>
+                            <th onclick="sortTable('table-loans', 0, false)">Bank <i data-lucide="chevrons-up-down" class="inline w-3 h-3"></i></th>
+                            <th onclick="sortTable('table-loans', 1, false)">Purpose <i data-lucide="chevrons-up-down" class="inline w-3 h-3"></i></th>
+                            <th onclick="sortTable('table-loans', 2, true)">Principal <i data-lucide="chevrons-up-down" class="inline w-3 h-3"></i></th>
+                            <th onclick="sortTable('table-loans', 3, true)">Months Left <i data-lucide="chevrons-up-down" class="inline w-3 h-3"></i></th>
+                            <th onclick="sortTable('table-loans', 4, true)">APR <i data-lucide="chevrons-up-down" class="inline w-3 h-3"></i></th>
+                            <th onclick="sortTable('table-loans', 5, true)">Monthly Payment <i data-lucide="chevrons-up-down" class="inline w-3 h-3"></i></th>
+                            <th>Action</th>
+                        </tr></thead>
+                        <tbody id="body-loans"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="view-expenses" class="view-section hidden-el">
+                <h2 class="text-3xl font-bold mb-8">Daily & Recurring Expenses</h2>
+                <div class="glass-panel mb-8 border-t-4 border-t-flexoki-tx2">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                        <div><label class="text-xs text-flexoki-tx2 mb-1 block">Expense Category / Name</label><input type="text" id="exp-name" placeholder="e.g. Utilities, Groceries"></div>
+                        <div><label class="text-xs text-flexoki-tx2 mb-1 block">Amount</label><input type="number" id="exp-amount" placeholder="0.00"></div>
+                        <div><label class="text-xs text-flexoki-tx2 mb-1 block">Frequency</label><select id="exp-type"><option value="monthly">Recurring Monthly</option><option value="onetime">One-Time (Deducts Now)</option></select></div>
+                        <button onclick="addExpense()" class="btn-primary h-[42px] bg-flexoki-tx2 hover:bg-flexoki-tx text-flexoki-bg">Log Expense</button>
+                    </div>
+                </div>
+                <div class="glass-panel">
+                    <table id="table-expenses">
+                        <thead><tr>
+                            <th onclick="sortTable('table-expenses', 0, false)">Expense <i data-lucide="chevrons-up-down" class="inline w-3 h-3"></i></th>
+                            <th onclick="sortTable('table-expenses', 1, true)">Amount <i data-lucide="chevrons-up-down" class="inline w-3 h-3"></i></th>
+                            <th onclick="sortTable('table-expenses', 2, false)">Type <i data-lucide="chevrons-up-down" class="inline w-3 h-3"></i></th>
+                            <th>Action</th>
+                        </tr></thead>
+                        <tbody id="body-expenses"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="view-targets" class="view-section hidden-el">
+                <h2 class="text-3xl font-bold mb-8">Gamified Savings Targets</h2>
+                <div class="glass-panel mb-8 border-t-4 border-t-flexoki-red">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                        <div><label class="text-xs text-flexoki-tx2 mb-1 block">Goal Name</label><input type="text" id="tgt-name" placeholder="e.g. Dream House"></div>
+                        <div><label class="text-xs text-flexoki-tx2 mb-1 block">Target Amount</label><input type="number" id="tgt-amount" placeholder="10000000.00"></div>
+                        <div><label class="text-xs text-flexoki-tx2 mb-1 block">Target Date</label><input type="date" id="tgt-date"></div>
+                        <button onclick="addTarget()" class="btn-danger h-[42px]">Initialize Goal</button>
+                    </div>
+                </div>
+                <div id="targets-container" class="grid grid-cols-1 xl:grid-cols-2 gap-6"></div>
+            </section>
+
+        </main>
+    </div>
+
+    <div id="liquid-modal" class="hidden-el fixed inset-0 bg-flexoki-bg bg-opacity-90 flex items-center justify-center z-50 transition-opacity">
+        <div class="glass-panel w-full max-w-md shadow-2xl relative">
+            <button onclick="document.getElementById('liquid-modal').classList.add('hidden-el')" class="absolute top-4 right-4 text-flexoki-tx2 hover:text-flexoki-red transition"><i data-lucide="x"></i></button>
+            <h3 class="text-xl font-bold mb-2 flex items-center gap-2"><i data-lucide="sliders" class="text-flexoki-blue"></i> Capital Engine</h3>
+            <p class="text-sm text-flexoki-tx2 mb-6">Force-update your baseline liquid capital or register an external deduction.</p>
+            
+            <div class="mb-6 p-4 bg-flexoki-bg rounded border border-flexoki-ui2">
+                <label class="text-xs text-flexoki-tx2 mb-1 block">Set Absolute Base Balance</label>
+                <div class="flex gap-2"><input type="number" id="liq-base" placeholder="0.00" class="bg-flexoki-ui"><button onclick="setLiquidBase()" class="btn-primary">Sync</button></div>
+            </div>
+            
+            <div class="p-4 bg-flexoki-bg rounded border border-flexoki-ui2">
+                <label class="text-xs text-flexoki-tx2 mb-1 block">Deduct Unregistered Investment / Expense</label>
+                <div class="flex gap-2"><input type="number" id="liq-deduct" placeholder="0.00" class="bg-flexoki-ui"><button onclick="deductLiquid()" class="btn-danger">Deduct</button></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="confirm-modal" class="hidden-el fixed inset-0 bg-flexoki-bg bg-opacity-90 flex items-center justify-center z-50">
+        <div class="glass-panel w-full max-w-sm text-center relative shadow-2xl border-flexoki-red border-2">
+            <button onclick="closeConfirmModal()" class="absolute top-3 right-3 text-flexoki-tx2 hover:text-flexoki-red transition"><i data-lucide="x"></i></button>
+            <div class="bg-flexoki-bg w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 border border-flexoki-red">
+                <i data-lucide="alert-triangle" class="w-8 h-8 text-flexoki-red"></i>
+            </div>
+            <h3 class="text-xl font-bold mb-2">Confirm Execution</h3>
+            <p id="confirm-msg" class="text-flexoki-tx2 mb-8 text-sm">Are you sure you want to proceed with this state mutation?</p>
+            <div class="flex justify-center gap-3">
+                <button onclick="closeConfirmModal()" class="flex-1 bg-flexoki-ui2 text-flexoki-tx hover:bg-flexoki-tx2 hover:text-flexoki-bg py-2 rounded font-semibold transition">Cancel</button>
+                <button id="confirm-btn-submit" class="flex-1 btn-danger">Execute</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Iconography
+        lucide.createIcons();
+
+        // Security Constants & Entropy Dictionary (Subset of BIP39 for demonstration)
+        const BIP39_DICT = ["abandon","ability","able","about","above","absent","absorb","abstract","absurd","abuse","access","accident","account","accuse","achieve","acid","acoustic","acquire","across","act","action","actor","actress","actual","adapt","add","addict","address","adjust","admit","adult","advance","advice","aerobic","affair","afford","afraid","again","age","agent","agree","ahead","aim","air","airport"];
+        
+        // In-Memory State Application
+        let vaultData = { 
+            incomes:, 
+            ccStandard:, 
+            ccInst:, 
+            loans:, 
+            expenses:, 
+            targets:, 
+            liquidBalance: 0, 
+            lastRunMonth: new Date().getMonth(),
+            lastRunYear: new Date().getFullYear()
+        };
+        
+        let activeKey = null;
+        let expenseChartInstance = null;
+
+        /* =========================================
+           CRYPTOGRAPHIC & IDENTITY MANAGEMENT ENGINE
+           ========================================= */
+        function generateMnemonic() {
+            let phrase =;
+            let array = new Uint32Array(12);
+            window.crypto.getRandomValues(array);
+            for(let i=0; i<12; i++) phrase.push(BIP39_DICT[array[i] % BIP39_DICT.length]);
+            return phrase.join(" ");
+        }
+
+        function deriveKey(passcode, salt) {
+            // PBKDF2 with SHA256, 10,000 iterations for robust dictionary attack resistance
+            return CryptoJS.PBKDF2(passcode, salt, { keySize: 256/32, iterations: 10000, hasher: CryptoJS.algo.SHA256 }).toString();
+        }
+
+        function encryptData(data, key) {
+            return CryptoJS.AES.encrypt(JSON.stringify(data), key).toString();
+        }
+
+        function decryptData(ciphertext, key) {
+            try {
+                let bytes = CryptoJS.AES.decrypt(ciphertext, key);
+                return JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+            } catch(e) { return null; }
+        }
+
+        function saveData() {
+            if(!activeKey) return;
+            localStorage.setItem('wealthfolio_vault', encryptData(vaultData, activeKey));
+            renderDashboard();
+        }
+
+        /* =========================================
+           AUTHENTICATION & RECOVERY PROTOCOLS
+           ========================================= */
+        function handleAuth() {
+            const pass = document.getElementById('passcode-input').value;
+            if(!pass) return;
+            
+            const vault = localStorage.getItem('wealthfolio_vault');
+            const salt = localStorage.getItem('wealthfolio_salt');
+            
+            if(!vault) {
+                // Initial Vault Creation State
+                const newSalt = CryptoJS.lib.WordArray.random(128/8).toString();
+                localStorage.setItem('wealthfolio_salt', newSalt);
+                activeKey = deriveKey(pass, newSalt);
+                
+                const mnemonic = generateMnemonic();
+                const recoveryKey = deriveKey(mnemonic, newSalt);
+                // Encrypt the Master Key with the Recovery Key
+                localStorage.setItem('wealthfolio_recovery', CryptoJS.AES.encrypt(activeKey, recoveryKey).toString());
+                
+                document.getElementById('setup-recovery-box').classList.remove('hidden-el');
+                document.getElementById('recovery-phrase-display').innerText = mnemonic;
+                document.getElementById('auth-title').innerText = "Vault Created.";
+                document.getElementById('passcode-input').classList.add('hidden-el');
+                document.querySelector('#auth-screen button.btn-primary').classList.add('hidden-el');
+                
+                saveData(); // Commit initial empty state
+            } else {
+                // Decryption State
+                const attemptKey = deriveKey(pass, salt);
+                const decrypted = decryptData(vault, attemptKey);
+                if(decrypted) {
+                    activeKey = attemptKey;
+                    vaultData = decrypted;
+                    processChronologicalAutomations(); // Trigger pseudo-cron
+                    unlockSystem();
+                } else {
+                    alert("Cryptographic Failure: Invalid Passcode.");
+                }
+            }
+        }
+
+        function showRecovery() {
+            document.getElementById('auth-screen').classList.add('hidden-el');
+            document.getElementById('recovery-screen').classList.remove('hidden-el');
+        }
+
+        function cancelRecovery() {
+            document.getElementById('recovery-screen').classList.add('hidden-el');
+            document.getElementById('auth-screen').classList.remove('hidden-el');
+        }
+
+        function handleRecovery() {
+            const phrase = document.getElementById('recovery-input').value.trim();
+            const newPass = document.getElementById('new-passcode-input').value;
+            if(!phrase ||!newPass) return;
+            
+            const salt = localStorage.getItem('wealthfolio_salt');
+            const recKey = deriveKey(phrase, salt);
+            const encMaster = localStorage.getItem('wealthfolio_recovery');
+            
+            try {
+                let masterBytes = CryptoJS.AES.decrypt(encMaster, recKey);
+                let originalMasterKey = masterBytes.toString(CryptoJS.enc.Utf8);
+                
+                if(originalMasterKey) {
+                    // Decrypt payload with recovered master key
+                    const vault = localStorage.getItem('wealthfolio_vault');
+                    vaultData = decryptData(vault, originalMasterKey);
+                    
+                    // Generate new cryptographic parameters
+                    const newSalt = CryptoJS.lib.WordArray.random(128/8).toString();
+                    localStorage.setItem('wealthfolio_salt', newSalt);
+                    activeKey = deriveKey(newPass, newSalt);
+                    
+                    const newRecoveryKey = deriveKey(phrase, newSalt);
+                    localStorage.setItem('wealthfolio_recovery', CryptoJS.AES.encrypt(activeKey, newRecoveryKey).toString());
+                    
+                    saveData();
+                    cancelRecovery();
+                    alert("Passcode reset successful. Identity verified.");
+                } else { throw new Error(); }
+            } catch(e) { alert("Invalid Recovery Phrase Sequence."); }
+        }
+
+        function unlockSystem() {
+            document.getElementById('auth-screen').classList.add('hidden-el');
+            document.getElementById('app-screen').classList.remove('hidden-el');
+            document.getElementById('passcode-input').value = '';
+            renderDashboard();
+        }
+
+        function lockSystem() {
+            activeKey = null; 
+            vaultData = null;
+            document.getElementById('app-screen').classList.add('hidden-el');
+            document.getElementById('auth-screen').classList.remove('hidden-el');
+            // Reset UI for next login
+            document.getElementById('passcode-input').classList.remove('hidden-el');
+            document.querySelector('#auth-screen button.btn-primary').classList.remove('hidden-el');
+            document.getElementById('setup-recovery-box').classList.add('hidden-el');
+            document.getElementById('auth-title').innerText = "System Locked";
+        }
+
+        /* =========================================
+           TIME-SERIES & PSEUDO-CRON AUTOMATION
+           ========================================= */
+        function processChronologicalAutomations() {
+            const now = new Date();
+            const currentMonth = now.getMonth();
+            const currentYear = now.getFullYear();
+            
+            // Determine how many months have passed since last execution
+            let monthDiff = (currentYear - vaultData.lastRunYear) * 12 + (currentMonth - vaultData.lastRunMonth);
+            
+            if(monthDiff > 0) {
+                // Execute automated ledger adjustments for each missed month
+                for(let i = 0; i < monthDiff; i++) {
+                    
+                    // Deduct active Loans
+                    vaultData.loans.forEach(loan => {
+                        if(loan.dur > 0) {
+                            vaultData.liquidBalance -= loan.monthly;
+                            loan.dur -= 1;
+                        }
+                    });
+
+                    // Deduct active Credit Card Installments
+                    vaultData.ccInst.forEach(cc => {
+                        if(cc.dur > 0) {
+                            vaultData.liquidBalance -= cc.monthly;
+                            cc.dur -= 1;
+                        }
+                    });
+
+                    // Deduct Standard Monthly Expenses
+                    vaultData.expenses.forEach(exp => {
+                        if(exp.type === 'monthly') {
+                            vaultData.liquidBalance -= exp.amount;
+                        }
+                    });
+
+                    // Credit Active Income/Dividends
+                    vaultData.incomes.forEach(inc => {
+                        const end = new Date(inc.endDate);
+                        if(now <= end) {
+                            let monthlyYield = (inc.amount * (inc.div/100)) / 12;
+                            vaultData.liquidBalance += monthlyYield;
+                        }
+                    });
+                }
+                
+                // Prune completed amortizations
+                vaultData.loans = vaultData.loans.filter(l => l.dur > 0);
+                vaultData.ccInst = vaultData.ccInst.filter(c => c.dur > 0);
+                
+                // Update timestamps
+                vaultData.lastRunMonth = currentMonth;
+                vaultData.lastRunYear = currentYear;
+                saveData();
+            }
+        }
+
+        /* =========================================
+           INTERFACE ROUTING & UI INTERACTIONS
+           ========================================= */
+        function navigate(viewId) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden-el'));
+            document.getElementById(`view-${viewId}`).classList.remove('hidden-el');
+            renderDashboard(); // Ensure localized rendering upon navigation
+        }
+
+        function setLiquidBase() {
+            vaultData.liquidBalance = parseFloat(document.getElementById('liq-base').value) |
+
+| 0;
+            saveData();
+            document.getElementById('liquid-modal').classList.add('hidden-el');
+            document.getElementById('liq-base').value = '';
+        }
+
+        function deductLiquid() {
+            const amt = parseFloat(document.getElementById('liq-deduct').value) |
+
+| 0;
+            vaultData.liquidBalance -= amt;
+            saveData();
+            document.getElementById('liquid-modal').classList.add('hidden-el');
+            document.getElementById('liq-deduct').value = '';
+        }
+
+        /* =========================================
+           CRUD (CREATE) ALGORITHMS
+           ========================================= */
+        function addIncome() {
+            const src = document.getElementById('inc-source').value;
+            const amt = parseFloat(document.getElementById('inc-amount').value);
+            const div = parseFloat(document.getElementById('inc-div').value);
+            const end = document.getElementById('inc-end').value;
+            const deduct = document.getElementById('inc-deduct').checked;
+            
+            if(src && amt && div && end) {
+                vaultData.incomes.push({ id: Date.now(), source: src, amount: amt, div: div, endDate: end });
+                if(deduct) vaultData.liquidBalance -= amt; // Double-entry simulation
+                
+                // Clear Form
+                document.getElementById('inc-source').value = '';
+                document.getElementById('inc-amount').value = '';
+                document.getElementById('inc-div').value = '';
+                saveData();
+            }
+        }
+
+        function addCCStandard() {
+            const item = document.getElementById('cc-std-item').value;
+            const bank = document.getElementById('cc-std-bank').value;
+            const amt = parseFloat(document.getElementById('cc-std-amount').value);
+            const dt = document.getElementById('cc-std-date').value;
+            
+            if(item && amt && dt) {
+                vaultData.ccStandard.push({ id: Date.now(), item: item, bank: bank, amount: amt, date: dt });
+                saveData();
+            }
+        }
+
+        function addCCInstallment() {
+            const item = document.getElementById('cc-inst-item').value;
+            const bank = document.getElementById('cc-inst-bank').value;
+            const amt = parseFloat(document.getElementById('cc-inst-amount').value);
+            const dur = parseFloat(document.getElementById('cc-inst-dur').value);
+            const int = parseFloat(document.getElementById('cc-inst-int').value);
+            
+            if(item && amt && dur) {
+                // Amortization Logic (Simplified for personal CC tracking)
+                let monthly = (int === 0)? (amt/dur) : (amt * (1 + (int/100))) / dur;
+                vaultData.ccInst.push({ id: Date.now(), item: item, bank: bank, amount: amt, dur: dur, int: int, monthly: monthly });
+                saveData();
+            }
+        }
+
+        function addLoan() {
+            const bank = document.getElementById('loan-bank').value;
+            const purp = document.getElementById('loan-purpose').value;
+            const amt = parseFloat(document.getElementById('loan-amount').value);
+            const dur = parseFloat(document.getElementById('loan-dur').value);
+            const int = parseFloat(document.getElementById('loan-int').value);
+            
+            if(bank && amt && dur) {
+                let monthly = (int === 0)? (amt/dur) : (amt * (1 + (int/100))) / dur;
+                vaultData.loans.push({ id: Date.now(), bank: bank, purpose: purp, amount: amt, dur: dur, int: int, monthly: monthly });
+                saveData();
+            }
+        }
+
+        function addExpense() {
+            const name = document.getElementById('exp-name').value;
+            const amt = parseFloat(document.getElementById('exp-amount').value);
+            const type = document.getElementById('exp-type').value;
+            
+            if(name && amt) {
+                if(type === 'onetime') {
+                    // Immediate deduction
+                    vaultData.liquidBalance -= amt;
+                } else {
+                    vaultData.expenses.push({ id: Date.now(), name: name, amount: amt, type: type });
+                }
+                saveData();
+            }
+        }
+
+        function addTarget() {
+            const name = document.getElementById('tgt-name').value;
+            const amt = parseFloat(document.getElementById('tgt-amount').value);
+            const dt = document.getElementById('tgt-date').value;
+            
+            if(name && amt && dt) {
+                vaultData.targets.push({ id: Date.now(), name: name, amount: amt, date: dt, saved: 0, completed: false });
+                saveData();
+            }
+        }
+
+        /* =========================================
+           HIGH-FRICTION CONFIRMATION MODAL & DELETE
+           ========================================= */
+        let confirmActionCallback = null;
+        
+        function showConfirmModal(msg, callback) {
+            document.getElementById('confirm-msg').innerText = msg;
+            confirmActionCallback = callback;
+            document.getElementById('confirm-modal').classList.remove('hidden-el');
+        }
+        
+        function closeConfirmModal() {
+            document.getElementById('confirm-modal').classList.add('hidden-el');
+            confirmActionCallback = null;
+        }
+        
+        document.getElementById('confirm-btn-submit').addEventListener('click', () => {
+            if(confirmActionCallback) confirmActionCallback();
+            closeConfirmModal();
+        });
+
+        function actionItem(type, id, isCompletion = false) {
+            let msg = isCompletion? "Mark this financial obligation as fully resolved?" : "Permanently drop this record from the ledger?";
+            showConfirmModal(msg, () => {
+                if(isCompletion && type === 'ccStandard') {
+                    // If a standard CC purchase is paid, deduct from liquid balance
+                    let item = vaultData.ccStandard.find(i => i.id === id);
+                    if(item) vaultData.liquidBalance -= item.amount;
+                }
+                vaultData[type] = vaultData[type].filter(i => i.id!== id);
+                saveData();
+            });
+        }
+
+        /* =========================================
+           GAMIFICATION ENGINE (TARGETS & LOTTIE)
+           ========================================= */
+        function markTargetProgress(id) {
+            const amtStr = prompt("Enter capital amount to allocate to this target:");
+            if(!amtStr) return;
+            const amt = parseFloat(amtStr);
+            
+            if(amt &&!isNaN(amt)) {
+                let t = vaultData.targets.find(x => x.id === id);
+                if(t) {
+                    t.saved += amt;
+                    vaultData.liquidBalance -= amt; // Deduct savings from liquid cache
+                    
+                    if(t.saved >= t.amount &&!t.completed) {
+                        t.completed = true;
+                        triggerConfetti();
+                    }
+                    saveData();
+                }
+            }
+        }
+
+        function triggerConfetti() {
+            var duration = 4000;
+            var end = Date.now() + duration;
+            (function frame() {
+                // Random vector execution
+                confetti({ particleCount: 7, angle: 60, spread: 60, origin: { x: 0 }, colors: });
+                confetti({ particleCount: 7, angle: 120, spread: 60, origin: { x: 1 }, colors: });
+                if (Date.now() < end) requestAnimationFrame(frame);
+            }());
+        }
+
+        /* =========================================
+           MULTI-COLUMN ARRAY SORTING ENGINE
+           ========================================= */
+        let sortDirections = {};
+        function sortTable(tableId, colIndex, isNumeric) {
+            const table = document.getElementById(tableId);
+            const tbody = table.querySelector('tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+            
+            const dir = sortDirections[tableId + colIndex] === 'asc'? -1 : 1;
+            sortDirections[tableId + colIndex] = dir === 1? 'asc' : 'desc';
+
+            rows.sort((a, b) => {
+                let cellA = a.children[colIndex].innerText.replace(/,/g, '').replace(/[^\d.-]/g, '');
+                let cellB = b.children[colIndex].innerText.replace(/,/g, '').replace(/[^\d.-]/g, '');
+                
+                if (isNumeric) {
+                    return (parseFloat(cellA |
+
+| 0) - parseFloat(cellB |
+| 0)) * dir;
+                } else {
+                    return a.children[colIndex].innerText.localeCompare(b.children[colIndex].innerText) * dir;
+                }
+            });
+            // Re-inject sorted DOM nodes
+            rows.forEach(row => tbody.appendChild(row));
+        }
+
+        /* =========================================
+           DATA RENDER & VISUALIZATION ENGINE
+           ========================================= */
+        function formatMoney(num) {
+            return Number(num).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function renderDashboard() {
+            if(!vaultData) return;
+            
+            // 1. High-Level KPI Calculations
+            document.getElementById('dash-liquid').innerText = formatMoney(vaultData.liquidBalance);
+            
+            let totalInvest = vaultData.incomes.reduce((acc, val) => acc + val.amount, 0);
+            document.getElementById('dash-invest').innerText = formatMoney(totalInvest);
+            
+            let totalInc = vaultData.incomes.reduce((acc, val) => acc + ((val.amount * (val.div/100)) / 12), 0);
+            document.getElementById('dash-income').innerText = `+${formatMoney(totalInc)}`;
+            
+            let exp1 = vaultData.expenses.filter(e=>e.type==='monthly').reduce((a,v)=>a+v.amount, 0);
+            let exp2 = vaultData.loans.reduce((a,v)=>a+v.monthly, 0);
+            let exp3 = vaultData.ccInst.reduce((a,v)=>a+v.monthly, 0);
+            let totalOutflow = exp1 + exp2 + exp3;
+            document.getElementById('dash-outflow').innerText = `-${formatMoney(totalOutflow)}`;
+
+            // 2. Chart.js Implementation
+            const ctx = document.getElementById('expenseChart');
+            if(expenseChartInstance) expenseChartInstance.destroy();
+            
+            // Only render if there is data, else show empty doughnut
+            const hasData = (exp1 + exp2 + exp3) > 0;
+            
+            expenseChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels:,
+                    datasets: : ,
+                        backgroundColor: hasData? : ['#282726'],
+                        borderColor: '#100F0F',
+                        borderWidth: 3,
+                        hoverOffset: 4
+                    }]
+                },
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    plugins: { 
+                        legend: { position: 'bottom', labels: { color: '#CECDC3', padding: 20, font: { family: 'system-ui' } } },
+                        tooltip: { enabled: hasData }
+                    },
+                    cutout: '75%'
+                }
+            });
+
+            // 3. Tabular rendering delegates
+            renderIncomes();
+            renderCreditCards();
+            renderLoans();
+            renderExpenses();
+            renderTargets();
+            lucide.createIcons(); // Refresh vectors
+        }
+
+        function renderIncomes() {
+            const tbody = document.getElementById('body-incomes');
+            tbody.innerHTML = '';
+            vaultData.incomes.forEach(i => {
+                let monthly = (i.amount * (i.div/100)) / 12;
+                tbody.innerHTML += `
+                <tr class="transition">
+                    <td class="font-medium">${i.source}</td>
+                    <td>${formatMoney(i.amount)}</td>
+                    <td><span class="bg-flexoki-ui2 px-2 py-1 rounded text-xs">${i.div}%</span></td>
+                    <td class="text-flexoki-green font-bold">+${formatMoney(monthly)}</td>
+                    <td class="text-flexoki-tx2">${i.endDate}</td>
+                    <td><button onclick="actionItem('incomes', ${i.id})" class="text-flexoki-tx2 hover:text-flexoki-red transition"><i data-lucide="trash-2" class="w-4 h-4"></i></button></td>
+                </tr>`;
+            });
+        }
+
+        function renderCreditCards() {
+            // Standard 50-Day Rule
+            const stdBody = document.getElementById('body-cc-std');
+            const dashCCBody = document.getElementById('dash-cc-body');
+            stdBody.innerHTML = ''; dashCCBody.innerHTML = '';
+            
+            const today = new Date();
+            let dashCount = 0;
+            
+            vaultData.ccStandard.forEach(c => {
+                const pDate = new Date(c.date);
+                // Algorithm: Purchase epoch + 50 days
+                const dDate = new Date(pDate.getTime() + (50 * 24 * 60 * 60 * 1000));
+                const diffDays = Math.ceil((dDate - today) / (1000 * 60 * 60 * 24));
+                
+                // Visual typography mutation based on numeric threshold
+                let alertClass = diffDays <= 10? 'text-flexoki-red font-bold' : 'text-flexoki-tx';
+                let iconWarning = diffDays <= 10? '<i data-lucide="alert-circle" class="inline w-3 h-3 ml-1 animate-pulse"></i>' : '';
+                
+                let row = `
+                <tr>
+                    <td class="font-medium">${c.item}</td>
+                    <td><span class="text-xs border border-flexoki-ui2 px-2 py-1 rounded text-flexoki-tx2">${c.bank}</span></td>
+                    <td class="text-flexoki-red">-${formatMoney(c.amount)}</td>
+                    <td class="text-flexoki-tx2 text-sm">${c.date}</td>
+                    <td class="text-sm">${dDate.toISOString().split('T')}</td>
+                    <td class="${alertClass}">${diffDays} Days ${iconWarning}</td>
+                    <td>
+                        <button onclick="actionItem('ccStandard', ${c.id}, true)" class="text-flexoki-tx2 hover:text-flexoki-green transition mr-2" title="Mark Settled"><i data-lucide="check-circle" class="w-5 h-5"></i></button>
+                        <button onclick="actionItem('ccStandard', ${c.id})" class="text-flexoki-tx2 hover:text-flexoki-red transition"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    </td>
+                </tr>`;
+                
+                stdBody.innerHTML += row;
+                
+                // Propagate urgent items to primary dashboard
+                if(diffDays <= 20) {
+                    dashCount++;
+                    dashCCBody.innerHTML += `<tr class="border-b border-flexoki-ui2"><td>${c.item} <br><span class="text-[10px] text-flexoki-tx2">${c.bank}</span></td><td class="text-flexoki-red">-${formatMoney(c.amount)}</td><td class="${alertClass}">${diffDays}d</td></tr>`;
+                }
+            });
+            
+            if(dashCount === 0) {
+                document.getElementById('dash-cc-empty').classList.remove('hidden-el');
+            } else {
+                document.getElementById('dash-cc-empty').classList.add('hidden-el');
+            }
+
+            // Installments
+            const instBody = document.getElementById('body-cc-inst');
+            instBody.innerHTML = '';
+            vaultData.ccInst.forEach(c => {
+                instBody.innerHTML += `
+                <tr>
+                    <td class="font-medium">${c.item}</td>
+                    <td><span class="text-xs border border-flexoki-ui2 px-2 py-1 rounded text-flexoki-tx2">${c.bank}</span></td>
+                    <td>${formatMoney(c.amount)}</td>
+                    <td>${c.dur}</td>
+                    <td><span class="bg-flexoki-ui2 px-2 py-1 rounded text-xs">${c.int}%</span></td>
+                    <td class="text-flexoki-red font-bold">-${formatMoney(c.monthly)}</td>
+                    <td>
+                        <button onclick="actionItem('ccInst', ${c.id}, true)" class="text-flexoki-tx2 hover:text-flexoki-green transition mr-2" title="Settle"><i data-lucide="check-circle" class="w-5 h-5"></i></button>
+                    </td>
+                </tr>`;
+            });
+        }
+
+        function renderLoans() {
+            const tbody = document.getElementById('body-loans');
+            tbody.innerHTML = '';
+            vaultData.loans.forEach(l => {
+                tbody.innerHTML += `
+                <tr>
+                    <td><span class="text-xs bg-flexoki-purple bg-opacity-20 text-flexoki-purple px-2 py-1 rounded font-bold">${l.bank}</span></td>
+                    <td class="font-medium">${l.purpose}</td>
+                    <td>${formatMoney(l.amount)}</td>
+                    <td>${l.dur}</td>
+                    <td><span class="bg-flexoki-ui2 px-2 py-1 rounded text-xs">${l.int}%</span></td>
+                    <td class="text-flexoki-red font-bold">-${formatMoney(l.monthly)}</td>
+                    <td>
+                        <button onclick="actionItem('loans', ${l.id}, true)" class="text-flexoki-tx2 hover:text-flexoki-green transition mr-2"><i data-lucide="check-circle" class="w-5 h-5"></i></button>
+                    </td>
+                </tr>`;
+            });
+        }
+
+        function renderExpenses() {
+            const tbody = document.getElementById('body-expenses');
+            tbody.innerHTML = '';
+            vaultData.expenses.forEach(e => {
+                tbody.innerHTML += `
+                <tr>
+                    <td class="font-medium">${e.name}</td>
+                    <td class="text-flexoki-red font-bold">-${formatMoney(e.amount)}</td>
+                    <td><span class="text-xs border border-flexoki-ui2 px-2 py-1 rounded text-flexoki-tx2 uppercase tracking-wide">${e.type}</span></td>
+                    <td><button onclick="actionItem('expenses', ${e.id})" class="text-flexoki-tx2 hover:text-flexoki-red transition"><i data-lucide="trash-2" class="w-4 h-4"></i></button></td>
+                </tr>`;
+            });
+        }
+
+        function renderTargets() {
+            const cont = document.getElementById('targets-container');
+            cont.innerHTML = '';
+            vaultData.targets.forEach(t => {
+                // Algorithmic bounds constraint
+                let pct = Math.min((t.saved / t.amount) * 100, 100).toFixed(1);
+                let bgClass = t.completed? 'border-flexoki-green shadow-[0_0_15px_rgba(102,128,11,0.2)]' : 'border-flexoki-ui2';
+                
+                cont.innerHTML += `
+                    <div class="glass-panel border-2 ${bgClass} relative overflow-hidden transition-all duration-300 hover:-translate-y-1">
+                        ${t.completed? '<div class="absolute -right-6 -top-6 w-24 h-24 bg-flexoki-green opacity-10 rounded-full blur-xl"></div>' : ''}
+                        <div class="flex justify-between mb-2">
+                            <h4 class="font-bold text-xl">${t.name}</h4>
+                            <span class="text-flexoki-tx font-bold text-lg">${formatMoney(t.amount)}</span>
+                        </div>
+                        <p class="text-xs text-flexoki-tx2 mb-5">Deadline: <span class="text-flexoki-tx">${t.date}</span> &nbsp;|&nbsp; Remaining: <span class="text-flexoki-yellow">${formatMoney(t.amount - t.saved)}</span></p>
+                        
+                        <div class="w-full bg-flexoki-ui2 rounded-full h-5 mb-5 overflow-hidden relative shadow-inner">
+                            <div class="bg-gradient-to-r from-flexoki-blue to-cyan-600 h-5 transition-all duration-1000 ease-out" style="width: ${pct}%"></div>
+                            <span class="absolute inset-0 flex items-center justify-center text-[10px] font-bold tracking-widest ${pct > 50? 'text-flexoki-bg' : 'text-flexoki-tx'}">${pct}%</span>
+                        </div>
+                        
+                        <div class="flex justify-between items-center border-t border-flexoki-ui2 pt-4">
+                            <span class="text-flexoki-green font-bold text-lg"><span class="text-xs text-flexoki-tx2 font-normal">Stored:</span> ${formatMoney(t.saved)}</span>
+                            <div class="flex items-center">
+                                ${!t.completed? `<button onclick="markTargetProgress(${t.id})" class="bg-flexoki-bg border border-flexoki-ui2 hover:border-flexoki-blue text-xs px-3 py-1.5 rounded mr-3 transition">Allocate Capital</button>` : `<span class="bg-flexoki-green text-flexoki-bg px-3 py-1 rounded text-xs font-bold mr-3 tracking-widest">ACHIEVED</span>`}
+                                <button onclick="actionItem('targets', ${t.id})" class="text-flexoki-tx2 hover:text-flexoki-red transition"><i data-lucide="trash-2" class="w-5 h-5"></i></button>
+                            </div>
+                        </div>
+                    </div>`;
+            });
+        }
+        
+        // System Initializer
+        window.onload = () => {
+            if(!localStorage.getItem('wealthfolio_vault')) {
+                document.getElementById('auth-title').innerText = "Initialize Master Passcode";
+            }
+        };
+    </script>
+</body>
+</html>
