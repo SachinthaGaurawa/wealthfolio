@@ -9,7 +9,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Centralized Application State
     let state = {
-        passcodeHash: null,
         balance: 0,
         incomes:,
         expenses:,
@@ -39,88 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* -------------------------------------------------------------------------- */
-    /* 2. CRYPTOGRAPHIC AUTHENTICATION PROTOCOLS (OFFLINE COMPATIBLE)             */
-    /* -------------------------------------------------------------------------- */
-    const authOverlay = document.getElementById('authOverlay');
-    const passcodeInput = document.getElementById('passcodeInput');
-    const authBtn = document.getElementById('authBtn');
-    const authTitle = document.getElementById('authTitle');
-    const authError = document.getElementById('authError');
-    const forgotBtn = document.getElementById('forgotPasscodeBtn');
-
-    /**
-     * A pure JS hashing function used as a localized security measure.
-     * Prevents the application from failing when run strictly over the file:// protocol.
-     * @param {string} str - The plaintext user input.
-     * @returns {string} - The hexadecimal hash representation.
-     */
-    function hashPasscode(str) {
-        let hash = 0;
-        for (let i = 0; i < str.length; i++) {
-            const char = str.charCodeAt(i);
-            hash = ((hash << 5) - hash) + char;
-            hash &= hash; // Convert to 32bit integer
-        }
-        return hash.toString(16);
-    }
-
-    function processAuthentication() {
-        const input = passcodeInput.value;
-        if (!input) return;
-
-        const hashed = hashPasscode(input);
-
-        if (!state.passcodeHash) {
-            // First-time configuration protocol
-            state.passcodeHash = hashed;
-            saveState();
-            unlockInterface();
-        } else {
-            // Verification protocol
-            if (state.passcodeHash === hashed) {
-                unlockInterface();
-            } else {
-                authError.classList.remove('hidden');
-                passcodeInput.value = ''; // Reset input immediately
-                // Shake animation for error feedback
-                authOverlay.querySelector('div').classList.add('animate-pulse');
-                setTimeout(() => authOverlay.querySelector('div').classList.remove('animate-pulse'), 500);
-            }
-        }
-    }
-
-    function unlockInterface() {
-        passcodeInput.value = ''; // Ensure field is clean for future locks
-        authOverlay.classList.add('opacity-0', 'pointer-events-none');
-        setTimeout(() => authOverlay.classList.add('hidden'), 500);
-        renderDashboard();
-    }
-
-    window.lockSystem = function() {
-        passcodeInput.value = '';
-        authError.classList.add('hidden');
-        authOverlay.classList.remove('hidden', 'opacity-0', 'pointer-events-none');
-    };
-
-    // Hard-reset mechanism repaired to guarantee operation
-    forgotBtn.addEventListener('click', () => {
-        const resetKey = prompt("CRITICAL WARNING: Enter 'RESET' to execute a total data purge and remove your passcode. Action is irreversible.");
-        if (resetKey === "RESET") {
-            localStorage.removeItem(STORAGE_KEY);
-            alert("System has been fully reset. Reloading interface...");
-            location.reload();
-        } else if (resetKey!== null) {
-            alert("Security Alert: Invalid Recovery Key provided. Reset aborted.");
-        }
-    });
-
-    authBtn.addEventListener('click', processAuthentication);
-    passcodeInput.addEventListener('keypress', (e) => { 
-        if (e.key === 'Enter') processAuthentication(); 
-    });
-
-    /* -------------------------------------------------------------------------- */
-    /* 3. DOM ROUTING & NAVIGATION                                                */
+    /* 2. DOM ROUTING & NAVIGATION                                                */
     /* -------------------------------------------------------------------------- */
     window.switchTab = function(tabId) {
         // Hide all tabs
@@ -147,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     /* -------------------------------------------------------------------------- */
-    /* 4. FINANCIAL MATHEMATICS & TEMPORAL COMPUTATIONS                           */
+    /* 3. FINANCIAL MATHEMATICS & TEMPORAL COMPUTATIONS                           */
     /* -------------------------------------------------------------------------- */
     
     // Unique Identifier Generator
@@ -184,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* -------------------------------------------------------------------------- */
-    /* 5. DATA INGESTION & FORM HANDLING (CRUD)                                   */
+    /* 4. DATA INGESTION & FORM HANDLING (CRUD)                                   */
     /* -------------------------------------------------------------------------- */
 
     document.getElementById('form-income').addEventListener('submit', (e) => {
@@ -316,7 +234,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     /* -------------------------------------------------------------------------- */
-    /* 6. DATA RENDERING, SORTING, AND DASHBOARD AGGREGATION                      */
+    /* 5. DATA RENDERING, SORTING, AND DASHBOARD AGGREGATION                      */
     /* -------------------------------------------------------------------------- */
     let dataChart = null;
     let sortToggle = false;
@@ -475,7 +393,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Update Allocation Dropdown (Hide completed)
         document.getElementById('tgt-select').innerHTML = state.targets.filter(t =>!t.completed)
-          .map(t => `<option value="${t.id}">${t.name}</option>`).join('');
+         .map(t => `<option value="${t.id}">${t.name}</option>`).join('');
 
         // --- Dynamic Rolling Balance Calculation ---
         // Formula: Current_Balance = Prev_Balance + Total_Income - (Daily_Expenses + EMI_Obligations)
@@ -534,7 +452,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* -------------------------------------------------------------------------- */
-    /* 7. MODALS, TASK ENGINE & VISUAL GAMIFICATION                               */
+    /* 6. MODALS, TASK ENGINE & VISUAL GAMIFICATION                               */
     /* -------------------------------------------------------------------------- */
     
     window.executeDeletion = function(arrayName, objectId) {
@@ -652,8 +570,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // APPLICATION BOOTSTRAP
     loadState();
-    if (!state.passcodeHash) {
-        authTitle.innerText = "Setup Security Passcode";
-        authBtn.innerText = "Initialize Configuration";
-    }
+    renderDashboard();
 });
