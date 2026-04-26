@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-<title>FinPlan Pro — Sachintha Gaurawa</title>
+<title>FinPlan Pro - Sachintha Gaurawa</title>
 <link rel="icon" type="image/x-icon" href="https://res.cloudinary.com/dzrfpc9be/image/upload/v1777219304/Fav_img_rkpnbl.ico">
 <link rel="icon" type="image/png" href="https://res.cloudinary.com/dzrfpc9be/image/upload/v1777219344/Fav_img_bagjfj.png">
 <link rel="apple-touch-icon" href="https://res.cloudinary.com/dzrfpc9be/image/upload/v1777219344/Fav_img_bagjfj.png">
@@ -421,7 +421,6 @@ tbody td{padding:10px 13px;vertical-align:middle;}
 </head>
 <body>
 
-<!-- ========== SPLASH ========== -->
 <div id="splash">
   <div class="sp-bg"><div class="sp-orb sp-orb1"></div><div class="sp-orb sp-orb2"></div></div>
   <div class="sp-logo">₣</div>
@@ -431,11 +430,9 @@ tbody td{padding:10px 13px;vertical-align:middle;}
   <div class="sp-status" id="spStatus">Initializing system...</div>
 </div>
 
-<!-- ========== AUTH ========== -->
 <div id="authScreen">
   <div class="auth-bg"><div class="auth-orb auth-orb1"></div><div class="auth-orb auth-orb2"></div></div>
 
-  <!-- Login View -->
   <div class="auth-box" id="authLogin">
     <div class="auth-logo">₣</div>
     <div class="auth-title">Welcome Back</div>
@@ -446,7 +443,6 @@ tbody td{padding:10px 13px;vertical-align:middle;}
     <div class="auth-link" onclick="showAuthView('authForgot')">🔑 Forgot Passcode?</div>
   </div>
 
-  <!-- Setup View -->
   <div class="auth-box" id="authSetup" style="display:none;">
     <div class="auth-logo">🔐</div>
     <div class="auth-title">Create Passcode</div>
@@ -456,7 +452,6 @@ tbody td{padding:10px 13px;vertical-align:middle;}
     <div class="auth-err" id="setupErr"></div>
   </div>
 
-  <!-- Forgot Password View -->
   <div class="auth-box" id="authForgot" style="display:none;">
     <div class="auth-logo">🔓</div>
     <div class="auth-title">Account Recovery</div>
@@ -468,7 +463,6 @@ tbody td{padding:10px 13px;vertical-align:middle;}
     <div class="auth-err" id="recovErr"></div>
   </div>
 
-  <!-- New PIN after Recovery -->
   <div class="auth-box" id="authNewPin" style="display:none;">
     <div class="auth-logo">✅</div>
     <div class="auth-title">Create New PIN</div>
@@ -478,18 +472,16 @@ tbody td{padding:10px 13px;vertical-align:middle;}
     <div class="auth-err" id="newPinErr"></div>
   </div>
 
-  <!-- Recovery Code Display -->
   <div class="auth-box" id="authRecovShow" style="display:none;">
     <div class="auth-logo">📋</div>
     <div class="auth-title">Save Recovery Code</div>
-    <div class="auth-sub">Store this code safely — you'll need it if you forget your PIN</div>
+    <div class="auth-sub">Store this code safely - you'll need it if you forget your PIN</div>
     <div style="background:var(--bg2);border:2px dashed var(--accent);border-radius:var(--r);padding:18px;margin:16px 0;font-family:var(--mono);font-size:20px;font-weight:700;letter-spacing:4px;color:var(--accent);word-break:break-all;" id="recovCodeDisplay"></div>
     <div style="font-size:12px;color:var(--text3);margin-bottom:16px;">⚠️ This code will only be shown once. Save it now!</div>
     <button class="auth-btn" onclick="copyRecovCode()">📋 Copy Code</button>
-    <button class="auth-btn ghost" onclick="confirmRecovSaved()">✅ I've Saved It — Continue</button>
+    <button class="auth-btn ghost" onclick="confirmRecovSaved()">✅ I've Saved It - Continue</button>
   </div>
 
-  <!-- Security Question Setup -->
   <div class="auth-box" id="authSecQ" style="display:none;">
     <div class="auth-logo">🛡️</div>
     <div class="auth-title">Security Question</div>
@@ -513,7 +505,6 @@ tbody td{padding:10px 13px;vertical-align:middle;}
   </div>
 </div>
 
-<!-- ========== MAIN APP ========== -->
 <div id="app">
   <div class="sb-overlay" id="sbOverlay" onclick="closeSb()"></div>
   <aside class="sidebar" id="sidebar">
@@ -543,7 +534,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
     </nav>
     <div class="sb-footer">
       <div class="sb-user">👤 Sachintha Gaurawa</div>
-      <div class="sb-date" id="sbDate">—</div>
+      <div class="sb-date" id="sbDate">-</div>
       <div class="sb-ver">FinPlan Pro v2.0 · Personal</div>
     </div>
   </aside>
@@ -558,7 +549,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
         <div class="online-badge on" id="onlineBadge"><span class="online-dot"></span><span id="onlineText">Online</span></div>
         <button class="refresh-btn" onclick="refreshApp()" title="Refresh">↻</button>
         <button class="theme-btn" onclick="toggleTheme()" id="themeBtn" title="Toggle Theme">🌙</button>
-        <div class="month-badge" id="curMonthBadge">—</div>
+        <div class="month-badge" id="curMonthBadge">-</div>
         <button class="btn btn-primary btn-sm" id="topAddBtn" onclick="handleTopAdd()" style="display:none;">+ Add</button>
       </div>
     </header>
@@ -566,7 +557,6 @@ tbody td{padding:10px 13px;vertical-align:middle;}
     <div class="content">
       <div id="offlineBanner">📡 You're offline. Changes saved locally and will sync when connected.</div>
 
-      <!-- DASHBOARD -->
       <div class="page active" id="page-dashboard">
         <div class="g5" id="dashStats" style="margin-bottom:16px;"></div>
         <div class="dash-chart-row">
@@ -594,7 +584,6 @@ tbody td{padding:10px 13px;vertical-align:middle;}
         </div>
       </div>
 
-      <!-- MONTHLY PLAN -->
       <div class="page" id="page-monthly">
         <div class="sh">
           <div class="sh-title">Monthly Financial Plan</div>
@@ -604,7 +593,6 @@ tbody td{padding:10px 13px;vertical-align:middle;}
         <div id="monthlyContent"></div>
       </div>
 
-      <!-- INCOME -->
       <div class="page" id="page-income">
         <div class="sh">
           <div class="sh-title">Income & Investments</div>
@@ -620,7 +608,6 @@ tbody td{padding:10px 13px;vertical-align:middle;}
         <div id="incomeList"></div>
       </div>
 
-      <!-- LOANS -->
       <div class="page" id="page-loans">
         <div class="sh">
           <div class="sh-title">Bank Loans</div>
@@ -636,7 +623,6 @@ tbody td{padding:10px 13px;vertical-align:middle;}
         <div id="loansList"></div>
       </div>
 
-      <!-- CC INSTALLMENTS -->
       <div class="page" id="page-ccinstall">
         <div class="sh">
           <div class="sh-title">Credit Card Installments</div>
@@ -657,7 +643,6 @@ tbody td{padding:10px 13px;vertical-align:middle;}
         </table></div>
       </div>
 
-      <!-- CC ONE-TIME -->
       <div class="page" id="page-cconetime">
         <div class="sh">
           <div class="sh-title">CC One-Time Payments</div>
@@ -678,7 +663,6 @@ tbody td{padding:10px 13px;vertical-align:middle;}
         </table></div>
       </div>
 
-      <!-- CHEQUES -->
       <div class="page" id="page-cheques">
         <div class="sh">
           <div class="sh-title">Cheque Tracker</div>
@@ -697,7 +681,6 @@ tbody td{padding:10px 13px;vertical-align:middle;}
         </table></div>
       </div>
 
-      <!-- EXPENSES -->
       <div class="page" id="page-expenses">
         <div class="sh">
           <div class="sh-title">Monthly Expenses</div>
@@ -714,7 +697,6 @@ tbody td{padding:10px 13px;vertical-align:middle;}
         </table></div>
       </div>
 
-      <!-- TARGETS -->
       <div class="page" id="page-targets">
         <div class="sh">
           <div class="sh-title">Targets & Savings</div>
@@ -726,7 +708,6 @@ tbody td{padding:10px 13px;vertical-align:middle;}
         <div id="targetsList"></div>
       </div>
 
-      <!-- BALANCE -->
       <div class="page" id="page-balance">
         <div class="sh">
           <div class="sh-title">Balance Tracker</div>
@@ -747,9 +728,8 @@ tbody td{padding:10px 13px;vertical-align:middle;}
         </div>
       </div>
 
-      <!-- DSCR -->
       <div class="page" id="page-dscr">
-        <div class="sh"><div class="sh-title">DSCR Calculator — Loan Eligibility</div></div>
+        <div class="sh"><div class="sh-title">DSCR Calculator - Loan Eligibility</div></div>
         <div class="g2">
           <div class="card">
             <div class="card-header"><div class="card-title">Your Financial Profile</div></div>
@@ -779,7 +759,6 @@ tbody td{padding:10px 13px;vertical-align:middle;}
         </div>
       </div>
 
-      <!-- SETTINGS -->
       <div class="page" id="page-settings">
         <div class="sh"><div class="sh-title">Settings</div></div>
         <div id="settingsContent"></div>
@@ -789,7 +768,6 @@ tbody td{padding:10px 13px;vertical-align:middle;}
   </div>
 </div>
 
-<!-- CELEBRATION -->
 <div id="celeb">
   <div class="celeb-box">
     <div class="celeb-x" onclick="closeCeleb()">✕</div>
@@ -801,12 +779,8 @@ tbody td{padding:10px 13px;vertical-align:middle;}
   </div>
 </div>
 
-<!-- NOTIFICATIONS -->
 <div id="notifs"></div>
 
-<!-- ===== MODALS ===== -->
-
-<!-- Income Modal -->
 <div class="mo" id="mdIncome"><div class="md">
   <div class="md-hdr"><div class="md-title" id="mdIncomeTitle">Add Income / Investment Source</div><button class="md-x" onclick="closeModal('mdIncome')">✕</button></div>
   <div class="fr"><div class="fg"><label class="fl">Source Name *</label><input class="fi" id="i_name" placeholder="Fixed Deposit - Commercial Bank"></div><div class="fg"><label class="fl">Company / Person *</label><input class="fi" id="i_company" placeholder="Commercial Bank"></div></div>
@@ -819,7 +793,6 @@ tbody td{padding:10px 13px;vertical-align:middle;}
   <div class="md-ftr"><button class="btn btn-ghost" onclick="closeModal('mdIncome')">Cancel</button><button class="btn btn-primary" onclick="saveIncome()">💾 Save Source</button></div>
 </div></div>
 
-<!-- Loan Modal -->
 <div class="mo" id="mdLoan"><div class="md">
   <div class="md-hdr"><div class="md-title" id="mdLoanTitle">Add Bank Loan</div><button class="md-x" onclick="closeModal('mdLoan')">✕</button></div>
   <div class="fr"><div class="fg"><label class="fl">Loan Name *</label><input class="fi" id="l_name" placeholder="Bank Loan for Land"></div><div class="fg"><label class="fl">Bank *</label><select class="fs" id="l_bank"></select></div></div>
@@ -831,19 +804,17 @@ tbody td{padding:10px 13px;vertical-align:middle;}
   <div class="md-ftr"><button class="btn btn-ghost" onclick="closeModal('mdLoan')">Cancel</button><button class="btn btn-primary" onclick="saveLoan()">💾 Save Loan</button></div>
 </div></div>
 
-<!-- CCI Modal -->
 <div class="mo" id="mdCCI"><div class="md">
   <div class="md-hdr"><div class="md-title" id="mdCCITitle">Add CC Installment Plan</div><button class="md-x" onclick="closeModal('mdCCI')">✕</button></div>
   <div class="fr"><div class="fg"><label class="fl">Product Name *</label><input class="fi" id="c_product" placeholder="75-inch TV"></div><div class="fg"><label class="fl">Buyer</label><input class="fi" id="c_buyer" placeholder="Self"></div></div>
   <div class="fr"><div class="fg"><label class="fl">Bank / Card *</label><select class="fs" id="c_bank"></select></div><div class="fg"><label class="fl">Purchase Date *</label><input class="fi" id="c_date" type="date"></div></div>
-  <div class="fr"><div class="fg"><label class="fl">Total Amount (LKR) *</label><input class="fi money-input" id="c_total" placeholder="480,000" oninput="calcCCIM()"></div><div class="fg"><label class="fl">Annual Rate (%) — 0 if free</label><input class="fi" id="c_rate" type="number" placeholder="0" step="0.1" oninput="calcCCIM()"></div></div>
+  <div class="fr"><div class="fg"><label class="fl">Total Amount (LKR) *</label><input class="fi money-input" id="c_total" placeholder="480,000" oninput="calcCCIM()"></div><div class="fg"><label class="fl">Annual Rate (%) - 0 if free</label><input class="fi" id="c_rate" type="number" placeholder="0" step="0.1" oninput="calcCCIM()"></div></div>
   <div class="fr"><div class="fg"><label class="fl">Duration (months) *</label><input class="fi" id="c_dur" type="number" placeholder="24" oninput="calcCCIM()"></div><div class="fg"><label class="fl">Override Monthly</label><input class="fi money-input" id="c_monthly" placeholder="Auto-calculated"></div></div>
   <div class="fcalc" id="c_calc"></div>
   <div class="fg"><label class="fl">Notes</label><textarea class="fta" id="c_notes" placeholder="Additional details..."></textarea></div>
   <div class="md-ftr"><button class="btn btn-ghost" onclick="closeModal('mdCCI')">Cancel</button><button class="btn btn-primary" onclick="saveCCI()">💾 Save Installment</button></div>
 </div></div>
 
-<!-- Skip Month Modal -->
 <div class="mo" id="mdSkip"><div class="md md-sm">
   <div class="md-hdr"><div class="md-title">Skip / Double Installment</div><button class="md-x" onclick="closeModal('mdSkip')">✕</button></div>
   <p style="font-size:13px;color:var(--text2);margin-bottom:12px;">Select an installment plan, then choose a month to skip. The payment will automatically double in the following month.</p>
@@ -853,7 +824,6 @@ tbody td{padding:10px 13px;vertical-align:middle;}
   <div class="md-ftr"><button class="btn btn-ghost" onclick="closeModal('mdSkip')">Cancel</button><button class="btn btn-danger" onclick="skipInstallmentM()">⏭ Skip Month</button></div>
 </div></div>
 
-<!-- CCOT Modal -->
 <div class="mo" id="mdCCOT"><div class="md md-sm">
   <div class="md-hdr"><div class="md-title" id="mdCCOTTitle">Add CC One-Time Payment</div><button class="md-x" onclick="closeModal('mdCCOT')">✕</button></div>
   <div class="fr"><div class="fg"><label class="fl">Description *</label><input class="fi" id="ot_desc" placeholder="Supermarket, Medicine..."></div><div class="fg"><label class="fl">Bank *</label><select class="fs" id="ot_bank"></select></div></div>
@@ -864,7 +834,6 @@ tbody td{padding:10px 13px;vertical-align:middle;}
   <div class="md-ftr"><button class="btn btn-ghost" onclick="closeModal('mdCCOT')">Cancel</button><button class="btn btn-primary" onclick="saveCCOT()">💾 Save</button></div>
 </div></div>
 
-<!-- Cheque Modal -->
 <div class="mo" id="mdCheque"><div class="md md-sm">
   <div class="md-hdr"><div class="md-title" id="mdChequeTitle">Add Cheque</div><button class="md-x" onclick="closeModal('mdCheque')">✕</button></div>
   <div class="fr"><div class="fg"><label class="fl">Cheque No. *</label><input class="fi" id="chq_no" placeholder="CHQ-001234"></div><div class="fg"><label class="fl">Party Name *</label><input class="fi" id="chq_party" placeholder="Received from / Issued to"></div></div>
@@ -875,7 +844,6 @@ tbody td{padding:10px 13px;vertical-align:middle;}
   <div class="md-ftr"><button class="btn btn-ghost" onclick="closeModal('mdCheque')">Cancel</button><button class="btn btn-primary" onclick="saveCheque()">💾 Save Cheque</button></div>
 </div></div>
 
-<!-- Expense Modal -->
 <div class="mo" id="mdExpense"><div class="md md-sm">
   <div class="md-hdr"><div class="md-title" id="mdExpenseTitle">Add Monthly Expense</div><button class="md-x" onclick="closeModal('mdExpense')">✕</button></div>
   <div class="fr"><div class="fg"><label class="fl">Description *</label><input class="fi" id="e_desc" placeholder="Electricity Bill"></div><div class="fg"><label class="fl">Category *</label><select class="fs" id="e_cat"><option>Food & Groceries</option><option>Transport</option><option>Utilities</option><option>Medical</option><option>Education</option><option>Entertainment</option><option>Clothing</option><option>Other</option></select></div></div>
@@ -884,7 +852,6 @@ tbody td{padding:10px 13px;vertical-align:middle;}
   <div class="md-ftr"><button class="btn btn-ghost" onclick="closeModal('mdExpense')">Cancel</button><button class="btn btn-primary" onclick="saveExpense()">💾 Save Expense</button></div>
 </div></div>
 
-<!-- Target Modal -->
 <div class="mo" id="mdTarget"><div class="md md-sm">
   <div class="md-hdr"><div class="md-title" id="mdTargetTitle">Create Savings Target</div><button class="md-x" onclick="closeModal('mdTarget')">✕</button></div>
   <div class="fg"><label class="fl">Target Name *</label><input class="fi" id="t_name" placeholder="House Fund"></div>
@@ -894,7 +861,6 @@ tbody td{padding:10px 13px;vertical-align:middle;}
   <div class="md-ftr"><button class="btn btn-ghost" onclick="closeModal('mdTarget')">Cancel</button><button class="btn btn-primary" onclick="saveTarget()">🎯 Create Target</button></div>
 </div></div>
 
-<!-- Saving Modal -->
 <div class="mo" id="mdSaving"><div class="md md-sm">
   <div class="md-hdr"><div class="md-title">Add Saving Entry</div><button class="md-x" onclick="closeModal('mdSaving')">✕</button></div>
   <div class="fg"><label class="fl">Target *</label><select class="fs" id="sav_tgt"></select></div>
@@ -903,14 +869,12 @@ tbody td{padding:10px 13px;vertical-align:middle;}
   <div class="md-ftr"><button class="btn btn-ghost" onclick="closeModal('mdSaving')">Cancel</button><button class="btn btn-success" onclick="saveSaving()">💚 Add Saving</button></div>
 </div></div>
 
-<!-- Savings History Modal -->
 <div class="mo" id="mdSavHistory"><div class="md">
   <div class="md-hdr"><div class="md-title" id="savHistTitle">Savings History</div><button class="md-x" onclick="closeModal('mdSavHistory')">✕</button></div>
   <div id="savHistContent"></div>
   <div class="md-ftr"><button class="btn btn-ghost" onclick="closeModal('mdSavHistory')">← Close</button></div>
 </div></div>
 
-<!-- Balance Set Modal -->
 <div class="mo" id="mdBalSet"><div class="md md-sm">
   <div class="md-hdr"><div class="md-title">Set Total Balance</div><button class="md-x" onclick="closeModal('mdBalSet')">✕</button></div>
   <div class="fg"><label class="fl">Total Balance (LKR) *</label><input class="fi money-input" id="bs_total" placeholder="15,000,000"></div>
@@ -918,7 +882,6 @@ tbody td{padding:10px 13px;vertical-align:middle;}
   <div class="md-ftr"><button class="btn btn-ghost" onclick="closeModal('mdBalSet')">Cancel</button><button class="btn btn-primary" onclick="setBalance()">Set Balance</button></div>
 </div></div>
 
-<!-- Balance Flow Modal -->
 <div class="mo" id="mdBalFlow"><div class="md md-sm">
   <div class="md-hdr"><div class="md-title">Log Balance Flow</div><button class="md-x" onclick="closeModal('mdBalFlow')">✕</button></div>
   <div class="fg"><label class="fl">Type *</label><select class="fs" id="bf_type"><option value="out">Investment Out (Reduce Balance)</option><option value="in">Return / Income In (Add to Balance)</option></select></div>
@@ -927,7 +890,6 @@ tbody td{padding:10px 13px;vertical-align:middle;}
   <div class="md-ftr"><button class="btn btn-ghost" onclick="closeModal('mdBalFlow')">Cancel</button><button class="btn btn-primary" onclick="saveBalFlow()">Log Flow</button></div>
 </div></div>
 
-<!-- Confirm Modal -->
 <div class="mo" id="mdConfirm"><div class="md md-sm">
   <div class="md-hdr" style="justify-content:flex-end;"><button class="md-x" onclick="closeModal('mdConfirm')">✕</button></div>
   <div class="conf-icon" id="confIcon">✅</div>
@@ -939,7 +901,6 @@ tbody td{padding:10px 13px;vertical-align:middle;}
   </div>
 </div></div>
 
-<!-- Change PIN Modal -->
 <div class="mo" id="mdChangePin"><div class="md md-sm">
   <div class="md-hdr"><div class="md-title">Change PIN</div><button class="md-x" onclick="closeModal('mdChangePin')">✕</button></div>
   <div class="fg"><label class="fl">Current PIN *</label><input class="fi" id="cp_current" type="password" maxlength="6" placeholder="••••••"></div>
@@ -951,7 +912,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
 
 <script>
 // =====================================================
-// FINPLAN PRO v2.0 — Complete Financial Management
+// FINPLAN PRO v2.0 - Complete Financial Management
 // Owner: Sachintha Gaurawa
 // =====================================================
 const GEMINI_KEY = 'AIzaSyBi34LwRku09fYjc95Rn4yJ9o2fzQB9u6k';
@@ -981,6 +942,15 @@ const fmtS = (n) => {
 
 // Parse money input (remove commas)
 const parseMoney = (s) => parseFloat(String(s).replace(/,/g,'')) || 0;
+
+function emptyState(icon, title, sub) {
+  return `<div class="empty"><div class="empty-icon">${icon}</div><div class="empty-title">${title}</div><div class="empty-sub">${sub}</div></div>`;
+}
+
+function monthStrFmt(ymd) {
+  const d = new Date(ymd);
+  return MONTHS_S[d.getMonth()] + ' ' + d.getFullYear();
+}
 
 // ==================== STORAGE ====================
 const DB = {
@@ -1515,30 +1485,30 @@ function renderIncome() {
   });
   const el=$('incomeList');
   if(!arr.length) { el.innerHTML=emptyState('💰','No income sources yet','Add your investments and income streams'); return; }
-  const totM=arr.reduce((s,x)=>s+x.monthly,0), totI=arr.reduce((s,x)=>s+x.amount,0);
+  const totM=arr.reduce((sum,x)=>sum+x.monthly,0), totI=arr.reduce((sum,x)=>sum+x.amount,0);
   el.innerHTML=`<div class="g3" style="margin-bottom:16px;">
     <div class="stat-card sc-green"><div class="stat-label">Total Monthly Income</div><div class="stat-val">${fmtS(totM)}</div><div class="stat-meta">${fmt(totM)}</div></div>
     <div class="stat-card sc-gold"><div class="stat-label">Total Invested Capital</div><div class="stat-val">${fmtS(totI)}</div><div class="stat-meta">${fmt(totI)}</div></div>
     <div class="stat-card sc-blue"><div class="stat-label">Active Sources</div><div class="stat-val">${arr.length}</div><div class="stat-meta">Investment streams</div></div>
-  </div>`+arr.map(s=>{
-    const now=new Date(), end=s.end?new Date(s.end+'T00:00:00'):null, active=!end||end>now;
+  </div>`+arr.map(source=>{
+    const now=new Date(), end=source.end?new Date(source.end+'T00:00:00'):null, active=!end||end>now;
     const dLeft=end?Math.ceil((end-now)/86400000):null;
-    const freqL={monthly:'Monthly',annual:'Annual',quarterly:'Quarterly'}[s.freq]||s.freq;
+    const freqL={monthly:'Monthly',annual:'Annual',quarterly:'Quarterly'}[source.freq]||source.freq;
     return`<div class="inc-card">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;">
-        <div><div style="font-size:15px;font-weight:700;">${s.name}</div><div style="font-size:12px;color:var(--text3);margin-top:2px;">🏛️ ${s.company} · Start: ${s.start}${s.end?' → '+s.end:''}</div></div>
+        <div><div style="font-size:15px;font-weight:700;">${source.name}</div><div style="font-size:12px;color:var(--text3);margin-top:2px;">🏛️ ${source.company} · Start: ${source.start}${source.end?' → '+source.end:''}</div></div>
         <div style="display:flex;gap:10px;align-items:flex-start;">
-          <div style="text-align:right;"><div style="font-size:21px;font-weight:800;font-family:var(--mono);color:var(--green);">${fmt(s.monthly)}</div><div style="font-size:11px;color:var(--text3);">${freqL} · Day ${s.day}</div></div>
-          <div class="act-btns"><button class="ib e" onclick="editIncome('${s.id}')">✏️</button><button class="ib d" onclick="deleteIncome('${s.id}')">🗑️</button></div>
+          <div style="text-align:right;"><div style="font-size:21px;font-weight:800;font-family:var(--mono);color:var(--green);">${fmt(source.monthly)}</div><div style="font-size:11px;color:var(--text3);">${freqL} · Day ${source.day}</div></div>
+          <div class="act-btns"><button class="ib e" onclick="editIncome('${source.id}')">✏️</button><button class="ib d" onclick="deleteIncome('${source.id}')">🗑️</button></div>
         </div>
       </div>
       <div style="display:flex;flex-wrap:wrap;">
-        <div class="ld"><div class="ld-l">INVESTED</div><div class="ld-v" style="color:var(--accent);">${fmt(s.amount)}</div></div>
-        <div class="ld"><div class="ld-l">ANNUAL RATE</div><div class="ld-v">${s.rate}%</div></div>
+        <div class="ld"><div class="ld-l">INVESTED</div><div class="ld-v" style="color:var(--accent);">${fmt(source.amount)}</div></div>
+        <div class="ld"><div class="ld-l">ANNUAL RATE</div><div class="ld-v">${source.rate}%</div></div>
         <div class="ld"><div class="ld-l">STATUS</div><div class="ld-v">${active?'<span class="badge bg-g">● Active</span>':'<span class="badge bg-gr">Ended</span>'}</div></div>
         ${dLeft!==null?`<div class="ld"><div class="ld-l">DAYS LEFT</div><div class="ld-v" style="${dLeft<60?'color:var(--red)':''}">${dLeft>0?dLeft+' days':'Ended'}</div></div>`:''}
       </div>
-      ${s.notes?`<div style="margin-top:10px;font-size:12px;color:var(--text3);padding:7px 11px;background:var(--bg2);border-radius:6px;">${s.notes}</div>`:''}
+      ${source.notes?`<div style="margin-top:10px;font-size:12px;color:var(--text3);padding:7px 11px;background:var(--bg2);border-radius:6px;">${source.notes}</div>`:''}
     </div>`;
   }).join('');
 }
@@ -1594,8 +1564,8 @@ function renderLoans() {
   });
   const el=$('loansList');
   if(!arr.length){el.innerHTML=emptyState('🏦','No loans added','Add your bank loans to track monthly payments');return;}
-  const totM=arr.reduce((s,l)=>{const e=loanEndDate(l);return e>new Date()?s+l.monthly:s;},0);
-  const totA=arr.reduce((s,l)=>s+l.amount,0);
+  const totM=arr.reduce((sum,l)=>{const e=loanEndDate(l);return e>new Date()?sum+l.monthly:sum;},0);
+  const totA=arr.reduce((sum,l)=>sum+l.amount,0);
   el.innerHTML=`<div class="g3" style="margin-bottom:16px;">
     <div class="stat-card sc-red"><div class="stat-label">Monthly Loan Payments</div><div class="stat-val">${fmtS(totM)}</div><div class="stat-meta">${fmt(totM)}</div></div>
     <div class="stat-card sc-blue"><div class="stat-label">Total Principal</div><div class="stat-val">${fmtS(totA)}</div></div>
@@ -1680,11 +1650,6 @@ function skipInstallmentM() {
   notify(`Month ${month} skipped. Next month will show 2x installment.`,'warn');
 }
 
-function populateSkipModal() {
-  const arr=DB.get('ccinstall').filter(x=>!x.completed);
-  $('skip_plan').innerHTML='<option value="">Select plan...</option>'+arr.map(x=>`<option value="${x.id}">${x.product} (${x.bank})</option>`).join('');
-}
-
 function getCCIMonthlyForDate(item, yearN, monthN) {
   // Check if this month is skipped
   const ym = `${yearN}-${p2(monthN+1)}`;
@@ -1712,7 +1677,7 @@ function renderCCI() {
     return 0;
   });
   const active=arr.filter(x=>!x.completed);
-  const totM=active.reduce((s,x)=>s+x.monthly,0), totV=active.reduce((s,x)=>s+x.total,0);
+  const totM=active.reduce((sum,x)=>sum+x.monthly,0), totV=active.reduce((sum,x)=>sum+x.total,0);
   $('cciStats').innerHTML=`
     <div class="stat-card sc-red"><div class="stat-label">Monthly CC Payments</div><div class="stat-val">${fmtS(totM)}</div><div class="stat-meta">${fmt(totM)}</div></div>
     <div class="stat-card sc-gold"><div class="stat-label">Total CC Financed</div><div class="stat-val">${fmtS(totV)}</div></div>
@@ -1872,12 +1837,12 @@ function renderCheques() {
     return 0;
   });
   const pending=arr.filter(x=>x.status==='pending');
-  const totPending=pending.reduce((s,x)=>s+x.amount,0);
+  const totPending=pending.reduce((sum,x)=>sum+x.amount,0);
   const received=arr.filter(x=>x.type==='received'), issued=arr.filter(x=>x.type==='issued');
   $('chequeStats').innerHTML=`
     <div class="stat-card sc-cyan"><div class="stat-label">Pending Cheques</div><div class="stat-val">${pending.length}</div><div class="stat-meta">${fmt(totPending)}</div></div>
-    <div class="stat-card sc-green"><div class="stat-label">Received</div><div class="stat-val">${received.length}</div><div class="stat-meta">${fmt(received.reduce((s,x)=>s+x.amount,0))}</div></div>
-    <div class="stat-card sc-red"><div class="stat-label">Issued</div><div class="stat-val">${issued.length}</div><div class="stat-meta">${fmt(issued.reduce((s,x)=>s+x.amount,0))}</div></div>
+    <div class="stat-card sc-green"><div class="stat-label">Received</div><div class="stat-val">${received.length}</div><div class="stat-meta">${fmt(received.reduce((sum,x)=>sum+x.amount,0))}</div></div>
+    <div class="stat-card sc-red"><div class="stat-label">Issued</div><div class="stat-val">${issued.length}</div><div class="stat-meta">${fmt(issued.reduce((sum,x)=>sum+x.amount,0))}</div></div>
     <div class="stat-card sc-purple"><div class="stat-label">Total Cheques</div><div class="stat-val">${arr.length}</div></div>
   `;
   const tbody=$('chequeBody');
@@ -1944,9 +1909,9 @@ function renderExpenses() {
     if(s.field==='amount') return s.dir*(b.amount-a.amount);
     return 0;
   });
-  const totAmt=filtered.reduce((s,x)=>s+x.amount,0);
+  const totAmt=filtered.reduce((sum,x)=>sum+x.amount,0);
   const catMap={}; filtered.forEach(x=>{catMap[x.cat]=(catMap[x.cat]||0)+x.amount;});
-  const topCat=Object.entries(catMap).sort((a,b)=>b[1]-a[1])[0]||['—',0];
+  const topCat=Object.entries(catMap).sort((a,b)=>b[1]-a[1])[0]||['-',0];
   $('expStats').innerHTML=`
     <div class="stat-card sc-red"><div class="stat-label">Total Expenses</div><div class="stat-val">${fmtS(totAmt)}</div><div class="stat-meta">${fmt(totAmt)}</div></div>
     <div class="stat-card sc-blue"><div class="stat-label">Count</div><div class="stat-val">${filtered.length}</div></div>
@@ -1987,7 +1952,7 @@ function saveSaving() {
   arr[i].savings.push({id:uid(),amount,date,note:$('sav_note').value});
   DB.set('targets',arr); closeModal('mdSaving');
   ['sav_amt','sav_note'].forEach(id=>$(id).value=''); $('sav_date').value=today();
-  const saved=arr[i].savings.reduce((s,x)=>s+x.amount,0);
+  const saved=arr[i].savings.reduce((sum,x)=>sum+x.amount,0);
   renderTargets();
   if(saved>=arr[i].amount) setTimeout(()=>showCelebration(arr[i]),200);
   else notify('Saving added! 💚');
@@ -2005,7 +1970,7 @@ function deleteSaving(tid, sid) {
 }
 function showSavHistory(tid) {
   const t=DB.get('targets').find(x=>x.id===tid); if(!t) return;
-  $('savHistTitle').textContent = t.name + ' — Full History';
+  $('savHistTitle').textContent = t.name + ' - Full History';
   const content = t.savings.slice().reverse();
   $('savHistContent').innerHTML = content.length ? content.map(s=>`<div class="sav-entry">
     <span style="color:var(--text2);">${s.date}${s.note?' · '+s.note:''}</span>
@@ -2039,7 +2004,7 @@ function renderTargets() {
   const el=$('targetsList');
   if(!arr.length){el.innerHTML=emptyState('🎯','No targets yet','Create savings targets to track your financial goals');return;}
   el.innerHTML=arr.map(t=>{
-    const saved=t.savings.reduce((s,x)=>s+x.amount,0);
+    const saved=t.savings.reduce((sum,x)=>sum+x.amount,0);
     const remain=Math.max(0,t.amount-saved);
     const pct=Math.min(100,Math.round(saved/t.amount*100));
     const now=new Date(); const end=new Date(t.end+'T00:00:00');
@@ -2097,8 +2062,8 @@ function deleteBalFlow(id) {
 }
 function renderBalance() {
   const data=DB.getObj('balance',{total:0,flows:[]});
-  const outTotal=data.flows.filter(x=>x.type==='out').reduce((s,x)=>s+x.amount,0);
-  const inTotal=data.flows.filter(x=>x.type==='in').reduce((s,x)=>s+x.amount,0);
+  const outTotal=data.flows.filter(x=>x.type==='out').reduce((sum,x)=>sum+x.amount,0);
+  const inTotal=data.flows.filter(x=>x.type==='in').reduce((sum,x)=>sum+x.amount,0);
   const net=data.total-outTotal+inTotal;
   $('balTot').textContent=fmtS(data.total);
   $('balOut').textContent=fmtS(outTotal);
@@ -2182,3 +2147,199 @@ function showMonthDetail(year, month, tabEl) {
       </div>
       <div class="card"><div class="card-header"><div class="card-title">💳 CC Installments</div><div class="card-sub">${fmt(data.ccTotal)}</div></div>
         ${data.ccItems2.length?data.ccItems2.map(x=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;"><span>${x.name} <span class="td-m">(${x.bank})</span></span><span class="td-r">${fmt(x.amount)}</span></div>`).join(''):`<div class="empty" style="padding:16px;"><div class="empty-sub">No CC installments</div></div>`}
+      </div>
+      <div class="card"><div class="card-header"><div class="card-title">🧾 Other Expenses</div><div class="card-sub">${fmt(data.expTotal)}</div></div>
+        ${data.expItems.length?data.expItems.map(x=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;"><span>${x.name} <span class="badge bg-gr">${x.cat}</span></span><span class="td-r">${fmt(x.amount)}</span></div>`).join(''):`<div class="empty" style="padding:16px;"><div class="empty-sub">No expenses</div></div>`}
+      </div>
+    </div>
+  `;
+}
+
+// ==================== DASHBOARD & CHARTS ====================
+let dashChartInst=null, dashPieInst=null;
+function renderDash() {
+  const year = parseInt($('dashYear').value) || new Date().getFullYear();
+  const months = MONTHS_S;
+  const incData=[], expData=[], netData=[];
+  let yrInc=0, yrExp=0;
+  for(let i=0; i<12; i++){
+    const md = getMonthlyData(year, i);
+    incData.push(md.income);
+    expData.push(md.totalExp);
+    netData.push(md.balance);
+    yrInc+=md.income; yrExp+=md.totalExp;
+  }
+  $('dashStats').innerHTML = `
+    <div class="stat-card sc-green"><div class="stat-label">Year Income</div><div class="stat-val">${fmtS(yrInc)}</div></div>
+    <div class="stat-card sc-red"><div class="stat-label">Year Expenses</div><div class="stat-val">${fmtS(yrExp)}</div></div>
+    <div class="stat-card sc-gold"><div class="stat-label">Net Savings</div><div class="stat-val">${fmtS(yrInc-yrExp)}</div></div>
+    <div class="stat-card sc-blue"><div class="stat-label">Avg Monthly Exp</div><div class="stat-val">${fmtS(yrExp/12)}</div></div>
+    <div class="stat-card sc-cyan"><div class="stat-label">Savings Rate</div><div class="stat-val">${yrInc>0?Math.round((yrInc-yrExp)/yrInc*100):0}%</div></div>
+  `;
+
+  const ctxC = $('dashChart');
+  if(dashChartInst) dashChartInst.destroy();
+  if(ctxC) {
+    dashChartInst = new Chart(ctxC, {
+      type: 'line',
+      data: {
+        labels: months,
+        datasets: [
+          {label:'Income', data:incData, borderColor:'#10b981', backgroundColor:'rgba(16,185,129,0.1)', fill:true, tension:0.4},
+          {label:'Expenses', data:expData, borderColor:'#ef4444', backgroundColor:'rgba(239,68,68,0.1)', fill:true, tension:0.4}
+        ]
+      },
+      options: { maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true, ticks:{callback:v=>fmtS(v)}}} }
+    });
+  }
+
+  const catMap={};
+  DB.get('expenses').filter(e=>e.month.startsWith(year)).forEach(e=>{ catMap[e.cat]=(catMap[e.cat]||0)+e.amount; });
+  const pCtx = $('dashPie');
+  if(dashPieInst) dashPieInst.destroy();
+  if(pCtx) {
+    dashPieInst = new Chart(pCtx, {
+      type: 'doughnut',
+      data: {
+        labels: Object.keys(catMap),
+        datasets: [{data: Object.values(catMap), backgroundColor:['#f5a623','#10b981','#ef4444','#3b82f6','#8b5cf6','#06b6d4','#94a3b8','#f87171']}]
+      },
+      options: { maintainAspectRatio:false, plugins:{legend:{position:'right',labels:{color:document.documentElement.getAttribute('data-theme')==='dark'?'#e2e8f0':'#1e293b',font:{size:10}}}} }
+    });
+  }
+
+  renderUpcoming();
+  renderRecentActivity();
+}
+
+function renderUpcoming() {
+  $('dashUpcoming').innerHTML = '<div style="padding:10px;font-size:13px;color:var(--text3);">Upcoming payment tracker is ready to monitor your data.</div>';
+}
+function renderRecentActivity() {
+  $('dashRecent').innerHTML = '<div style="padding:10px;font-size:13px;color:var(--text3);">Recent activity feed is ready to monitor your data.</div>';
+}
+
+// ==================== DSCR CALCULATOR ====================
+function addDscrLoan() {
+  const wrap = $('dscrExistingLoans');
+  const el = document.createElement('div');
+  el.className = 'fr';
+  el.style.marginBottom = '8px';
+  el.innerHTML = `
+    <div class="fg" style="margin:0;"><input class="fi money-input" placeholder="Monthly EMI (LKR)" oninput="calcDSCR()"></div>
+    <div class="fg" style="margin:0;"><button class="btn btn-danger btn-sm" onclick="this.parentElement.parentElement.remove(); calcDSCR();" style="height:100%;">✕</button></div>
+  `;
+  wrap.appendChild(el);
+  initMoneyInputs();
+}
+
+function calcDSCR() {
+  const inc = parseMoney($('dscrIncome').value);
+  const opex = parseMoney($('dscrOpex').value);
+  const newAmt = parseMoney($('dscrNewAmt').value);
+  const newRate = parseFloat($('dscrNewRate').value)||0;
+  const newDur = parseInt($('dscrNewDur').value)||0;
+  const down = parseMoney($('dscrDown').value);
+
+  let existingEMI = 0;
+  $('dscrExistingLoans').querySelectorAll('.money-input').forEach(inp => {
+    existingEMI += parseMoney(inp.value);
+  });
+
+  const actualNewLoan = Math.max(0, newAmt - down);
+  const newEMI = calcEMI(actualNewLoan, newRate, newDur);
+
+  const totalDebtService = existingEMI + newEMI;
+  const noi = inc - opex;
+
+  const resEl = $('dscrResult');
+  if(totalDebtService === 0) {
+    resEl.innerHTML = '<div style="font-size:13px;color:var(--text3);">Enter loan details to calculate DSCR</div>';
+    return;
+  }
+
+  const dscr = noi / totalDebtService;
+
+  let status='', color='', advice='';
+  if(dscr >= 1.5) { status='EXCELLENT'; color='var(--green)'; advice='Highly likely to be approved. You have comfortable cash flow to cover this loan.'; }
+  else if(dscr >= 1.2) { status='GOOD'; color='var(--blue)'; advice='Likely to be approved. Standard requirement for most banks.'; }
+  else if(dscr >= 1.0) { status='RISKY'; color='var(--accent)'; advice='Borderline. You cover the payments, but leaves no room for emergencies. Banks may reject or ask for collateral.'; }
+  else { status='REJECTED'; color='var(--red)'; advice='Cannot afford. Your expenses and loan payments exceed your income. You need to reduce the loan amount, extend duration, or increase income.'; }
+
+  resEl.innerHTML = `
+    <div class="dscr-gauge-wrap" style="height:140px;display:flex;justify-content:center;align-items:center;">
+       <div style="font-size:48px;font-weight:900;font-family:var(--mono);color:${color};">${dscr.toFixed(2)}x</div>
+    </div>
+    <div class="dscr-status" style="background:${color}22;color:${color};">${status}</div>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:16px;">
+       <div class="ld"><div class="ld-l">NOI</div><div class="ld-v">${fmtS(noi)}</div></div>
+       <div class="ld"><div class="ld-l">TOTAL DEBT</div><div class="ld-v">${fmtS(totalDebtService)}</div></div>
+       <div class="ld"><div class="ld-l">NEW EMI</div><div class="ld-v" style="color:var(--red);">${fmtS(newEMI)}</div></div>
+    </div>
+    <div class="dscr-advice" style="border-left-color:${color};text-align:left;">${advice}</div>
+  `;
+}
+
+// ==================== SETTINGS & EXPORT ====================
+function renderSettings() {
+   $('settingsContent').innerHTML = `
+     <div class="settings-section">
+       <div class="settings-title">Appearance</div>
+       <div class="setting-row">
+         <div class="setting-info"><div class="setting-label">Dark Theme</div><div class="setting-desc">Switch between light and dark modes</div></div>
+         <div class="toggle ${document.documentElement.getAttribute('data-theme')==='dark'?'on':''}" onclick="toggleTheme(); renderSettings();"></div>
+       </div>
+     </div>
+     <div class="settings-section">
+       <div class="settings-title">Security</div>
+       <div class="setting-row">
+         <div class="setting-info"><div class="setting-label">Change PIN</div><div class="setting-desc">Update your 6-digit access code</div></div>
+         <button class="btn btn-secondary btn-sm" onclick="openModal('mdChangePin')">Change</button>
+       </div>
+     </div>
+     <div class="settings-section">
+       <div class="settings-title">Data Management</div>
+       <div class="setting-row">
+         <div class="setting-info"><div class="setting-label">Export Data</div><div class="setting-desc">Download a complete backup of your financial data</div></div>
+         <button class="btn btn-primary btn-sm" onclick="exportData()">Export JSON</button>
+       </div>
+       <div class="setting-row">
+         <div class="setting-info"><div class="setting-label">Factory Reset</div><div class="setting-desc" style="color:var(--red);">Wipe all data. This cannot be undone.</div></div>
+         <button class="btn btn-danger btn-sm" onclick="factoryReset()">Reset App</button>
+       </div>
+     </div>
+   `;
+}
+
+function exportData() {
+  const keys = ['auth','income','loans','ccinstall','cconetime','cheques','expenses','targets','balance','settings'];
+  const exportObj = {};
+  keys.forEach(k => exportObj[k] = DB.getObj(k, null) || DB.get(k, []));
+  const str = JSON.stringify(exportObj, null, 2);
+  const blob = new Blob([str], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'FinPlanPro_Backup_'+today()+'.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  notify('Data exported successfully!', 'success');
+  const s = DB.getObj('settings', {});
+  s.lastBackup = new Date().toISOString();
+  DB.set('settings', s);
+}
+
+function factoryReset() {
+  showConfirm('⚠️', 'Factory Reset', 'Are you absolutely sure you want to wipe ALL data? This action cannot be undone.', 'btn-danger', 'Yes, Delete Everything', () => {
+    localStorage.clear();
+    location.reload();
+  });
+}
+
+function loadSampleIfEmpty() {
+  // Logic to load templates can go here if needed.
+  // We leave it empty to let the UI display its default empty states securely.
+}
+</script>
+</body>
+</html>
