@@ -11,10 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics-compat.js"></script>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 
 <style>
@@ -48,7 +45,7 @@ input, select, textarea, button { font-family: var(--font); }
 
 /* Prevent auto-zoom on mobile devices */
 input, select, textarea { font-size: 16px !important; }
-button { touch-action: manipulation; }
+button, .npb { touch-action: manipulation; }
 
 /* ================== SPLASH ================== */
 #splash { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; transition: opacity .5s, transform .5s; }
@@ -78,7 +75,28 @@ button { touch-action: manipulation; }
 .auth-logo { width: 64px; height: 64px; background: linear-gradient(135deg, var(--accent), var(--accent3)); border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 30px; color: #000; font-weight: 900; margin: 0 auto 18px; box-shadow: 0 8px 32px var(--ag); }
 .auth-title { font-size: 26px; font-weight: 800; margin-bottom: 5px; }
 .auth-sub { font-size: 13px; color: var(--text3); margin-bottom: 28px; }
-.auth-err { font-size: 12px; color: var(--red); margin-top: 14px; min-height: 18px; }
+.pin-dots { display: flex; gap: 12px; justify-content: center; margin-bottom: 22px; }
+.pin-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--border); border: 2px solid var(--border2); transition: all .18s; }
+.pin-dot.filled { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 14px var(--ag); transform: scale(1.15); }
+.pin-dot.error { background: var(--red); border-color: var(--red); animation: shake .4s ease; }
+@keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } 50% { transform: translateX(-5px); } }
+.numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 256px; margin: 0 auto 16px; }
+.npb { width: 76px; height: 76px; margin: 0 auto; border-radius: 50%; border: 1.5px solid var(--border2); background: var(--card2); color: var(--text); font-size: 24px; font-weight: 600; cursor: pointer; transition: all .15s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; user-select: none; }
+.npb-sub { font-size: 7.5px; color: var(--text3); font-weight: 500; letter-spacing: 1px; }
+.npb:hover { background: var(--card3); border-color: var(--accent); color: var(--accent); transform: scale(1.06); }
+.npb:active { transform: scale(.93); background: rgba(245,166,35,.15); }
+.npb.del { background: transparent; border-color: transparent; font-size: 18px; color: var(--text2); }
+.npb.del:hover { color: var(--red); background: transparent; }
+.auth-link { font-size: 13px; color: var(--text3); cursor: pointer; margin-top: 6px; transition: color .15s; }
+.auth-link:hover { color: var(--accent); }
+.auth-err { font-size: 12px; color: var(--red); margin-top: 8px; min-height: 18px; }
+.auth-form-group { margin-bottom: 14px; text-align: left; }
+.auth-form-label { font-size: 12px; font-weight: 600; color: var(--text2); display: block; margin-bottom: 5px; }
+.auth-input { width: 100%; background: var(--bg2); border: 1.5px solid var(--border); border-radius: var(--r2); padding: 10px 13px; color: var(--text); font-family: var(--font); font-size: 16px; outline: none; transition: border-color .18s; }
+.auth-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--ag); }
+.auth-btn { width: 100%; padding: 12px; border: none; border-radius: var(--r2); background: linear-gradient(135deg, var(--accent), var(--accent3)); color: #000; font-size: 15px; font-weight: 700; font-family: var(--font); cursor: pointer; transition: all .2s; margin-top: 4px; }
+.auth-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 24px var(--ag); }
+.auth-btn.ghost { background: var(--card2); color: var(--text2); border: 1px solid var(--border); margin-top: 8px; }
 
 /* ================== LAYOUT ================== */
 #app { display: flex; min-height: 100vh; display: none; }
@@ -99,8 +117,8 @@ button { touch-action: manipulation; }
 .nb { margin-left: auto; background: var(--red); color: #fff; font-size: 9px; font-weight: 700; padding: 1px 6px; border-radius: 10px; min-width: 17px; text-align: center; animation: nbPulse 2s infinite; }
 @keyframes nbPulse { 0%, 100% { opacity: 1; } 50% { opacity: .6; } }
 .sb-footer { padding: 12px 16px; border-top: 1px solid var(--border); }
-.sb-user { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.sb-date { font-size: 11px; color: var(--accent); font-family: var(--mono); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sb-user { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+.sb-date { font-size: 11px; color: var(--accent); font-family: var(--mono); }
 .sb-ver { font-size: 10px; color: var(--text3); margin-top: 3px; }
 .main { margin-left: var(--sw); flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
 .topbar { background: var(--bg2); border-bottom: 1px solid var(--border); padding: 12px 26px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; gap: 10px; }
@@ -147,8 +165,6 @@ button { touch-action: manipulation; }
 .btn-sm { padding: 5px 10px; font-size: 12px; }
 .btn-xs { padding: 3px 8px; font-size: 11px; }
 .btn:disabled { opacity: .4; cursor: not-allowed; transform: none !important; }
-.google-btn { background: #ffffff; color: #1f2937; border: 1px solid #d1d5db; justify-content: center; padding: 12px; border-radius: var(--r2); font-size: 15px; font-weight: 600; font-family: var(--font); cursor: pointer; display: flex; align-items: center; gap: 10px; transition: all 0.2s; width: 100%; margin-top: 20px; }
-.google-btn:hover { background: #f9fafb; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
 
 /* ================== CARDS ================== */
 .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--r); padding: 20px; box-shadow: var(--sh2); transition: border-color .2s; }
@@ -412,15 +428,73 @@ tbody td { padding: 10px 13px; vertical-align: middle; }
 
   <div class="auth-box" id="authLogin">
     <div class="auth-logo">₣</div>
-    <div class="auth-title">WealthFlow</div>
-    <div class="auth-sub">Secure Financial Management</div>
-    
-    <button class="google-btn" onclick="window.signInWithGoogle()">
-        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="G" style="width:18px; height:18px;">
-        Continue with Google
-    </button>
-
+    <div class="auth-title">Welcome Back</div>
+    <div class="auth-sub">Sachintha Gaurawa · Enter your 6-digit PIN</div>
+    <div class="pin-dots" id="loginDots"></div>
+    <div class="numpad" id="loginPad"></div>
     <div class="auth-err" id="loginErr"></div>
+    <div class="auth-link" onclick="window.showAuthView('authForgot')">🔑 Forgot Passcode?</div>
+  </div>
+
+  <div class="auth-box" id="authSetup" style="display:none;">
+    <div class="auth-logo">🔐</div>
+    <div class="auth-title">Create Passcode</div>
+    <div class="auth-sub" id="setupSub">Set a secure 6-digit PIN to protect your data</div>
+    <div class="pin-dots" id="setupDots"></div>
+    <div class="numpad" id="setupPad"></div>
+    <div class="auth-err" id="setupErr"></div>
+  </div>
+
+  <div class="auth-box" id="authForgot" style="display:none;">
+    <div class="auth-logo">🔓</div>
+    <div class="auth-title">Account Recovery</div>
+    <div class="auth-sub">Answer your security question to reset PIN</div>
+    <div class="fg"><label class="auth-form-label" id="recovSecQ">Security Question</label><input class="auth-input" id="recovSecA" placeholder="Your answer..."></div>
+    <div class="fg"><label class="auth-form-label">Verification Code</label><input class="auth-input" id="recovCode" placeholder="16-character recovery code" style="font-family:var(--mono);letter-spacing:2px;"></div>
+    <button class="auth-btn" onclick="window.verifyRecovery()">✅ Verify & Reset PIN</button>
+    <button class="auth-btn ghost" onclick="window.showAuthView('authLogin')">← Back to Login</button>
+    <div class="auth-err" id="recovErr"></div>
+  </div>
+
+  <div class="auth-box" id="authNewPin" style="display:none;">
+    <div class="auth-logo">✅</div>
+    <div class="auth-title">Create New PIN</div>
+    <div class="auth-sub" id="newPinSub">Enter your new 6-digit PIN</div>
+    <div class="pin-dots" id="newPinDots"></div>
+    <div class="numpad" id="newPinPad"></div>
+    <div class="auth-err" id="newPinErr"></div>
+  </div>
+
+  <div class="auth-box" id="authRecovShow" style="display:none;">
+    <div class="auth-logo">📋</div>
+    <div class="auth-title">Save Recovery Code</div>
+    <div class="auth-sub">Store this code safely - you will need it if you forget your PIN</div>
+    <div style="background:var(--bg2);border:2px dashed var(--accent);border-radius:var(--r);padding:18px;margin:16px 0;font-family:var(--mono);font-size:20px;font-weight:700;letter-spacing:4px;color:var(--accent);word-break:break-all;" id="recovCodeDisplay"></div>
+    <div style="font-size:12px;color:var(--text3);margin-bottom:16px;">⚠️ This code will only be shown once. Save it now!</div>
+    <button class="auth-btn" id="copyRecovBtn" onclick="window.copyRecovCode()">📋 Copy Code</button>
+    <button class="auth-btn ghost" onclick="window.confirmRecovSaved()">✅ I've Saved It - Continue</button>
+  </div>
+
+  <div class="auth-box" id="authSecQ" style="display:none;">
+    <div class="auth-logo">🛡️</div>
+    <div class="auth-title">Security Question</div>
+    <div class="auth-sub">Set a recovery question for account access</div>
+    <div class="fg"><label class="auth-form-label">Security Question</label>
+      <select class="auth-input fs" id="secQSelect">
+        <option value="">Choose a question...</option>
+        <option>What is the name of your first pet?</option>
+        <option>What is your mother's maiden name?</option>
+        <option>What city were you born in?</option>
+        <option>What was the name of your first school?</option>
+        <option>What is your favourite childhood movie?</option>
+        <option>What is your father's middle name?</option>
+        <option>Custom question</option>
+      </select>
+    </div>
+    <div class="fg" id="customQWrap" style="display:none;"><label class="auth-form-label">Custom Question</label><input class="auth-input" id="customQ" placeholder="Enter your question..."></div>
+    <div class="fg"><label class="auth-form-label">Your Answer</label><input class="auth-input" id="secAns" placeholder="Answer (case-insensitive)"></div>
+    <button class="auth-btn" onclick="window.saveSecQ()">🔒 Save & Continue</button>
+    <div class="auth-err" id="secQErr"></div>
   </div>
 </div>
 
@@ -452,8 +526,8 @@ tbody td { padding: 10px 13px; vertical-align: middle; }
       <div class="nav-item" onclick="window.showPage('settings',this)"><span class="nav-icon">⚙️</span> Settings</div>
     </nav>
     <div class="sb-footer">
-      <div class="sb-user" id="sbUserName">👤 Loading...</div>
-      <div class="sb-date" id="sbUserEmail">-</div>
+      <div class="sb-user">👤 Sachintha Gaurawa</div>
+      <div class="sb-date" id="sbDate">-</div>
       <div class="sb-ver">WealthFlow v3.0 · Personal</div>
     </div>
   </aside>
@@ -466,7 +540,7 @@ tbody td { padding: 10px 13px; vertical-align: middle; }
       </div>
       <div class="tb-right">
         <div class="online-badge on" id="onlineBadge"><span class="online-dot" id="onlineDot"></span><span id="onlineText">Online</span></div>
-        <button class="refresh-btn" onclick="window.refreshApp(this)" title="Force Refresh Data">↻</button>
+        <button class="refresh-btn" onclick="window.refreshApp(this)" title="Refresh">↻</button>
         <button class="theme-btn" onclick="window.toggleTheme()" id="themeBtn" title="Toggle Theme">🌙</button>
         <div class="month-badge" id="curMonthBadge">-</div>
         <button class="btn btn-primary btn-sm" id="topAddBtn" onclick="window.handleTopAdd()" style="display:none;">+ Add</button>
@@ -650,7 +724,7 @@ tbody td { padding: 10px 13px; vertical-align: middle; }
       </div>
 
       <div class="page" id="page-dscr">
-        <div class="sh"><div class="sh-title">DSCR Calculator - Sri Lanka Bank Configuration</div></div>
+        <div class="sh"><div class="sh-title">DSCR Calculator - Sri Lanka Loan Eligibility</div></div>
         <div class="g2">
           <div class="card">
             <div class="card-header"><div class="card-title">Your Financial Profile</div></div>
@@ -828,6 +902,15 @@ tbody td { padding: 10px 13px; vertical-align: middle; }
   </div>
 </div></div>
 
+<div class="mo" id="mdChangePin"><div class="md md-sm">
+  <div class="md-hdr"><div class="md-title">Change PIN</div><button class="md-x" onclick="window.closeModal('mdChangePin')">✕</button></div>
+  <div class="fg"><label class="fl">Current PIN *</label><input class="fi" id="cp_current" type="password" maxlength="6" placeholder="••••••"></div>
+  <div class="fg"><label class="fl">New PIN *</label><input class="fi" id="cp_new" type="password" maxlength="6" placeholder="••••••"></div>
+  <div class="fg"><label class="fl">Confirm New PIN *</label><input class="fi" id="cp_confirm" type="password" maxlength="6" placeholder="••••••"></div>
+  <div class="auth-err" id="cp_err"></div>
+  <div class="md-ftr"><button class="btn btn-ghost" onclick="window.closeModal('mdChangePin')">Cancel</button><button class="btn btn-primary" onclick="window.changePin()">🔐 Change PIN</button></div>
+</div></div>
+
 <input type="file" id="importFile" accept=".json" style="display:none;" onchange="window.handleImportFile(event)">
 
 <script>
@@ -835,7 +918,7 @@ tbody td { padding: 10px 13px; vertical-align: middle; }
 // WEALTHFLOW v3.0 - Intelligent Financial System
 // =====================================================
 
-// 1. Firebase Authentication & Database Setup
+// 1. Firebase Setup
 const firebaseConfig = {
     apiKey: "AIzaSyBpIRHoNQJTeMIVYime_oVjBXiQWNH18K4",
     authDomain: "wealthflow-6dffb.firebaseapp.com",
@@ -848,30 +931,24 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
-const auth = firebase.auth();
-const googleProvider = new firebase.auth.GoogleAuthProvider();
-
-// Google Analytics
-if(typeof firebase.analytics === 'function') {
-    firebase.analytics();
-}
 
 // Enable offline caching so the app works seamlessly without internet
 db.enablePersistence().catch(err => {
     console.warn("Offline persistence issue:", err.code);
 });
 
-let userDocRef = null;
+const userDocRef = db.collection('users').doc('master_profile');
 
 // 2. Global State Management
 let appData = { 
-    income: [], loans: [], ccinstall: [], cconetime: [], 
+    auth: {}, income: [], loans: [], ccinstall: [], cconetime: [], 
     cheques: [], expenses: [], targets: [], balance: {total:0, flows:[]}, 
     settings: { backupFreq: 'weekly', lastBackup: null, theme: 'dark' } 
 };
 
 let isInitialised = false;
 
+// The DB controller automatically triggers a cloud push upon saving
 const DB = {
     get(k, def=[]) { return appData[k] !== undefined ? appData[k] : def; },
     getObj(k, def={}) { return appData[k] !== undefined ? appData[k] : def; },
@@ -882,7 +959,7 @@ const DB = {
 };
 
 function syncToCloud() {
-    if(!userDocRef || !navigator.onLine) return; 
+    if(!navigator.onLine) return; // Firebase handles the offline queue automatically
     setSyncStatus(true);
     userDocRef.set(appData, { merge: true }).then(() => {
         setTimeout(() => setSyncStatus(false), 800);
@@ -905,135 +982,6 @@ function setSyncStatus(syncing) {
         badge.className = 'online-badge off';
         $('onlineText').textContent = 'Offline';
     }
-}
-
-// ==================== BOOT SEQUENCE & AUTH ====================
-
-window.onload = function() {
-    let w = 0;
-    const fillEl = $('spFill');
-    const fillInterval = setInterval(() => {
-        if(fillEl) { w = Math.min(w + (w < 80 ? 3 : 0.5), 100); fillEl.style.width = w + '%'; }
-    }, 30);
-
-    populateBankSelects();
-    initMoneyInputs();
-    setupOnlineStatus();
-    updateDateTime();
-    setInterval(updateDateTime, 60000);
-
-    const curY = new Date().getFullYear();
-    ['dashYear','mpYear'].forEach(id => {
-        const el = $(id); if(!el) return;
-        for(let y=curY-2; y<=curY+4; y++) {
-            const o = document.createElement('option');
-            o.value=y; o.textContent=y;
-            if(y===curY) o.selected=true;
-            el.appendChild(o);
-        }
-    });
-
-    ['ot_date','sav_date','bf_date','bs_date','chq_issue','chq_release'].forEach(id => { const el=$(id); if(el) el.value=today(); });
-    ['e_month'].forEach(id => { const el=$(id); if(el) el.value=today().substr(0,7); });
-
-    // Manage Auth State
-    auth.onAuthStateChanged((user) => {
-        if (user) {
-            // User is signed in. Link database strictly to their Google ID.
-            userDocRef = db.collection('users').doc(user.uid);
-            
-            // Update Sidebar Profile UI
-            $('sbUserName').textContent = '👤 ' + (user.displayName || 'WealthFlow User');
-            $('sbUserEmail').textContent = user.email || '';
-
-            loadUserDataAndLaunch();
-        } else {
-            // User is signed out.
-            clearInterval(fillInterval);
-            if(fillEl) fillEl.style.width = '100%';
-            
-            $('splash').classList.add('hide');
-            setTimeout(() => { if($('splash')) $('splash').style.display='none'; }, 600);
-            
-            $('app').classList.remove('show');
-            $('authScreen').classList.add('show');
-        }
-    });
-};
-
-window.signInWithGoogle = function() {
-    $('loginErr').textContent = "Connecting to Google...";
-    auth.signInWithPopup(googleProvider).catch((error) => {
-        console.error("Auth Error:", error);
-        $('loginErr').textContent = "Failed to sign in. Please try again.";
-    });
-};
-
-window.signOutGoogle = function() {
-    showConfirm('👋', 'Sign Out', 'Are you sure you want to log out of WealthFlow?', 'btn-danger', 'Yes, Sign Out', () => {
-        auth.signOut().then(() => {
-            window.location.reload();
-        });
-    });
-};
-
-function loadUserDataAndLaunch() {
-    // Attempt to fetch from Firebase (or cache if offline)
-    userDocRef.get().then((doc) => {
-        if (doc.exists) {
-            const cloudData = doc.data();
-            Object.keys(cloudData).forEach(key => {
-                appData[key] = cloudData[key];
-            });
-        } else {
-            // Fresh account, save template to cloud
-            userDocRef.set(appData);
-        }
-        
-        if (!isInitialised) {
-            isInitialised = true;
-            finishBoot();
-        }
-
-        // Attach realtime snapshot listener
-        userDocRef.onSnapshot((snap) => {
-            if(snap.exists && isInitialised) {
-                const cloudData = snap.data();
-                Object.keys(cloudData).forEach(key => {
-                    appData[key] = cloudData[key];
-                });
-                
-                // Hot reload UI immediately if a change was made on another device
-                if($('app').classList.contains('show')) {
-                    const active = document.querySelector('.page.active');
-                    if(active) window.renderPage(active.id.replace('page-',''));
-                    window.updateCCOTBadge();
-                    window.updateChequeBadge();
-                }
-            }
-        });
-
-    }).catch(err => {
-        console.error("Error loading data:", err);
-        if (!isInitialised) {
-            isInitialised = true;
-            finishBoot();
-        }
-    });
-}
-
-function finishBoot() {
-    $('splash').classList.add('hide');
-    setTimeout(() => { if($('splash')) $('splash').style.display='none'; }, 600);
-    
-    window.initTheme();
-    setupBackupReminder();
-
-    $('authScreen').classList.remove('show');
-    $('app').classList.add('show');
-    window.renderPage('dashboard');
-    window.updateCCOTBadge();
-    window.updateChequeBadge();
 }
 
 // ==================== UTILITIES ====================
@@ -1078,6 +1026,321 @@ function initMoneyInputs() {
         inp.addEventListener('focus', function() { let raw = parseMoney(this.value); if(raw > 0) this.value = String(raw); });
     });
 }
+
+// ==================== AUTH / PIN SYSTEM ====================
+async function sha256(msg) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(msg));
+    return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+let pinBuffer = '';
+let pinMode = 'login'; 
+let pinTemp = '';
+
+window.pinDigit = function(padId, digit) {
+    if(pinBuffer.length >= 6) return;
+    pinBuffer += digit;
+    const dotMap = {loginPad:'loginDots', setupPad:'setupDots', newPinPad:'newPinDots'};
+    buildDots(dotMap[padId], 6, pinBuffer.length);
+    if(pinBuffer.length === 6) setTimeout(() => handlePinComplete(padId), 120);
+};
+
+window.pinBackspace = function(padId) {
+    if(pinBuffer.length === 0) return;
+    pinBuffer = pinBuffer.slice(0,-1);
+    const dotMap = {loginPad:'loginDots', setupPad:'setupDots', newPinPad:'newPinDots'};
+    buildDots(dotMap[padId], 6, pinBuffer.length);
+};
+
+function buildNumpad(containerId) {
+    const el = $(containerId); if(!el) return;
+    const keys = [1,2,3,4,5,6,7,8,9,'','0','⌫'];
+    const subs = {1:'',2:'ABC',3:'DEF',4:'GHI',5:'JKL',6:'MNO',7:'PQRS',8:'TUV',9:'WXYZ',0:'+'};
+    el.innerHTML = keys.map(k => {
+        if(k==='') return '<div class="numpad-empty"></div>';
+        if(k==='⌫') return `<button class="npb del" onclick="window.pinBackspace('${containerId}')">${k}</button>`;
+        return `<button class="npb" onclick="window.pinDigit('${containerId}','${k}')"><span>${k}</span>${subs[k]?`<span class="npb-sub">${subs[k]}</span>`:''}</button>`;
+    }).join('');
+}
+
+function buildDots(containerId, len=6, filled=0) {
+    const el = $(containerId); if(!el) return;
+    el.innerHTML = Array.from({length:len}, (_,i) => `<div class="pin-dot ${i<filled?'filled':''}"></div>`).join('');
+}
+
+function initAuthUI() {
+    buildNumpad('loginPad'); buildNumpad('setupPad'); buildNumpad('newPinPad');
+    buildDots('loginDots'); buildDots('setupDots'); buildDots('newPinDots');
+}
+
+// Physical Keyboard Support
+document.addEventListener('keydown', (e) => {
+    if ($('authScreen').classList.contains('show')) {
+        let activePadId = '';
+        if ($('authLogin').style.display !== 'none') activePadId = 'loginPad';
+        else if ($('authSetup').style.display !== 'none') activePadId = 'setupPad';
+        else if ($('authNewPin').style.display !== 'none') activePadId = 'newPinPad';
+
+        if (activePadId) {
+            if (e.key >= '0' && e.key <= '9') { window.pinDigit(activePadId, e.key); } 
+            else if (e.key === 'Backspace') { window.pinBackspace(activePadId); }
+        }
+    }
+});
+
+async function handlePinComplete(padId) {
+    const pin = pinBuffer;
+    pinBuffer = '';
+
+    if(padId === 'loginPad') {
+        const stored = DB.getObj('auth').pin;
+        const hash = await sha256(pin + 'wf_salt_sg2026');
+        if(hash === stored) {
+            $('loginErr').textContent = '';
+            window.launchApp();
+        } else {
+            buildDots('loginDots', 6, 0);
+            $('loginErr').textContent = '❌ Incorrect PIN. Please try again.';
+            document.querySelectorAll('#loginDots .pin-dot').forEach(d=>d.classList.add('error'));
+            setTimeout(() => { buildDots('loginDots', 6, 0); $('loginErr').textContent=''; }, 1200);
+        }
+    } else if(padId === 'setupPad') {
+        if(pinMode === 'setup') {
+            pinTemp = pin;
+            pinMode = 'setup_confirm';
+            $('setupSub').textContent = 'Re-enter your PIN to confirm';
+            buildDots('setupDots', 6, 0);
+        } else if(pinMode === 'setup_confirm') {
+            if(pin === pinTemp) {
+                const hash = await sha256(pin + 'wf_salt_sg2026');
+                const auth = DB.getObj('auth');
+                auth.pin = hash;
+                DB.set('auth', auth);
+                pinMode = 'login'; pinTemp = '';
+                window.showAuthView('authSecQ');
+            } else {
+                $('setupErr').textContent = '❌ PINs do not match. Try again.';
+                buildDots('setupDots', 6, 0);
+                pinMode = 'setup'; pinTemp = '';
+                $('setupSub').textContent = 'Set a secure 6-digit PIN to protect your data';
+                setTimeout(() => $('setupErr').textContent='', 2000);
+            }
+        }
+    } else if(padId === 'newPinPad') {
+        if(pinMode === 'newpin') {
+            pinTemp = pin;
+            pinMode = 'newpin_confirm';
+            $('newPinSub').textContent = 'Re-enter your new PIN to confirm';
+            buildDots('newPinDots', 6, 0);
+        } else if(pinMode === 'newpin_confirm') {
+            if(pin === pinTemp) {
+                const hash = await sha256(pin + 'wf_salt_sg2026');
+                const auth = DB.getObj('auth');
+                auth.pin = hash;
+                DB.set('auth', auth);
+                pinMode = 'login'; pinTemp = '';
+                notify('PIN changed successfully! 🔐', 'success');
+                window.showAuthView('authLogin');
+            } else {
+                $('newPinErr').textContent = '❌ PINs do not match. Try again.';
+                buildDots('newPinDots', 6, 0);
+                pinMode = 'newpin'; pinTemp = '';
+                $('newPinSub').textContent = 'Enter your new 6-digit PIN';
+                setTimeout(() => $('newPinErr').textContent='', 2000);
+            }
+        }
+    }
+}
+
+window.showAuthView = function(viewId) {
+    ['authLogin','authSetup','authForgot','authNewPin','authRecovShow','authSecQ'].forEach(id => {
+        const el = $(id); if(el) el.style.display='none';
+    });
+    const el = $(viewId); if(el) el.style.display='';
+    pinBuffer = '';
+    buildDots('loginDots', 6, 0);
+    buildDots('setupDots', 6, 0);
+    buildDots('newPinDots', 6, 0);
+};
+
+window.saveSecQ = async function() {
+    const sel = $('secQSelect').value;
+    const cust = $('customQ')?.value?.trim();
+    const ans = $('secAns').value.trim();
+    let q = sel; if(sel === 'Custom question') q = cust;
+    if(!q || !ans) { $('secQErr').textContent = 'Please fill in all fields.'; return; }
+
+    const hash = await sha256(ans.toLowerCase() + 'wf_ans_sg');
+    const code = Array.from(crypto.getRandomValues(new Uint8Array(8))).map(b=>b.toString(16).padStart(2,'0')).join('').toUpperCase();
+    const codeHash = await sha256(code + 'wf_code_sg');
+
+    const auth = DB.getObj('auth');
+    auth.secQ = q; auth.secAHash = hash; auth.codeHash = codeHash;
+    DB.set('auth', auth);
+
+    $('recovCodeDisplay').textContent = code;
+    window.showAuthView('authRecovShow');
+};
+
+window.copyRecovCode = function() {
+    const code = $('recovCodeDisplay').textContent;
+    navigator.clipboard.writeText(code).then(() => {
+        const btn = $('copyRecovBtn');
+        btn.textContent = 'Copied ✓';
+        btn.style.background = 'var(--green)';
+        btn.style.color = '#fff';
+        setTimeout(() => {
+            btn.textContent = '📋 Copy Code';
+            btn.style.background = '';
+            btn.style.color = '';
+        }, 2000);
+    }).catch(()=>{});
+};
+
+window.confirmRecovSaved = function() {
+    window.showAuthView('authLogin');
+    notify('Setup complete! Welcome to WealthFlow 🎉', 'success');
+};
+
+window.verifyRecovery = async function() {
+    const ans = $('recovSecA').value.trim().toLowerCase();
+    const code = $('recovCode').value.trim().toUpperCase();
+    const auth = DB.getObj('auth');
+
+    if(!auth.secQ) { $('recovErr').textContent = 'No security question set up.'; return; }
+
+    const ansHash = await sha256(ans + 'wf_ans_sg');
+    const codeHash = await sha256(code + 'wf_code_sg');
+
+    if(ansHash !== auth.secAHash || codeHash !== auth.codeHash) {
+        $('recovErr').textContent = '❌ Incorrect answer or recovery code. Please try again.';
+        return;
+    }
+
+    $('recovErr').textContent = '';
+    pinMode = 'newpin'; pinTemp = '';
+    $('newPinSub').textContent = 'Enter your new 6-digit PIN';
+    window.showAuthView('authNewPin');
+};
+
+window.changePin = async function() {
+    const curr = $('cp_current').value, nw = $('cp_new').value, conf = $('cp_confirm').value;
+    if(nw.length !== 6 || !/^\d+$/.test(nw)) { $('cp_err').textContent='PIN must be 6 digits'; return; }
+    if(nw !== conf) { $('cp_err').textContent='New PINs do not match'; return; }
+    const auth = DB.getObj('auth');
+    const currHash = await sha256(curr + 'wf_salt_sg2026');
+    if(currHash !== auth.pin) { $('cp_err').textContent='Current PIN is incorrect'; return; }
+    const newHash = await sha256(nw + 'wf_salt_sg2026');
+    auth.pin = newHash;
+    DB.set('auth', auth);
+    window.closeModal('mdChangePin');
+    $('cp_current').value=''; $('cp_new').value=''; $('cp_confirm').value=''; $('cp_err').textContent='';
+    notify('PIN changed successfully! 🔐', 'success');
+};
+
+// ==================== STRICT BOOT SEQUENCE ====================
+window.onload = function() {
+    let w = 0;
+    const fillEl = $('spFill');
+    const fillInterval = setInterval(() => {
+        if(fillEl) { w = Math.min(w + (w < 80 ? 3 : 0.5), 100); fillEl.style.width = w + '%'; }
+    }, 30);
+
+    populateBankSelects();
+    initAuthUI();
+    initMoneyInputs();
+    setupOnlineStatus();
+    updateDateTime();
+    setInterval(updateDateTime, 60000);
+
+    const curY = new Date().getFullYear();
+    ['dashYear','mpYear'].forEach(id => {
+        const el = $(id); if(!el) return;
+        for(let y=curY-2; y<=curY+4; y++) {
+            const o = document.createElement('option');
+            o.value=y; o.textContent=y;
+            if(y===curY) o.selected=true;
+            el.appendChild(o);
+        }
+    });
+
+    ['ot_date','sav_date','bf_date','bs_date','chq_issue','chq_release'].forEach(id => { const el=$(id); if(el) el.value=today(); });
+    ['e_month'].forEach(id => { const el=$(id); if(el) el.value=today().substr(0,7); });
+
+    // CRITICAL FIX: Server-First Request. We pause the app until Firebase returns.
+    // This prevents a new device from assuming a blank state and asking for a new PIN.
+    userDocRef.get().then((doc) => {
+        if (doc.exists) {
+            // Load existing cloud data into the app
+            const cloudData = doc.data();
+            Object.keys(cloudData).forEach(key => {
+                appData[key] = cloudData[key];
+            });
+        } else {
+            // First time running the app anywhere. Create empty master document.
+            userDocRef.set(appData);
+        }
+        
+        if (!isInitialised) {
+            isInitialised = true;
+            finishBoot();
+        }
+
+        // Attach realtime listener AFTER successful boot
+        userDocRef.onSnapshot((snap) => {
+            if(snap.exists && isInitialised) {
+                const cloudData = snap.data();
+                Object.keys(cloudData).forEach(key => {
+                    appData[key] = cloudData[key];
+                });
+                
+                // Hot reload the UI if data changes from another device
+                if($('app').classList.contains('show')) {
+                    const active = document.querySelector('.page.active');
+                    if(active) window.renderPage(active.id.replace('page-',''));
+                    window.updateCCOTBadge();
+                    window.updateChequeBadge();
+                }
+            }
+        });
+
+    }).catch(err => {
+        // Only if they are entirely offline and have never connected before
+        console.error("Error fetching from Firebase. Using local cache:", err);
+        if (!isInitialised) {
+            isInitialised = true;
+            finishBoot();
+        }
+    });
+};
+
+function finishBoot() {
+    const auth = DB.getObj('auth');
+    $('splash').classList.add('hide');
+    setTimeout(() => { if($('splash')) $('splash').style.display='none'; }, 600);
+    
+    window.initTheme();
+    setupBackupReminder();
+
+    $('authScreen').classList.add('show');
+    if(!auth.pin) {
+        // Only ask to create a PIN if Firebase explicitly confirmed the document is blank
+        pinMode = 'setup';
+        window.showAuthView('authSetup');
+    } else {
+        // A PIN exists in the cloud database. Ask them to log in.
+        pinMode = 'login';
+        window.showAuthView('authLogin');
+    }
+}
+
+window.launchApp = function() {
+    $('authScreen').classList.remove('show');
+    $('app').classList.add('show');
+    window.renderPage('dashboard');
+    window.updateCCOTBadge();
+    window.updateChequeBadge();
+};
 
 function updateDateTime() {
     const now = new Date();
@@ -1643,7 +1906,6 @@ window.renderCheques = function() {
     `;
     const tbody=$('chequeBody');
     if(!arr.length){tbody.innerHTML=`<tr><td colspan="10">${emptyState('📄','No cheques tracked','Add received or issued cheques to monitor them')}</td></tr>`;return;}
-    const todayDate=today();
     tbody.innerHTML=arr.map(item=>{
         const daysToRelease=Math.ceil((new Date(item.release+'T00:00:00')-new Date())/86400000);
         let cdCls='cd-safe', cdTxt=daysToRelease>0?daysToRelease+' days':'Today';
@@ -2010,7 +2272,7 @@ window.generateAIInsights = async function() {
     
     const d = new Date();
     const md = getMonthlyData(d.getFullYear(), d.getMonth());
-    const promptText = `Provide a very short (max 2 sentences) encouraging financial insight based on these monthly figures for a Sri Lankan context: Income LKR ${md.income}, Expenses LKR ${md.totalExp}, Balance LKR ${md.balance}. Address the user warmly as Sachintha. Use British English.`;
+    const promptText = `Provide a very short (max 2 sentences) encouraging financial insight based on these monthly figures for a Sri Lankan context: Income LKR ${md.income}, Expenses LKR ${md.totalExp}, Balance LKR ${md.balance}. Address the user warmly as Sachintha.`;
     
     try {
         const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyBi34LwRku09fYjc95Rn4yJ9o2fzQB9u6k`, {
@@ -2128,8 +2390,8 @@ window.renderSettings = function() {
         <div class="settings-section">
             <div class="settings-title">Security & Synchronisation</div>
             <div class="setting-row">
-                <div class="setting-info"><div class="setting-label">Google Account</div><div class="setting-desc">Securely logged in to WealthFlow sync servers.</div></div>
-                <button class="btn btn-secondary btn-sm" onclick="window.signOutGoogle()">Sign Out</button>
+                <div class="setting-info"><div class="setting-label">Change Master PIN</div><div class="setting-desc">Update your 6-digit access code for all synced devices.</div></div>
+                <button class="btn btn-secondary btn-sm" onclick="window.openModal('mdChangePin')">Change PIN</button>
             </div>
             <div class="setting-row">
                 <div class="setting-info"><div class="setting-label">Cloud Status</div><div class="setting-desc">WealthFlow automatically syncs to Firebase when online.</div></div>
@@ -2156,7 +2418,7 @@ window.renderSettings = function() {
                 <button class="btn btn-secondary btn-sm" onclick="$('importFile').click()">Select File</button>
             </div>
             <div class="setting-row" style="margin-top:10px;">
-                <div class="setting-info"><div class="setting-label">Factory Reset</div><div class="setting-desc" style="color:var(--red);">Wipe all data from your Google Account storage. This cannot be undone.</div></div>
+                <div class="setting-info"><div class="setting-label">Factory Reset</div><div class="setting-desc" style="color:var(--red);">Wipe all local and cloud data. This cannot be undone.</div></div>
                 <button class="btn btn-danger btn-sm" onclick="window.factoryReset()">Delete Everything</button>
             </div>
         </div>
@@ -2196,7 +2458,7 @@ window.handleImportFile = function(e) {
                 appData = importedData;
                 syncToCloud();
                 notify('Data restored successfully! Rebooting...', 'success');
-                setTimeout(() => window.location.reload(), 1500);
+                setTimeout(() => location.reload(), 1500);
             });
         } catch (err) {
             notify('Invalid JSON backup file', 'error');
@@ -2208,19 +2470,14 @@ window.handleImportFile = function(e) {
 
 window.factoryReset = function() {
     showConfirm('⚠️', 'Factory Reset', 'Are you absolutely sure you want to wipe ALL data? This action cannot be undone and will delete cloud storage.', 'btn-danger', 'Yes, Delete Everything', () => {
-        if (userDocRef) {
-            userDocRef.delete().then(() => {
-                localStorage.clear();
-                window.location.reload();
-            }).catch(err => {
-                console.error(err);
-                localStorage.clear();
-                window.location.reload();
-            });
-        } else {
+        userDocRef.delete().then(() => {
             localStorage.clear();
-            window.location.reload();
-        }
+            location.reload();
+        }).catch(err => {
+            console.error(err);
+            localStorage.clear();
+            location.reload();
+        });
     });
 };
 </script>
