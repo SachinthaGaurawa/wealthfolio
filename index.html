@@ -44,6 +44,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:10px;}
 ::-webkit-scrollbar-thumb:hover{background:var(--accent);}
 input,select,textarea,button{font-family:var(--font);}
+/* Fix iOS Zooming and Mobile inputs */
 input, select, textarea { font-size: 16px !important; }
 button, .npb { touch-action: manipulation; }
 
@@ -125,10 +126,10 @@ button, .npb { touch-action: manipulation; }
 .tb-right{display:flex;align-items:center;gap:8px;}
 
 /* Custom Action Icons in Topbar */
-.tb-action-icon { background:transparent; border:none; color:var(--text2); font-size:20px; cursor:pointer; padding:6px; transition:color 0.2s ease, transform 0.2s; display:flex; align-items:center; justify-content:center; border-radius: 50%; }
-.tb-action-icon:hover { color:var(--accent); background: rgba(245,166,35,0.05); }
-.spin-anim svg { animation: trueSpin 0.7s cubic-bezier(0.4, 0, 0.2, 1); }
-@keyframes trueSpin { 100% { transform: rotate(360deg); } }
+.tb-action-icon { background:transparent; border:none; color:var(--text2); font-size:20px; cursor:pointer; padding:6px; display:flex; align-items:center; justify-content:center; border-radius: 50%; transition: color 0.2s ease; }
+.tb-action-icon:hover { color:var(--accent); }
+.spin-anim svg { animation: trueSpin 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
+@keyframes trueSpin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
 .online-badge{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:20px;font-size:11.5px;font-weight:700;font-family:var(--mono);transition:all 0.3s; box-shadow: var(--sh2); margin-right: 8px;}
 .online-badge.on{background:var(--gg);color:var(--green); border: 1px solid rgba(16,185,129,0.3);}
@@ -136,6 +137,7 @@ button, .npb { touch-action: manipulation; }
 .online-badge.syncing{background:rgba(59,130,246,0.15);color:var(--blue); border: 1px solid rgba(59,130,246,0.4);}
 .online-dot{width:7px;height:7px;border-radius:50%;background:currentColor;animation:dotPulse 1.5s infinite;}
 @keyframes dotPulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+
 .month-badge{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:5px 11px;font-size:11.5px;font-weight:600;color:var(--text2);font-family:var(--mono);}
 .content{padding:22px 26px;flex:1;}
 .page{display:none;}
@@ -426,7 +428,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
   <div class="sp-logo">₣</div>
   <div class="sp-title-wrap">
       <div class="sp-title">WealthFlow</div>
-      <div class="sp-sub">Infinity Financial Engine</div>
+      <div class="sp-sub">Infinity Engine</div>
   </div>
   <div class="sp-bar-wrap"><div class="sp-fill" id="spFill"></div></div>
   <div class="sp-status" id="spStatus">Initializing secure protocol...</div>
@@ -549,11 +551,11 @@ tbody td{padding:10px 13px;vertical-align:middle;}
       </div>
       <div class="tb-right">
         <div class="online-badge on" id="onlineBadge"><span class="online-dot" id="onlineDot"></span><span id="onlineText">Online</span></div>
-        <button class="tb-action-icon spin-anim" id="topRefreshBtn" onclick="refreshApp()" title="Sync System">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.3"/></svg>
+        <button class="tb-action-icon" id="topRefreshBtn" onclick="refreshApp(this)" title="Sync System">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.3"/></svg>
         </button>
         <button class="tb-action-icon" onclick="toggleTheme()" id="themeBtn" title="Toggle Theme">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
         </button>
         <div class="month-badge" id="curMonthBadge">-</div>
         <button class="btn btn-primary btn-sm" id="topAddBtn" onclick="handleTopAdd()" style="display:none;">+ Add</button>
@@ -782,7 +784,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
           <div class="card">
             <div class="card-header"><div class="card-title">Analysis Result</div></div>
             <div id="dscrResult" style="text-align:center;padding:20px 0;">
-              <div style="font-size:13px;color:var(--text3);">Fill in the form to calculate eligibility based on local banking parameters.</div>
+              <div style="font-size:13px;color:var(--text3);">Enter income and loan details to calculate eligibility.</div>
             </div>
           </div>
         </div>
@@ -1057,13 +1059,13 @@ function setSyncStatus(state) {
     const setBadge = $('settingsCloudStatus');
     
     if(state === 'syncing') {
-        if(badge) { badge.className = 'online-badge syncing'; $('onlineText').textContent = 'Syncing...'; }
+        if(badge) { badge.className = 'online-badge syncing'; $('onlineText').innerHTML = 'Syncing...'; }
         if(setBadge) { setBadge.className = 'badge syncing'; setBadge.textContent = 'Syncing...'; }
     } else if (state === 'online') {
-        if(badge) { badge.className = 'online-badge on'; $('onlineText').textContent = 'Online'; }
+        if(badge) { badge.className = 'online-badge on'; $('onlineText').innerHTML = 'Online'; }
         if(setBadge) { setBadge.className = 'badge bg-g'; setBadge.textContent = 'Connected'; }
-    } else {
-        if(badge) { badge.className = 'online-badge off'; $('onlineText').textContent = 'Offline'; }
+    } else if (state === 'offline') {
+        if(badge) { badge.className = 'online-badge off'; $('onlineText').innerHTML = 'Offline (Saved Locally)'; }
         if(setBadge) { setBadge.className = 'badge bg-r'; setBadge.textContent = 'Offline'; }
     }
 }
@@ -1358,7 +1360,6 @@ window.onload = async function() {
     const fillEl = $('spFill');
     let w = 0;
     
-    // Smooth progress bar simulation
     const pInt = setInterval(() => {
         w += (Math.random() * 5);
         if(w > 90) w = 90;
@@ -1534,7 +1535,29 @@ function checkAutoBackup() {
     }
 }
 
-// ==================== MODALS & UTILS ====================
+function refreshApp(btn) {
+    if(btn) {
+        btn.classList.add('spin-anim');
+        setTimeout(() => btn.classList.remove('spin-anim'), 800);
+    }
+    const active = document.querySelector('.page.active');
+    if(active) renderPage(active.id.replace('page-',''));
+    updateCCOTBadge();
+    updateChequeBadge();
+    notify('System Refreshed ✓', 'success');
+}
+
+function notify(msg, type='success') {
+    const el = document.createElement('div');
+    el.className = `notif ${type}`;
+    const icons = {success:'✅',error:'❌',info:'ℹ️',warn:'⚠️'};
+    el.innerHTML = `<span class="notif-ico">${icons[type]||'ℹ️'}</span><span>${msg}</span>`;
+    $('notifs').appendChild(el);
+    requestAnimationFrame(() => el.classList.add('show'));
+    setTimeout(() => { el.classList.remove('show'); setTimeout(()=>el.remove(), 400); }, 3600);
+}
+
+// ==================== MODALS ====================
 let editMode = null;
 function openModal(id) { $(id).classList.add('open'); document.body.style.overflow='hidden'; }
 function closeModal(id) { $(id).classList.remove('open'); document.body.style.overflow=''; editMode=null; }
@@ -1551,7 +1574,7 @@ function showConfirm(icon, msg, det, btnClass, btnText, cb) {
     openModal('mdConfirm');
 }
 
-// ==================== NAVIGATION ====================
+// ==================== SIDEBAR ====================
 const pgTitles = {dashboard:'📊 Dashboard',monthly:'📅 Monthly Plan',income:'💰 Income & Investments',loans:'🏦 Bank Loans',ccinstall:'💳 CC Installments',cconetime:'⏱️ CC One-Time Payments',cheques:'📄 Cheque Tracker',expenses:'🧾 Monthly Expenses',targets:'🎯 Targets & Savings',balance:'⚖️ Balance Tracker',dscr:'📐 DSCR Calculator',settings:'⚙️ System Settings'};
 const addBtnMap = {income:'+ Add Source',loans:'+ Add Loan',ccinstall:'+ Add',cconetime:'+ Add',cheques:'+ Add Cheque',expenses:'+ Add Expense',targets:'+ New Target',balance:'Set Balance'};
 const addModalMap = {income:'mdIncome',loans:'mdLoan',ccinstall:'mdCCI',cconetime:'mdCCOT',cheques:'mdCheque',expenses:'mdExpense',targets:'mdTarget',balance:'mdBalSet'};
@@ -1587,7 +1610,7 @@ function toggleTheme() {
     const cur = document.documentElement.getAttribute('data-theme');
     const next = cur === 'dark' ? 'light' : 'dark';
     document.documentElement.setAttribute('data-theme', next);
-    $('themeBtn').innerHTML = next === 'dark' ? '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>' : '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>';
+    $('themeBtn').innerHTML = next === 'dark' ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>' : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>';
     const settings = DB.getObj('settings', {});
     settings.theme = next;
     DB.set('settings', settings);
@@ -1596,7 +1619,7 @@ function toggleTheme() {
 function initTheme() {
     const settings = DB.getObj('settings', {theme:'dark'});
     document.documentElement.setAttribute('data-theme', settings.theme);
-    if($('themeBtn')) $('themeBtn').innerHTML = settings.theme === 'dark' ? '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>' : '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>';
+    if($('themeBtn')) $('themeBtn').innerHTML = settings.theme === 'dark' ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>' : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>';
 }
 
 const sortState = {};
@@ -1610,6 +1633,38 @@ function sortList(key, field, btn) {
         btn.classList.add('active');
     }
     renderPage(key === 'cci' ? 'ccinstall' : key === 'ccot' ? 'cconetime' : key);
+}
+
+// ==================== MATH & LOGIC ====================
+function calcEMI(principal, annualRate, months) {
+    if(annualRate === 0) return principal / months;
+    const r = annualRate / 100 / 12;
+    return principal * r * Math.pow(1+r,months) / (Math.pow(1+r,months)-1);
+}
+
+function calcIncomeM() {
+    const amt = parseMoney($('i_amount').value), rate = parseFloat($('i_rate').value)||0, freq = $('i_freq').value;
+    let m = 0;
+    if(freq==='monthly') m = amt * rate / 100 / 12;
+    else if(freq==='annual') m = amt * rate / 100;
+    else if(freq==='quarterly') m = amt * rate / 100 / 4;
+    $('i_calc').textContent = m>0 ? `→ ${freq==='annual'?'Annual':'Monthly'} return: LKR ${fmtN(m)}` : '';
+}
+
+function calcLoanM() {
+    const amt = parseMoney($('l_amount').value), rate = parseFloat($('l_rate').value)||0, dur = parseInt($('l_dur').value)||0;
+    if(amt>0 && dur>0) {
+        let m = rate===0 ? amt/dur : amt*(rate/100/12)*Math.pow(1+rate/100/12,dur)/(Math.pow(1+rate/100/12,dur)-1);
+        $('l_calc').textContent = `→ Monthly: LKR ${fmtN(m)} | Total: LKR ${fmtN(m*dur)} | Interest: LKR ${fmtN(m*dur-amt)}`;
+    } else $('l_calc').textContent='';
+}
+
+function calcCCIM() {
+    const tot = parseMoney($('c_total').value), rate = parseFloat($('c_rate').value)||0, dur = parseInt($('c_dur').value)||0;
+    if(tot>0 && dur>0) {
+        let m = rate===0 ? tot/dur : tot*(rate/100/12)*Math.pow(1+rate/100/12,dur)/(Math.pow(1+rate/100/12,dur)-1);
+        $('c_calc').textContent = `→ Monthly: LKR ${fmtN(m)} | Total payable: LKR ${fmtN(m*dur)}`;
+    } else $('c_calc').textContent='';
 }
 
 // ==================== INCOME ====================
@@ -2500,7 +2555,7 @@ async function generateAIInsights() {
         }
     } catch(err) {
         console.error(err);
-        aiArea.innerHTML = "Connection to AI failed. Please check your network.";
+        aiArea.innerHTML = `<span style="color:var(--red);">Connection to AI failed. Verify your network or API keys.</span>`;
     }
 }
 
@@ -2515,7 +2570,7 @@ function clearDSCR() {
     $('dscrPurpose').value = '';
     $('dscrAddExistingLoan').value = '';
     $('dscrExistingLoans').innerHTML = '';
-    $('dscrResult').innerHTML = '<div style="font-size:13px;color:var(--text3);">Enter loan details to calculate eligibility based on local banking parameters.</div>';
+    $('dscrResult').innerHTML = '<div style="font-size:13px;color:var(--text3);">Enter income and loan details to calculate eligibility.</div>';
 }
 
 function renderDSCR() {
@@ -2527,7 +2582,6 @@ function renderDSCR() {
         if(active) html += `<option value="${l.monthly}">${l.name} (${l.bank}) - ${fmt(l.monthly)}/mo</option>`;
     });
     select.innerHTML = html;
-    setTimeout(calcDSCR, 100);
 }
 
 function autoAddDSCRLoan() {
@@ -2566,27 +2620,31 @@ function calcDSCR() {
     document.querySelectorAll('.dscr-emi-input').forEach(inp => { existingEMI += parseMoney(inp.value); });
 
     const actualNewLoan = Math.max(0, newAmt - down);
-    const newEMI = calcEMI(actualNewLoan, newRate, newDur);
+    let newEMI = 0;
+    if(actualNewLoan > 0 && newDur > 0) {
+        newEMI = calcEMI(actualNewLoan, newRate, newDur);
+    }
+    
     const totalDebtService = existingEMI + newEMI;
     const noi = inc - opex;
 
     const resEl = $('dscrResult');
-    if(totalDebtService === 0 || noi <= 0) {
-        resEl.innerHTML = '<div style="font-size:13px;color:var(--text3);">Enter full details to calculate your eligibility based on Sri Lankan banking parameters.</div>';
+    if(inc === 0 || (existingEMI === 0 && actualNewLoan === 0)) {
+        resEl.innerHTML = '<div style="font-size:13px;color:var(--text3);">Enter income and loan details to calculate eligibility.</div>';
         return;
     }
+    if(totalDebtService === 0) return;
 
     const dscr = noi / totalDebtService;
 
     let status='', color='', advicePool=[];
     
-    // Advice generation engine tailored for Sri Lankan standard rates
     if(dscr >= 1.5) { 
         status='EXCELLENT'; color='var(--green)'; 
         advicePool = [
             "Outstanding cash flow! You are in a prime position to negotiate the best lending rates. Consider asking your bank for a floating rate pegged to the AWPR.",
             "Highly likely to be approved. You have a very comfortable buffer to cover this loan and daily operations without strain.",
-            "Excellent metrics. If this is a business loan, this strong DSCR could help you secure an uncollateralized facility."
+            "Excellent metrics. If this is a business loan, this strong DSCR could help you secure an uncollateralised facility."
         ];
     } else if(dscr >= 1.25) { 
         status='GOOD'; color='var(--blue)'; 
@@ -2605,7 +2663,7 @@ function calcDSCR() {
     } else { 
         status='REJECTED'; color='var(--red)'; 
         advicePool = [
-            "Don't let this discourage you! Consider extending the loan tenure to reduce monthly EMI, or focus on building a larger down payment first.",
+            "Do not let this discourage you! Consider extending the loan tenure to reduce monthly EMI, or focus on building a larger down payment first.",
             "High risk of rejection. Your combined expenses and proposed EMI exceed your net operating income. Focus on eliminating existing smaller loans before applying.",
             "Cannot afford under current structure. A joint-applicant (like your spouse) could immediately push this into the 'Approved' zone by combining incomes."
         ];
@@ -2912,7 +2970,7 @@ async function createCloudBackup(manual = false) {
         if(docSnap.exists) refs = docSnap.data().files || [];
         
         refs.push({ id: timestamp.toString(), time: new Date().toISOString() });
-        if(refs.length > 5) refs.shift(); 
+        if(refs.length > 5) refs.shift(); // Keep latest 5
         
         await refsDoc.set({ files: refs });
         DB.set('settings', s);
