@@ -44,6 +44,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:10px;}
 ::-webkit-scrollbar-thumb:hover{background:var(--accent);}
 input,select,textarea,button{font-family:var(--font);}
+/* Fix iOS Zooming and Mobile inputs */
 input, select, textarea { font-size: 16px !important; }
 button, .npb { touch-action: manipulation; }
 
@@ -130,7 +131,7 @@ button, .npb { touch-action: manipulation; }
 .online-badge{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:20px;font-size:11.5px;font-weight:700;font-family:var(--mono);transition:all 0.3s; box-shadow: var(--sh2);}
 .online-badge.on{background:var(--gg);color:var(--green); border: 1px solid rgba(16,185,129,0.3);}
 .online-badge.off{background:var(--rg);color:var(--red); border: 1px solid rgba(239,68,68,0.3);}
-.online-badge.syncing{background:rgba(59,130,246,0.15);color:var(--blue); border: 1px solid rgba(59,130,246,0.4);}
+.online-badge.syncing{background:rgba(245,166,35,0.15);color:var(--accent); border: 1px solid rgba(245,166,35,0.4);}
 .online-dot{width:7px;height:7px;border-radius:50%;background:currentColor;animation:dotPulse 1.5s infinite;}
 @keyframes dotPulse{0%,100%{opacity:1;}50%{opacity:.3;}}
 .theme-btn,.refresh-btn{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:7px 9px;cursor:pointer;font-size:15px;color:var(--text2);transition:all .3s ease;display:flex;align-items:center;justify-content:center;}
@@ -827,16 +828,25 @@ tbody td{padding:10px 13px;vertical-align:middle;}
 <div class="mo" id="mdFactoryReset"><div class="md md-sm">
   <div class="md-hdr"><div class="md-title" style="color:var(--red);">⚠️ Factory Reset</div><button class="md-x" onclick="closeModal('mdFactoryReset')">✕</button></div>
   <p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.5;">This will wipe ALL data from your devices and the cloud. Enter your PIN to confirm.</p>
-  <div class="fg"><label class="fl">Master PIN *</label><input class="fi" id="fr_pin" type="password" maxlength="6" placeholder="••••••" style="letter-spacing: 4px; font-family:var(--mono);"></div>
+  <div class="fg"><label class="fl">Master PIN *</label><input class="fi" id="fr_pin" type="password" inputmode="numeric" pattern="[0-9]*" oninput="this.value=this.value.replace(/[^0-9]/g,'')" maxlength="6" placeholder="••••••" style="letter-spacing: 4px; font-family:var(--mono); text-align:center; font-size:24px;"></div>
   <div class="auth-err" id="fr_err"></div>
-  <div class="md-ftr"><button class="btn btn-ghost" onclick="closeModal('mdFactoryReset')">Cancel</button><button class="btn btn-danger" onclick="executeFactoryReset()">Delete Everything</button></div>
+  <div class="md-ftr"><button class="btn btn-ghost" id="fr_cancel_btn" onclick="closeModal('mdFactoryReset')">Cancel</button><button class="btn btn-danger" id="fr_exec_btn" onclick="executeFactoryReset()">Delete Everything</button></div>
 </div></div>
 
 <div class="mo" id="mdRestoreCloud"><div class="md md-sm">
-  <div class="md-hdr"><div class="md-title">Restore from Cloud</div><button class="md-x" onclick="closeModal('mdRestoreCloud')">✕</button></div>
-  <p style="font-size:13px;color:var(--text2);margin-bottom:16px;">Select a recent cloud backup from Firebase Storage to restore.</p>
-  <div class="fg"><label class="fl">Available Cloud Backups</label><select class="fs" id="restoreSelect"></select></div>
-  <div class="md-ftr"><button class="btn btn-ghost" onclick="closeModal('mdRestoreCloud')">Cancel</button><button class="btn btn-primary" id="restoreBtn" onclick="executeCloudRestore()">Restore Data</button></div>
+  <div class="md-hdr"><div class="md-title">Restore Data</div><button class="md-x" onclick="closeModal('mdRestoreCloud')">✕</button></div>
+  
+  <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:18px 0 8px;">Option 1: Cloud Recovery</div>
+  <p style="font-size:12px;color:var(--text2);margin-bottom:8px;">Select a recent cloud backup from Firebase Storage to restore.</p>
+  <div class="fr">
+    <div class="fg" style="grid-column: span 2;"><select class="fs" id="restoreSelect"></select></div>
+    <div class="fg"><button class="btn btn-primary" style="width:100%; justify-content:center;" id="restoreBtn" onclick="executeCloudRestore()">Restore Cloud</button></div>
+  </div>
+
+  <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:18px 0 8px; border-top:1px solid var(--border); padding-top:18px;">Option 2: Local File Recovery</div>
+  <p style="font-size:12px;color:var(--text2);margin-bottom:8px;">Upload a previously downloaded JSON backup file to restore.</p>
+  <button class="btn btn-secondary" style="width:100%; justify-content:center;" onclick="$('importFile').click()">Browse Local JSON File</button>
+
 </div></div>
 
 
@@ -962,9 +972,9 @@ tbody td{padding:10px 13px;vertical-align:middle;}
 
 <div class="mo" id="mdChangePin"><div class="md md-sm">
   <div class="md-hdr"><div class="md-title">Change PIN</div><button class="md-x" onclick="closeModal('mdChangePin')">✕</button></div>
-  <div class="fg"><label class="fl">Current PIN *</label><input class="fi" id="cp_current" type="password" maxlength="6" placeholder="••••••"></div>
-  <div class="fg"><label class="fl">New PIN *</label><input class="fi" id="cp_new" type="password" maxlength="6" placeholder="••••••"></div>
-  <div class="fg"><label class="fl">Confirm New PIN *</label><input class="fi" id="cp_confirm" type="password" maxlength="6" placeholder="••••••"></div>
+  <div class="fg"><label class="fl">Current PIN *</label><input class="fi" id="cp_current" type="password" inputmode="numeric" pattern="[0-9]*" oninput="this.value=this.value.replace(/[^0-9]/g,'')" maxlength="6" placeholder="••••••" style="letter-spacing: 4px; font-family:var(--mono); text-align:center; font-size:24px;"></div>
+  <div class="fg"><label class="fl">New PIN *</label><input class="fi" id="cp_new" type="password" inputmode="numeric" pattern="[0-9]*" oninput="this.value=this.value.replace(/[^0-9]/g,'')" maxlength="6" placeholder="••••••" style="letter-spacing: 4px; font-family:var(--mono); text-align:center; font-size:24px;"></div>
+  <div class="fg"><label class="fl">Confirm New PIN *</label><input class="fi" id="cp_confirm" type="password" inputmode="numeric" pattern="[0-9]*" oninput="this.value=this.value.replace(/[^0-9]/g,'')" maxlength="6" placeholder="••••••" style="letter-spacing: 4px; font-family:var(--mono); text-align:center; font-size:24px;"></div>
   <div class="auth-err" id="cp_err"></div>
   <div class="md-ftr"><button class="btn btn-ghost" onclick="closeModal('mdChangePin')">Cancel</button><button class="btn btn-primary" onclick="changePin()">🔐 Change PIN</button></div>
 </div></div>
@@ -1014,23 +1024,23 @@ const DB = {
 
 function syncToCloud() {
     if(!navigator.onLine) return; 
-    setSyncStatus(true);
+    setSyncStatus('syncing');
     userDocRef.set(appData, { merge: true }).then(() => {
-        setTimeout(() => setSyncStatus(false), 800);
+        setTimeout(() => setSyncStatus('online'), 500);
     }).catch(err => {
         console.error("Cloud sync error:", err);
-        setSyncStatus(false);
+        setSyncStatus('offline');
     });
 }
 
-function setSyncStatus(syncing) {
+function setSyncStatus(state) {
     const badge = $('onlineBadge');
     const setBadge = $('settingsCloudStatus');
     
-    if(syncing && navigator.onLine) {
+    if(state === 'syncing') {
         if(badge) { badge.className = 'online-badge syncing'; $('onlineText').textContent = 'Syncing...'; }
         if(setBadge) { setBadge.className = 'badge syncing'; setBadge.textContent = 'Syncing...'; }
-    } else if (navigator.onLine) {
+    } else if (state === 'online') {
         if(badge) { badge.className = 'online-badge on'; $('onlineText').textContent = 'Online'; }
         if(setBadge) { setBadge.className = 'badge bg-g'; setBadge.textContent = 'Connected'; }
     } else {
@@ -1306,10 +1316,8 @@ window.onload = async function() {
     populateBankSelects();
     initAuthUI();
     initMoneyInputs();
-    setupOnlineStatus();
-    updateDateTime();
-    setInterval(updateDateTime, 60000);
-
+    
+    // Initial UI Setup
     const curY = new Date().getFullYear();
     ['dashYear','mpYear','expPdfYear'].forEach(id => {
         const el = $(id); if(!el) return;
@@ -1344,19 +1352,27 @@ window.onload = async function() {
         }
 
         // Attach realtime listener AFTER successful boot
-        userDocRef.onSnapshot((snap) => {
+        userDocRef.onSnapshot({ includeMetadataChanges: true }, (snap) => {
+            // Realtime Sync Status Logic
+            if(snap.metadata.hasPendingWrites) {
+                setSyncStatus('syncing');
+            } else {
+                setSyncStatus(navigator.onLine ? 'online' : 'offline');
+            }
+
             if(snap.exists && isInitialised) {
                 const cloudData = snap.data();
                 Object.keys(cloudData).forEach(key => {
                     appData[key] = cloudData[key];
                     localStorage.setItem('wf2_'+key, JSON.stringify(cloudData[key]));
                 });
+                
+                // Hot reload UI if the update came from the cloud (not local)
                 if(!snap.metadata.hasPendingWrites && $('app').classList.contains('show')) {
                     const active = document.querySelector('.page.active');
                     if(active) renderPage(active.id.replace('page-',''));
                     updateCCOTBadge();
                     updateChequeBadge();
-                    notify('Data synced from cloud ☁️', 'info');
                 }
             }
         });
@@ -1371,6 +1387,10 @@ window.onload = async function() {
             finishBoot();
         }
     });
+
+    setupOnlineStatus();
+    updateDateTime();
+    setInterval(updateDateTime, 60000);
 };
 
 function finishBoot() {
@@ -1408,20 +1428,21 @@ function updateDateTime() {
 
 function setupOnlineStatus() {
     function updateStatus() {
-        const on = navigator.onLine;
-        const badge = $('onlineBadge'), banner = $('offlineBanner');
-        if(badge) { badge.className = 'online-badge ' + (on?'on':'off'); }
-        if($('onlineText')) $('onlineText').textContent = on ? 'Online' : 'Offline';
-        if(banner) banner.classList.toggle('show', !on);
-        
-        const setBadge = $('settingsCloudStatus');
-        if(setBadge) {
-            setBadge.className = 'badge ' + (on?'bg-g':'bg-r');
-            setBadge.textContent = on ? 'Connected' : 'Offline';
+        if(navigator.onLine) {
+            setSyncStatus('online');
+            // If we just came online, trigger a check for auto backup
+            setTimeout(checkAutoBackup, 2000);
+        } else {
+            setSyncStatus('offline');
+            const banner = $('offlineBanner');
+            if(banner) banner.classList.add('show');
         }
     }
-    updateStatus();
-    window.addEventListener('online', updateStatus);
+    window.addEventListener('online', () => { 
+        updateStatus(); 
+        const banner = $('offlineBanner');
+        if(banner) banner.classList.remove('show');
+    });
     window.addEventListener('offline', updateStatus);
 }
 
@@ -2576,7 +2597,7 @@ function renderSettings() {
                 <button class="btn btn-primary btn-sm" onclick="createCloudBackup(true)">Backup Now</button>
             </div>
             <div class="setting-row">
-                <div class="setting-info"><div class="setting-label">Restore from Cloud</div><div class="setting-desc">Restore from the latest 3 Firebase Storage backups.</div></div>
+                <div class="setting-info"><div class="setting-label">Restore Data System</div><div class="setting-desc">Restore from latest cloud snapshots or a local JSON file.</div></div>
                 <button class="btn btn-secondary btn-sm" onclick="openRestoreModal()">Restore Data</button>
             </div>
 
@@ -2767,25 +2788,23 @@ async function createCloudBackup(manual = false) {
         const jsonStr = JSON.stringify(appData);
         const blob = new Blob([jsonStr], {type: "application/json"});
         
-        // Save using timestamp
         const timestamp = Date.now();
         const filename = `backups/WealthFlow_Backup_${timestamp}.json`;
         const storageRef = firebase.storage().ref(filename);
         
         await storageRef.put(blob);
         
-        // Update local settings tracker
         const s = DB.getObj('settings');
         s.lastBackup = new Date().toISOString();
         
-        // Maintain latest 3 references in a dedicated firestore document
         const refsDoc = db.collection('users').doc('backup_refs');
         const docSnap = await refsDoc.get();
         let refs = [];
         if(docSnap.exists) refs = docSnap.data().files || [];
         
         refs.push({ path: filename, time: new Date().toISOString() });
-        if(refs.length > 3) refs.shift(); // Keep only last 3
+        // Keep the latest 5 backups
+        if(refs.length > 5) refs.shift(); 
         
         await refsDoc.set({ files: refs });
         DB.set('settings', s);
@@ -2811,7 +2830,7 @@ async function openRestoreModal() {
         if(refs.length === 0) {
             sel.innerHTML = '<option value="">No cloud backups found</option>';
         } else {
-            sel.innerHTML = refs.map((b, i) => `<option value="${b.path}">${new Date(b.time).toLocaleString()}</option>`).reverse().join('');
+            sel.innerHTML = refs.map((b, i) => `<option value="${b.path}">${new Date(b.time).toLocaleString()} (Cloud)</option>`).reverse().join('');
             $('restoreBtn').disabled = false;
         }
     } catch(e) {
@@ -2846,9 +2865,35 @@ async function executeCloudRestore() {
     }
 }
 
+// Local JSON Restore
+function handleImportFile(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+        try {
+            const importedData = JSON.parse(evt.target.result);
+            showConfirm('⚠️', 'Restore Local Data?', 'This will overwrite all existing cloud and local data with the selected local JSON backup.', 'btn-primary', 'Yes, Restore', () => {
+                appData = importedData;
+                syncToCloud();
+                notify('Data restored successfully! Rebooting...', 'success');
+                setTimeout(() => location.reload(), 1500);
+            });
+        } catch (err) {
+            notify('Invalid JSON backup file', 'error');
+        }
+    };
+    reader.readAsText(file);
+    e.target.value = ''; 
+    closeModal('mdRestoreCloud');
+}
+
 // Secure Factory Reset
 async function executeFactoryReset() {
+    const btn = $('fr_exec_btn');
+    const cancelBtn = $('fr_cancel_btn');
     const pin = $('fr_pin').value;
+    
     if(pin.length !== 6) { $('fr_err').textContent = 'Enter 6-digit PIN.'; return; }
     
     const hash = await sha256(pin + 'wf_salt_sg2026');
@@ -2858,8 +2903,10 @@ async function executeFactoryReset() {
     }
     
     $('fr_err').textContent = '';
+    btn.disabled = true;
+    cancelBtn.disabled = true;
+    btn.textContent = 'Wiping System...';
     
-    // Wipe procedure
     appData = { 
         auth: {}, income: [], loans: [], ccinstall: [], cconetime: [], 
         cheques: [], expenses: [], targets: [], balance: {total:0, flows:[]}, 
@@ -2868,6 +2915,7 @@ async function executeFactoryReset() {
     
     userDocRef.set(appData).then(() => {
         localStorage.clear();
+        closeModal('mdFactoryReset');
         notify('System wiped successfully. Rebooting...', 'success');
         setTimeout(() => location.reload(), 1500);
     }).catch(err => {
