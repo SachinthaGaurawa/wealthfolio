@@ -531,7 +531,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
     <div class="sb-footer">
       <div class="sb-user">👤 Sachintha Gaurawa</div>
       <div class="sb-date" id="sbDate">-</div>
-      <div class="sb-ver">WealthFlow v4.0 · Business</div>
+      <div class="sb-ver">WealthFlow v4.1 · Business</div>
     </div>
   </aside>
 
@@ -823,6 +823,21 @@ tbody td{padding:10px 13px;vertical-align:middle;}
   <div class="md-ftr"><button class="btn btn-ghost" onclick="closeModal('mdExport')">Cancel</button><button class="btn btn-primary" onclick="executeExport()">📥 Download Report</button></div>
 </div></div>
 
+<div class="mo" id="mdFactoryReset"><div class="md md-sm">
+  <div class="md-hdr"><div class="md-title" style="color:var(--red);">⚠️ Factory Reset</div><button class="md-x" onclick="closeModal('mdFactoryReset')">✕</button></div>
+  <p style="font-size:13px;color:var(--text2);margin-bottom:16px;">This will wipe ALL data from your devices and the cloud. Enter your PIN to confirm.</p>
+  <div class="fg"><label class="fl">Master PIN *</label><input class="fi" id="fr_pin" type="password" maxlength="6" placeholder="••••••"></div>
+  <div class="auth-err" id="fr_err"></div>
+  <div class="md-ftr"><button class="btn btn-ghost" onclick="closeModal('mdFactoryReset')">Cancel</button><button class="btn btn-danger" onclick="executeFactoryReset()">Delete Everything</button></div>
+</div></div>
+
+<div class="mo" id="mdRestoreCloud"><div class="md md-sm">
+  <div class="md-hdr"><div class="md-title">Restore from Cloud</div><button class="md-x" onclick="closeModal('mdRestoreCloud')">✕</button></div>
+  <p style="font-size:13px;color:var(--text2);margin-bottom:16px;">Select a recent cloud backup to restore. This will overwrite your current data immediately.</p>
+  <div class="fg"><label class="fl">Available Backups</label><select class="fs" id="restoreSelect"></select></div>
+  <div class="md-ftr"><button class="btn btn-ghost" onclick="closeModal('mdRestoreCloud')">Cancel</button><button class="btn btn-primary" id="restoreBtn" onclick="executeCloudRestore()">Restore Data</button></div>
+</div></div>
+
 
 <div class="mo" id="mdIncome"><div class="md">
   <div class="md-hdr"><div class="md-title" id="mdIncomeTitle">Add Income / Investment Source</div><button class="md-x" onclick="closeModal('mdIncome')">✕</button></div>
@@ -957,7 +972,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
 
 <script>
 // =====================================================
-// WEALTHFLOW v4.0 - Cloud Synced Financial System
+// WEALTHFLOW v4.1 - Cloud Synced Financial System
 // Owner: Sachintha Gaurawa
 // =====================================================
 
@@ -1008,16 +1023,17 @@ function syncToCloud() {
 
 function setSyncStatus(syncing) {
     const badge = $('onlineBadge');
-    if(!badge) return;
+    const setBadge = $('settingsCloudStatus');
+    
     if(syncing && navigator.onLine) {
-        badge.className = 'online-badge syncing';
-        $('onlineText').textContent = 'Syncing...';
+        if(badge) { badge.className = 'online-badge syncing'; $('onlineText').textContent = 'Syncing...'; }
+        if(setBadge) { setBadge.className = 'badge syncing'; setBadge.textContent = 'Syncing...'; }
     } else if (navigator.onLine) {
-        badge.className = 'online-badge on';
-        $('onlineText').textContent = 'Online';
+        if(badge) { badge.className = 'online-badge on'; $('onlineText').textContent = 'Online'; }
+        if(setBadge) { setBadge.className = 'badge bg-g'; setBadge.textContent = 'Connected'; }
     } else {
-        badge.className = 'online-badge off';
-        $('onlineText').textContent = 'Offline';
+        if(badge) { badge.className = 'online-badge off'; $('onlineText').textContent = 'Offline'; }
+        if(setBadge) { setBadge.className = 'badge bg-r'; setBadge.textContent = 'Offline'; }
     }
 }
 
@@ -1333,7 +1349,6 @@ window.onload = async function() {
                     appData[key] = cloudData[key];
                     localStorage.setItem('wf2_'+key, JSON.stringify(cloudData[key]));
                 });
-                // If update comes from another device (not a local write)
                 if(!snap.metadata.hasPendingWrites && $('app').classList.contains('show')) {
                     const active = document.querySelector('.page.active');
                     if(active) renderPage(active.id.replace('page-',''));
@@ -1395,6 +1410,12 @@ function setupOnlineStatus() {
         if(badge) { badge.className = 'online-badge ' + (on?'on':'off'); }
         if($('onlineText')) $('onlineText').textContent = on ? 'Online' : 'Offline';
         if(banner) banner.classList.toggle('show', !on);
+        
+        const setBadge = $('settingsCloudStatus');
+        if(setBadge) {
+            setBadge.className = 'badge ' + (on?'bg-g':'bg-r');
+            setBadge.textContent = on ? 'Connected' : 'Offline';
+        }
     }
     updateStatus();
     window.addEventListener('online', updateStatus);
@@ -2312,13 +2333,11 @@ function renderUpcoming() {
     const maxDate = new Date(); maxDate.setDate(todayObj.getDate() + 30);
     const upcoming = [];
 
-    // One time CC Payments
     DB.get('cconetime').filter(x => !x.paid).forEach(x => {
         const d = new Date(x.deadline);
         if (d >= todayObj && d <= maxDate) upcoming.push({title: x.desc, sub: 'CC One-Time', date: d, amt: x.amount, color: 'var(--red)'});
     });
 
-    // Cheques
     DB.get('cheques').filter(x => x.status === 'pending').forEach(x => {
         const d = new Date(x.release);
         if (d >= todayObj && d <= maxDate) {
@@ -2326,7 +2345,6 @@ function renderUpcoming() {
         }
     });
 
-    // Loans
     DB.get('loans').forEach(l => {
         const nextD = getNextOccurenceDate(l.start);
         if(nextD >= todayObj && nextD <= maxDate && loanEndDate(l) > nextD) {
@@ -2334,7 +2352,6 @@ function renderUpcoming() {
         }
     });
 
-    // CC Installs
     DB.get('ccinstall').filter(x => !x.completed).forEach(c => {
         const nextD = getNextOccurenceDate(c.date);
         const endD = new Date(c.date); endD.setMonth(endD.getMonth() + c.duration);
@@ -2362,12 +2379,10 @@ function renderUpcoming() {
 function renderRecentActivity() {
     const recent = [];
     
-    // Bal flows
     DB.getObj('balance').flows.forEach(f => {
         recent.push({title: f.company, sub: f.type==='out'?'Investment Out':f.type==='in'?'Income In':'Balance Set', date: new Date(f.date), amt: f.amount, color: f.type==='out'?'var(--red)':f.type==='in'?'var(--green)':'var(--accent)'});
     });
 
-    // Savings
     DB.get('targets').forEach(t => {
         t.savings.forEach(s => {
             recent.push({title: t.name, sub: 'Savings Added', date: new Date(s.date), amt: s.amount, color: 'var(--green)'});
@@ -2508,36 +2523,36 @@ function renderSettings() {
         <div class="settings-section">
             <div class="settings-title">Security & Synchronisation</div>
             <div class="setting-row">
-                <div class="setting-info"><div class="setting-label">Change Master PIN</div><div class="setting-desc">Update your 6-digit access code for all synced devices.</div></div>
-                <button class="btn btn-secondary btn-sm" onclick="openModal('mdChangePin')">Change PIN</button>
+                <div class="setting-info"><div class="setting-label">Cloud Status</div><div class="setting-desc">Real-time connection monitor.</div></div>
+                <div><span id="settingsCloudStatus" class="badge ${navigator.onLine?'bg-g':'bg-r'}">${navigator.onLine?'Connected':'Offline'}</span></div>
             </div>
             <div class="setting-row">
-                <div class="setting-info"><div class="setting-label">Cloud Status</div><div class="setting-desc">WealthFlow automatically syncs to Firebase when online.</div></div>
-                <div><span class="badge ${navigator.onLine?'bg-g':'bg-r'}">${navigator.onLine?'Connected':'Offline'}</span></div>
+                <div class="setting-info"><div class="setting-label">Change Master PIN</div><div class="setting-desc">Update your 6-digit access code for all synced devices.</div></div>
+                <button class="btn btn-secondary btn-sm" onclick="openModal('mdChangePin')">Change PIN</button>
             </div>
         </div>
 
         <div class="settings-section">
             <div class="settings-title">Data Management & Reports</div>
             <div class="setting-row">
-                <div class="setting-info"><div class="setting-label">Auto-Backup Frequency</div><div class="setting-desc">You will be reminded to export a physical copy.</div></div>
-                <select class="fi" style="width:120px;" onchange="updateBackupFreq(this.value)">
-                    <option value="daily" ${DB.getObj('settings').backupFreq==='daily'?'selected':''}>Daily</option>
-                    <option value="weekly" ${DB.getObj('settings').backupFreq==='weekly'?'selected':''}>Weekly</option>
-                    <option value="monthly" ${DB.getObj('settings').backupFreq==='monthly'?'selected':''}>Monthly</option>
-                </select>
-            </div>
-            <div class="setting-row">
                 <div class="setting-info"><div class="setting-label">Export Data & Reports</div><div class="setting-desc">Download a complete physical JSON backup or a professional PDF report.</div></div>
                 <button class="btn btn-primary btn-sm" onclick="openModal('mdExport')">Export</button>
             </div>
+            
+            <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:24px 0 8px;">Cloud Backup & Restore</div>
             <div class="setting-row">
-                <div class="setting-info"><div class="setting-label">Restore Data</div><div class="setting-desc">Upload a previous JSON backup to replace current data.</div></div>
-                <button class="btn btn-secondary btn-sm" onclick="$('importFile').click()">Select File</button>
+                <div class="setting-info"><div class="setting-label">Manual Cloud Backup</div><div class="setting-desc">Save a manual snapshot to the Firebase cloud.</div></div>
+                <button class="btn btn-primary btn-sm" onclick="createCloudBackup()">Backup Now</button>
             </div>
-            <div class="setting-row" style="margin-top:10px;">
-                <div class="setting-info"><div class="setting-label">Factory Reset</div><div class="setting-desc" style="color:var(--red);">Wipe all local and cloud data. This cannot be undone.</div></div>
-                <button class="btn btn-danger btn-sm" onclick="factoryReset()">Delete Everything</button>
+            <div class="setting-row">
+                <div class="setting-info"><div class="setting-label">Restore from Cloud</div><div class="setting-desc">Restore from the latest 3 cloud backups.</div></div>
+                <button class="btn btn-secondary btn-sm" onclick="openRestoreModal()">Restore Data</button>
+            </div>
+
+            <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:24px 0 8px;">Danger Zone</div>
+            <div class="setting-row">
+                <div class="setting-info"><div class="setting-label">Factory Reset</div><div class="setting-desc" style="color:var(--red);">Wipe all local and cloud data. Requires PIN.</div></div>
+                <button class="btn btn-danger btn-sm" onclick="openModal('mdFactoryReset')">Delete Everything</button>
             </div>
         </div>
    `;
@@ -2577,39 +2592,26 @@ function generatePDFReport() {
     const month = parseInt($('expPdfMonth').value);
     const md = getMonthlyData(year, month);
     
-    // Header
-    doc.setFontSize(22);
-    doc.setTextColor(24, 24, 27);
+    doc.setFontSize(22); doc.setTextColor(24, 24, 27);
     doc.text("WealthFlow Financial Report", 14, 22);
     
-    doc.setFontSize(11);
-    doc.setTextColor(100, 116, 139);
+    doc.setFontSize(11); doc.setTextColor(100, 116, 139);
     doc.text(`Prepared for: Sachintha Gaurawa`, 14, 30);
     doc.text(`Period: ${MONTHS[month]} ${year}`, 14, 36);
     doc.text(`Generated on: ${today()}`, 14, 42);
 
-    // Summary Box
-    doc.setDrawColor(226, 232, 240);
-    doc.setFillColor(248, 250, 252);
+    doc.setDrawColor(226, 232, 240); doc.setFillColor(248, 250, 252);
     doc.rect(14, 50, 182, 25, 'FD');
     
     doc.setFontSize(12);
-    doc.setTextColor(16, 185, 129); // Green
-    doc.text(`Income: LKR ${fmtN(md.income)}`, 20, 60);
-    
-    doc.setTextColor(239, 68, 68); // Red
-    doc.text(`Expenses: LKR ${fmtN(md.totalExp)}`, 85, 60);
-    
-    doc.setTextColor(59, 130, 246); // Blue
-    doc.text(`Net Balance: LKR ${fmtN(md.balance)}`, 140, 60);
+    doc.setTextColor(16, 185, 129); doc.text(`Income: LKR ${fmtN(md.income)}`, 20, 60);
+    doc.setTextColor(239, 68, 68); doc.text(`Expenses: LKR ${fmtN(md.totalExp)}`, 85, 60);
+    doc.setTextColor(59, 130, 246); doc.text(`Net Balance: LKR ${fmtN(md.balance)}`, 140, 60);
 
     let startY = 85;
 
-    // Income Sources
-    doc.setFontSize(14);
-    doc.setTextColor(15, 23, 42);
+    doc.setFontSize(14); doc.setTextColor(15, 23, 42);
     doc.text("Active Income Sources", 14, startY);
-    
     const activeIncome = DB.get('income').filter(s => {
         const dt = new Date(year,month,1);
         const start = new Date(s.start+'T00:00:00');
@@ -2618,39 +2620,21 @@ function generatePDFReport() {
     });
 
     if(activeIncome.length > 0) {
-        doc.autoTable({
-            startY: startY + 5,
-            head: [['Source', 'Company', 'Amount (LKR)']],
-            body: activeIncome.map(i => [i.name, i.company, fmtN(i.monthly)]),
-            theme: 'striped',
-            headStyles: { fillColor: [15, 23, 42] }
-        });
+        doc.autoTable({ startY: startY + 5, head: [['Source', 'Company', 'Amount (LKR)']], body: activeIncome.map(i => [i.name, i.company, fmtN(i.monthly)]), theme: 'striped', headStyles: { fillColor: [15, 23, 42] } });
         startY = doc.lastAutoTable.finalY + 15;
     } else {
-        doc.setFontSize(11); doc.setTextColor(100, 116, 139);
-        doc.text("No income sources for this period.", 14, startY + 8);
-        startY += 20;
+        doc.setFontSize(11); doc.setTextColor(100, 116, 139); doc.text("No income sources for this period.", 14, startY + 8); startY += 20;
     }
 
-    // Loans
     doc.setFontSize(14); doc.setTextColor(15, 23, 42);
     doc.text("Loan Payments", 14, startY);
     if(md.loanItems.length > 0) {
-        doc.autoTable({
-            startY: startY + 5,
-            head: [['Loan Name', 'Bank', 'EMI (LKR)']],
-            body: md.loanItems.map(l => [l.name, l.bank, fmtN(l.amount)]),
-            theme: 'striped',
-            headStyles: { fillColor: [15, 23, 42] }
-        });
+        doc.autoTable({ startY: startY + 5, head: [['Loan Name', 'Bank', 'EMI (LKR)']], body: md.loanItems.map(l => [l.name, l.bank, fmtN(l.amount)]), theme: 'striped', headStyles: { fillColor: [15, 23, 42] } });
         startY = doc.lastAutoTable.finalY + 15;
     } else {
-        doc.setFontSize(11); doc.setTextColor(100, 116, 139);
-        doc.text("No loan payments for this period.", 14, startY + 8);
-        startY += 20;
+        doc.setFontSize(11); doc.setTextColor(100, 116, 139); doc.text("No loan payments for this period.", 14, startY + 8); startY += 20;
     }
 
-    // CC & Expenses
     doc.setFontSize(14); doc.setTextColor(15, 23, 42);
     doc.text("Other Expenses & CC Instalments", 14, startY);
     const combinedExp = [];
@@ -2658,60 +2642,76 @@ function generatePDFReport() {
     md.expItems.forEach(e => combinedExp.push([e.name, e.cat, fmtN(e.amount)]));
 
     if(combinedExp.length > 0) {
-        doc.autoTable({
-            startY: startY + 5,
-            head: [['Description', 'Category/Bank', 'Amount (LKR)']],
-            body: combinedExp,
-            theme: 'striped',
-            headStyles: { fillColor: [15, 23, 42] }
-        });
+        doc.autoTable({ startY: startY + 5, head: [['Description', 'Category/Bank', 'Amount (LKR)']], body: combinedExp, theme: 'striped', headStyles: { fillColor: [15, 23, 42] } });
     } else {
-        doc.setFontSize(11); doc.setTextColor(100, 116, 139);
-        doc.text("No other expenses for this period.", 14, startY + 8);
+        doc.setFontSize(11); doc.setTextColor(100, 116, 139); doc.text("No other expenses for this period.", 14, startY + 8);
     }
 
     doc.save(`WealthFlow_Report_${MONTHS_S[month]}_${year}.pdf`);
     notify('PDF Report downloaded securely.', 'success');
 }
 
-function updateBackupFreq(val) {
-    const s = DB.getObj('settings', {});
-    s.backupFreq = val;
-    DB.set('settings', s);
-    notify('Backup frequency updated');
+// Manual Cloud Backup & Restore
+function createCloudBackup() {
+    let backups = DB.get('cloudBackups', []);
+    let snapshot = JSON.parse(JSON.stringify(appData));
+    delete snapshot.cloudBackups; 
+    
+    backups.push({ time: new Date().toISOString(), data: snapshot });
+    if (backups.length > 3) backups.shift(); 
+    
+    DB.set('cloudBackups', backups);
+    notify('Cloud backup created successfully!', 'success');
 }
 
-function handleImportFile(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = function(evt) {
-        try {
-            const importedData = JSON.parse(evt.target.result);
-            showConfirm('⚠️', 'Restore Data?', 'This will overwrite all existing cloud and local data with the backup file.', 'btn-primary', 'Yes, Restore', () => {
-                appData = importedData;
-                syncToCloud();
-                notify('Data restored successfully! Rebooting...', 'success');
-                setTimeout(() => location.reload(), 1500);
-            });
-        } catch (err) {
-            notify('Invalid JSON backup file', 'error');
-        }
-    };
-    reader.readAsText(file);
-    e.target.value = ''; 
+function openRestoreModal() {
+    let backups = DB.get('cloudBackups', []);
+    let sel = $('restoreSelect');
+    if(!sel) return;
+    if(backups.length === 0) {
+        sel.innerHTML = '<option value="">No backups available</option>';
+        $('restoreBtn').disabled = true;
+    } else {
+        sel.innerHTML = backups.map((b, i) => `<option value="${i}">${new Date(b.time).toLocaleString()}</option>`).reverse().join('');
+        $('restoreBtn').disabled = false;
+    }
+    openModal('mdRestoreCloud');
 }
 
-function factoryReset() {
-    showConfirm('⚠️', 'Factory Reset', 'Are you absolutely sure you want to wipe ALL data? This action cannot be undone and will delete cloud storage.', 'btn-danger', 'Yes, Delete Everything', () => {
-        userDocRef.delete().then(() => {
-            localStorage.clear();
-            location.reload();
-        }).catch(err => {
-            console.error(err);
-            localStorage.clear();
-            location.reload();
-        });
+function executeCloudRestore() {
+    let backups = DB.get('cloudBackups', []);
+    let idx = parseInt($('restoreSelect').value);
+    if (isNaN(idx) || !backups[idx]) return;
+    
+    let restoredData = backups[idx].data;
+    restoredData.cloudBackups = backups; 
+    
+    appData = restoredData;
+    syncToCloud();
+    notify('Data restored successfully! Rebooting...', 'success');
+    setTimeout(() => location.reload(), 1500);
+}
+
+// Secure Factory Reset
+async function executeFactoryReset() {
+    const pin = $('fr_pin').value;
+    if(pin.length !== 6) { $('fr_err').textContent = 'Enter 6-digit PIN.'; return; }
+    
+    const hash = await sha256(pin + 'wf_salt_sg2026');
+    if (hash !== DB.getObj('auth').pin) {
+        $('fr_err').textContent = 'Incorrect PIN.';
+        return;
+    }
+    
+    $('fr_err').textContent = '';
+    userDocRef.delete().then(() => {
+        localStorage.clear();
+        notify('System wiped successfully. Rebooting...', 'success');
+        setTimeout(() => location.reload(), 1500);
+    }).catch(err => {
+        console.error(err);
+        localStorage.clear();
+        location.reload();
     });
 }
 </script>
