@@ -12,7 +12,6 @@
 
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -60,8 +59,6 @@ button, .npb { touch-action: manipulation; }
 @keyframes spPulse{0%,100%{box-shadow:0 0 40px var(--ag),0 0 80px rgba(245,166,35,.1);}50%{box-shadow:0 0 80px rgba(245,166,35,.5),0 0 120px rgba(245,166,35,.2);}}
 .sp-title{font-size:38px;font-weight:900;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-1.5px;z-index:1;}
 .sp-sub{font-size:12px;color:var(--text3);letter-spacing:3px;text-transform:uppercase;z-index:1;}
-.sp-bar{width:220px;height:3px;background:var(--border);border-radius:100px;overflow:hidden;z-index:1;}
-.sp-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:100px;width:0%;transition:width .1s linear;}
 .sp-status{font-size:11.5px;color:var(--text3);font-family:var(--mono);z-index:1;min-height:16px;}
 
 /* ================== AUTH ================== */
@@ -134,10 +131,12 @@ button, .npb { touch-action: manipulation; }
 .online-badge.syncing{background:rgba(245,166,35,0.15);color:var(--accent); border: 1px solid rgba(245,166,35,0.4);}
 .online-dot{width:7px;height:7px;border-radius:50%;background:currentColor;animation:dotPulse 1.5s infinite;}
 @keyframes dotPulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+
 .theme-btn,.refresh-btn{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:7px 9px;cursor:pointer;font-size:15px;color:var(--text2);transition:all .3s ease;display:flex;align-items:center;justify-content:center;}
 .theme-btn:hover,.refresh-btn:hover{color:var(--accent);border-color:var(--accent);}
-.refresh-btn.spin{animation:spinIcon 0.8s ease-in-out;}
-@keyframes spinIcon{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+.spin-anim { animation: smoothSpin 0.7s cubic-bezier(0.4, 0, 0.2, 1); }
+@keyframes smoothSpin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+
 .month-badge{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:5px 11px;font-size:11.5px;font-weight:600;color:var(--text2);font-family:var(--mono);}
 .content{padding:22px 26px;flex:1;}
 .page{display:none;}
@@ -364,8 +363,13 @@ tbody td{padding:10px 13px;vertical-align:middle;}
 .flow-amt.out{color:var(--red);}
 .flow-amt.in{color:var(--green);}
 
-/* ================== DSCR ================== */
-.dscr-gauge-wrap{position:relative;display:flex;flex-direction:column;align-items:center;}
+/* ================== DSCR GAUGE ================== */
+.dscr-gauge-container { position: relative; width: 220px; height: 110px; margin: 0 auto; overflow: hidden; }
+.dscr-gauge-bg { position: absolute; top: 0; left: 0; width: 220px; height: 220px; border-radius: 50%; border: 24px solid var(--border); border-bottom-color: transparent; border-right-color: transparent; transform: rotate(45deg); }
+.dscr-gauge-fill { position: absolute; top: 0; left: 0; width: 220px; height: 220px; border-radius: 50%; border: 24px solid transparent; border-bottom-color: transparent; border-right-color: transparent; transform: rotate(45deg); transition: stroke-dashoffset 1s ease, border-color 1s ease; }
+.dscr-gauge-needle { position: absolute; bottom: 0; left: 50%; width: 4px; height: 80px; background: #fff; border-radius: 4px; transform-origin: bottom center; transform: translateX(-50%) rotate(-90deg); transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 0 6px rgba(0,0,0,0.5); z-index: 2; }
+.dscr-gauge-needle::after { content: ''; position: absolute; bottom: -6px; left: -4px; width: 12px; height: 12px; background: #fff; border-radius: 50%; }
+
 .dscr-status{display:inline-flex;align-items:center;gap:6px;padding:6px 16px;border-radius:20px;font-size:14px;font-weight:700;margin-top:8px;}
 .dscr-advice{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px;font-size:13px;line-height:1.7;color:var(--text2);margin-top:14px;border-left:3px solid var(--accent);}
 
@@ -425,7 +429,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
   <div class="sp-title">WealthFlow</div>
   <div class="sp-sub">Personal Financial System</div>
   <div class="sp-bar"><div class="sp-fill" id="spFill"></div></div>
-  <div class="sp-status" id="spStatus">Connecting to secure cloud...</div>
+  <div class="sp-status" id="spStatus">Initializing system...</div>
 </div>
 
 <div id="authScreen">
@@ -628,6 +632,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
               <span class="sb-btn" onclick="sortList('loans','monthly',this)">Monthly</span>
               <span class="sb-btn" onclick="sortList('loans','amount',this)">Amount</span>
             </div>
+            <button class="btn btn-secondary btn-sm" onclick="openModal('mdSkipLoan')">⏭ Skip Month</button>
             <button class="btn btn-primary btn-sm" onclick="openModal('mdLoan')">+ Add Loan</button>
           </div>
         </div>
@@ -740,7 +745,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
       </div>
 
       <div class="page" id="page-dscr">
-        <div class="sh"><div class="sh-title">DSCR Calculator - Sri Lanka Loan Eligibility</div></div>
+        <div class="sh"><div class="sh-title">DSCR Calculator - Sri Lanka Bank Eligibility</div></div>
         <div class="g2">
           <div class="card">
             <div class="card-header"><div class="card-title">Your Financial Profile</div></div>
@@ -822,13 +827,13 @@ tbody td{padding:10px 13px;vertical-align:middle;}
       </div>
   </div>
 
-  <div class="md-ftr"><button class="btn btn-ghost" onclick="closeModal('mdExport')">Cancel</button><button class="btn btn-primary" onclick="executeExport()">📥 Download Report</button></div>
+  <div class="md-ftr"><button class="btn btn-ghost" onclick="closeModal('mdExport')">Cancel</button><button class="btn btn-primary" onclick="executeExport()">📥 Download</button></div>
 </div></div>
 
 <div class="mo" id="mdFactoryReset"><div class="md md-sm">
   <div class="md-hdr"><div class="md-title" style="color:var(--red);">⚠️ Factory Reset</div><button class="md-x" onclick="closeModal('mdFactoryReset')">✕</button></div>
   <p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.5;">This will wipe ALL data from your devices and the cloud. Enter your PIN to confirm.</p>
-  <div class="fg"><label class="fl">Master PIN *</label><input class="fi" id="fr_pin" type="password" inputmode="numeric" pattern="[0-9]*" oninput="this.value=this.value.replace(/[^0-9]/g,'')" maxlength="6" placeholder="••••••" style="letter-spacing: 4px; font-family:var(--mono); text-align:center; font-size:24px;"></div>
+  <div class="fg"><label class="fl">Master PIN *</label><input class="fi" id="fr_pin" type="password" inputmode="numeric" onkeypress="return event.charCode >= 48 && event.charCode <= 57" maxlength="6" placeholder="••••••" style="letter-spacing: 4px; font-family:var(--mono); text-align:center; font-size:24px;"></div>
   <div class="auth-err" id="fr_err"></div>
   <div class="md-ftr"><button class="btn btn-ghost" id="fr_cancel_btn" onclick="closeModal('mdFactoryReset')">Cancel</button><button class="btn btn-danger" id="fr_exec_btn" onclick="executeFactoryReset()">Delete Everything</button></div>
 </div></div>
@@ -848,7 +853,6 @@ tbody td{padding:10px 13px;vertical-align:middle;}
   <button class="btn btn-secondary" style="width:100%; justify-content:center;" onclick="$('importFile').click()">Browse Local JSON File</button>
 
 </div></div>
-
 
 <div class="mo" id="mdIncome"><div class="md">
   <div class="md-hdr"><div class="md-title" id="mdIncomeTitle">Add Income / Investment Source</div><button class="md-x" onclick="closeModal('mdIncome')">✕</button></div>
@@ -873,6 +877,14 @@ tbody td{padding:10px 13px;vertical-align:middle;}
   <div class="md-ftr"><button class="btn btn-ghost" onclick="closeModal('mdLoan')">Cancel</button><button class="btn btn-primary" onclick="saveLoan()">💾 Save Loan</button></div>
 </div></div>
 
+<div class="mo" id="mdSkipLoan"><div class="md md-sm">
+  <div class="md-hdr"><div class="md-title">Skip / Double Bank Loan</div><button class="md-x" onclick="closeModal('mdSkipLoan')">✕</button></div>
+  <p style="font-size:13px;color:var(--text2);margin-bottom:12px;">Select a loan plan, then choose a month to skip. The payment will automatically double in the following month.</p>
+  <div class="fg"><label class="fl">Loan Plan *</label><select class="fs" id="skip_plan_loan"></select></div>
+  <div class="fg"><label class="fl">Select Month to Skip</label><input class="fi" id="skip_month_loan" type="month"></div>
+  <div class="md-ftr"><button class="btn btn-ghost" onclick="closeModal('mdSkipLoan')">Cancel</button><button class="btn btn-danger" onclick="skipLoanM()">⏭ Skip Month</button></div>
+</div></div>
+
 <div class="mo" id="mdCCI"><div class="md">
   <div class="md-hdr"><div class="md-title" id="mdCCITitle">Add CC Installment Plan</div><button class="md-x" onclick="closeModal('mdCCI')">✕</button></div>
   <div class="fr"><div class="fg"><label class="fl">Product Name *</label><input class="fi" id="c_product" placeholder="75-inch TV"></div><div class="fg"><label class="fl">Buyer</label><input class="fi" id="c_buyer" placeholder="Self"></div></div>
@@ -885,11 +897,10 @@ tbody td{padding:10px 13px;vertical-align:middle;}
 </div></div>
 
 <div class="mo" id="mdSkip"><div class="md md-sm">
-  <div class="md-hdr"><div class="md-title">Skip / Double Installment</div><button class="md-x" onclick="closeModal('mdSkip')">✕</button></div>
+  <div class="md-hdr"><div class="md-title">Skip / Double CC Installment</div><button class="md-x" onclick="closeModal('mdSkip')">✕</button></div>
   <p style="font-size:13px;color:var(--text2);margin-bottom:12px;">Select an installment plan, then choose a month to skip. The payment will automatically double in the following month.</p>
   <div class="fg"><label class="fl">Installment Plan *</label><select class="fs" id="skip_plan"></select></div>
   <div class="fg"><label class="fl">Select Month to Skip</label><input class="fi" id="skip_month" type="month"></div>
-  <div class="fcalc" id="skip_info"></div>
   <div class="md-ftr"><button class="btn btn-ghost" onclick="closeModal('mdSkip')">Cancel</button><button class="btn btn-danger" onclick="skipInstallmentM()">⏭ Skip Month</button></div>
 </div></div>
 
@@ -972,9 +983,9 @@ tbody td{padding:10px 13px;vertical-align:middle;}
 
 <div class="mo" id="mdChangePin"><div class="md md-sm">
   <div class="md-hdr"><div class="md-title">Change PIN</div><button class="md-x" onclick="closeModal('mdChangePin')">✕</button></div>
-  <div class="fg"><label class="fl">Current PIN *</label><input class="fi" id="cp_current" type="password" inputmode="numeric" pattern="[0-9]*" oninput="this.value=this.value.replace(/[^0-9]/g,'')" maxlength="6" placeholder="••••••" style="letter-spacing: 4px; font-family:var(--mono); text-align:center; font-size:24px;"></div>
-  <div class="fg"><label class="fl">New PIN *</label><input class="fi" id="cp_new" type="password" inputmode="numeric" pattern="[0-9]*" oninput="this.value=this.value.replace(/[^0-9]/g,'')" maxlength="6" placeholder="••••••" style="letter-spacing: 4px; font-family:var(--mono); text-align:center; font-size:24px;"></div>
-  <div class="fg"><label class="fl">Confirm New PIN *</label><input class="fi" id="cp_confirm" type="password" inputmode="numeric" pattern="[0-9]*" oninput="this.value=this.value.replace(/[^0-9]/g,'')" maxlength="6" placeholder="••••••" style="letter-spacing: 4px; font-family:var(--mono); text-align:center; font-size:24px;"></div>
+  <div class="fg"><label class="fl">Current PIN *</label><input class="fi" id="cp_current" type="password" inputmode="numeric" onkeypress="return event.charCode >= 48 && event.charCode <= 57" maxlength="6" placeholder="••••••" style="letter-spacing: 4px; font-family:var(--mono); text-align:center; font-size:24px;"></div>
+  <div class="fg"><label class="fl">New PIN *</label><input class="fi" id="cp_new" type="password" inputmode="numeric" onkeypress="return event.charCode >= 48 && event.charCode <= 57" maxlength="6" placeholder="••••••" style="letter-spacing: 4px; font-family:var(--mono); text-align:center; font-size:24px;"></div>
+  <div class="fg"><label class="fl">Confirm New PIN *</label><input class="fi" id="cp_confirm" type="password" inputmode="numeric" onkeypress="return event.charCode >= 48 && event.charCode <= 57" maxlength="6" placeholder="••••••" style="letter-spacing: 4px; font-family:var(--mono); text-align:center; font-size:24px;"></div>
   <div class="auth-err" id="cp_err"></div>
   <div class="md-ftr"><button class="btn btn-ghost" onclick="closeModal('mdChangePin')">Cancel</button><button class="btn btn-primary" onclick="changePin()">🔐 Change PIN</button></div>
 </div></div>
@@ -983,7 +994,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
 
 <script>
 // =====================================================
-// WEALTHFLOW v4.2 - Cloud Synced Financial System
+// WEALTHFLOW v4.2 - Secure Cloud Synced Financial System
 // Owner: Sachintha Gaurawa
 // =====================================================
 
@@ -999,9 +1010,10 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
-const storage = firebase.storage();
 
-db.enablePersistence().catch(err => { console.warn("Offline persistence issue:", err.code); });
+// Attempt offline persistence
+try { db.enablePersistence(); } catch (err) { console.warn("Offline persistence issue:", err.code); }
+
 const userDocRef = db.collection('users').doc('master_profile');
 
 // ==================== STATE MANAGEMENT ====================
@@ -1052,6 +1064,7 @@ function setSyncStatus(state) {
 // ==================== UTILITIES ====================
 const $ = id => document.getElementById(id);
 const uid = () => '_' + Date.now().toString(36) + Math.random().toString(36).substr(2,5);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
 const today = () => { const d=new Date(); return d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate()); };
 const p2 = n => String(n).padStart(2,'0');
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -1305,37 +1318,35 @@ async function changePin() {
     notify('PIN changed successfully! 🔐', 'success');
 }
 
-// ==================== BOOT SEQUENCE ====================
+// ==================== BOOT SEQUENCE (REALTIME & SECURE) ====================
 window.onload = async function() {
-    let w = 0;
-    const fillEl = $('spFill');
-    const fillInterval = setInterval(() => {
-        if(fillEl) { w = Math.min(w + (w < 80 ? 3 : 0.5), 100); fillEl.style.width = w + '%'; }
-    }, 30);
+    const splashText = $('spStatus');
+    splashText.textContent = "Initializing system...";
+    await sleep(400);
 
     populateBankSelects();
     initAuthUI();
     initMoneyInputs();
     
-    // Initial UI Setup
     const curY = new Date().getFullYear();
     ['dashYear','mpYear','expPdfYear'].forEach(id => {
         const el = $(id); if(!el) return;
         for(let y=curY-2; y<=curY+4; y++) {
-            const o = document.createElement('option');
-            o.value=y; o.textContent=y;
-            if(y===curY) o.selected=true;
-            el.appendChild(o);
+            const o = document.createElement('option'); o.value=y; o.textContent=y;
+            if(y===curY) o.selected=true; el.appendChild(o);
         }
     });
-    const curM = new Date().getMonth();
-    if($('expPdfMonth')) $('expPdfMonth').value = curM;
-
+    if($('expPdfMonth')) $('expPdfMonth').value = new Date().getMonth();
     ['ot_date','sav_date','bf_date','bs_date','chq_issue','chq_release'].forEach(id => { const el=$(id); if(el) el.value=today(); });
     ['e_month'].forEach(id => { const el=$(id); if(el) el.value=today().substr(0,7); });
 
-    // Server-First Boot Protocol
-    userDocRef.get().then((doc) => {
+    splashText.textContent = "Connecting to secure cloud...";
+    await sleep(400);
+
+    // Server-First Boot Protocol (Wait for Real Data)
+    try {
+        splashText.textContent = "Loading financial data...";
+        const doc = await userDocRef.get();
         if (doc.exists) {
             const cloudData = doc.data();
             Object.keys(cloudData).forEach(key => {
@@ -1343,17 +1354,18 @@ window.onload = async function() {
                 localStorage.setItem('wf2_'+key, JSON.stringify(cloudData[key]));
             });
         } else {
-            userDocRef.set(appData);
+            // First ever setup
+            await userDocRef.set(appData);
         }
         
-        if (!isInitialised) {
-            isInitialised = true;
-            finishBoot();
-        }
+        splashText.textContent = "Securing your vault...";
+        await sleep(400);
+
+        isInitialised = true;
+        finishBoot();
 
         // Attach realtime listener AFTER successful boot
         userDocRef.onSnapshot({ includeMetadataChanges: true }, (snap) => {
-            // Realtime Sync Status Logic
             if(snap.metadata.hasPendingWrites) {
                 setSyncStatus('syncing');
             } else {
@@ -1367,7 +1379,7 @@ window.onload = async function() {
                     localStorage.setItem('wf2_'+key, JSON.stringify(cloudData[key]));
                 });
                 
-                // Hot reload UI if the update came from the cloud (not local)
+                // Hot reload UI if the update came from the cloud (not local write)
                 if(!snap.metadata.hasPendingWrites && $('app').classList.contains('show')) {
                     const active = document.querySelector('.page.active');
                     if(active) renderPage(active.id.replace('page-',''));
@@ -1377,16 +1389,16 @@ window.onload = async function() {
             }
         });
 
-    }).catch(err => {
-        console.error("Error fetching from Firebase. Using local cache:", err);
-        if (!isInitialised) {
-            Object.keys(appData).forEach(k => {
-                try { const item = localStorage.getItem('wf2_'+k); if(item) appData[k] = JSON.parse(item); } catch(e){}
-            });
-            isInitialised = true;
-            finishBoot();
-        }
-    });
+    } catch(err) {
+        console.error("Cloud Error. Using local cache:", err);
+        splashText.textContent = "Working offline...";
+        await sleep(600);
+        Object.keys(appData).forEach(k => {
+            try { const item = localStorage.getItem('wf2_'+k); if(item) appData[k] = JSON.parse(item); } catch(e){}
+        });
+        isInitialised = true;
+        finishBoot();
+    }
 
     setupOnlineStatus();
     updateDateTime();
@@ -1395,21 +1407,24 @@ window.onload = async function() {
 
 function finishBoot() {
     const auth = DB.getObj('auth');
-    $('splash').classList.add('hide');
-    setTimeout(() => { if($('splash')) $('splash').style.display='none'; }, 600);
-    
-    initTheme();
-    setupBackupReminder();
-    checkAutoBackup();
+    $('spStatus').textContent = "Almost ready...";
+    setTimeout(() => {
+        $('splash').classList.add('hide');
+        setTimeout(() => { if($('splash')) $('splash').style.display='none'; }, 600);
+        
+        initTheme();
+        setupBackupReminder();
+        checkAutoBackup();
 
-    $('authScreen').classList.add('show');
-    if(!auth.pin) {
-        pinMode = 'setup';
-        showAuthView('authSetup');
-    } else {
-        pinMode = 'login';
-        showAuthView('authLogin');
-    }
+        $('authScreen').classList.add('show');
+        if(!auth.pin) {
+            pinMode = 'setup';
+            showAuthView('authSetup');
+        } else {
+            pinMode = 'login';
+            showAuthView('authLogin');
+        }
+    }, 400);
 }
 
 function launchApp() {
@@ -1430,7 +1445,6 @@ function setupOnlineStatus() {
     function updateStatus() {
         if(navigator.onLine) {
             setSyncStatus('online');
-            // If we just came online, trigger a check for auto backup
             setTimeout(checkAutoBackup, 2000);
         } else {
             setSyncStatus('offline');
@@ -1481,8 +1495,8 @@ function checkAutoBackup() {
 
 function refreshApp(btn) {
     if(btn) {
-        btn.classList.add('spin');
-        setTimeout(() => btn.classList.remove('spin'), 800);
+        btn.classList.add('spin-anim');
+        setTimeout(() => btn.classList.remove('spin-anim'), 800);
     }
     const active = document.querySelector('.page.active');
     if(active) renderPage(active.id.replace('page-',''));
@@ -1690,9 +1704,9 @@ function saveLoan() {
     if(!name||!bank||!amount||!dur||!start) { notify('Please fill required fields','error'); return; }
     const calc = calcEMI(amount,rate,dur);
     const monthly = parseMoney($('l_monthly').value) || Math.round(calc);
-    const rec = { id:editMode||uid(), name, bank, amount, rate, duration:dur, monthly, start, purpose:$('l_purpose').value, notes:$('l_notes').value };
+    const rec = { id:editMode||uid(), name, bank, amount, rate, duration:dur, monthly, start, purpose:$('l_purpose').value, notes:$('l_notes').value, skipped:[] };
     const arr=DB.get('loans');
-    if(editMode){const i=arr.findIndex(x=>x.id===editMode);if(i>-1)arr[i]=rec;}else arr.push(rec);
+    if(editMode){const i=arr.findIndex(x=>x.id===editMode);if(i>-1){rec.skipped=arr[i].skipped||[]; arr[i]=rec;}}else arr.push(rec);
     DB.set('loans',arr);
     closeModal('mdLoan'); clearLoanForm(); renderLoans(); renderDash();
     notify(editMode?'Loan updated!':'Loan added!');
@@ -1714,6 +1728,28 @@ function deleteLoan(id) {
         DB.set('loans',DB.get('loans').filter(x=>x.id!==id)); renderLoans(); renderDash(); notify('Loan deleted','info');
     });
 }
+function skipLoanM() {
+    const planId=$('skip_plan_loan').value, month=$('skip_month_loan').value;
+    if(!planId||!month){notify('Please select a loan and month','error');return;}
+    const arr=DB.get('loans');
+    const i=arr.findIndex(x=>x.id===planId);
+    if(i<0){notify('Loan not found','error');return;}
+    if(!arr[i].skipped) arr[i].skipped=[];
+    if(arr[i].skipped.includes(month)){notify('This month is already skipped','warn');return;}
+    arr[i].skipped.push(month);
+    DB.set('loans',arr);
+    closeModal('mdSkipLoan');
+    renderLoans(); renderDash();
+    notify(`Month ${month} skipped for Loan. Next month will show double payment.`,'warn');
+}
+function getLoanMonthlyForDate(item, yearN, monthN) {
+    const ym = `${yearN}-${p2(monthN+1)}`;
+    const prevYm = monthN===0 ? `${yearN-1}-12` : `${yearN}-${p2(monthN)}`;
+    let multiplier = 1;
+    if(item.skipped && item.skipped.includes(prevYm)) multiplier = 2;
+    if(item.skipped && item.skipped.includes(ym)) multiplier = 0;
+    return item.monthly * multiplier;
+}
 function loanEndDate(l) {
     const d=new Date(l.start+'T00:00:00'); d.setMonth(d.getMonth()+l.duration); return d;
 }
@@ -1732,6 +1768,11 @@ function renderLoans() {
         if(s.field==='amount') return s.dir*(b.amount-a.amount);
         return 0;
     });
+    
+    // Populate skip loan modal
+    const activeLoans = arr.filter(l => loanEndDate(l) > new Date());
+    $('skip_plan_loan').innerHTML = '<option value="">Select loan...</option>' + activeLoans.map(x=>`<option value="${x.id}">${x.name} (${x.bank})</option>`).join('');
+
     const el=$('loansList');
     if(!arr.length){el.innerHTML=emptyState('🏦','No loans added','Add your bank loans to track monthly payments');return;}
     const totM=arr.reduce((sum,l)=>{const e=loanEndDate(l);return e>new Date()?sum+l.monthly:sum;},0);
@@ -1739,10 +1780,11 @@ function renderLoans() {
     el.innerHTML=`<div class="g3" style="margin-bottom:16px;">
         <div class="stat-card sc-red"><div class="stat-label">Monthly Loan Payments</div><div class="stat-val">${fmtS(totM)}</div><div class="stat-meta">${fmt(totM)}</div></div>
         <div class="stat-card sc-blue"><div class="stat-label">Total Principal</div><div class="stat-val">${fmtS(totA)}</div></div>
-        <div class="stat-card sc-purple"><div class="stat-label">Active Loans</div><div class="stat-val">${arr.length}</div></div>
+        <div class="stat-card sc-purple"><div class="stat-label">Active Loans</div><div class="stat-val">${activeLoans.length}</div></div>
     </div>`+arr.map(l=>{
         const prog=loanProgress(l), end=loanEndDate(l), active=end>new Date();
         const paid=prog.paid*l.monthly, remain=Math.max(0,l.amount*((l.duration-prog.paid)/l.duration));
+        const skipCount=l.skipped?.length||0;
         return`<div class="loan-card">
             <div class="loan-top">
                 <div><div class="loan-name">${l.name}</div><div class="loan-bank">🏦 ${l.bank}${l.purpose?' · '+l.purpose:''}</div></div>
@@ -1752,7 +1794,7 @@ function renderLoans() {
                 </div>
             </div>
             <div class="pb" style="margin-bottom:6px;"><div class="pf ${prog.pct>80?'pf-r':prog.pct>50?'pf-a':'pf-g'}" style="width:${prog.pct}%"></div></div>
-            <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-bottom:10px;"><span>${prog.paid}/${prog.total} installments (${prog.pct}%)</span><span>Ends ${end.toLocaleDateString('en-GB',{month:'short',year:'numeric'})}</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-bottom:10px;"><span>${prog.paid}/${prog.total} installments (${prog.pct}%) ${skipCount>0?`· <span style="color:var(--accent);">${skipCount} skipped</span>`:''}</span><span>Ends ${end.toLocaleDateString('en-GB',{month:'short',year:'numeric'})}</span></div>
             <div style="display:flex;flex-wrap:wrap;">
                 <div class="ld"><div class="ld-l">PRINCIPAL</div><div class="ld-v">${fmt(l.amount)}</div></div>
                 <div class="ld"><div class="ld-l">RATE</div><div class="ld-v">${l.rate}% p.a.</div></div>
@@ -2254,8 +2296,11 @@ function getMonthlyData(year, month) {
     let loanTotal=0, loanItems=[];
     DB.get('loans').forEach(l=>{
         const start=new Date(l.start+'T00:00:00');
-        const end=new Date(l.start+'T00:00:00'); end.setMonth(end.getMonth()+l.duration);
-        if(start<=dt&&end>dt){loanTotal+=l.monthly;loanItems.push({name:l.name,bank:l.bank,amount:l.monthly});}
+        const end=loanEndDate(l);
+        if(start<=dt&&end>dt){
+            const m=getLoanMonthlyForDate(l,year,month);
+            loanTotal+=m; loanItems.push({name:l.name,bank:l.bank,amount:m});
+        }
     });
     let ccTotal=0, ccItems2=[];
     DB.get('ccinstall').filter(x=>!x.completed).forEach(item=>{
@@ -2483,6 +2528,7 @@ function renderDSCR() {
         if(active) html += `<option value="${l.monthly}">${l.name} (${l.bank}) - ${fmt(l.monthly)}/mo</option>`;
     });
     select.innerHTML = html;
+    setTimeout(calcDSCR, 100);
 }
 
 function autoAddDSCRLoan() {
@@ -2526,8 +2572,8 @@ function calcDSCR() {
     const noi = inc - opex;
 
     const resEl = $('dscrResult');
-    if(totalDebtService === 0) {
-        resEl.innerHTML = '<div style="font-size:13px;color:var(--text3);">Enter loan details to calculate eligibility based on local banking parameters.</div>';
+    if(totalDebtService === 0 || noi <= 0) {
+        resEl.innerHTML = '<div style="font-size:13px;color:var(--text3);">Enter full details to calculate your eligibility based on Sri Lankan banking parameters.</div>';
         return;
     }
 
@@ -2536,16 +2582,32 @@ function calcDSCR() {
     let status='', color='', advice='';
     if(dscr >= 1.5) { status='EXCELLENT'; color='var(--green)'; advice='Highly likely to be approved. You have a very comfortable cash flow buffer to cover this loan and daily operations.'; }
     else if(dscr >= 1.25) { status='GOOD'; color='var(--blue)'; advice='Likely to be approved. This meets the standard requirement for most Sri Lankan commercial banks.'; }
-    else if(dscr >= 1.0) { status='RISKY / BORDERLINE'; color='var(--accent)'; advice='Borderline. You cover the payments, but it leaves little room for emergencies. Banks will likely request additional solid collateral or guarantors.'; }
+    else if(dscr >= 1.0) { status='RISKY'; color='var(--accent)'; advice='Borderline. You cover the payments, but it leaves little room for emergencies. Banks will likely request additional solid collateral or guarantors.'; }
     else { status='REJECTED'; color='var(--red)'; advice='High risk of rejection. Your combined expenses and proposed EMI exceed your net operating income. Consider increasing down payment or extending tenure.'; }
 
+    let rot = (dscr - 1.0) * 180;
+    if(rot < -90) rot = -90;
+    if(rot > 90) rot = 90;
+
     resEl.innerHTML = `
-        <div class="dscr-gauge-wrap" style="height:140px;display:flex;justify-content:center;align-items:center;">
-           <div style="font-size:48px;font-weight:900;font-family:var(--mono);color:${color};">${dscr.toFixed(2)}x</div>
+        <div class="dscr-gauge-container">
+            <div class="dscr-gauge-bg"></div>
+            <svg viewBox="0 0 200 100" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;">
+               <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="url(#ggrad)" stroke-width="24" stroke-linecap="butt"/>
+               <defs>
+                 <linearGradient id="ggrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                   <stop offset="0%" stop-color="var(--red)" />
+                   <stop offset="50%" stop-color="var(--accent)" />
+                   <stop offset="100%" stop-color="var(--green)" />
+                 </linearGradient>
+               </defs>
+            </svg>
+            <div class="dscr-gauge-needle" style="transform: translateX(-50%) rotate(${rot}deg);"></div>
         </div>
+        <div style="font-size:42px;font-weight:900;font-family:var(--mono);color:${color};margin-top:10px;">${dscr.toFixed(2)}x</div>
         <div class="dscr-status" style="background:${color}22;color:${color};">${status}</div>
         <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:16px;">
-           <div class="ld"><div class="ld-l">NOI</div><div class="ld-v">${fmtS(noi)}</div></div>
+           <div class="ld"><div class="ld-l">NET OP INCOME</div><div class="ld-v">${fmtS(noi)}</div></div>
            <div class="ld"><div class="ld-l">TOTAL DEBT</div><div class="ld-v">${fmtS(totalDebtService)}</div></div>
            <div class="ld"><div class="ld-l">NEW EMI</div><div class="ld-v" style="color:var(--red);">${fmtS(newEMI)}</div></div>
         </div>
@@ -2781,30 +2843,30 @@ function updateBackupFreq(val) {
     notify('Backup frequency updated');
 }
 
-// Cloud Backup utilizing Firebase Storage
+// Cloud Backup utilizing Firebase Storage + Firestore reference tracking
 async function createCloudBackup(manual = false) {
     try {
         if(manual) notify('Uploading backup to cloud...', 'info');
         const jsonStr = JSON.stringify(appData);
-        const blob = new Blob([jsonStr], {type: "application/json"});
         
+        // Backup directly into firestore doc to bypass strict bucket rules
         const timestamp = Date.now();
-        const filename = `backups/WealthFlow_Backup_${timestamp}.json`;
-        const storageRef = firebase.storage().ref(filename);
-        
-        await storageRef.put(blob);
+        await db.collection('wealthflow_backups').doc(timestamp.toString()).set({
+            time: new Date().toISOString(),
+            data: jsonStr
+        });
         
         const s = DB.getObj('settings');
         s.lastBackup = new Date().toISOString();
         
+        // Track latest 5 references
         const refsDoc = db.collection('users').doc('backup_refs');
         const docSnap = await refsDoc.get();
         let refs = [];
         if(docSnap.exists) refs = docSnap.data().files || [];
         
-        refs.push({ path: filename, time: new Date().toISOString() });
-        // Keep the latest 5 backups
-        if(refs.length > 5) refs.shift(); 
+        refs.push({ id: timestamp.toString(), time: new Date().toISOString() });
+        if(refs.length > 5) refs.shift(); // Keep latest 5
         
         await refsDoc.set({ files: refs });
         DB.set('settings', s);
@@ -2830,7 +2892,7 @@ async function openRestoreModal() {
         if(refs.length === 0) {
             sel.innerHTML = '<option value="">No cloud backups found</option>';
         } else {
-            sel.innerHTML = refs.map((b, i) => `<option value="${b.path}">${new Date(b.time).toLocaleString()} (Cloud)</option>`).reverse().join('');
+            sel.innerHTML = refs.map((b, i) => `<option value="${b.id}">${new Date(b.time).toLocaleString()}</option>`).reverse().join('');
             $('restoreBtn').disabled = false;
         }
     } catch(e) {
@@ -2840,21 +2902,21 @@ async function openRestoreModal() {
 }
 
 async function executeCloudRestore() {
-    const path = $('restoreSelect').value;
-    if(!path) return;
+    const backupId = $('restoreSelect').value;
+    if(!backupId) return;
 
     try {
         notify('Downloading backup...', 'info');
         $('restoreBtn').disabled = true;
         
-        const storageRef = firebase.storage().ref(path);
-        const url = await storageRef.getDownloadURL();
+        const doc = await db.collection('wealthflow_backups').doc(backupId).get();
+        if(!doc.exists) throw new Error("Backup file missing");
         
-        const response = await fetch(url);
-        const restoredData = await response.json();
+        const restoredData = JSON.parse(doc.data().data);
         
         appData = restoredData;
         syncToCloud();
+        closeModal('mdRestoreCloud');
         notify('Data restored successfully! Rebooting...', 'success');
         setTimeout(() => location.reload(), 1500);
 
