@@ -12,6 +12,8 @@
 
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
@@ -42,7 +44,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:10px;}
 ::-webkit-scrollbar-thumb:hover{background:var(--accent);}
 input,select,textarea,button{font-family:var(--font);}
-/* Fix iOS Zooming and Mobile inputs */
 input, select, textarea { font-size: 16px !important; }
 button, .npb { touch-action: manipulation; }
 
@@ -531,7 +532,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
     <div class="sb-footer">
       <div class="sb-user">👤 Sachintha Gaurawa</div>
       <div class="sb-date" id="sbDate">-</div>
-      <div class="sb-ver">WealthFlow v4.1 · Business</div>
+      <div class="sb-ver">WealthFlow v4.2 · Business</div>
     </div>
   </aside>
 
@@ -825,16 +826,16 @@ tbody td{padding:10px 13px;vertical-align:middle;}
 
 <div class="mo" id="mdFactoryReset"><div class="md md-sm">
   <div class="md-hdr"><div class="md-title" style="color:var(--red);">⚠️ Factory Reset</div><button class="md-x" onclick="closeModal('mdFactoryReset')">✕</button></div>
-  <p style="font-size:13px;color:var(--text2);margin-bottom:16px;">This will wipe ALL data from your devices and the cloud. Enter your PIN to confirm.</p>
-  <div class="fg"><label class="fl">Master PIN *</label><input class="fi" id="fr_pin" type="password" maxlength="6" placeholder="••••••"></div>
+  <p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.5;">This will wipe ALL data from your devices and the cloud. Enter your PIN to confirm.</p>
+  <div class="fg"><label class="fl">Master PIN *</label><input class="fi" id="fr_pin" type="password" maxlength="6" placeholder="••••••" style="letter-spacing: 4px; font-family:var(--mono);"></div>
   <div class="auth-err" id="fr_err"></div>
   <div class="md-ftr"><button class="btn btn-ghost" onclick="closeModal('mdFactoryReset')">Cancel</button><button class="btn btn-danger" onclick="executeFactoryReset()">Delete Everything</button></div>
 </div></div>
 
 <div class="mo" id="mdRestoreCloud"><div class="md md-sm">
   <div class="md-hdr"><div class="md-title">Restore from Cloud</div><button class="md-x" onclick="closeModal('mdRestoreCloud')">✕</button></div>
-  <p style="font-size:13px;color:var(--text2);margin-bottom:16px;">Select a recent cloud backup to restore. This will overwrite your current data immediately.</p>
-  <div class="fg"><label class="fl">Available Backups</label><select class="fs" id="restoreSelect"></select></div>
+  <p style="font-size:13px;color:var(--text2);margin-bottom:16px;">Select a recent cloud backup from Firebase Storage to restore.</p>
+  <div class="fg"><label class="fl">Available Cloud Backups</label><select class="fs" id="restoreSelect"></select></div>
   <div class="md-ftr"><button class="btn btn-ghost" onclick="closeModal('mdRestoreCloud')">Cancel</button><button class="btn btn-primary" id="restoreBtn" onclick="executeCloudRestore()">Restore Data</button></div>
 </div></div>
 
@@ -972,7 +973,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
 
 <script>
 // =====================================================
-// WEALTHFLOW v4.1 - Cloud Synced Financial System
+// WEALTHFLOW v4.2 - Cloud Synced Financial System
 // Owner: Sachintha Gaurawa
 // =====================================================
 
@@ -988,6 +989,7 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
+const storage = firebase.storage();
 
 db.enablePersistence().catch(err => { console.warn("Offline persistence issue:", err.code); });
 const userDocRef = db.collection('users').doc('master_profile');
@@ -1378,6 +1380,7 @@ function finishBoot() {
     
     initTheme();
     setupBackupReminder();
+    checkAutoBackup();
 
     $('authScreen').classList.add('show');
     if(!auth.pin) {
@@ -1428,10 +1431,30 @@ function setupBackupReminder() {
     const last = new Date(settings.lastBackup);
     const now = new Date();
     const days = Math.floor((now-last)/(1000*86400));
-    const freq = {daily:1, weekly:7, monthly:30};
-    const threshold = freq[settings.backupFreq] || 7;
-    if(days >= threshold) {
-        setTimeout(() => notify(`⚠️ It has been ${days} days since your last backup. Consider exporting your data.`, 'warn'), 3000);
+    if(days >= 14) {
+        setTimeout(() => notify(`⚠️ It has been ${days} days since your last manual export. Consider downloading a PDF or JSON.`, 'warn'), 3000);
+    }
+}
+
+function checkAutoBackup() {
+    const settings = DB.getObj('settings', {backupFreq:'weekly', lastBackup:null});
+    if(!navigator.onLine) return;
+    
+    let shouldBackup = false;
+    if(!settings.lastBackup) {
+        shouldBackup = true;
+    } else {
+        const last = new Date(settings.lastBackup);
+        const now = new Date();
+        const days = Math.floor((now-last)/(1000*86400));
+        
+        if(settings.backupFreq === 'daily' && days >= 1) shouldBackup = true;
+        if(settings.backupFreq === 'weekly' && days >= 7) shouldBackup = true;
+        if(settings.backupFreq === 'monthly' && days >= 30) shouldBackup = true;
+    }
+    
+    if(shouldBackup) {
+        createCloudBackup(false); 
     }
 }
 
@@ -2535,17 +2558,25 @@ function renderSettings() {
         <div class="settings-section">
             <div class="settings-title">Data Management & Reports</div>
             <div class="setting-row">
-                <div class="setting-info"><div class="setting-label">Export Data & Reports</div><div class="setting-desc">Download a complete physical JSON backup or a professional PDF report.</div></div>
+                <div class="setting-info"><div class="setting-label">Export Professional Report</div><div class="setting-desc">Download a complete physical JSON backup or a luxury PDF statement.</div></div>
                 <button class="btn btn-primary btn-sm" onclick="openModal('mdExport')">Export</button>
             </div>
             
             <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:24px 0 8px;">Cloud Backup & Restore</div>
             <div class="setting-row">
-                <div class="setting-info"><div class="setting-label">Manual Cloud Backup</div><div class="setting-desc">Save a manual snapshot to the Firebase cloud.</div></div>
-                <button class="btn btn-primary btn-sm" onclick="createCloudBackup()">Backup Now</button>
+                <div class="setting-info"><div class="setting-label">Auto-Backup Frequency</div><div class="setting-desc">The system will auto-upload a JSON copy to Firebase Storage.</div></div>
+                <select class="fi" style="width:120px;" onchange="updateBackupFreq(this.value)">
+                    <option value="daily" ${DB.getObj('settings').backupFreq==='daily'?'selected':''}>Daily</option>
+                    <option value="weekly" ${DB.getObj('settings').backupFreq==='weekly'?'selected':''}>Weekly</option>
+                    <option value="monthly" ${DB.getObj('settings').backupFreq==='monthly'?'selected':''}>Monthly</option>
+                </select>
             </div>
             <div class="setting-row">
-                <div class="setting-info"><div class="setting-label">Restore from Cloud</div><div class="setting-desc">Restore from the latest 3 cloud backups.</div></div>
+                <div class="setting-info"><div class="setting-label">Manual Cloud Backup</div><div class="setting-desc">Push an instant JSON backup to your secure cloud bucket.</div></div>
+                <button class="btn btn-primary btn-sm" onclick="createCloudBackup(true)">Backup Now</button>
+            </div>
+            <div class="setting-row">
+                <div class="setting-info"><div class="setting-label">Restore from Cloud</div><div class="setting-desc">Restore from the latest 3 Firebase Storage backups.</div></div>
                 <button class="btn btn-secondary btn-sm" onclick="openRestoreModal()">Restore Data</button>
             </div>
 
@@ -2578,9 +2609,6 @@ function executeExport() {
     } else {
         generatePDFReport();
     }
-    const s = DB.getObj('settings', {});
-    s.lastBackup = new Date().toISOString();
-    DB.set('settings', s);
     closeModal('mdExport');
 }
 
@@ -2592,26 +2620,67 @@ function generatePDFReport() {
     const month = parseInt($('expPdfMonth').value);
     const md = getMonthlyData(year, month);
     
-    doc.setFontSize(22); doc.setTextColor(24, 24, 27);
-    doc.text("WealthFlow Financial Report", 14, 22);
+    const darkBlue = [15, 23, 42];
+    const accentGold = [245, 166, 35];
+    const lightGrey = [241, 245, 249];
+    const textGrey = [100, 116, 139];
+
+    // Header Block
+    doc.setFillColor(...darkBlue);
+    doc.rect(0, 0, 210, 45, 'F');
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(26);
+    doc.setTextColor(...accentGold);
+    doc.text("WEALTHFLOW", 14, 20);
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10);
+    doc.setTextColor(255, 255, 255);
+    doc.text("PRIVATE FINANCIAL STATEMENT", 14, 28);
     
-    doc.setFontSize(11); doc.setTextColor(100, 116, 139);
-    doc.text(`Prepared for: Sachintha Gaurawa`, 14, 30);
-    doc.text(`Period: ${MONTHS[month]} ${year}`, 14, 36);
-    doc.text(`Generated on: ${today()}`, 14, 42);
+    doc.setFontSize(10);
+    doc.text(`PREPARED FOR: SACHINTHA GAURAWA`, 120, 20);
+    doc.text(`PERIOD: ${MONTHS[month].toUpperCase()} ${year}`, 120, 28);
+    doc.text(`GENERATED: ${today()}`, 120, 36);
 
-    doc.setDrawColor(226, 232, 240); doc.setFillColor(248, 250, 252);
-    doc.rect(14, 50, 182, 25, 'FD');
+    // Executive Summary Box
+    doc.setDrawColor(226, 232, 240);
+    doc.setFillColor(...lightGrey);
+    doc.roundedRect(14, 55, 182, 30, 3, 3, 'FD');
     
-    doc.setFontSize(12);
-    doc.setTextColor(16, 185, 129); doc.text(`Income: LKR ${fmtN(md.income)}`, 20, 60);
-    doc.setTextColor(239, 68, 68); doc.text(`Expenses: LKR ${fmtN(md.totalExp)}`, 85, 60);
-    doc.setTextColor(59, 130, 246); doc.text(`Net Balance: LKR ${fmtN(md.balance)}`, 140, 60);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(10);
+    doc.setTextColor(...textGrey);
+    doc.text("TOTAL INCOME", 24, 65);
+    doc.text("TOTAL EXPENSES", 85, 65);
+    doc.text("NET BALANCE", 146, 65);
 
-    let startY = 85;
+    doc.setFontSize(16);
+    doc.setTextColor(16, 185, 129); // Green
+    doc.text(`${fmtN(md.income)}`, 24, 76);
+    
+    doc.setTextColor(239, 68, 68); // Red
+    doc.text(`${fmtN(md.totalExp)}`, 85, 76);
+    
+    doc.setTextColor(...darkBlue); // Dark Blue
+    doc.text(`${fmtN(md.balance)}`, 146, 76);
 
-    doc.setFontSize(14); doc.setTextColor(15, 23, 42);
-    doc.text("Active Income Sources", 14, startY);
+    let startY = 100;
+
+    const tableOptions = {
+        theme: 'plain',
+        headStyles: { fillColor: lightGrey, textColor: darkBlue, fontStyle: 'bold', fontSize: 10 },
+        bodyStyles: { fontSize: 10, textColor: [51, 65, 85] },
+        alternateRowStyles: { fillColor: [250, 250, 250] },
+        margin: { left: 14, right: 14 }
+    };
+
+    // Income
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(14); doc.setTextColor(...darkBlue);
+    doc.text("Income & Returns", 14, startY);
+    
     const activeIncome = DB.get('income').filter(s => {
         const dt = new Date(year,month,1);
         const start = new Date(s.start+'T00:00:00');
@@ -2620,76 +2689,161 @@ function generatePDFReport() {
     });
 
     if(activeIncome.length > 0) {
-        doc.autoTable({ startY: startY + 5, head: [['Source', 'Company', 'Amount (LKR)']], body: activeIncome.map(i => [i.name, i.company, fmtN(i.monthly)]), theme: 'striped', headStyles: { fillColor: [15, 23, 42] } });
+        doc.autoTable({
+            startY: startY + 5,
+            head: [['Source', 'Institution', 'Amount (LKR)']],
+            body: activeIncome.map(i => [i.name, i.company, fmtN(i.monthly)]),
+            ...tableOptions
+        });
         startY = doc.lastAutoTable.finalY + 15;
     } else {
-        doc.setFontSize(11); doc.setTextColor(100, 116, 139); doc.text("No income sources for this period.", 14, startY + 8); startY += 20;
+        doc.setFont("helvetica", "normal"); doc.setFontSize(10); doc.setTextColor(...textGrey);
+        doc.text("No income registered for this period.", 14, startY + 8); startY += 18;
     }
 
-    doc.setFontSize(14); doc.setTextColor(15, 23, 42);
-    doc.text("Loan Payments", 14, startY);
+    // Debts & Loans
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(14); doc.setTextColor(...darkBlue);
+    doc.text("Debt Servicing", 14, startY);
     if(md.loanItems.length > 0) {
-        doc.autoTable({ startY: startY + 5, head: [['Loan Name', 'Bank', 'EMI (LKR)']], body: md.loanItems.map(l => [l.name, l.bank, fmtN(l.amount)]), theme: 'striped', headStyles: { fillColor: [15, 23, 42] } });
+        doc.autoTable({
+            startY: startY + 5,
+            head: [['Facility Name', 'Institution', 'EMI (LKR)']],
+            body: md.loanItems.map(l => [l.name, l.bank, fmtN(l.amount)]),
+            ...tableOptions
+        });
         startY = doc.lastAutoTable.finalY + 15;
     } else {
-        doc.setFontSize(11); doc.setTextColor(100, 116, 139); doc.text("No loan payments for this period.", 14, startY + 8); startY += 20;
+        doc.setFont("helvetica", "normal"); doc.setFontSize(10); doc.setTextColor(...textGrey);
+        doc.text("No debt obligations for this period.", 14, startY + 8); startY += 18;
     }
 
-    doc.setFontSize(14); doc.setTextColor(15, 23, 42);
-    doc.text("Other Expenses & CC Instalments", 14, startY);
+    // CC & Expenses
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(14); doc.setTextColor(...darkBlue);
+    doc.text("Operating Expenses", 14, startY);
     const combinedExp = [];
-    md.ccItems2.forEach(c => combinedExp.push([c.name + ' (CC)', c.bank, fmtN(c.amount)]));
+    md.ccItems2.forEach(c => combinedExp.push([c.name + ' (CC Instalment)', c.bank, fmtN(c.amount)]));
     md.expItems.forEach(e => combinedExp.push([e.name, e.cat, fmtN(e.amount)]));
 
     if(combinedExp.length > 0) {
-        doc.autoTable({ startY: startY + 5, head: [['Description', 'Category/Bank', 'Amount (LKR)']], body: combinedExp, theme: 'striped', headStyles: { fillColor: [15, 23, 42] } });
+        doc.autoTable({
+            startY: startY + 5,
+            head: [['Description', 'Category', 'Amount (LKR)']],
+            body: combinedExp,
+            ...tableOptions
+        });
     } else {
-        doc.setFontSize(11); doc.setTextColor(100, 116, 139); doc.text("No other expenses for this period.", 14, startY + 8);
+        doc.setFont("helvetica", "normal"); doc.setFontSize(10); doc.setTextColor(...textGrey);
+        doc.text("No operating expenses for this period.", 14, startY + 8);
     }
 
-    doc.save(`WealthFlow_Report_${MONTHS_S[month]}_${year}.pdf`);
-    notify('PDF Report downloaded securely.', 'success');
+    // Footer
+    const pageCount = doc.internal.getNumberOfPages();
+    for(let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(8);
+        doc.setTextColor(148, 163, 184);
+        doc.text(`Page ${i} of ${pageCount}`, 196, 290, { align: 'right' });
+        doc.text("Generated securely by WealthFlow", 14, 290);
+    }
+
+    doc.save(`WealthFlow_Statement_${MONTHS_S[month]}_${year}.pdf`);
+    notify('Professional Statement downloaded.', 'success');
 }
 
-// Manual Cloud Backup & Restore
-function createCloudBackup() {
-    let backups = DB.get('cloudBackups', []);
-    let snapshot = JSON.parse(JSON.stringify(appData));
-    delete snapshot.cloudBackups; 
-    
-    backups.push({ time: new Date().toISOString(), data: snapshot });
-    if (backups.length > 3) backups.shift(); 
-    
-    DB.set('cloudBackups', backups);
-    notify('Cloud backup created successfully!', 'success');
+function updateBackupFreq(val) {
+    const s = DB.getObj('settings', {});
+    s.backupFreq = val;
+    DB.set('settings', s);
+    notify('Backup frequency updated');
 }
 
-function openRestoreModal() {
-    let backups = DB.get('cloudBackups', []);
-    let sel = $('restoreSelect');
-    if(!sel) return;
-    if(backups.length === 0) {
-        sel.innerHTML = '<option value="">No backups available</option>';
+// Cloud Backup utilizing Firebase Storage
+async function createCloudBackup(manual = false) {
+    try {
+        if(manual) notify('Uploading backup to cloud...', 'info');
+        const jsonStr = JSON.stringify(appData);
+        const blob = new Blob([jsonStr], {type: "application/json"});
+        
+        // Save using timestamp
+        const timestamp = Date.now();
+        const filename = `backups/WealthFlow_Backup_${timestamp}.json`;
+        const storageRef = firebase.storage().ref(filename);
+        
+        await storageRef.put(blob);
+        
+        // Update local settings tracker
+        const s = DB.getObj('settings');
+        s.lastBackup = new Date().toISOString();
+        
+        // Maintain latest 3 references in a dedicated firestore document
+        const refsDoc = db.collection('users').doc('backup_refs');
+        const docSnap = await refsDoc.get();
+        let refs = [];
+        if(docSnap.exists) refs = docSnap.data().files || [];
+        
+        refs.push({ path: filename, time: new Date().toISOString() });
+        if(refs.length > 3) refs.shift(); // Keep only last 3
+        
+        await refsDoc.set({ files: refs });
+        DB.set('settings', s);
+
+        if(manual) notify('Cloud backup complete! ☁️', 'success');
+    } catch(e) {
+        console.error(e);
+        if(manual) notify('Cloud backup failed. Check permissions.', 'error');
+    }
+}
+
+async function openRestoreModal() {
+    const sel = $('restoreSelect');
+    sel.innerHTML = '<option>Fetching cloud backups...</option>';
+    $('restoreBtn').disabled = true;
+    openModal('mdRestoreCloud');
+
+    try {
+        const docSnap = await db.collection('users').doc('backup_refs').get();
+        let refs = [];
+        if(docSnap.exists) refs = docSnap.data().files || [];
+
+        if(refs.length === 0) {
+            sel.innerHTML = '<option value="">No cloud backups found</option>';
+        } else {
+            sel.innerHTML = refs.map((b, i) => `<option value="${b.path}">${new Date(b.time).toLocaleString()}</option>`).reverse().join('');
+            $('restoreBtn').disabled = false;
+        }
+    } catch(e) {
+        console.error(e);
+        sel.innerHTML = '<option value="">Failed to fetch backups</option>';
+    }
+}
+
+async function executeCloudRestore() {
+    const path = $('restoreSelect').value;
+    if(!path) return;
+
+    try {
+        notify('Downloading backup...', 'info');
         $('restoreBtn').disabled = true;
-    } else {
-        sel.innerHTML = backups.map((b, i) => `<option value="${i}">${new Date(b.time).toLocaleString()}</option>`).reverse().join('');
+        
+        const storageRef = firebase.storage().ref(path);
+        const url = await storageRef.getDownloadURL();
+        
+        const response = await fetch(url);
+        const restoredData = await response.json();
+        
+        appData = restoredData;
+        syncToCloud();
+        notify('Data restored successfully! Rebooting...', 'success');
+        setTimeout(() => location.reload(), 1500);
+
+    } catch(e) {
+        console.error(e);
+        notify('Failed to restore backup.', 'error');
         $('restoreBtn').disabled = false;
     }
-    openModal('mdRestoreCloud');
-}
-
-function executeCloudRestore() {
-    let backups = DB.get('cloudBackups', []);
-    let idx = parseInt($('restoreSelect').value);
-    if (isNaN(idx) || !backups[idx]) return;
-    
-    let restoredData = backups[idx].data;
-    restoredData.cloudBackups = backups; 
-    
-    appData = restoredData;
-    syncToCloud();
-    notify('Data restored successfully! Rebooting...', 'success');
-    setTimeout(() => location.reload(), 1500);
 }
 
 // Secure Factory Reset
@@ -2704,7 +2858,15 @@ async function executeFactoryReset() {
     }
     
     $('fr_err').textContent = '';
-    userDocRef.delete().then(() => {
+    
+    // Wipe procedure
+    appData = { 
+        auth: {}, income: [], loans: [], ccinstall: [], cconetime: [], 
+        cheques: [], expenses: [], targets: [], balance: {total:0, flows:[]}, 
+        settings: { backupFreq: 'weekly', lastBackup: null, theme: 'dark' } 
+    };
+    
+    userDocRef.set(appData).then(() => {
         localStorage.clear();
         notify('System wiped successfully. Rebooting...', 'success');
         setTimeout(() => location.reload(), 1500);
