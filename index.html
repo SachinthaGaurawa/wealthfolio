@@ -9,10 +9,13 @@
 <link rel="apple-touch-icon" href="https://res.cloudinary.com/dzrfpc9be/image/upload/v1777219344/Fav_img_bagjfj.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+
 <style>
 /* ================== THEME VARIABLES ================== */
 :root{
@@ -39,6 +42,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:10px;}
 ::-webkit-scrollbar-thumb:hover{background:var(--accent);}
 input,select,textarea,button{font-family:var(--font);}
+/* Fix iOS Zooming and Mobile inputs */
 input, select, textarea { font-size: 16px !important; }
 button, .npb { touch-action: manipulation; }
 
@@ -65,7 +69,7 @@ button, .npb { touch-action: manipulation; }
 .auth-orb{position:absolute;border-radius:50%;filter:blur(100px);}
 .auth-orb1{width:500px;height:500px;background:rgba(245,166,35,.05);top:-200px;right:-200px;}
 .auth-orb2{width:400px;height:400px;background:rgba(59,130,246,.04);bottom:-100px;left:-150px;}
-.auth-box{background:var(--card);border:1px solid var(--border2);border-radius:28px;padding:44px 40px;width:100%;max-width:420px;box-shadow:var(--shadow);text-align:center;z-index:1;animation:authIn .5s cubic-bezier(.34,1.56,.64,1);margin:20px;}
+.auth-box{background:var(--card);border:1px solid var(--border2);border-radius:28px;padding:44px 40px;width:90%;max-width:420px;box-shadow:var(--shadow);text-align:center;z-index:1;animation:authIn .5s cubic-bezier(.34,1.56,.64,1);margin:20px;}
 @keyframes authIn{from{transform:scale(.88) translateY(24px);opacity:0;}to{transform:scale(1) translateY(0);opacity:1;}}
 .auth-logo{width:64px;height:64px;background:linear-gradient(135deg,var(--accent),var(--accent3));border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:30px;color:#000;font-weight:900;margin:0 auto 18px;box-shadow:0 8px 32px var(--ag);}
 .auth-title{font-size:26px;font-weight:800;margin-bottom:5px;}
@@ -87,9 +91,9 @@ button, .npb { touch-action: manipulation; }
 .auth-err{font-size:12px;color:var(--red);margin-top:8px;min-height:18px;}
 .auth-form-group{margin-bottom:14px;text-align:left;}
 .auth-form-label{font-size:12px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px;}
-.auth-input{width:100%;background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--r2);padding:10px 13px;color:var(--text);font-family:var(--font);font-size:16px;outline:none;transition:border-color .18s;}
+.auth-input{width:100%;background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--r2);padding:10px 13px;color:var(--text);font-family:var(--font);outline:none;transition:border-color .18s;}
 .auth-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--ag);}
-.auth-btn{width:100%;padding:12px;border:none;border-radius:var(--r2);background:linear-gradient(135deg,var(--accent),var(--accent3));color:#000;font-size:15px;font-weight:700;font-family:var(--font);cursor:pointer;transition:all .2s;margin-top:4px;display:flex;align-items:center;justify-content:center;gap:10px;}
+.auth-btn{width:100%;padding:12px;border:none;border-radius:var(--r2);background:linear-gradient(135deg,var(--accent),var(--accent3));color:#000;font-size:15px;font-weight:700;font-family:var(--font);cursor:pointer;transition:all .2s;margin-top:4px;}
 .auth-btn:hover{transform:translateY(-1px);box-shadow:0 6px 24px var(--ag);}
 .auth-btn.ghost{background:var(--card2);color:var(--text2);border:1px solid var(--border);margin-top:8px;}
 
@@ -113,8 +117,7 @@ button, .npb { touch-action: manipulation; }
 @keyframes nbPulse{0%,100%{opacity:1;}50%{opacity:.6;}}
 .sb-footer{padding:12px 16px;border-top:1px solid var(--border);}
 .sb-user{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px;}
-.sb-email{font-size:10px;color:var(--text3);word-break:break-all;}
-.sb-date{font-size:11px;color:var(--accent);font-family:var(--mono);margin-top:6px;}
+.sb-date{font-size:11px;color:var(--accent);font-family:var(--mono);}
 .sb-ver{font-size:10px;color:var(--text3);margin-top:3px;}
 .main{margin-left:var(--sw);flex:1;display:flex;flex-direction:column;min-height:100vh;}
 .topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:12px 26px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;gap:10px;}
@@ -123,12 +126,12 @@ button, .npb { touch-action: manipulation; }
 .pg-title{font-size:17px;font-weight:700;}
 .pg-title span{color:var(--accent);}
 .tb-right{display:flex;align-items:center;gap:8px;}
-.online-badge{display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;font-family:var(--mono);transition:all 0.3s;}
-.online-badge.on{background:var(--gg);color:var(--green);}
-.online-badge.off{background:var(--rg);color:var(--red);}
-.online-badge.syncing{background:rgba(59,130,246,0.2);color:var(--blue);}
-.online-dot{width:6px;height:6px;border-radius:50%;background:currentColor;animation:dotPulse 1.5s infinite;}
-@keyframes dotPulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+.online-badge{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:20px;font-size:11.5px;font-weight:700;font-family:var(--mono);transition:all 0.3s; box-shadow: var(--sh2);}
+.online-badge.on{background:var(--gg);color:var(--green); border: 1px solid rgba(16,185,129,0.3);}
+.online-badge.off{background:var(--rg);color:var(--red); border: 1px solid rgba(239,68,68,0.3);}
+.online-badge.syncing{background:rgba(59,130,246,0.15);color:var(--blue); border: 1px solid rgba(59,130,246,0.4);}
+.online-dot{width:7px;height:7px;border-radius:50%;background:currentColor;animation:dotPulse 1.5s infinite;}
+@keyframes dotPulse{0%,100%{opacity:1;}50%{opacity:.3;}}
 .theme-btn,.refresh-btn{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:7px 9px;cursor:pointer;font-size:15px;color:var(--text2);transition:all .3s ease;display:flex;align-items:center;justify-content:center;}
 .theme-btn:hover,.refresh-btn:hover{color:var(--accent);border-color:var(--accent);}
 .refresh-btn.spin{animation:spinIcon 0.8s ease-in-out;}
@@ -187,11 +190,11 @@ button, .npb { touch-action: manipulation; }
 .g2{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
 .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
 .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
-.g5{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;}
+.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;}
 
 /* ================== TABLE ================== */
-.tbl-wrap{overflow-x:auto;border-radius:var(--r2);border:1px solid var(--border);}
-table{width:100%;border-collapse:collapse;font-size:13px;}
+.tbl-wrap{overflow-x:auto;border-radius:var(--r2);border:1px solid var(--border); margin-bottom: 10px;}
+table{width:100%;border-collapse:collapse;font-size:13px; min-width: 600px;}
 thead th{background:var(--bg2);color:var(--text3);font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;padding:9px 13px;text-align:left;white-space:nowrap;}
 tbody tr{border-top:1px solid rgba(255,255,255,.03);transition:background .1s;}
 tbody tr:hover{background:rgba(255,255,255,.023);}
@@ -381,24 +384,34 @@ tbody td{padding:10px 13px;vertical-align:middle;}
 #offlineBanner{display:none;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.25);border-radius:var(--r2);padding:10px 16px;font-size:13px;color:var(--red);margin-bottom:14px;text-align:center;align-items:center;justify-content:center;gap:8px;}
 #offlineBanner.show{display:flex;}
 
+/* ================== LIST ITEMS ================== */
+.li-item { display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--border); }
+.li-item:last-child { border-bottom: none; padding-bottom: 0; }
+.li-title { font-size: 13px; font-weight: 600; }
+.li-sub { font-size: 11px; color: var(--text3); margin-top: 3px; }
+.li-amt { font-size: 14px; font-weight: 700; font-family: var(--mono); }
+.li-date { font-size: 11px; font-weight: 600; text-align: right; margin-top: 3px; }
+
 /* ================== RESPONSIVE ================== */
 @media(max-width:900px){
   .sidebar{transform:translateX(-100%);}
   .sidebar.open{transform:translateX(0);}
   .main{margin-left:0;}
   .mobile-btn{display:flex;}
-  .g5,.g4{grid-template-columns:repeat(2,1fr);}
+  .g5{grid-template-columns:repeat(3,1fr);}
+  .g4{grid-template-columns:repeat(2,1fr);}
   .g3{grid-template-columns:repeat(2,1fr);}
   .dash-chart-row{grid-template-columns:1fr;}
   .content{padding:14px 16px;}
   .topbar{padding:10px 14px;}
-  .auth-box{padding:32px 24px;}
 }
 @media(max-width:540px){
   .g4,.g3,.g2{grid-template-columns:1fr;}
   .g5{grid-template-columns:repeat(2,1fr);}
-  .auth-box{padding:26px 18px;}
+  .auth-box{padding:32px 24px;}
   .celeb-box{padding:32px 28px;}
+  .tb-right {gap: 4px;}
+  .month-badge { display: none; }
 }
 </style>
 </head>
@@ -416,21 +429,10 @@ tbody td{padding:10px 13px;vertical-align:middle;}
 <div id="authScreen">
   <div class="auth-bg"><div class="auth-orb auth-orb1"></div><div class="auth-orb auth-orb2"></div></div>
 
-  <div class="auth-box" id="authGoogle" style="display:none;">
-    <div class="auth-logo">🌐</div>
-    <div class="auth-title">Welcome to WealthFlow</div>
-    <div class="auth-sub">Secure Cloud Financial Manager</div>
-    <button class="auth-btn" style="background:#fff; color:#333; margin-top:20px; border:1px solid #ccc; justify-content:center;" onclick="signInWithGoogle()">
-      <svg style="width:18px;height:18px;margin-right:8px;" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-      Sign in with Google
-    </button>
-    <div class="auth-err" id="googleErr" style="margin-top:15px;"></div>
-  </div>
-
-  <div class="auth-box" id="authLogin" style="display:none;">
+  <div class="auth-box" id="authLogin">
     <div class="auth-logo">₣</div>
     <div class="auth-title">Welcome Back</div>
-    <div class="auth-sub" id="loginSubText">Enter your 6-digit PIN</div>
+    <div class="auth-sub">Sachintha Gaurawa · Enter your 6-digit PIN</div>
     <div class="pin-dots" id="loginDots"></div>
     <div class="numpad" id="loginPad"></div>
     <div class="auth-err" id="loginErr"></div>
@@ -469,11 +471,11 @@ tbody td{padding:10px 13px;vertical-align:middle;}
   <div class="auth-box" id="authRecovShow" style="display:none;">
     <div class="auth-logo">📋</div>
     <div class="auth-title">Save Recovery Code</div>
-    <div class="auth-sub">Store this code safely - you will need it if you forget your PIN</div>
+    <div class="auth-sub">Store this code safely. You will need it if you forget your PIN.</div>
     <div style="background:var(--bg2);border:2px dashed var(--accent);border-radius:var(--r);padding:18px;margin:16px 0;font-family:var(--mono);font-size:20px;font-weight:700;letter-spacing:4px;color:var(--accent);word-break:break-all;" id="recovCodeDisplay"></div>
     <div style="font-size:12px;color:var(--text3);margin-bottom:16px;">⚠️ This code will only be shown once. Save it now!</div>
     <button class="auth-btn" id="copyRecovBtn" onclick="copyRecovCode()">📋 Copy Code</button>
-    <button class="auth-btn ghost" onclick="confirmRecovSaved()">✅ I've Saved It - Continue</button>
+    <button class="auth-btn ghost" onclick="confirmRecovSaved()">✅ I've Saved It</button>
   </div>
 
   <div class="auth-box" id="authSecQ" style="display:none;">
@@ -527,10 +529,9 @@ tbody td{padding:10px 13px;vertical-align:middle;}
       <div class="nav-item" onclick="showPage('settings',this)"><span class="nav-icon">⚙️</span> Settings</div>
     </nav>
     <div class="sb-footer">
-      <div class="sb-user" id="sbUserName">👤 Authenticating...</div>
-      <div class="sb-email" id="sbUserEmail"></div>
+      <div class="sb-user">👤 Sachintha Gaurawa</div>
       <div class="sb-date" id="sbDate">-</div>
-      <div class="sb-ver">WealthFlow v4.0 · Cloud Synced</div>
+      <div class="sb-ver">WealthFlow v4.0 · Business</div>
     </div>
   </aside>
 
@@ -542,7 +543,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
       </div>
       <div class="tb-right">
         <div class="online-badge on" id="onlineBadge"><span class="online-dot" id="onlineDot"></span><span id="onlineText">Online</span></div>
-        <button class="refresh-btn" onclick="refreshApp(this)" title="Refresh">↻</button>
+        <button class="refresh-btn" onclick="refreshApp(this)" title="Refresh System">↻</button>
         <button class="theme-btn" onclick="toggleTheme()" id="themeBtn" title="Toggle Theme">🌙</button>
         <div class="month-badge" id="curMonthBadge">-</div>
         <button class="btn btn-primary btn-sm" id="topAddBtn" onclick="handleTopAdd()" style="display:none;">+ Add</button>
@@ -550,7 +551,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
     </header>
 
     <div class="content">
-      <div id="offlineBanner">📡 You are currently offline. Changes are saved locally and will sync automatically when you reconnect.</div>
+      <div id="offlineBanner">📡 You are currently offline. Changes are saved locally and will sync when you reconnect.</div>
 
       <div class="page active" id="page-dashboard">
         <div class="g5" id="dashStats" style="margin-bottom:16px;"></div>
@@ -577,6 +578,17 @@ tbody td{padding:10px 13px;vertical-align:middle;}
           <div class="card">
             <div class="card-header"><div class="card-title">Expense Breakdown</div></div>
             <div style="height:210px;"><canvas id="dashPie"></canvas></div>
+          </div>
+        </div>
+
+        <div class="g2">
+          <div class="card">
+            <div class="card-header"><div class="card-title">⚠️ Upcoming Payments</div><div class="card-sub">Next 30 days automatically tracked</div></div>
+            <div id="dashUpcoming" style="max-height: 280px; overflow-y: auto; padding-right: 5px;"></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">📋 Recent Activity</div><div class="card-sub">Latest financial logs</div></div>
+            <div id="dashRecent" style="max-height: 280px; overflow-y: auto; padding-right: 5px;"></div>
           </div>
         </div>
       </div>
@@ -784,6 +796,34 @@ tbody td{padding:10px 13px;vertical-align:middle;}
 
 <div id="notifs"></div>
 
+<div class="mo" id="mdExport"><div class="md md-sm">
+  <div class="md-hdr"><div class="md-title">Export Financial Report</div><button class="md-x" onclick="closeModal('mdExport')">✕</button></div>
+  <p style="font-size:13px;color:var(--text2);margin-bottom:16px;">Select format and timeframe to download a professional report for your business or personal records.</p>
+  
+  <div class="fg"><label class="fl">Export Format</label>
+    <select class="fs" id="expFormat" onchange="toggleExportOptions()">
+        <option value="pdf">Professional PDF Report</option>
+        <option value="json">Raw Data JSON (Full Backup)</option>
+    </select>
+  </div>
+  
+  <div id="pdfOptionsWrap">
+      <div class="fr">
+          <div class="fg"><label class="fl">Select Year</label><select class="fs" id="expPdfYear"></select></div>
+          <div class="fg"><label class="fl">Select Month</label>
+              <select class="fs" id="expPdfMonth">
+                  <option value="0">January</option><option value="1">February</option><option value="2">March</option><option value="3">April</option>
+                  <option value="4">May</option><option value="5">June</option><option value="6">July</option><option value="7">August</option>
+                  <option value="8">September</option><option value="9">October</option><option value="10">November</option><option value="11">December</option>
+              </select>
+          </div>
+      </div>
+  </div>
+
+  <div class="md-ftr"><button class="btn btn-ghost" onclick="closeModal('mdExport')">Cancel</button><button class="btn btn-primary" onclick="executeExport()">📥 Download Report</button></div>
+</div></div>
+
+
 <div class="mo" id="mdIncome"><div class="md">
   <div class="md-hdr"><div class="md-title" id="mdIncomeTitle">Add Income / Investment Source</div><button class="md-x" onclick="closeModal('mdIncome')">✕</button></div>
   <div class="fr"><div class="fg"><label class="fl">Source Name *</label><input class="fi" id="i_name" placeholder="Fixed Deposit - Commercial Bank"></div><div class="fg"><label class="fl">Company / Person *</label><input class="fi" id="i_company" placeholder="Commercial Bank"></div></div>
@@ -917,7 +957,8 @@ tbody td{padding:10px 13px;vertical-align:middle;}
 
 <script>
 // =====================================================
-// WEALTHFLOW v4.0 - Firebase Auth & Private Data
+// WEALTHFLOW v4.0 - Cloud Synced Financial System
+// Owner: Sachintha Gaurawa
 // =====================================================
 
 const firebaseConfig = {
@@ -932,41 +973,30 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
-const provider = new firebase.auth.GoogleAuthProvider();
 
-db.enablePersistence().catch(err => {
-    console.warn("Offline persistence issue:", err.code);
-});
-
-let userDocRef = null;
-let isInitialised = false;
-let currentUID = null;
+db.enablePersistence().catch(err => { console.warn("Offline persistence issue:", err.code); });
+const userDocRef = db.collection('users').doc('master_profile');
 
 // ==================== STATE MANAGEMENT ====================
 let appData = { 
-    auth: {}, 
-    income: [], 
-    loans: [], 
-    ccinstall: [], 
-    cconetime: [], 
-    cheques: [], 
-    expenses: [], 
-    targets: [], 
-    balance: {total:0, flows:[]}, 
+    auth: {}, income: [], loans: [], ccinstall: [], cconetime: [], 
+    cheques: [], expenses: [], targets: [], balance: {total:0, flows:[]}, 
     settings: { backupFreq: 'weekly', lastBackup: null, theme: 'dark' } 
 };
+let isInitialised = false;
 
 const DB = {
     get(k, def=[]) { return appData[k] !== undefined ? appData[k] : def; },
     getObj(k, def={}) { return appData[k] !== undefined ? appData[k] : def; },
     set(k, v) { 
         appData[k] = v;
+        localStorage.setItem('wf2_'+k, JSON.stringify(v));
         syncToCloud();
     }
 };
 
 function syncToCloud() {
-    if(!navigator.onLine || !userDocRef) return; 
+    if(!navigator.onLine) return; 
     setSyncStatus(true);
     userDocRef.set(appData, { merge: true }).then(() => {
         setTimeout(() => setSyncStatus(false), 800);
@@ -985,6 +1015,9 @@ function setSyncStatus(syncing) {
     } else if (navigator.onLine) {
         badge.className = 'online-badge on';
         $('onlineText').textContent = 'Online';
+    } else {
+        badge.className = 'online-badge off';
+        $('onlineText').textContent = 'Offline';
     }
 }
 
@@ -1008,6 +1041,13 @@ const fmtS = (n) => {
 const parseMoney = (s) => parseFloat(String(s).replace(/,/g,'')) || 0;
 function emptyState(icon, title, sub) { return `<div class="empty"><div class="empty-icon">${icon}</div><div class="empty-title">${title}</div><div class="empty-sub">${sub}</div></div>`; }
 function monthStrFmt(ymd) { const d = new Date(ymd); return MONTHS_S[d.getMonth()] + ' ' + d.getFullYear(); }
+function getNextOccurenceDate(startDateStr) {
+    const s = new Date(startDateStr);
+    const n = new Date();
+    const result = new Date(n.getFullYear(), n.getMonth(), s.getDate());
+    if (result < n) result.setMonth(result.getMonth() + 1);
+    return result;
+}
 
 const BANKS = ['AMEX','Bank of Ceylon (BOC)','Commercial Bank','DFCC Bank','Hatton National Bank (HNB)','Nations Trust Bank (NTB)','Pan Asia Bank','Peoples Bank','Sampath Bank','Seylan Bank','Union Bank','Other'];
 function populateBankSelects() {
@@ -1037,9 +1077,7 @@ async function sha256(msg) {
     return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
 }
 
-let pinBuffer = '';
-let pinMode = 'login'; 
-let pinTemp = '';
+let pinBuffer = '', pinMode = 'login', pinTemp = '';
 
 function buildNumpad(containerId) {
     const el = $(containerId); if(!el) return;
@@ -1083,7 +1121,6 @@ document.addEventListener('keydown', (e) => {
         if ($('authLogin').style.display !== 'none') activePadId = 'loginPad';
         else if ($('authSetup').style.display !== 'none') activePadId = 'setupPad';
         else if ($('authNewPin').style.display !== 'none') activePadId = 'newPinPad';
-
         if (activePadId) {
             if (e.key >= '0' && e.key <= '9') { pinDigit(activePadId, e.key); } 
             else if (e.key === 'Backspace') { pinBackspace(activePadId); }
@@ -1156,7 +1193,7 @@ async function handlePinComplete(padId) {
 }
 
 function showAuthView(viewId) {
-    ['authGoogle','authLogin','authSetup','authForgot','authNewPin','authRecovShow','authSecQ'].forEach(id => {
+    ['authLogin','authSetup','authForgot','authNewPin','authRecovShow','authSecQ'].forEach(id => {
         const el = $(id); if(el) el.style.display='none';
     });
     const el = $(viewId); if(el) el.style.display='';
@@ -1164,20 +1201,6 @@ function showAuthView(viewId) {
     buildDots('loginDots', 6, 0);
     buildDots('setupDots', 6, 0);
     buildDots('newPinDots', 6, 0);
-}
-
-function signInWithGoogle() {
-  $('googleErr').textContent = 'Connecting to Google...';
-  firebase.auth().signInWithRedirect(provider).catch(err => {
-    console.error(err);
-    $('googleErr').textContent = 'Error connecting to Google: ' + err.message;
-  });
-}
-
-function signOut() {
-    firebase.auth().signOut().then(() => {
-        location.reload();
-    });
 }
 
 async function saveSecQ() {
@@ -1233,7 +1256,6 @@ async function verifyRecovery() {
         $('recovErr').textContent = '❌ Incorrect answer or recovery code. Please try again.';
         return;
     }
-
     $('recovErr').textContent = '';
     pinMode = 'newpin'; pinTemp = '';
     $('newPinSub').textContent = 'Enter your new 6-digit PIN';
@@ -1255,8 +1277,8 @@ async function changePin() {
     notify('PIN changed successfully! 🔐', 'success');
 }
 
-// ==================== BOOT SEQUENCE (STRICT SERVER-FIRST) ====================
-window.onload = function() {
+// ==================== BOOT SEQUENCE ====================
+window.onload = async function() {
     let w = 0;
     const fillEl = $('spFill');
     const fillInterval = setInterval(() => {
@@ -1271,7 +1293,7 @@ window.onload = function() {
     setInterval(updateDateTime, 60000);
 
     const curY = new Date().getFullYear();
-    ['dashYear','mpYear'].forEach(id => {
+    ['dashYear','mpYear','expPdfYear'].forEach(id => {
         const el = $(id); if(!el) return;
         for(let y=curY-2; y<=curY+4; y++) {
             const o = document.createElement('option');
@@ -1280,71 +1302,56 @@ window.onload = function() {
             el.appendChild(o);
         }
     });
+    const curM = new Date().getMonth();
+    if($('expPdfMonth')) $('expPdfMonth').value = curM;
 
     ['ot_date','sav_date','bf_date','bs_date','chq_issue','chq_release'].forEach(id => { const el=$(id); if(el) el.value=today(); });
     ['e_month'].forEach(id => { const el=$(id); if(el) el.value=today().substr(0,7); });
 
-
-
-firebase.auth().getRedirectResult().catch(err => {
-    console.error("Redirect Error:", err);
-    if ($('googleErr')) $('googleErr').textContent = 'Login Error: ' + err.message;
-});
-  
-
-    // 1. Authenticate with Google
-    firebase.auth().onAuthStateChanged((user) => {
-        if (user) {
-            currentUID = user.uid;
-            $('sbUserName').textContent = '👤 ' + (user.displayName || 'WealthFlow User');
-            $('sbUserEmail').textContent = user.email;
-            
-            userDocRef = db.collection('users').doc(currentUID);
-            
-            // 2. Strict Server-First Fetch
-            userDocRef.get({ source: 'server' }).then((doc) => {
-                if (doc.exists) {
-                    const cloudData = doc.data();
-                    Object.keys(cloudData).forEach(key => { appData[key] = cloudData[key]; });
-                } else {
-                    userDocRef.set(appData); // New user, save template
-                }
-                
-                if (!isInitialised) {
-                    isInitialised = true;
-                    finishBoot();
-                }
-
-                // 3. Attach realtime listener for cross-device updates
-                userDocRef.onSnapshot((snap) => {
-                    if(snap.exists && isInitialised) {
-                        const cloudData = snap.data();
-                        Object.keys(cloudData).forEach(key => { appData[key] = cloudData[key]; });
-                        if($('app').classList.contains('show')) {
-                            const active = document.querySelector('.page.active');
-                            if(active) renderPage(active.id.replace('page-',''));
-                            updateCCOTBadge();
-                            updateChequeBadge();
-                        }
-                    }
-                });
-            }).catch(err => {
-                console.warn("Server fetch failed, falling back to cache.", err);
-                userDocRef.get({ source: 'cache' }).then((doc) => {
-                    if (doc.exists) {
-                        const cloudData = doc.data();
-                        Object.keys(cloudData).forEach(key => { appData[key] = cloudData[key]; });
-                    }
-                    if (!isInitialised) { isInitialised = true; finishBoot(); }
-                });
+    // Server-First Boot Protocol
+    userDocRef.get().then((doc) => {
+        if (doc.exists) {
+            const cloudData = doc.data();
+            Object.keys(cloudData).forEach(key => {
+                appData[key] = cloudData[key];
+                localStorage.setItem('wf2_'+key, JSON.stringify(cloudData[key]));
             });
-
         } else {
-            // Not logged in. Show Google Auth View.
-            $('splash').classList.add('hide');
-            setTimeout(() => { if($('splash')) $('splash').style.display='none'; }, 600);
-            $('authScreen').classList.add('show');
-            showAuthView('authGoogle');
+            userDocRef.set(appData);
+        }
+        
+        if (!isInitialised) {
+            isInitialised = true;
+            finishBoot();
+        }
+
+        // Attach realtime listener AFTER successful boot
+        userDocRef.onSnapshot((snap) => {
+            if(snap.exists && isInitialised) {
+                const cloudData = snap.data();
+                Object.keys(cloudData).forEach(key => {
+                    appData[key] = cloudData[key];
+                    localStorage.setItem('wf2_'+key, JSON.stringify(cloudData[key]));
+                });
+                // If update comes from another device (not a local write)
+                if(!snap.metadata.hasPendingWrites && $('app').classList.contains('show')) {
+                    const active = document.querySelector('.page.active');
+                    if(active) renderPage(active.id.replace('page-',''));
+                    updateCCOTBadge();
+                    updateChequeBadge();
+                    notify('Data synced from cloud ☁️', 'info');
+                }
+            }
+        });
+
+    }).catch(err => {
+        console.error("Error fetching from Firebase. Using local cache:", err);
+        if (!isInitialised) {
+            Object.keys(appData).forEach(k => {
+                try { const item = localStorage.getItem('wf2_'+k); if(item) appData[k] = JSON.parse(item); } catch(e){}
+            });
+            isInitialised = true;
+            finishBoot();
         }
     });
 };
@@ -1363,7 +1370,6 @@ function finishBoot() {
         showAuthView('authSetup');
     } else {
         pinMode = 'login';
-        $('loginSubText').textContent = 'Enter your 6-digit PIN';
         showAuthView('authLogin');
     }
 }
@@ -1385,9 +1391,9 @@ function updateDateTime() {
 function setupOnlineStatus() {
     function updateStatus() {
         const on = navigator.onLine;
-        const badge = $('onlineBadge'), text = $('onlineText'), banner = $('offlineBanner');
+        const badge = $('onlineBadge'), banner = $('offlineBanner');
         if(badge) { badge.className = 'online-badge ' + (on?'on':'off'); }
-        if(text) text.textContent = on ? 'Online' : 'Offline';
+        if($('onlineText')) $('onlineText').textContent = on ? 'Online' : 'Offline';
         if(banner) banner.classList.toggle('show', !on);
     }
     updateStatus();
@@ -1417,10 +1423,9 @@ function refreshApp(btn) {
     if(active) renderPage(active.id.replace('page-',''));
     updateCCOTBadge();
     updateChequeBadge();
-    notify('System Refreshed ✓', 'info');
+    notify('System Refreshed ✓', 'success');
 }
 
-// ==================== NOTIFICATIONS ====================
 function notify(msg, type='success') {
     const el = document.createElement('div');
     el.className = `notif ${type}`;
@@ -1763,7 +1768,7 @@ function cciProgress(item) {
 }
 function renderCCI() {
     let arr=DB.get('ccinstall');
-    const s=sortState['cci'];
+    const s=sortState['ccot'];
     if(s?.field) arr.sort((a,b)=>{
         if(s.field==='product') return s.dir*a.product.localeCompare(b.product);
         if(s.field==='monthly') return s.dir*(b.monthly-a.monthly);
@@ -2245,7 +2250,7 @@ function showMonthDetail(year, month, tabEl) {
     `;
 }
 
-// ==================== DASHBOARD & CHARTS ====================
+// ==================== DASHBOARD AUTOMATION ====================
 let dashChartInst=null, dashPieInst=null;
 function renderDash() {
     const year = parseInt($('dashYear').value) || new Date().getFullYear();
@@ -2297,12 +2302,95 @@ function renderDash() {
             options: { maintainAspectRatio:false, plugins:{legend:{position:'right',labels:{color:document.documentElement.getAttribute('data-theme')==='dark'?'#e2e8f0':'#1e293b',font:{size:10}}}} }
         });
     }
+
+    renderUpcoming();
+    renderRecentActivity();
 }
 
-// AI Component Integration
+function renderUpcoming() {
+    const todayObj = new Date();
+    const maxDate = new Date(); maxDate.setDate(todayObj.getDate() + 30);
+    const upcoming = [];
+
+    // One time CC Payments
+    DB.get('cconetime').filter(x => !x.paid).forEach(x => {
+        const d = new Date(x.deadline);
+        if (d >= todayObj && d <= maxDate) upcoming.push({title: x.desc, sub: 'CC One-Time', date: d, amt: x.amount, color: 'var(--red)'});
+    });
+
+    // Cheques
+    DB.get('cheques').filter(x => x.status === 'pending').forEach(x => {
+        const d = new Date(x.release);
+        if (d >= todayObj && d <= maxDate) {
+            upcoming.push({title: x.no, sub: x.type==='issued'?'Issued Cheque':'Received Cheque', date: d, amt: x.amount, color: x.type==='issued'?'var(--red)':'var(--green)'});
+        }
+    });
+
+    // Loans
+    DB.get('loans').forEach(l => {
+        const nextD = getNextOccurenceDate(l.start);
+        if(nextD >= todayObj && nextD <= maxDate && loanEndDate(l) > nextD) {
+            upcoming.push({title: l.name, sub: 'Bank Loan', date: nextD, amt: l.monthly, color: 'var(--red)'});
+        }
+    });
+
+    // CC Installs
+    DB.get('ccinstall').filter(x => !x.completed).forEach(c => {
+        const nextD = getNextOccurenceDate(c.date);
+        const endD = new Date(c.date); endD.setMonth(endD.getMonth() + c.duration);
+        if(nextD >= todayObj && nextD <= maxDate && endD > nextD) {
+            upcoming.push({title: c.product, sub: 'CC Instalment', date: nextD, amt: getCCIMonthlyForDate(c, nextD.getFullYear(), nextD.getMonth()), color: 'var(--red)'});
+        }
+    });
+
+    upcoming.sort((a,b) => a.date - b.date);
+
+    const wrap = $('dashUpcoming');
+    if(!upcoming.length) {
+        wrap.innerHTML = emptyState('✅', 'No Upcoming Payments', 'Nothing due in the next 30 days');
+        return;
+    }
+    wrap.innerHTML = upcoming.map(u => {
+        const days = Math.ceil((u.date - todayObj)/86400000);
+        return `<div class="li-item">
+            <div><div class="li-title">${u.title}</div><div class="li-sub">${u.sub}</div></div>
+            <div style="text-align:right;"><div class="li-amt" style="color:${u.color};">${fmt(u.amt)}</div><div class="li-date">${days===0?'Today':days+' days'}</div></div>
+        </div>`;
+    }).join('');
+}
+
+function renderRecentActivity() {
+    const recent = [];
+    
+    // Bal flows
+    DB.getObj('balance').flows.forEach(f => {
+        recent.push({title: f.company, sub: f.type==='out'?'Investment Out':f.type==='in'?'Income In':'Balance Set', date: new Date(f.date), amt: f.amount, color: f.type==='out'?'var(--red)':f.type==='in'?'var(--green)':'var(--accent)'});
+    });
+
+    // Savings
+    DB.get('targets').forEach(t => {
+        t.savings.forEach(s => {
+            recent.push({title: t.name, sub: 'Savings Added', date: new Date(s.date), amt: s.amount, color: 'var(--green)'});
+        });
+    });
+
+    recent.sort((a,b) => b.date - a.date);
+    const top5 = recent.slice(0, 5);
+
+    const wrap = $('dashRecent');
+    if(!top5.length) {
+        wrap.innerHTML = emptyState('📭', 'No Recent Activity', 'Your latest financial logs will appear here.');
+        return;
+    }
+    wrap.innerHTML = top5.map(u => `<div class="li-item">
+        <div><div class="li-title">${u.title}</div><div class="li-sub">${u.sub}</div></div>
+        <div style="text-align:right;"><div class="li-amt" style="color:${u.color};">${fmt(u.amt)}</div><div class="li-date">${u.date.toISOString().split('T')[0]}</div></div>
+    </div>`).join('');
+}
+
 async function generateAIInsights() {
     const aiArea = $('aiInsightsArea');
-    aiArea.innerHTML = "<em>Analysing your financial flow via Gemini...</em>";
+    aiArea.innerHTML = "<em>Analysing your financial flow securely...</em>";
     
     const d = new Date();
     const md = getMonthlyData(d.getFullYear(), d.getMonth());
@@ -2314,7 +2402,6 @@ async function generateAIInsights() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ contents: [{ parts: [{ text: promptText }] }] })
         });
-        
         const data = await response.json();
         if(data && data.candidates && data.candidates[0].content.parts[0].text) {
             aiArea.innerHTML = `<strong>Insight:</strong> ${data.candidates[0].content.parts[0].text}`;
@@ -2323,7 +2410,7 @@ async function generateAIInsights() {
         }
     } catch(err) {
         console.error(err);
-        aiArea.innerHTML = "Connection to Gemini failed. Please check your network.";
+        aiArea.innerHTML = "Connection to AI failed. Please check your network.";
     }
 }
 
@@ -2372,13 +2459,10 @@ function calcDSCR() {
     const down = parseMoney($('dscrDown').value);
 
     let existingEMI = 0;
-    document.querySelectorAll('.dscr-emi-input').forEach(inp => {
-        existingEMI += parseMoney(inp.value);
-    });
+    document.querySelectorAll('.dscr-emi-input').forEach(inp => { existingEMI += parseMoney(inp.value); });
 
     const actualNewLoan = Math.max(0, newAmt - down);
     const newEMI = calcEMI(actualNewLoan, newRate, newDur);
-
     const totalDebtService = existingEMI + newEMI;
     const noi = inc - opex;
 
@@ -2424,14 +2508,7 @@ function renderSettings() {
         <div class="settings-section">
             <div class="settings-title">Security & Synchronisation</div>
             <div class="setting-row">
-                <div class="setting-info">
-                    <div class="setting-label">Google Account</div>
-                    <div class="setting-desc" style="color:var(--green);">Connected: ${firebase.auth().currentUser?.email || 'Unknown'}</div>
-                </div>
-                <button class="btn btn-secondary btn-sm" onclick="signOut()">Sign Out</button>
-            </div>
-            <div class="setting-row">
-                <div class="setting-info"><div class="setting-label">Change Master PIN</div><div class="setting-desc">Update your 6-digit local access code.</div></div>
+                <div class="setting-info"><div class="setting-label">Change Master PIN</div><div class="setting-desc">Update your 6-digit access code for all synced devices.</div></div>
                 <button class="btn btn-secondary btn-sm" onclick="openModal('mdChangePin')">Change PIN</button>
             </div>
             <div class="setting-row">
@@ -2441,7 +2518,7 @@ function renderSettings() {
         </div>
 
         <div class="settings-section">
-            <div class="settings-title">Data Management</div>
+            <div class="settings-title">Data Management & Reports</div>
             <div class="setting-row">
                 <div class="setting-info"><div class="setting-label">Auto-Backup Frequency</div><div class="setting-desc">You will be reminded to export a physical copy.</div></div>
                 <select class="fi" style="width:120px;" onchange="updateBackupFreq(this.value)">
@@ -2451,19 +2528,150 @@ function renderSettings() {
                 </select>
             </div>
             <div class="setting-row">
-                <div class="setting-info"><div class="setting-label">Export Data (JSON)</div><div class="setting-desc">Download a complete physical backup of your financial data.</div></div>
-                <button class="btn btn-primary btn-sm" onclick="exportData()">Download File</button>
+                <div class="setting-info"><div class="setting-label">Export Data & Reports</div><div class="setting-desc">Download a complete physical JSON backup or a professional PDF report.</div></div>
+                <button class="btn btn-primary btn-sm" onclick="openModal('mdExport')">Export</button>
             </div>
             <div class="setting-row">
                 <div class="setting-info"><div class="setting-label">Restore Data</div><div class="setting-desc">Upload a previous JSON backup to replace current data.</div></div>
                 <button class="btn btn-secondary btn-sm" onclick="$('importFile').click()">Select File</button>
             </div>
             <div class="setting-row" style="margin-top:10px;">
-                <div class="setting-info"><div class="setting-label">Wipe Account Data</div><div class="setting-desc" style="color:var(--red);">Permanently delete your profile from the cloud.</div></div>
+                <div class="setting-info"><div class="setting-label">Factory Reset</div><div class="setting-desc" style="color:var(--red);">Wipe all local and cloud data. This cannot be undone.</div></div>
                 <button class="btn btn-danger btn-sm" onclick="factoryReset()">Delete Everything</button>
             </div>
         </div>
    `;
+}
+
+function toggleExportOptions() {
+    const format = $('expFormat').value;
+    $('pdfOptionsWrap').style.display = format === 'pdf' ? 'block' : 'none';
+}
+
+function executeExport() {
+    const format = $('expFormat').value;
+    if(format === 'json') {
+        const str = JSON.stringify(appData, null, 2);
+        const blob = new Blob([str], {type: 'application/json'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'WealthFlow_Backup_'+today()+'.json';
+        a.click();
+        URL.revokeObjectURL(url);
+        notify('JSON Data exported successfully!', 'success');
+    } else {
+        generatePDFReport();
+    }
+    const s = DB.getObj('settings', {});
+    s.lastBackup = new Date().toISOString();
+    DB.set('settings', s);
+    closeModal('mdExport');
+}
+
+function generatePDFReport() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    const year = parseInt($('expPdfYear').value);
+    const month = parseInt($('expPdfMonth').value);
+    const md = getMonthlyData(year, month);
+    
+    // Header
+    doc.setFontSize(22);
+    doc.setTextColor(24, 24, 27);
+    doc.text("WealthFlow Financial Report", 14, 22);
+    
+    doc.setFontSize(11);
+    doc.setTextColor(100, 116, 139);
+    doc.text(`Prepared for: Sachintha Gaurawa`, 14, 30);
+    doc.text(`Period: ${MONTHS[month]} ${year}`, 14, 36);
+    doc.text(`Generated on: ${today()}`, 14, 42);
+
+    // Summary Box
+    doc.setDrawColor(226, 232, 240);
+    doc.setFillColor(248, 250, 252);
+    doc.rect(14, 50, 182, 25, 'FD');
+    
+    doc.setFontSize(12);
+    doc.setTextColor(16, 185, 129); // Green
+    doc.text(`Income: LKR ${fmtN(md.income)}`, 20, 60);
+    
+    doc.setTextColor(239, 68, 68); // Red
+    doc.text(`Expenses: LKR ${fmtN(md.totalExp)}`, 85, 60);
+    
+    doc.setTextColor(59, 130, 246); // Blue
+    doc.text(`Net Balance: LKR ${fmtN(md.balance)}`, 140, 60);
+
+    let startY = 85;
+
+    // Income Sources
+    doc.setFontSize(14);
+    doc.setTextColor(15, 23, 42);
+    doc.text("Active Income Sources", 14, startY);
+    
+    const activeIncome = DB.get('income').filter(s => {
+        const dt = new Date(year,month,1);
+        const start = new Date(s.start+'T00:00:00');
+        const end = s.end ? new Date(s.end+'T00:00:00') : null;
+        return start <= dt && (!end || end >= dt);
+    });
+
+    if(activeIncome.length > 0) {
+        doc.autoTable({
+            startY: startY + 5,
+            head: [['Source', 'Company', 'Amount (LKR)']],
+            body: activeIncome.map(i => [i.name, i.company, fmtN(i.monthly)]),
+            theme: 'striped',
+            headStyles: { fillColor: [15, 23, 42] }
+        });
+        startY = doc.lastAutoTable.finalY + 15;
+    } else {
+        doc.setFontSize(11); doc.setTextColor(100, 116, 139);
+        doc.text("No income sources for this period.", 14, startY + 8);
+        startY += 20;
+    }
+
+    // Loans
+    doc.setFontSize(14); doc.setTextColor(15, 23, 42);
+    doc.text("Loan Payments", 14, startY);
+    if(md.loanItems.length > 0) {
+        doc.autoTable({
+            startY: startY + 5,
+            head: [['Loan Name', 'Bank', 'EMI (LKR)']],
+            body: md.loanItems.map(l => [l.name, l.bank, fmtN(l.amount)]),
+            theme: 'striped',
+            headStyles: { fillColor: [15, 23, 42] }
+        });
+        startY = doc.lastAutoTable.finalY + 15;
+    } else {
+        doc.setFontSize(11); doc.setTextColor(100, 116, 139);
+        doc.text("No loan payments for this period.", 14, startY + 8);
+        startY += 20;
+    }
+
+    // CC & Expenses
+    doc.setFontSize(14); doc.setTextColor(15, 23, 42);
+    doc.text("Other Expenses & CC Instalments", 14, startY);
+    const combinedExp = [];
+    md.ccItems2.forEach(c => combinedExp.push([c.name + ' (CC)', c.bank, fmtN(c.amount)]));
+    md.expItems.forEach(e => combinedExp.push([e.name, e.cat, fmtN(e.amount)]));
+
+    if(combinedExp.length > 0) {
+        doc.autoTable({
+            startY: startY + 5,
+            head: [['Description', 'Category/Bank', 'Amount (LKR)']],
+            body: combinedExp,
+            theme: 'striped',
+            headStyles: { fillColor: [15, 23, 42] }
+        });
+    } else {
+        doc.setFontSize(11); doc.setTextColor(100, 116, 139);
+        doc.text("No other expenses for this period.", 14, startY + 8);
+    }
+
+    doc.save(`WealthFlow_Report_${MONTHS_S[month]}_${year}.pdf`);
+    notify('PDF Report downloaded securely.', 'success');
 }
 
 function updateBackupFreq(val) {
@@ -2471,21 +2679,6 @@ function updateBackupFreq(val) {
     s.backupFreq = val;
     DB.set('settings', s);
     notify('Backup frequency updated');
-}
-
-function exportData() {
-    const str = JSON.stringify(appData, null, 2);
-    const blob = new Blob([str], {type: 'application/json'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'WealthFlow_Backup_'+today()+'.json';
-    a.click();
-    URL.revokeObjectURL(url);
-    notify('Data exported successfully!', 'success');
-    const s = DB.getObj('settings', {});
-    s.lastBackup = new Date().toISOString();
-    DB.set('settings', s);
 }
 
 function handleImportFile(e) {
@@ -2510,20 +2703,15 @@ function handleImportFile(e) {
 }
 
 function factoryReset() {
-    showConfirm('⚠️', 'Wipe Account Data', 'Are you absolutely sure you want to wipe ALL data? This action cannot be undone and will delete your secure cloud storage.', 'btn-danger', 'Yes, Delete Everything', () => {
-        if(userDocRef) {
-            userDocRef.delete().then(() => {
-                localStorage.clear();
-                location.reload();
-            }).catch(err => {
-                console.error(err);
-                localStorage.clear();
-                location.reload();
-            });
-        } else {
+    showConfirm('⚠️', 'Factory Reset', 'Are you absolutely sure you want to wipe ALL data? This action cannot be undone and will delete cloud storage.', 'btn-danger', 'Yes, Delete Everything', () => {
+        userDocRef.delete().then(() => {
             localStorage.clear();
             location.reload();
-        }
+        }).catch(err => {
+            console.error(err);
+            localStorage.clear();
+            location.reload();
+        });
     });
 }
 </script>
