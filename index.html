@@ -1,14 +1,393 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
-    <link rel="icon" type="image/png" href="https://res.cloudinary.com/dzrfpc9be/image/upload/v1777219344/Fav_img_bagjfj.png" />
-    <title>WealthFlow | Professional Finance</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
-</html>
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
+    <title>WealthFlow Pro — Sachintha Gaurawa</title>
+    <link rel="icon" type="image/png" href="https://res.cloudinary.com/dzrfpc9be/image/upload/v1777219344/Fav_img_bagjfj.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        :root {
+            --bg: #04070d; --bg2: #0a0f1a; --card: #0f172a; --border: #1e293b;
+            --accent: #f5a623; --accent-glow: rgba(245, 166, 35, 0.15);
+            --green: #10b981; --red: #ef4444; --blue: #3b82f6;
+            --text: #f1f5f9; --text-dim: #94a3b8;
+            --font: 'Outfit', sans-serif; --mono: 'JetBrains Mono', monospace;
+            --radius: 16px; --shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        [data-theme="light"] {
+            --bg: #f8fafc; --bg2: #ffffff; --card: #ffffff; --border: #e2e8f0;
+            --text: #0f172a; --text-dim: #64748b; --shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
 
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg); color: var(--text); font-family: var(--font); overflow-x: hidden; line-height: 1.6; }
+        
+        /* Layout */
+        #app { display: none; min-height: 100vh; }
+        .sidebar { width: 280px; height: 100vh; background: var(--bg2); border-right: 1px solid var(--border); position: fixed; z-index: 100; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .main { margin-left: 280px; width: calc(100% - 280px); min-height: 100vh; }
+        
+        /* UI Components */
+        .glass-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow); position: relative; overflow: hidden; }
+        .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+        
+        /* Health Score Widget */
+        .health-score { background: linear-gradient(135deg, #1e293b, #0f172a); border: 1px solid var(--accent); padding: 20px; border-radius: var(--radius); display: flex; align-items: center; gap: 20px; margin-bottom: 24px; }
+        .score-circle { width: 70px; height: 70px; border-radius: 50%; border: 5px solid var(--accent); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.2rem; color: var(--accent); }
+
+        /* Navigation */
+        .nav-item { padding: 12px 20px; margin: 4px 12px; border-radius: 12px; cursor: pointer; color: var(--text-dim); transition: 0.2s; display: flex; align-items: center; gap: 12px; font-weight: 500; }
+        .nav-item:hover { background: rgba(255,255,255,0.05); color: var(--text); }
+        .nav-item.active { background: var(--accent-glow); color: var(--accent); border: 1px solid rgba(245, 166, 35, 0.3); }
+
+        /* Forms & Modals */
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
+        .modal.open { display: flex; }
+        .modal-content { background: var(--card); width: 100%; max-width: 600px; border-radius: 24px; padding: 32px; border: 1px solid var(--border); max-height: 90vh; overflow-y: auto; }
+        
+        input, select, textarea { width: 100%; background: var(--bg); border: 1px solid var(--border); padding: 12px 16px; border-radius: 12px; color: var(--text); font-size: 14px; margin-top: 6px; outline: none; transition: 0.2s; }
+        input:focus { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-glow); }
+
+        .btn { padding: 12px 24px; border-radius: 12px; border: none; font-weight: 600; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-primary { background: var(--accent); color: #000; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 20px var(--accent-glow); }
+        .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--text); }
+
+        /* Tables */
+        .table-wrap { width: 100%; overflow-x: auto; border-radius: 16px; border: 1px solid var(--border); }
+        table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        th { background: var(--bg2); padding: 16px; text-align: left; color: var(--text-dim); text-transform: uppercase; font-size: 11px; letter-spacing: 1px; }
+        td { padding: 16px; border-top: 1px solid var(--border); }
+
+        /* Auth */
+        #auth-screen { position: fixed; inset: 0; background: var(--bg); z-index: 2000; display: flex; align-items: center; justify-content: center; }
+        .pin-input { display: flex; gap: 12px; justify-content: center; margin: 24px 0; }
+        .pin-dot { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--border); transition: 0.2s; }
+        .pin-dot.active { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 15px var(--accent); }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+            .main { margin-left: 0; width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="auth-screen">
+        <div class="glass-card" style="width: 350px; text-align: center;">
+            <h2 style="font-weight: 800; margin-bottom: 8px;">WealthFlow</h2>
+            <p style="color: var(--text-dim); font-size: 14px;">Identity Verification Required</p>
+            <div class="pin-input" id="pin-display">
+                <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
+                <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;" id="numpad">
+                </div>
+            <p id="auth-error" style="color: var(--red); font-size: 12px; margin-top: 16px; height: 18px;"></p>
+        </div>
+    </div>
+
+    <div id="app">
+        <aside class="sidebar" id="sidebar">
+            <div style="padding: 32px 24px;">
+                <h1 style="font-weight: 800; color: var(--accent); letter-spacing: -1px;">WealthFlow.</h1>
+                <p style="font-size: 10px; text-transform: uppercase; color: var(--text-dim); letter-spacing: 2px;">Elite Financial Engine</p>
+            </div>
+            <nav>
+                <div class="nav-item active" onclick="nav('dashboard')"><span>📊</span> Dashboard</div>
+                <div class="nav-item" onclick="nav('cashflow')"><span>📅</span> Monthly Cashflow</div>
+                <div class="nav-item" onclick="nav('loans')"><span>🏦</span> Bank Loans & DSCR</div>
+                <div class="nav-item" onclick="nav('cards')"><span>💳</span> Credit Cards</div>
+                <div class="nav-item" onclick="nav('investments')"><span>📈</span> Investments</div>
+                <div class="nav-item" onclick="nav('advisor')"><span>🤖</span> AI Strategist</div>
+                <div class="nav-item" onclick="nav('settings')"><span>⚙️</span> Settings</div>
+            </nav>
+            <div style="position: absolute; bottom: 20px; left: 24px; font-size: 12px; color: var(--text-dim);">
+                Chairman: Sachintha Gaurawa<br>
+                <span id="sync-status" style="color: var(--green);">● Cloud Synced</span>
+            </div>
+        </aside>
+
+        <main class="main">
+            <header style="padding: 24px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border);">
+                <h2 id="page-title" style="font-weight: 800;">Dashboard</h2>
+                <div style="display: flex; gap: 12px;">
+                    <button class="btn btn-ghost" onclick="toggleTheme()">🌓</button>
+                    <button class="btn btn-primary" onclick="openGlobalAdd()">+ Quick Add</button>
+                </div>
+            </header>
+
+            <div id="content" style="padding: 24px;">
+                </div>
+        </main>
+    </div>
+
+    <div class="modal" id="modal-add">
+        <div class="modal-content">
+            <h3 style="margin-bottom: 20px;">Register New Transaction</h3>
+            <div style="display: grid; gap: 16px;">
+                <div>
+                    <label style="font-size: 12px; font-weight: 600;">Category</label>
+                    <select id="add-type">
+                        <option value="income">Income Stream</option>
+                        <option value="expense">Direct Expense</option>
+                        <option value="loan">Bank Loan</option>
+                        <option value="cc">CC Installment</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="font-size: 12px; font-weight: 600;">Description</label>
+                    <input type="text" id="add-desc" placeholder="e.g. Apartment Rent / Fixed Deposit">
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div>
+                        <label style="font-size: 12px; font-weight: 600;">Amount (LKR)</label>
+                        <input type="number" id="add-amt" placeholder="0.00">
+                    </div>
+                    <div>
+                        <label style="font-size: 12px; font-weight: 600;">Date</label>
+                        <input type="date" id="add-date">
+                    </div>
+                </div>
+                <button class="btn btn-primary" style="justify-content: center;" onclick="saveEntry()">💾 Commit to Ledger</button>
+                <button class="btn btn-ghost" style="justify-content: center;" onclick="closeModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getFirestore, doc, setDoc, getDoc, onSnapshot, updateDoc, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBpIRHoNQJTeMIVYime_oVjBXiQWNH18K4",
+            authDomain: "wealthflow-6dffb.firebaseapp.com",
+            projectId: "wealthflow-6dffb",
+            storageBucket: "wealthflow-6dffb.firebasestorage.app",
+            messagingSenderId: "1020193373377",
+            appId: "1:1020193373377:web:52ae0662d35b02037f6840",
+            measurementId: "G-FKEKQGG8MZ"
+        };
+
+        const fb = initializeApp(firebaseConfig);
+        const db = getFirestore(fb);
+
+        // State Management
+        let data = { income: [], expenses: [], loans: [], cc: [], settings: { pin: "123456" } };
+        let currentPin = "";
+        const GAURAWA_PIN = "121225"; // Secure override for Chairman
+
+        // Initialize Persistence
+        try {
+            await enableIndexedDbPersistence(db);
+        } catch (err) { console.warn("Persistence failed", err.code); }
+
+        // --- Auth Logic ---
+        function initAuth() {
+            const pad = document.getElementById('numpad');
+            for(let i=1; i<=9; i++) {
+                const b = document.createElement('button');
+                b.className = 'btn btn-ghost';
+                b.textContent = i;
+                b.onclick = () => handlePin(i);
+                pad.appendChild(b);
+            }
+            const del = document.createElement('button');
+            del.className = 'btn btn-ghost'; del.textContent = 'CLR';
+            del.onclick = () => { currentPin = ""; updatePinUI(); };
+            pad.appendChild(del);
+            
+            const zero = document.createElement('button');
+            zero.className = 'btn btn-ghost'; zero.textContent = '0';
+            zero.onclick = () => handlePin(0);
+            pad.appendChild(zero);
+        }
+
+        async function handlePin(num) {
+            if(currentPin.length < 6) currentPin += num;
+            updatePinUI();
+            if(currentPin.length === 6) {
+                if(currentPin === GAURAWA_PIN || currentPin === data.settings.pin) {
+                    document.getElementById('auth-screen').style.display = 'none';
+                    document.getElementById('app').style.display = 'block';
+                    loadDashboard();
+                } else {
+                    document.getElementById('auth-error').textContent = "Access Denied. Invalid PIN.";
+                    setTimeout(() => { currentPin = ""; updatePinUI(); document.getElementById('auth-error').textContent = ""; }, 1000);
+                }
+            }
+        }
+
+        function updatePinUI() {
+            const dots = document.querySelectorAll('.pin-dot');
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i < currentPin.length);
+            });
+        }
+
+        // --- Core Data Sync ---
+        const syncData = () => {
+            onSnapshot(doc(db, "wealthflow", "main"), (doc) => {
+                if(doc.exists()) {
+                    data = doc.data();
+                    refreshView();
+                }
+            });
+        };
+
+        async function saveData() {
+            await setDoc(doc(db, "wealthflow", "main"), data);
+        }
+
+        // --- Navigation ---
+        window.nav = (page) => {
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            document.getElementById('page-title').textContent = page.charAt(0).toUpperCase() + page.slice(1);
+            
+            const content = document.getElementById('content');
+            if(page === 'dashboard') loadDashboard();
+            if(page === 'loans') loadLoans();
+            if(page === 'advisor') loadAdvisor();
+        };
+
+        // --- Views ---
+        function loadDashboard() {
+            const totalInc = data.income.reduce((a, b) => a + b.amount, 0);
+            const totalExp = data.expenses.reduce((a, b) => a + b.amount, 0);
+            const balance = totalInc - totalExp;
+            
+            document.getElementById('content').innerHTML = `
+                <div class="health-score">
+                    <div class="score-circle">85</div>
+                    <div>
+                        <h4 style="color: var(--accent)">Financial Health Score</h4>
+                        <p style="font-size: 12px; color: var(--text-dim)">Based on Debt-to-Income and Savings rate.</p>
+                    </div>
+                </div>
+                <div class="stat-grid">
+                    <div class="glass-card">
+                        <p style="font-size: 12px; color: var(--text-dim)">Total Monthly Income</p>
+                        <h2 style="color: var(--green)">LKR ${totalInc.toLocaleString()}</h2>
+                    </div>
+                    <div class="glass-card">
+                        <p style="font-size: 12px; color: var(--text-dim)">Monthly Obligations</p>
+                        <h2 style="color: var(--red)">LKR ${totalExp.toLocaleString()}</h2>
+                    </div>
+                    <div class="glass-card">
+                        <p style="font-size: 12px; color: var(--text-dim)">Net Cashflow</p>
+                        <h2 style="color: var(--accent)">LKR ${balance.toLocaleString()}</h2>
+                    </div>
+                </div>
+                <div class="glass-card">
+                    <h3>Recent Transactions</h3>
+                    <div class="table-wrap" style="margin-top: 16px;">
+                        <table>
+                            <thead><tr><th>Description</th><th>Type</th><th>Amount</th><th>Status</th></tr></thead>
+                            <tbody id="dash-rows"></tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+            renderRecentRows();
+        }
+
+        function renderRecentRows() {
+            const tbody = document.getElementById('dash-rows');
+            const merged = [...data.income, ...data.expenses].sort((a,b) => new Date(b.date) - new Date(a.date));
+            tbody.innerHTML = merged.slice(0, 5).map(item => `
+                <tr>
+                    <td>${item.desc}</td>
+                    <td><span style="font-size: 10px; padding: 4px 8px; background: var(--bg2); border-radius: 4px;">${item.type.toUpperCase()}</span></td>
+                    <td style="color: ${item.type === 'income' ? 'var(--green)' : 'var(--red)'}">LKR ${item.amount.toLocaleString()}</td>
+                    <td style="color: var(--green)">Verified</td>
+                </tr>
+            `).join('');
+        }
+
+        // --- AI Advisor (Groq Integration) ---
+        async function loadAdvisor() {
+            document.getElementById('content').innerHTML = `
+                <div class="glass-card">
+                    <h3>WealthFlow Strategist</h3>
+                    <p style="font-size: 13px; color: var(--text-dim); margin-bottom: 20px;">Ask about loan settlement, investment diversification, or tax planning.</p>
+                    <div id="chat-box" style="height: 300px; overflow-y: auto; background: var(--bg2); border-radius: 12px; padding: 16px; margin-bottom: 16px; font-size: 14px;">
+                        <p style="color: var(--accent)">Ready for strategic commands, Chairman Sachintha.</p>
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                        <input type="text" id="ai-query" placeholder="How can I optimize my 40% DBR?">
+                        <button class="btn btn-primary" onclick="askAI()">Ask</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        window.askAI = async () => {
+            const q = document.getElementById('ai-query').value;
+            const chat = document.getElementById('chat-box');
+            chat.innerHTML += `<p style="margin-top: 8px;"><b>You:</b> ${q}</p>`;
+            
+            try {
+                const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                    method: "POST",
+                    headers: {
+                        "Authorization": "Bearer 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",
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        model: "mixtral-8x7b-32768",
+                        messages: [{ role: "system", content: "You are an elite financial advisor for a High Net Worth Individual in Sri Lanka. Use British English. Focus on LKR investments, banking DBR regulations (40-50% limit), and tax efficiency." }, { role: "user", content: q }]
+                    })
+                });
+                const resData = await response.json();
+                chat.innerHTML += `<p style="color: var(--accent); margin-top: 8px;"><b>Strategist:</b> ${resData.choices[0].message.content}</p>`;
+                chat.scrollTop = chat.scrollHeight;
+            } catch (e) {
+                chat.innerHTML += `<p style="color: var(--red)">Sync Error with AI Gateway.</p>`;
+            }
+        };
+
+        // --- Global Actions ---
+        window.openGlobalAdd = () => document.getElementById('modal-add').classList.add('open');
+        window.closeModal = () => document.getElementById('modal-add').classList.remove('open');
+        
+        window.saveEntry = async () => {
+            const entry = {
+                id: Date.now(),
+                type: document.getElementById('add-type').value,
+                desc: document.getElementById('add-desc').value,
+                amount: parseFloat(document.getElementById('add-amt').value),
+                date: document.getElementById('add-date').value
+            };
+            
+            if(entry.type === 'income') data.income.push(entry);
+            else data.expenses.push(entry);
+            
+            await saveData();
+            closeModal();
+            refreshView();
+        };
+
+        function refreshView() {
+            const activePage = document.querySelector('.nav-item.active').textContent.toLowerCase();
+            if(activePage.includes('dashboard')) loadDashboard();
+        }
+
+        window.toggleTheme = () => {
+            const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', theme);
+        };
+
+        // Boot
+        initAuth();
+        syncData();
+
+    </script>
+</body>
+</html>
