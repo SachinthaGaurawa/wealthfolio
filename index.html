@@ -44,7 +44,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:10px;}
 ::-webkit-scrollbar-thumb:hover{background:var(--accent);}
 input,select,textarea,button{font-family:var(--font);}
-/* Fix iOS Zooming and Mobile inputs */
 input, select, textarea { font-size: 16px !important; }
 button, .npb { touch-action: manipulation; }
 
@@ -126,10 +125,10 @@ button, .npb { touch-action: manipulation; }
 .tb-right{display:flex;align-items:center;gap:8px;}
 
 /* Custom Action Icons in Topbar */
-.tb-action-icon { background:transparent; border:none; color:var(--text2); font-size:20px; cursor:pointer; padding:6px; display:flex; align-items:center; justify-content:center; border-radius: 50%; transition: color 0.2s ease; }
+.tb-action-icon { background:transparent; border:none; color:var(--text2); font-size:20px; cursor:pointer; padding:6px; transition:color 0.2s ease; display:flex; align-items:center; justify-content:center; border-radius: 50%; outline:none;}
 .tb-action-icon:hover { color:var(--accent); }
-.spin-anim svg { animation: trueSpin 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
-@keyframes trueSpin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+.spin-anim { animation: trueSpin 0.7s cubic-bezier(0.4, 0, 0.2, 1); }
+@keyframes trueSpin { 100% { transform: rotate(360deg); } }
 
 .online-badge{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:20px;font-size:11.5px;font-weight:700;font-family:var(--mono);transition:all 0.3s; box-shadow: var(--sh2); margin-right: 8px;}
 .online-badge.on{background:var(--gg);color:var(--green); border: 1px solid rgba(16,185,129,0.3);}
@@ -137,7 +136,6 @@ button, .npb { touch-action: manipulation; }
 .online-badge.syncing{background:rgba(59,130,246,0.15);color:var(--blue); border: 1px solid rgba(59,130,246,0.4);}
 .online-dot{width:7px;height:7px;border-radius:50%;background:currentColor;animation:dotPulse 1.5s infinite;}
 @keyframes dotPulse{0%,100%{opacity:1;}50%{opacity:.3;}}
-
 .month-badge{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:5px 11px;font-size:11.5px;font-weight:600;color:var(--text2);font-family:var(--mono);}
 .content{padding:22px 26px;flex:1;}
 .page{display:none;}
@@ -428,7 +426,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
   <div class="sp-logo">₣</div>
   <div class="sp-title-wrap">
       <div class="sp-title">WealthFlow</div>
-      <div class="sp-sub">Infinity Engine</div>
+      <div class="sp-sub">Infinity Financial Engine</div>
   </div>
   <div class="sp-bar-wrap"><div class="sp-fill" id="spFill"></div></div>
   <div class="sp-status" id="spStatus">Initializing secure protocol...</div>
@@ -552,10 +550,10 @@ tbody td{padding:10px 13px;vertical-align:middle;}
       <div class="tb-right">
         <div class="online-badge on" id="onlineBadge"><span class="online-dot" id="onlineDot"></span><span id="onlineText">Online</span></div>
         <button class="tb-action-icon" id="topRefreshBtn" onclick="refreshApp(this)" title="Sync System">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.3"/></svg>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.3"/></svg>
         </button>
         <button class="tb-action-icon" onclick="toggleTheme()" id="themeBtn" title="Toggle Theme">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
         </button>
         <div class="month-badge" id="curMonthBadge">-</div>
         <button class="btn btn-primary btn-sm" id="topAddBtn" onclick="handleTopAdd()" style="display:none;">+ Add</button>
@@ -784,7 +782,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
           <div class="card">
             <div class="card-header"><div class="card-title">Analysis Result</div></div>
             <div id="dscrResult" style="text-align:center;padding:20px 0;">
-              <div style="font-size:13px;color:var(--text3);">Enter income and loan details to calculate eligibility.</div>
+              <div style="font-size:13px;color:var(--text3);">Fill in the form to calculate eligibility based on local banking parameters.</div>
             </div>
           </div>
         </div>
@@ -1059,13 +1057,13 @@ function setSyncStatus(state) {
     const setBadge = $('settingsCloudStatus');
     
     if(state === 'syncing') {
-        if(badge) { badge.className = 'online-badge syncing'; $('onlineText').innerHTML = 'Syncing...'; }
+        if(badge) { badge.className = 'online-badge syncing'; $('onlineText').textContent = 'Syncing...'; }
         if(setBadge) { setBadge.className = 'badge syncing'; setBadge.textContent = 'Syncing...'; }
     } else if (state === 'online') {
-        if(badge) { badge.className = 'online-badge on'; $('onlineText').innerHTML = 'Online'; }
+        if(badge) { badge.className = 'online-badge on'; $('onlineText').textContent = 'Online'; }
         if(setBadge) { setBadge.className = 'badge bg-g'; setBadge.textContent = 'Connected'; }
-    } else if (state === 'offline') {
-        if(badge) { badge.className = 'online-badge off'; $('onlineText').innerHTML = 'Offline (Saved Locally)'; }
+    } else {
+        if(badge) { badge.className = 'online-badge off'; $('onlineText').textContent = 'Offline'; }
         if(setBadge) { setBadge.className = 'badge bg-r'; setBadge.textContent = 'Offline'; }
     }
 }
@@ -1354,7 +1352,7 @@ async function changePin() {
     notify('PIN changed successfully! 🔐', 'success');
 }
 
-// ==================== BOOT SEQUENCE ====================
+// ==================== BOOT SEQUENCE (REALTIME & SECURE) ====================
 window.onload = async function() {
     const splashText = $('spStatus');
     const fillEl = $('spFill');
@@ -1537,8 +1535,16 @@ function checkAutoBackup() {
 
 function refreshApp(btn) {
     if(btn) {
+        btn.classList.remove('spin-anim');
+        void btn.offsetWidth; // trigger DOM reflow
         btn.classList.add('spin-anim');
-        setTimeout(() => btn.classList.remove('spin-anim'), 800);
+    } else {
+        const topBtn = $('topRefreshBtn');
+        if(topBtn) {
+            topBtn.classList.remove('spin-anim');
+            void topBtn.offsetWidth;
+            topBtn.classList.add('spin-anim');
+        }
     }
     const active = document.querySelector('.page.active');
     if(active) renderPage(active.id.replace('page-',''));
@@ -1557,7 +1563,7 @@ function notify(msg, type='success') {
     setTimeout(() => { el.classList.remove('show'); setTimeout(()=>el.remove(), 400); }, 3600);
 }
 
-// ==================== MODALS ====================
+// ==================== MODALS & UTILS ====================
 let editMode = null;
 function openModal(id) { $(id).classList.add('open'); document.body.style.overflow='hidden'; }
 function closeModal(id) { $(id).classList.remove('open'); document.body.style.overflow=''; editMode=null; }
@@ -1610,7 +1616,7 @@ function toggleTheme() {
     const cur = document.documentElement.getAttribute('data-theme');
     const next = cur === 'dark' ? 'light' : 'dark';
     document.documentElement.setAttribute('data-theme', next);
-    $('themeBtn').innerHTML = next === 'dark' ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>' : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>';
+    $('themeBtn').innerHTML = next === 'dark' ? '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>' : '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>';
     const settings = DB.getObj('settings', {});
     settings.theme = next;
     DB.set('settings', settings);
@@ -1619,7 +1625,7 @@ function toggleTheme() {
 function initTheme() {
     const settings = DB.getObj('settings', {theme:'dark'});
     document.documentElement.setAttribute('data-theme', settings.theme);
-    if($('themeBtn')) $('themeBtn').innerHTML = settings.theme === 'dark' ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>' : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>';
+    if($('themeBtn')) $('themeBtn').innerHTML = settings.theme === 'dark' ? '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>' : '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>';
 }
 
 const sortState = {};
@@ -2542,12 +2548,13 @@ async function generateAIInsights() {
     const promptText = `Provide a very short (max 2 sentences) encouraging financial insight based on these monthly figures for a Sri Lankan context: Income LKR ${md.income}, Expenses LKR ${md.totalExp}, Balance LKR ${md.balance}. Address the user warmly.`;
     
     try {
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyBi34LwRku09fYjc95Rn4yJ9o2fzQB9u6k`, {
+        const response = await fetch('/api/gemini', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ contents: [{ parts: [{ text: promptText }] }] })
+            body: JSON.stringify({ prompt: promptText })
         });
         const data = await response.json();
+        
         if(data && data.candidates && data.candidates[0].content.parts[0].text) {
             aiArea.innerHTML = `<strong>Insight:</strong> ${data.candidates[0].content.parts[0].text}`;
         } else {
@@ -2555,540 +2562,7 @@ async function generateAIInsights() {
         }
     } catch(err) {
         console.error(err);
-        aiArea.innerHTML = `<span style="color:var(--red);">Connection to AI failed. Verify your network or API keys.</span>`;
-    }
-}
-
-// ==================== DSCR CALCULATOR ====================
-function clearDSCR() {
-    $('dscrIncome').value = '';
-    $('dscrOpex').value = '';
-    $('dscrNewAmt').value = '';
-    $('dscrNewRate').value = '';
-    $('dscrNewDur').value = '';
-    $('dscrDown').value = '';
-    $('dscrPurpose').value = '';
-    $('dscrAddExistingLoan').value = '';
-    $('dscrExistingLoans').innerHTML = '';
-    $('dscrResult').innerHTML = '<div style="font-size:13px;color:var(--text3);">Enter income and loan details to calculate eligibility.</div>';
-}
-
-function renderDSCR() {
-    const loans = DB.get('loans');
-    const select = $('dscrAddExistingLoan');
-    let html = '<option value="">+ Fetch active loan from system...</option>';
-    loans.forEach(l => {
-        const active = loanEndDate(l) > new Date();
-        if(active) html += `<option value="${l.monthly}">${l.name} (${l.bank}) - ${fmt(l.monthly)}/mo</option>`;
-    });
-    select.innerHTML = html;
-}
-
-function autoAddDSCRLoan() {
-    const select = $('dscrAddExistingLoan');
-    const val = parseFloat(select.value);
-    if(val > 0) {
-        addDscrLoanDOM(val);
-        select.value = '';
-        calcDSCR();
-    }
-}
-
-function addDscrLoanDOM(amount = null) {
-    const wrap = $('dscrExistingLoans');
-    const el = document.createElement('div');
-    el.className = 'fr';
-    el.style.marginBottom = '8px';
-    const valStr = amount !== null ? fmtN(amount) : '';
-    el.innerHTML = `
-        <div class="fg" style="margin:0;"><input class="fi money-input dscr-emi-input" value="${valStr}" placeholder="Monthly EMI (LKR)" oninput="calcDSCR()"></div>
-        <div class="fg" style="margin:0;"><button class="btn btn-danger btn-sm" onclick="this.parentElement.parentElement.remove(); calcDSCR();" style="height:100%;">✕ Remove</button></div>
-    `;
-    wrap.appendChild(el);
-    initMoneyInputs();
-}
-
-function calcDSCR() {
-    const inc = parseMoney($('dscrIncome').value);
-    const opex = parseMoney($('dscrOpex').value);
-    const newAmt = parseMoney($('dscrNewAmt').value);
-    const newRate = parseFloat($('dscrNewRate').value)||0;
-    const newDur = parseInt($('dscrNewDur').value)||0;
-    const down = parseMoney($('dscrDown').value);
-
-    let existingEMI = 0;
-    document.querySelectorAll('.dscr-emi-input').forEach(inp => { existingEMI += parseMoney(inp.value); });
-
-    const actualNewLoan = Math.max(0, newAmt - down);
-    let newEMI = 0;
-    if(actualNewLoan > 0 && newDur > 0) {
-        newEMI = calcEMI(actualNewLoan, newRate, newDur);
-    }
-    
-    const totalDebtService = existingEMI + newEMI;
-    const noi = inc - opex;
-
-    const resEl = $('dscrResult');
-    if(inc === 0 || (existingEMI === 0 && actualNewLoan === 0)) {
-        resEl.innerHTML = '<div style="font-size:13px;color:var(--text3);">Enter income and loan details to calculate eligibility.</div>';
-        return;
-    }
-    if(totalDebtService === 0) return;
-
-    const dscr = noi / totalDebtService;
-
-    let status='', color='', advicePool=[];
-    
-    if(dscr >= 1.5) { 
-        status='EXCELLENT'; color='var(--green)'; 
-        advicePool = [
-            "Outstanding cash flow! You are in a prime position to negotiate the best lending rates. Consider asking your bank for a floating rate pegged to the AWPR.",
-            "Highly likely to be approved. You have a very comfortable buffer to cover this loan and daily operations without strain.",
-            "Excellent metrics. If this is a business loan, this strong DSCR could help you secure an uncollateralised facility."
-        ];
-    } else if(dscr >= 1.25) { 
-        status='GOOD'; color='var(--blue)'; 
-        advicePool = [
-            "Likely to be approved. This meets the standard 1.2x - 1.25x requirement for most Sri Lankan commercial banks.",
-            "Solid numbers. To negotiate a better interest rate, showcase your consistent monthly savings and propose a slightly higher down payment if possible.",
-            "Good standing. Ensure all your CRIB records are clear, as banks will rely heavily on your repayment history at this tier."
-        ];
-    } else if(dscr >= 1.0) { 
-        status='RISKY'; color='var(--accent)'; 
-        advicePool = [
-            "You are on the edge. Banks might ask for strong guarantors. A smart move right now would be to eliminate high-interest CC debt first to free up your net operating income.",
-            "Borderline. You cover the payments, but it leaves little room for emergencies. Consider extending the loan tenure by a few years to reduce the EMI burden.",
-            "Caution: You will likely need solid collateral (like property) to secure this. Try increasing your down payment by 10-15%."
-        ];
-    } else { 
-        status='REJECTED'; color='var(--red)'; 
-        advicePool = [
-            "Do not let this discourage you! Consider extending the loan tenure to reduce monthly EMI, or focus on building a larger down payment first.",
-            "High risk of rejection. Your combined expenses and proposed EMI exceed your net operating income. Focus on eliminating existing smaller loans before applying.",
-            "Cannot afford under current structure. A joint-applicant (like your spouse) could immediately push this into the 'Approved' zone by combining incomes."
-        ];
-    }
-
-    const advice = advicePool[Math.floor(Math.random() * advicePool.length)];
-
-    let rot = (dscr - 1.0) * 180;
-    if(rot < -90) rot = -90;
-    if(rot > 90) rot = 90;
-
-    resEl.innerHTML = `
-        <div class="dscr-gauge-container">
-            <div class="dscr-gauge-bg"></div>
-            <svg viewBox="0 0 200 100" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;">
-               <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="url(#ggrad)" stroke-width="24" stroke-linecap="butt"/>
-               <defs>
-                 <linearGradient id="ggrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                   <stop offset="0%" stop-color="var(--red)" />
-                   <stop offset="50%" stop-color="var(--accent)" />
-                   <stop offset="100%" stop-color="var(--green)" />
-                 </linearGradient>
-               </defs>
-            </svg>
-            <div class="dscr-gauge-needle" style="transform: translateX(-50%) rotate(${rot}deg);"></div>
-        </div>
-        <div style="font-size:42px;font-weight:900;font-family:var(--mono);color:${color};margin-top:10px;">${dscr.toFixed(2)}x</div>
-        <div class="dscr-status" style="background:${color}22;color:${color};">${status}</div>
-        <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:16px;">
-           <div class="ld"><div class="ld-l">NET OP INCOME</div><div class="ld-v">${fmtS(noi)}</div></div>
-           <div class="ld"><div class="ld-l">TOTAL DEBT</div><div class="ld-v">${fmtS(totalDebtService)}</div></div>
-           <div class="ld"><div class="ld-l">NEW EMI</div><div class="ld-v" style="color:var(--red);">${fmtS(newEMI)}</div></div>
-        </div>
-        <div class="dscr-advice" style="border-left-color:${color};text-align:left;">${advice}</div>
-    `;
-}
-
-// ==================== SETTINGS & EXPORT ====================
-function renderSettings() {
-    const s = DB.getObj('settings', { backupFreq: 'weekly', lastBackup: null, theme: 'dark', autoLock: 15 });
-    
-    $('settingsContent').innerHTML = `
-        <div class="settings-section">
-            <div class="settings-title">Appearance & Security</div>
-            <div class="setting-row">
-                <div class="setting-info"><div class="setting-label">Dark Theme</div><div class="setting-desc">Switch between light and dark visual modes.</div></div>
-                <div class="toggle ${s.theme==='dark'?'on':''}" onclick="toggleTheme(); renderSettings();"></div>
-            </div>
-            <div class="setting-row">
-                <div class="setting-info"><div class="setting-label">Auto-Lock Timer</div><div class="setting-desc">Automatically lock the system after inactivity.</div></div>
-                <select class="fi" style="width:140px;" onchange="updateAutoLock(this.value)">
-                    <option value="0" ${s.autoLock===0?'selected':''}>Disabled</option>
-                    <option value="5" ${s.autoLock===5?'selected':''}>5 Minutes</option>
-                    <option value="15" ${s.autoLock===15?'selected':''}>15 Minutes</option>
-                    <option value="30" ${s.autoLock===30?'selected':''}>30 Minutes</option>
-                </select>
-            </div>
-            <div class="setting-row">
-                <div class="setting-info"><div class="setting-label">Change Master PIN</div><div class="setting-desc">Update your 6-digit access code for all synced devices.</div></div>
-                <button class="btn btn-secondary btn-sm" onclick="openModal('mdChangePin')">Change PIN</button>
-            </div>
-        </div>
-        
-        <div class="settings-section">
-            <div class="settings-title">Cloud Synchronisation</div>
-            <div class="setting-row">
-                <div class="setting-info"><div class="setting-label">Connection Status</div><div class="setting-desc">WealthFlow automatically syncs to Firebase when online.</div></div>
-                <div><span id="settingsCloudStatus" class="badge ${navigator.onLine?'bg-g':'bg-r'}">${navigator.onLine?'Connected':'Offline'}</span></div>
-            </div>
-        </div>
-
-        <div class="settings-section">
-            <div class="settings-title">Data Management & Reports</div>
-            <div class="setting-row">
-                <div class="setting-info"><div class="setting-label">Export Professional Report</div><div class="setting-desc">Download a complete physical JSON backup or a luxury PDF statement.</div></div>
-                <button class="btn btn-primary btn-sm" onclick="openModal('mdExport')">Export</button>
-            </div>
-            
-            <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:24px 0 8px;">Cloud Backup & Restore</div>
-            <div class="setting-row">
-                <div class="setting-info"><div class="setting-label">Auto-Backup Frequency</div><div class="setting-desc">The system will auto-upload a JSON copy to Firebase Storage.</div></div>
-                <select class="fi" style="width:120px;" onchange="updateBackupFreq(this.value)">
-                    <option value="daily" ${s.backupFreq==='daily'?'selected':''}>Daily</option>
-                    <option value="weekly" ${s.backupFreq==='weekly'?'selected':''}>Weekly</option>
-                    <option value="monthly" ${s.backupFreq==='monthly'?'selected':''}>Monthly</option>
-                </select>
-            </div>
-            <div class="setting-row">
-                <div class="setting-info"><div class="setting-label">Manual Cloud Backup</div><div class="setting-desc">Push an instant JSON backup to your secure cloud bucket.</div></div>
-                <button class="btn btn-primary btn-sm" onclick="createCloudBackup(true)">Backup Now</button>
-            </div>
-            <div class="setting-row">
-                <div class="setting-info"><div class="setting-label">Restore Data System</div><div class="setting-desc">Restore from latest cloud snapshots or a local JSON file.</div></div>
-                <button class="btn btn-secondary btn-sm" onclick="openRestoreModal()">Restore Data</button>
-            </div>
-
-            <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:24px 0 8px;">Danger Zone</div>
-            <div class="setting-row">
-                <div class="setting-info"><div class="setting-label">Factory Reset</div><div class="setting-desc" style="color:var(--red);">Wipe all local and cloud data. Requires PIN.</div></div>
-                <button class="btn btn-danger btn-sm" onclick="openModal('mdFactoryReset')">Delete Everything</button>
-            </div>
-        </div>
-   `;
-}
-
-function updateAutoLock(val) {
-    const s = DB.getObj('settings', {});
-    s.autoLock = parseInt(val);
-    DB.set('settings', s);
-    notify(val === '0' ? 'Auto-lock disabled' : `Auto-lock set to ${val} minutes`);
-    resetAutoLockTimer();
-}
-
-function toggleExportOptions() {
-    const format = $('expFormat').value;
-    $('pdfOptionsWrap').style.display = format === 'pdf' ? 'block' : 'none';
-}
-
-function executeExport() {
-    const format = $('expFormat').value;
-    if(format === 'json') {
-        const str = JSON.stringify(appData, null, 2);
-        const blob = new Blob([str], {type: 'application/json'});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'WealthFlow_Backup_'+today()+'.json';
-        a.click();
-        URL.revokeObjectURL(url);
-        notify('JSON Data exported successfully!', 'success');
-    } else {
-        generatePDFReport();
-    }
-    closeModal('mdExport');
-}
-
-function generatePDFReport() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    
-    const year = parseInt($('expPdfYear').value);
-    const month = parseInt($('expPdfMonth').value);
-    const md = getMonthlyData(year, month);
-    
-    const darkBlue = [15, 23, 42];
-    const accentGold = [245, 166, 35];
-    const lightGrey = [241, 245, 249];
-    const textGrey = [100, 116, 139];
-
-    // Header Block
-    doc.setFillColor(...darkBlue);
-    doc.rect(0, 0, 210, 45, 'F');
-
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(26);
-    doc.setTextColor(...accentGold);
-    doc.text("WEALTHFLOW", 14, 20);
-
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(10);
-    doc.setTextColor(255, 255, 255);
-    doc.text("PRIVATE FINANCIAL STATEMENT", 14, 28);
-    
-    doc.setFontSize(10);
-    doc.text(`PREPARED FOR: SACHINTHA GAURAWA`, 120, 20);
-    doc.text(`PERIOD: ${MONTHS[month].toUpperCase()} ${year}`, 120, 28);
-    doc.text(`GENERATED: ${today()}`, 120, 36);
-
-    // Executive Summary Box
-    doc.setDrawColor(226, 232, 240);
-    doc.setFillColor(...lightGrey);
-    doc.roundedRect(14, 55, 182, 30, 3, 3, 'FD');
-    
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(10);
-    doc.setTextColor(...textGrey);
-    doc.text("TOTAL INCOME", 24, 65);
-    doc.text("TOTAL EXPENSES", 85, 65);
-    doc.text("NET BALANCE", 146, 65);
-
-    doc.setFontSize(16);
-    doc.setTextColor(16, 185, 129); // Green
-    doc.text(`${fmtN(md.income)}`, 24, 76);
-    
-    doc.setTextColor(239, 68, 68); // Red
-    doc.text(`${fmtN(md.totalExp)}`, 85, 76);
-    
-    doc.setTextColor(...darkBlue); // Dark Blue
-    doc.text(`${fmtN(md.balance)}`, 146, 76);
-
-    let startY = 100;
-
-    const tableOptions = {
-        theme: 'plain',
-        headStyles: { fillColor: lightGrey, textColor: darkBlue, fontStyle: 'bold', fontSize: 10 },
-        bodyStyles: { fontSize: 10, textColor: [51, 65, 85] },
-        alternateRowStyles: { fillColor: [250, 250, 250] },
-        margin: { left: 14, right: 14 }
-    };
-
-    // Income
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(14); doc.setTextColor(...darkBlue);
-    doc.text("Income & Returns", 14, startY);
-    
-    const activeIncome = DB.get('income').filter(s => {
-        const dt = new Date(year,month,1);
-        const start = new Date(s.start+'T00:00:00');
-        const end = s.end ? new Date(s.end+'T00:00:00') : null;
-        return start <= dt && (!end || end >= dt);
-    });
-
-    if(activeIncome.length > 0) {
-        doc.autoTable({
-            startY: startY + 5,
-            head: [['Source', 'Institution', 'Amount (LKR)']],
-            body: activeIncome.map(i => [i.name, i.company, fmtN(i.monthly)]),
-            ...tableOptions
-        });
-        startY = doc.lastAutoTable.finalY + 15;
-    } else {
-        doc.setFont("helvetica", "normal"); doc.setFontSize(10); doc.setTextColor(...textGrey);
-        doc.text("No income registered for this period.", 14, startY + 8); startY += 18;
-    }
-
-    // Debts & Loans
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(14); doc.setTextColor(...darkBlue);
-    doc.text("Debt Servicing", 14, startY);
-    if(md.loanItems.length > 0) {
-        doc.autoTable({
-            startY: startY + 5,
-            head: [['Facility Name', 'Institution', 'EMI (LKR)']],
-            body: md.loanItems.map(l => [l.name, l.bank, fmtN(l.amount)]),
-            ...tableOptions
-        });
-        startY = doc.lastAutoTable.finalY + 15;
-    } else {
-        doc.setFont("helvetica", "normal"); doc.setFontSize(10); doc.setTextColor(...textGrey);
-        doc.text("No debt obligations for this period.", 14, startY + 8); startY += 18;
-    }
-
-    // CC & Expenses
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(14); doc.setTextColor(...darkBlue);
-    doc.text("Operating Expenses", 14, startY);
-    const combinedExp = [];
-    md.ccItems2.forEach(c => combinedExp.push([c.name + ' (CC Instalment)', c.bank, fmtN(c.amount)]));
-    md.expItems.forEach(e => combinedExp.push([e.name, e.cat, fmtN(e.amount)]));
-
-    if(combinedExp.length > 0) {
-        doc.autoTable({
-            startY: startY + 5,
-            head: [['Description', 'Category', 'Amount (LKR)']],
-            body: combinedExp,
-            ...tableOptions
-        });
-    } else {
-        doc.setFont("helvetica", "normal"); doc.setFontSize(10); doc.setTextColor(...textGrey);
-        doc.text("No operating expenses for this period.", 14, startY + 8);
-    }
-
-    // Footer
-    const pageCount = doc.internal.getNumberOfPages();
-    for(let i = 1; i <= pageCount; i++) {
-        doc.setPage(i);
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(8);
-        doc.setTextColor(148, 163, 184);
-        doc.text(`Page ${i} of ${pageCount}`, 196, 290, { align: 'right' });
-        doc.text("Generated securely by WealthFlow", 14, 290);
-    }
-
-    doc.save(`WealthFlow_Statement_${MONTHS_S[month]}_${year}.pdf`);
-    notify('Professional Statement downloaded.', 'success');
-}
-
-function updateBackupFreq(val) {
-    const s = DB.getObj('settings', {});
-    s.backupFreq = val;
-    DB.set('settings', s);
-    notify('Backup frequency updated');
-}
-
-// Cloud Backup utilizing Firebase Storage + Firestore reference tracking
-async function createCloudBackup(manual = false) {
-    try {
-        if(manual) notify('Uploading backup to cloud...', 'info');
-        const jsonStr = JSON.stringify(appData);
-        
-        // Backup directly into firestore doc to bypass strict bucket rules securely
-        const timestamp = Date.now();
-        await db.collection('wealthflow_backups').doc(timestamp.toString()).set({
-            time: new Date().toISOString(),
-            data: jsonStr
-        });
-        
-        const s = DB.getObj('settings');
-        s.lastBackup = new Date().toISOString();
-        
-        const refsDoc = db.collection('users').doc('backup_refs');
-        const docSnap = await refsDoc.get();
-        let refs = [];
-        if(docSnap.exists) refs = docSnap.data().files || [];
-        
-        refs.push({ id: timestamp.toString(), time: new Date().toISOString() });
-        if(refs.length > 5) refs.shift(); // Keep latest 5
-        
-        await refsDoc.set({ files: refs });
-        DB.set('settings', s);
-
-        if(manual) notify('Cloud backup complete! ☁️', 'success');
-    } catch(e) {
-        console.error(e);
-        if(manual) notify('Cloud backup failed. Check permissions.', 'error');
-    }
-}
-
-async function openRestoreModal() {
-    const sel = $('restoreSelect');
-    sel.innerHTML = '<option>Fetching cloud backups...</option>';
-    $('restoreBtn').disabled = true;
-    openModal('mdRestoreCloud');
-
-    try {
-        const docSnap = await db.collection('users').doc('backup_refs').get();
-        let refs = [];
-        if(docSnap.exists) refs = docSnap.data().files || [];
-
-        if(refs.length === 0) {
-            sel.innerHTML = '<option value="">No cloud backups found</option>';
-        } else {
-            sel.innerHTML = refs.map((b, i) => `<option value="${b.id}">${new Date(b.time).toLocaleString()}</option>`).reverse().join('');
-            $('restoreBtn').disabled = false;
-        }
-    } catch(e) {
-        console.error(e);
-        sel.innerHTML = '<option value="">Failed to fetch backups</option>';
-    }
-}
-
-async function executeCloudRestore() {
-    const backupId = $('restoreSelect').value;
-    if(!backupId) return;
-
-    try {
-        notify('Downloading backup...', 'info');
-        $('restoreBtn').disabled = true;
-        
-        const doc = await db.collection('wealthflow_backups').doc(backupId).get();
-        if(!doc.exists) throw new Error("Backup file missing");
-        
-        const restoredData = JSON.parse(doc.data().data);
-        
-        appData = restoredData;
-        syncToCloud();
-        closeModal('mdRestoreCloud');
-        notify('Data restored successfully! Rebooting...', 'success');
-        setTimeout(() => location.reload(), 1500);
-
-    } catch(e) {
-        console.error(e);
-        notify('Failed to restore backup.', 'error');
-        $('restoreBtn').disabled = false;
-    }
-}
-
-// Local JSON Restore
-function handleImportFile(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = function(evt) {
-        try {
-            const importedData = JSON.parse(evt.target.result);
-            showConfirm('⚠️', 'Restore Local Data?', 'This will overwrite all existing cloud and local data with the selected local JSON backup.', 'btn-primary', 'Yes, Restore', () => {
-                appData = importedData;
-                syncToCloud();
-                notify('Data restored successfully! Rebooting...', 'success');
-                setTimeout(() => location.reload(), 1500);
-            });
-        } catch (err) {
-            notify('Invalid JSON backup file', 'error');
-        }
-    };
-    reader.readAsText(file);
-    e.target.value = ''; 
-    closeModal('mdRestoreCloud');
-}
-
-// Secure Factory Reset
-async function executeFactoryReset() {
-    const btn = $('fr_exec_btn');
-    const cancelBtn = $('fr_cancel_btn');
-    const pin = $('fr_pin').value;
-    
-    if(pin.length !== 6) { $('fr_err').textContent = 'Enter 6-digit PIN.'; return; }
-    
-    const hash = await sha256(pin + 'wf_salt_sg2026');
-    if (hash !== DB.getObj('auth').pin) {
-        $('fr_err').textContent = 'Incorrect PIN.';
-        return;
-    }
-    
-    $('fr_err').textContent = '';
-    btn.disabled = true;
-    cancelBtn.disabled = true;
-    btn.textContent = 'Wiping System...';
-    
-    appData = { 
-        auth: {}, income: [], loans: [], ccinstall: [], cconetime: [], 
-        cheques: [], expenses: [], targets: [], balance: {total:0, flows:[]}, 
-        settings: { backupFreq: 'weekly', lastBackup: null, theme: 'dark', autoLock: 15 } 
-    };
-    
-    try {
-        await userDocRef.set(appData);
-        localStorage.clear();
-        closeModal('mdFactoryReset');
-        notify('System wiped successfully. Rebooting...', 'success');
-        setTimeout(() => location.reload(), 2000);
-    } catch(err) {
-        console.error(err);
-        localStorage.clear();
-        location.reload();
+        aiArea.innerHTML = "Connection to AI failed. Please verify your Vercel backend deployment.";
     }
 }
 </script>
