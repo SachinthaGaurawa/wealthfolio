@@ -1167,11 +1167,11 @@ function showAuthView(viewId) {
 }
 
 function signInWithGoogle() {
-    $('googleErr').textContent = '';
-    firebase.auth().signInWithPopup(provider).catch(err => {
-        console.error(err);
-        $('googleErr').textContent = 'Error connecting to Google: ' + err.message;
-    });
+  $('googleErr').textContent = 'Connecting to Google...';
+  firebase.auth().signInWithRedirect(provider).catch(err => {
+    console.error(err);
+    $('googleErr').textContent = 'Error connecting to Google: ' + err.message;
+  });
 }
 
 function signOut() {
