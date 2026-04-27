@@ -1284,6 +1284,14 @@ window.onload = function() {
     ['ot_date','sav_date','bf_date','bs_date','chq_issue','chq_release'].forEach(id => { const el=$(id); if(el) el.value=today(); });
     ['e_month'].forEach(id => { const el=$(id); if(el) el.value=today().substr(0,7); });
 
+
+
+firebase.auth().getRedirectResult().catch(err => {
+    console.error("Redirect Error:", err);
+    if ($('googleErr')) $('googleErr').textContent = 'Login Error: ' + err.message;
+});
+  
+
     // 1. Authenticate with Google
     firebase.auth().onAuthStateChanged((user) => {
         if (user) {
