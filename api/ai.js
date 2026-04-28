@@ -1,12 +1,12 @@
-export default async function handler(req, res) {
-    // Only allow POST requests
+module.exports = async function handler(req, res) {
+    // Only allow POST requests for security
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method not allowed' });
     }
 
     const { prompt } = req.body;
     
-    // Pull the key securely from Vercel Environment Variables
+    // Securely pull the key from Vercel Environment Variables
     const apiKey = process.env.GEMINI_API_KEY;
 
     if (!apiKey) {
@@ -26,7 +26,7 @@ export default async function handler(req, res) {
 
         const data = await response.json();
         
-        // Extract the text from the Gemini response
+        // Extract the text safely
         const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text || "Unable to generate insights at this time.";
         
         res.status(200).json({ reply });
@@ -34,4 +34,4 @@ export default async function handler(req, res) {
         console.error("AI Generation Error:", error);
         res.status(500).json({ error: 'Failed to communicate with AI provider' });
     }
-}
+};
