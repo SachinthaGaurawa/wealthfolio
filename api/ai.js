@@ -7,14 +7,18 @@ export default async function handler(req, res) {
     const apiKey = process.env.GEMINI_API_KEY;
 
     if (!apiKey) {
-        return res.status(500).json({ error: 'API Key missing in Vercel settings.' });
+        return res.status(500).json({ error: 'Missing GEMINI_API_KEY in Vercel Environment Variables' });
     }
 
     try {
         const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                contents: [{ parts: [{ text: prompt }] }]
+            })
         });
 
         const data = await response.json();
@@ -22,6 +26,7 @@ export default async function handler(req, res) {
         
         res.status(200).json({ reply });
     } catch (error) {
-        res.status(500).json({ error: 'Failed to connect to Gemini' });
+        console.error("AI Generation Error:", error);
+        res.status(500).json({ error: 'Failed to communicate with AI provider' });
     }
 }
