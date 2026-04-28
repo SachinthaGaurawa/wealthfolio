@@ -44,6 +44,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:10px;}
 ::-webkit-scrollbar-thumb:hover{background:var(--accent);}
 input,select,textarea,button{font-family:var(--font);}
+/* Fix iOS Zooming and Mobile inputs */
 input, select, textarea { font-size: 16px !important; }
 button, .npb { touch-action: manipulation; }
 
@@ -63,10 +64,10 @@ button, .npb { touch-action: manipulation; }
 #authScreen{position:fixed;inset:0;background:var(--bg);z-index:1000;display:none;align-items:center;justify-content:center;flex-direction:column;overflow-y:auto;}
 #authScreen.show{display:flex;}
 .auth-bg{position:absolute;inset:0;overflow:hidden;}
-.auth-orb{position:absolute;border-radius:50%;filter:blur(100px);}
+.auth-orb{position:absolute;border-radius:50%;filter:blur(100px); pointer-events:none;}
 .auth-orb1{width:500px;height:500px;background:rgba(245,166,35,.05);top:-200px;right:-200px;}
 .auth-orb2{width:400px;height:400px;background:rgba(59,130,246,.04);bottom:-100px;left:-150px;}
-.auth-box{background:var(--card);border:1px solid var(--border2);border-radius:28px;padding:44px 40px;width:90%;max-width:420px;box-shadow:var(--shadow);text-align:center;z-index:1;animation:authIn .5s cubic-bezier(.34,1.56,.64,1);margin:20px;}
+.auth-box{background:var(--card);border:1px solid var(--border2);border-radius:28px;padding:44px 40px;width:90%;max-width:420px;box-shadow:var(--shadow);text-align:center;z-index:2;animation:authIn .5s cubic-bezier(.34,1.56,.64,1);margin:20px;}
 @keyframes authIn{from{transform:scale(.88) translateY(24px);opacity:0;}to{transform:scale(1) translateY(0);opacity:1;}}
 .auth-logo{width:64px;height:64px;background:linear-gradient(135deg,var(--accent),var(--accent3));border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:30px;color:#000;font-weight:900;margin:0 auto 18px;box-shadow:0 8px 32px var(--ag);}
 .auth-title{font-size:26px;font-weight:800;margin-bottom:5px;}
@@ -116,7 +117,7 @@ button, .npb { touch-action: manipulation; }
 .sb-user{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px;}
 .sb-date{font-size:11px;color:var(--accent);font-family:var(--mono);}
 .sb-ver{font-size:10px;color:var(--text3);margin-top:3px;}
-.main{margin-left:var(--sw);flex:1;display:flex;flex-direction:column;min-height:100vh; overflow-x: hidden;}
+.main{margin-left:var(--sw);flex:1;display:flex;flex-direction:column;min-height:100vh; overflow-x:hidden;}
 .topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:12px 26px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;gap:10px;}
 .tb-left{display:flex;align-items:center;gap:10px;}
 .mobile-btn{display:none;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:7px 9px;cursor:pointer;color:var(--text);font-size:16px;align-items:center;justify-content:center;}
@@ -124,33 +125,56 @@ button, .npb { touch-action: manipulation; }
 .pg-title span{color:var(--accent);}
 .tb-right{display:flex;align-items:center;gap:8px;}
 
-/* Network Indicators */
+/* Elite Network & Sync Indicators */
 .network-wrap { display: flex; align-items: center; gap: 8px; margin-right: 8px; }
-.online-badge{display:flex;align-items:center;gap:6px;padding:4px 12px;border-radius:50px;font-size:11px;font-weight:700;font-family:var(--mono); text-transform:uppercase; letter-spacing: 0.5px; transition:all 0.3s; box-shadow: var(--sh2);}
-.online-badge.on{background:rgba(16,185,129,0.15);color:var(--green); border: 1px solid rgba(16,185,129,0.4);}
-.online-badge.off{background:rgba(239,68,68,0.15);color:var(--red); border: 1px solid rgba(239,68,68,0.4);}
-.online-dot{width:7px;height:7px;border-radius:50%;background:currentColor;animation:dotPulse 1.5s infinite;}
-@keyframes dotPulse{0%,100%{opacity:1;}50%{opacity:.3;}}
-.sync-indicator { font-size: 11px; font-weight: 600; color: var(--blue); font-family: var(--mono); opacity: 0; transition: opacity 0.3s; letter-spacing: 0.5px; display: flex; align-items: center; gap: 4px;}
+.online-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;font-family:var(--mono);transition:all 0.3s; box-shadow: inset 0 0 0 1px currentColor; background:transparent;}
+.online-badge.on{color:var(--green);}
+.online-badge.off{color:var(--red);}
+.sync-indicator { font-size: 11px; font-weight: 600; color: var(--blue); font-family: var(--mono); opacity: 0; transition: opacity 0.3s; letter-spacing: 0.5px; display: flex; align-items: center; gap: 4px; pointer-events:none;}
 .sync-indicator.active { opacity: 1; }
+.online-dot{width:6px;height:6px;border-radius:50%;background:currentColor;animation:dotPulse 1.5s infinite;}
+@keyframes dotPulse{0%,100%{opacity:1;}50%{opacity:.3;}}
 
-/* Custom Action Icons in Topbar */
+/* Smooth Refresh Button */
 .tb-action-icon { background:transparent; border:none; color:var(--text2); cursor:pointer; padding:6px; outline:none; display:flex; align-items:center; justify-content:center; border-radius: 50%; transition: color 0.2s;}
 .tb-action-icon:hover { color:var(--accent); }
-.tb-action-icon svg { width: 22px; height: 22px; }
-.spin-once svg { animation: trueSpin 0.7s cubic-bezier(0.4, 0, 0.2, 1); }
+.tb-action-icon svg { width: 20px; height: 20px; }
+.spin-once svg { animation: trueSpin 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
 @keyframes trueSpin { 100% { transform: rotate(360deg); } }
 
 .month-badge{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:5px 11px;font-size:11.5px;font-weight:600;color:var(--text2);font-family:var(--mono);}
-.content{padding:22px 26px;flex:1; max-width: 100%; overflow-x: hidden;}
+.content{padding:22px 26px;flex:1;}
 .page{display:none;}
 .page.active{display:block;animation:pgIn .28s ease;}
 @keyframes pgIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
 .sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:99;}
 .sb-overlay.show{display:block;}
 
+/* AI Frame */
+.ai-frame {
+    margin-bottom:16px; 
+    border: 1px solid var(--border); 
+    border-radius: 12px; 
+    position:relative; 
+    overflow:hidden;
+    background: linear-gradient(145deg, var(--card), var(--card2));
+    transition: all 0.3s ease;
+}
+.ai-frame:hover {
+    border-color: rgba(59, 130, 246, 0.5); /* Blue/Gold fusion attempt */
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.1), 0 0 10px rgba(245, 166, 35, 0.1);
+}
+.ai-glow {
+    position:absolute; top:-50px; right:-50px; width:150px; height:150px; 
+    background:radial-gradient(circle, var(--accent) 0%, transparent 70%); 
+    opacity:0.1; filter:blur(20px); pointer-events:none; z-index:0;
+}
+.ai-content { position: relative; z-index: 2; padding: 20px; }
+.ai-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.ai-title { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+
 /* ================== BUTTONS ================== */
-.btn{padding:7px 14px;border-radius:var(--r2);border:none;cursor:pointer;font-family:var(--font);font-size:13px;font-weight:600;transition:all .17s;display:inline-flex;align-items:center;gap:5px;white-space:nowrap; justify-content:center;}
+.btn{padding:7px 14px;border-radius:var(--r2);border:none;cursor:pointer;font-family:var(--font);font-size:13px;font-weight:600;transition:all .17s;display:inline-flex;align-items:center;gap:5px;white-space:nowrap; justify-content: center;}
 .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent3));color:#000;}
 .btn-primary:hover{transform:translateY(-1px);box-shadow:0 4px 18px var(--ag);}
 .btn-secondary{background:var(--card2);color:var(--text);border:1px solid var(--border);}
@@ -161,20 +185,19 @@ button, .npb { touch-action: manipulation; }
 .btn-success:hover{background:rgba(16,185,129,.25);}
 .btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border);}
 .btn-ghost:hover{color:var(--text);border-color:var(--text3);}
-.btn-sm{padding:5px 10px;font-size:12px;}
-.btn-xs{padding:3px 8px;font-size:11px;}
+.btn-sm{padding:5px 12px;font-size:12px;}
+.btn-xs{padding:3px 10px;font-size:11px; border-radius: 20px;}
 .btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important;}
 
 /* ================== CARDS ================== */
 .card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px;box-shadow:var(--sh2);transition:border-color .2s;}
 .card:hover{border-color:var(--border2);}
-.card-sm{padding:14px;}
 .card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
 .card-title{font-size:14px;font-weight:700;}
 .card-sub{font-size:11px;color:var(--text3);margin-top:2px;}
 .stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px 20px;position:relative;overflow:hidden;transition:all .2s;}
 .stat-card:hover{transform:translateY(-2px);box-shadow:var(--shadow);}
-.stat-card::after{content:'';position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-radius:50%;opacity:.08;}
+.stat-card::after{content:'';position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-radius:50%;opacity:.08; pointer-events:none;}
 .sc-gold::after{background:var(--accent);}
 .sc-green::after{background:var(--green);}
 .sc-red::after{background:var(--red);}
@@ -191,26 +214,6 @@ button, .npb { touch-action: manipulation; }
 .sc-cyan .stat-val{color:var(--cyan);}
 .stat-meta{font-size:11px;color:var(--text3);}
 
-/* AI Card Golden Frame */
-.ai-card-golden {
-    background: linear-gradient(145deg, var(--card) 0%, rgba(245, 166, 35, 0.05) 100%);
-    border: 1px solid var(--accent);
-    box-shadow: 0 4px 20px rgba(245, 166, 35, 0.1);
-    border-radius: var(--r);
-    padding: 20px;
-    position: relative;
-    overflow: hidden;
-    margin-bottom: 16px;
-}
-.ai-card-header {
-    position: relative;
-    z-index: 2;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
 /* ================== GRID ================== */
 .g2{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
 .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
@@ -218,7 +221,7 @@ button, .npb { touch-action: manipulation; }
 .g5{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;}
 
 /* ================== TABLE ================== */
-.tbl-wrap{overflow-x:auto;border-radius:var(--r2);border:1px solid var(--border); margin-bottom: 10px; -webkit-overflow-scrolling: touch;}
+.tbl-wrap{overflow-x:auto;border-radius:var(--r2);border:1px solid var(--border); margin-bottom: 10px;}
 table{width:100%;border-collapse:collapse;font-size:13px; min-width: 600px;}
 thead th{background:var(--bg2);color:var(--text3);font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;padding:9px 13px;text-align:left;white-space:nowrap;}
 tbody tr{border-top:1px solid rgba(255,255,255,.03);transition:background .1s;}
@@ -256,7 +259,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
 .fcalc{font-size:12px;color:var(--accent);margin-top:3px;font-family:var(--mono);min-height:16px;}
 
 /* ================== MODAL ================== */
-.mo{position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(6px);z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .23s;padding:14px;}
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(6px);z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .23s;padding:14px;}
 .mo.open{opacity:1;pointer-events:all;}
 .md{background:var(--card);border:1px solid var(--border2);border-radius:18px;padding:24px;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;transform:scale(.94) translateY(14px);transition:transform .25s cubic-bezier(.34,1.56,.64,1);box-shadow:0 24px 80px rgba(0,0,0,.6);position:relative;}
 .mo.open .md{transform:scale(1) translateY(0);}
@@ -427,19 +430,23 @@ tbody td{padding:10px 13px;vertical-align:middle;}
   .sidebar.open{transform:translateX(0);}
   .main{margin-left:0;}
   .mobile-btn{display:flex;}
-  .g5, .g4, .g3, .g2 { grid-template-columns: repeat(2, 1fr); }
+  .g5{grid-template-columns:repeat(3,1fr);}
+  .g4{grid-template-columns:repeat(2,1fr);}
+  .g3{grid-template-columns:repeat(2,1fr);}
   .dash-chart-row{grid-template-columns:1fr;}
   .content{padding:14px 16px;}
   .topbar{padding:10px 14px;}
 }
-@media(max-width:540px){
-  .g5, .g4, .g3, .g2 { grid-template-columns: 1fr; }
-  .auth-box{padding:32px 20px;}
-  .celeb-box{padding:32px 28px;}
-  .tb-right {gap: 4px;}
+@media(max-width:768px){
+  .fr { grid-template-columns: 1fr; }
+  .g2, .g3, .g4, .g5 { grid-template-columns: 1fr; gap: 12px; }
+  .dscr-gauge-container { width: 180px; height: 90px; }
+  .dscr-gauge-bg, .dscr-gauge-fill { width: 180px; height: 180px; border-width: 18px; }
+  .dscr-gauge-needle { height: 65px; }
+  .auth-box { width: 95%; padding: 30px 20px; }
+  .topbar { flex-wrap: wrap; }
+  .tb-right { flex-wrap: wrap; justify-content: flex-end; }
   .month-badge { display: none; }
-  /* Edge-to-edge tables on mobile */
-  .tbl-wrap { width: 100vw; margin-left: -16px; padding: 0 16px; border-radius: 0; border-left: none; border-right: none; overflow-x: auto; }
 }
 </style>
 </head>
@@ -483,7 +490,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
     <div class="auth-title">Account Recovery</div>
     <div class="auth-sub">Answer your security question to reset PIN</div>
     <div class="fg"><label class="auth-form-label" id="recovSecQ">Security Question</label><input class="auth-input" id="recovSecA" placeholder="Your answer..."></div>
-    <div class="fg"><label class="auth-form-label">Verification Code</label><input class="auth-input" id="recovCode" placeholder="16-character recovery code" style="font-family:var(--mono);letter-spacing:2px;"></div>
+    <div class="fg"><label class="auth-form-label">Verification Code</label><input class="auth-input auth-numpad-only" id="recovCode" placeholder="16-character recovery code" style="font-family:var(--mono);letter-spacing:2px;"></div>
     <button class="auth-btn" onclick="verifyRecovery()">✅ Verify & Reset PIN</button>
     <button class="auth-btn ghost" onclick="showAuthView('authLogin')">← Back to Login</button>
     <div class="auth-err" id="recovErr"></div>
@@ -561,7 +568,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
     <div class="sb-footer">
       <div class="sb-user">👤 Sachintha Gaurawa</div>
       <div class="sb-date" id="sbDate">-</div>
-      <div class="sb-ver">WealthFlow v6.0 · Infinity</div>
+      <div class="sb-ver">WealthFlow v5.0 · Elite</div>
     </div>
   </aside>
 
@@ -576,11 +583,11 @@ tbody td{padding:10px 13px;vertical-align:middle;}
            <div class="online-badge on" id="onlineBadge"><span class="online-dot" id="onlineDot"></span><span id="onlineText">Online</span></div>
            <div id="syncIndicator" class="sync-indicator">Syncing...</div>
         </div>
-        <button class="tb-action-icon spin-once" id="topRefreshBtn" onclick="refreshApp(this)" title="Sync System">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.3"/></svg>
+        <button class="tb-action-icon" id="topRefreshBtn" onclick="refreshApp()" title="Sync System">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.3"/></svg>
         </button>
         <button class="tb-action-icon" onclick="toggleTheme()" id="themeBtn" title="Toggle Theme">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
         </button>
         <div class="month-badge" id="curMonthBadge">-</div>
         <button class="btn btn-primary btn-sm" id="topAddBtn" onclick="handleTopAdd()" style="display:none;">+ Add</button>
@@ -593,17 +600,16 @@ tbody td{padding:10px 13px;vertical-align:middle;}
       <div class="page active" id="page-dashboard">
         <div class="g5" id="dashStats" style="margin-bottom:16px;"></div>
         
-        <div class="ai-card-golden">
-            <div style="position:absolute; top:-50px; right:-50px; width:150px; height:150px; background:radial-gradient(circle, var(--accent) 0%, transparent 70%); opacity:0.15; filter:blur(20px); pointer-events:none;"></div>
-            <div class="ai-card-header">
-                <div class="card-title" style="display:flex; align-items:center; gap:8px;">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
-                    Gemini AI Insights
+        <div class="ai-frame">
+            <div class="ai-glow"></div>
+            <div class="ai-content">
+                <div class="ai-header">
+                    <div class="ai-title">✨ Gemini AI Insights</div>
+                    <button class="btn btn-primary btn-sm" onclick="generateAIInsights()" style="border-radius:20px; font-weight:700;">Generate Insight</button>
                 </div>
-                <button class="btn btn-primary btn-sm" onclick="generateAIInsights()" id="aiGenBtn">Generate Insight</button>
-            </div>
-            <div id="aiInsightsArea" style="font-size:13px; color:var(--text2); line-height:1.7; position:relative; z-index:2;">
-                Click generate to receive a real-time AI analysis of your current monthly cash flow based on local Sri Lankan context.
+                <div id="aiInsightsArea" style="font-size:13px; color:var(--text2); line-height:1.6;">
+                    Click generate to receive a real-time AI analysis of your current monthly cash flow based on local Sri Lankan context.
+                </div>
             </div>
         </div>
 
@@ -812,7 +818,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
           <div class="card">
             <div class="card-header"><div class="card-title">Analysis Result</div></div>
             <div id="dscrResult" style="text-align:center;padding:20px 0;">
-              <div style="font-size:13px;color:var(--text3);">Fill in the form to calculate eligibility based on local banking parameters.</div>
+              <div style="font-size:13px;color:var(--text3);">Enter full details to calculate your eligibility based on Sri Lankan banking parameters.</div>
             </div>
           </div>
         </div>
@@ -878,8 +884,8 @@ tbody td{padding:10px 13px;vertical-align:middle;}
   </div>
   <div id="fr_success" style="display:none; text-align:center; padding: 20px 0;">
       <div style="font-size:40px; margin-bottom:10px;">✅</div>
-      <div style="color:var(--green); font-weight:700; font-size:16px;">System Wiped</div>
-      <div style="font-size:12px; color:var(--text2); margin-top:5px;">Rebooting...</div>
+      <div style="color:var(--green); font-weight:700; font-size:16px;">System Wiped Successfully</div>
+      <div style="font-size:12px; color:var(--text2); margin-top:5px;">Rebooting System...</div>
   </div>
 </div></div>
 
@@ -904,7 +910,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
   <div class="fr"><div class="fg"><label class="fl">Source Name *</label><input class="fi" id="i_name" placeholder="Fixed Deposit - Commercial Bank"></div><div class="fg"><label class="fl">Company / Person *</label><input class="fi" id="i_company" placeholder="Commercial Bank"></div></div>
   <div class="fr"><div class="fg"><label class="fl">Invested Amount (LKR) *</label><input class="fi money-input" id="i_amount" placeholder="13,700,000" oninput="calcIncomeM()"></div><div class="fg"><label class="fl">Annual Rate (%) *</label><input class="fi" id="i_rate" type="number" placeholder="57" step="0.1" oninput="calcIncomeM()"></div></div>
   <div class="fr"><div class="fg"><label class="fl">Start Date *</label><input class="fi" id="i_start" type="date"></div><div class="fg"><label class="fl">End Date</label><input class="fi" id="i_end" type="date"></div></div>
-  <div class="fr"><div class="fg"><label class="fl">Frequency *</label><select class="fs" id="i_freq" onchange="calcIncomeM()"><option value="monthly">Monthly</option><option value="annual">Annual</option><option value="quarterly">Quarterly</option></select></div><div class="fg"><label class="fl">Payment Start Date (of month) *</label><input class="fi" id="i_day" type="date"></div></div>
+  <div class="fr"><div class="fg"><label class="fl">Frequency *</label><select class="fs" id="i_freq" onchange="calcIncomeM()"><option value="monthly">Monthly</option><option value="annual">Annual</option><option value="quarterly">Quarterly</option></select></div><div class="fg"><label class="fl">First Payment Date *</label><input class="fi" id="i_first_pay" type="date"></div></div>
   <div class="fg"><label class="fl">Override Monthly Amount</label><input class="fi money-input" id="i_override" placeholder="Leave blank to auto-calculate"></div>
   <div class="fcalc" id="i_calc"></div>
   <div class="fg"><label class="fl">Notes</label><textarea class="fta" id="i_notes" placeholder="Additional details..."></textarea></div>
@@ -1055,7 +1061,6 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
-const storage = firebase.storage();
 
 try { db.enablePersistence(); } catch (err) { console.warn("Offline persistence issue:", err.code); }
 const userDocRef = db.collection('users').doc('master_profile');
@@ -1177,7 +1182,7 @@ document.ontouchstart = resetAutoLockTimer;
 setInterval(() => {
     if (!$('app').classList.contains('show')) return; 
     const limit = DB.getObj('settings').autoLock || 15;
-    if (limit === 0) return;
+    if (limit === 0) return; // 0 means disabled
     inactivityTimer++;
     if (inactivityTimer >= limit) {
         lockApp();
@@ -1405,6 +1410,7 @@ window.onload = async function() {
     const fillEl = $('spFill');
     let w = 0;
     
+    // Smooth progress bar simulation
     const pInt = setInterval(() => {
         w += (Math.random() * 5);
         if(w > 90) w = 90;
@@ -1427,7 +1433,7 @@ window.onload = async function() {
         }
     });
     if($('expPdfMonth')) $('expPdfMonth').value = new Date().getMonth();
-    ['i_day','ot_date','sav_date','bf_date','bs_date','chq_issue','chq_release'].forEach(id => { const el=$(id); if(el) el.value=today(); });
+    ['ot_date','sav_date','bf_date','bs_date','chq_issue','chq_release'].forEach(id => { const el=$(id); if(el) el.value=today(); });
     ['e_month'].forEach(id => { const el=$(id); if(el) el.value=today().substr(0,7); });
 
     splashText.textContent = "Fetching cloud state...";
@@ -1583,7 +1589,7 @@ function checkAutoBackup() {
 function refreshApp(btn) {
     if(btn) {
         btn.classList.remove('spin-once');
-        void btn.offsetWidth; // trigger reflow
+        void btn.offsetWidth; // trigger reflow to restart animation
         btn.classList.add('spin-once');
     }
     const active = document.querySelector('.page.active');
@@ -1603,7 +1609,7 @@ function notify(msg, type='success') {
     setTimeout(() => { el.classList.remove('show'); setTimeout(()=>el.remove(), 400); }, 3600);
 }
 
-// ==================== MODALS ====================
+// ==================== MODALS & UTILS ====================
 let editMode = null;
 function openModal(id) { $(id).classList.add('open'); document.body.style.overflow='hidden'; }
 function closeModal(id) { $(id).classList.remove('open'); document.body.style.overflow=''; editMode=null; }
@@ -1720,7 +1726,7 @@ function saveIncome() {
     const freq=$('i_freq').value;
     let calc = freq==='monthly' ? amount*rate/100/12 : freq==='annual' ? amount*rate/100 : amount*rate/100/4;
     const override = parseMoney($('i_override').value);
-    const rec = { id:editMode||uid(), name, company, amount, rate, start:$('i_start').value, end:$('i_end').value, freq, paymentDate:$('i_day').value, monthly:override||calc, notes:$('i_notes').value };
+    const rec = { id:editMode||uid(), name, company, amount, rate, start:$('i_start').value, end:$('i_end').value, freq, day:parseInt($('i_day').value)||15, first_pay:$('i_first_pay').value, monthly:override||calc, notes:$('i_notes').value };
     const arr = DB.get('income');
     if(editMode) { const i=arr.findIndex(x=>x.id===editMode); if(i>-1) arr[i]=rec; } else arr.push(rec);
     DB.set('income',arr);
@@ -1729,7 +1735,7 @@ function saveIncome() {
 }
 function clearIncomeForm() {
     ['i_name','i_company','i_amount','i_rate','i_start','i_end','i_override','i_notes'].forEach(id=>$(id).value='');
-    $('i_freq').value='monthly'; $('i_day').value=today(); $('i_calc').textContent='';
+    $('i_freq').value='monthly'; $('i_day').value=''; $('i_first_pay').value=today(); $('i_calc').textContent='';
     $('mdIncomeTitle').textContent='Add Income / Investment Source';
 }
 function editIncome(id) {
@@ -1738,7 +1744,7 @@ function editIncome(id) {
     $('i_name').value=s.name; $('i_company').value=s.company;
     $('i_amount').value=fmtN(s.amount); $('i_rate').value=s.rate;
     $('i_start').value=s.start; $('i_end').value=s.end||'';
-    $('i_freq').value=s.freq; $('i_day').value=s.paymentDate||today();
+    $('i_freq').value=s.freq; $('i_day').value=s.day||''; $('i_first_pay').value=s.first_pay||s.start;
     $('i_override').value=s.monthly||''; $('i_notes').value=s.notes||'';
     calcIncomeM(); openModal('mdIncome');
 }
@@ -1767,23 +1773,19 @@ function renderIncome() {
         const now=new Date(), end=source.end?new Date(source.end+'T00:00:00'):null, active=!end||end>now;
         const dLeft=end?Math.ceil((end-now)/86400000):null;
         const freqL={monthly:'Monthly',annual:'Annual',quarterly:'Quarterly'}[source.freq]||source.freq;
-        const pDateStr = source.paymentDate ? new Date(source.paymentDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : 'N/A';
+        const payDay = source.first_pay ? new Date(source.first_pay).getDate() : source.day;
         return`<div class="inc-card">
             <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;">
                 <div><div style="font-size:15px;font-weight:700;">${source.name}</div><div style="font-size:12px;color:var(--text3);margin-top:2px;">🏛️ ${source.company} · Start: ${source.start}${source.end?' → '+source.end:''}</div></div>
                 <div style="display:flex;gap:10px;align-items:flex-start;">
-                    <div style="text-align:right;">
-                        <div style="font-size:21px;font-weight:800;font-family:var(--mono);color:var(--green);">${fmt(source.monthly)}</div>
-                        <div style="font-size:11px;color:var(--text3); display:flex; align-items:center; justify-content:flex-end; gap:4px; margin-top:2px;">
-                            ${freqL} · <div style="color:var(--accent); background:rgba(245,166,35,0.1); padding:2px 6px; border-radius:4px; font-weight:700;">📅 ${pDateStr}</div>
-                        </div>
-                    </div>
+                    <div style="text-align:right;"><div style="font-size:21px;font-weight:800;font-family:var(--mono);color:var(--green);">${fmt(source.monthly)}</div><div style="font-size:11px;color:var(--text3);">${freqL}</div></div>
                     <div class="act-btns"><button class="ib e" onclick="editIncome('${source.id}')">✏️</button><button class="ib d" onclick="deleteIncome('${source.id}')">🗑️</button></div>
                 </div>
             </div>
             <div style="display:flex;flex-wrap:wrap;">
                 <div class="ld"><div class="ld-l">INVESTED</div><div class="ld-v" style="color:var(--accent);">${fmt(source.amount)}</div></div>
                 <div class="ld"><div class="ld-l">ANNUAL RATE</div><div class="ld-v">${source.rate}%</div></div>
+                <div class="ld"><div class="ld-l">PAYMENT DAY</div><div class="ld-v" style="color:var(--accent); font-size:14px; font-weight:800;">${payDay}th</div></div>
                 <div class="ld"><div class="ld-l">STATUS</div><div class="ld-v">${active?'<span class="badge bg-g">● Active</span>':'<span class="badge bg-gr">Ended</span>'}</div></div>
                 ${dLeft!==null?`<div class="ld"><div class="ld-l">DAYS LEFT</div><div class="ld-v" style="${dLeft<60?'color:var(--red)':''}">${dLeft>0?dLeft+' days':'Ended'}</div></div>`:''}
             </div>
@@ -2585,37 +2587,200 @@ function renderRecentActivity() {
     </div>`).join('');
 }
 
-// AI Component Secure Call via Vercel Backend
 async function generateAIInsights() {
     const aiArea = $('aiInsightsArea');
-    const aiBtn = $('aiGenBtn');
+    const btn = document.querySelector('.ai-header button');
+    if(btn) btn.disabled = true;
     
     aiArea.innerHTML = "<em>Analysing your financial flow securely...</em>";
-    aiBtn.disabled = true;
     
     const d = new Date();
     const md = getMonthlyData(d.getFullYear(), d.getMonth());
-    const promptText = `Provide a very short (max 2 sentences) encouraging financial insight based on these monthly figures for a Sri Lankan context: Income LKR ${md.income}, Expenses LKR ${md.totalExp}, Balance LKR ${md.balance}. Address the user (Sachintha) warmly.`;
+    const promptText = `Provide a very short (max 2 sentences) encouraging financial insight based on these monthly figures for a Sri Lankan context: Income LKR ${md.income}, Expenses LKR ${md.totalExp}, Balance LKR ${md.balance}. Address the user warmly.`;
     
     try {
-        const response = await fetch('/api/ai', {
+        // First try the Vercel backend route
+        let response = await fetch('/api/ai', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ prompt: promptText })
         });
-        
-        const data = await response.json();
-        if(data && data.reply) {
-            aiArea.innerHTML = `<strong>Insight:</strong> ${data.reply}`;
+
+        let replyText = '';
+
+        if(response.ok) {
+            const data = await response.json();
+            replyText = data.reply;
+        } else {
+            // Fallback for local testing without Vercel backend
+            console.warn("Vercel backend failed or not found, falling back to direct API call.");
+            const fallbackResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyCU6KyYWjUg7Iikf3XdYteCiJnbJ_2ZZCQ`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ contents: [{ parts: [{ text: promptText }] }] })
+            });
+            const fallbackData = await fallbackResponse.json();
+            replyText = fallbackData?.candidates?.[0]?.content?.parts?.[0]?.text;
+        }
+
+        if(replyText) {
+            aiArea.innerHTML = `<strong style="color:var(--accent);">Insight:</strong> ${replyText}`;
         } else {
             aiArea.innerHTML = "Unable to fetch insights at the moment. Try again later.";
         }
     } catch(err) {
         console.error(err);
-        aiArea.innerHTML = "Connection to AI backend failed. Ensure Vercel /api/ai is correctly deployed.";
+        aiArea.innerHTML = "Connection to AI failed. Please check your network.";
     } finally {
-        aiBtn.disabled = false;
+        if(btn) btn.disabled = false;
     }
+}
+
+// ==================== DSCR CALCULATOR ====================
+function clearDSCR() {
+    $('dscrIncome').value = '';
+    $('dscrOpex').value = '';
+    $('dscrNewAmt').value = '';
+    $('dscrNewRate').value = '';
+    $('dscrNewDur').value = '';
+    $('dscrDown').value = '';
+    $('dscrPurpose').value = '';
+    $('dscrAddExistingLoan').value = '';
+    $('dscrExistingLoans').innerHTML = '';
+    $('dscrResult').innerHTML = '<div style="font-size:13px;color:var(--text3);">Enter loan details to calculate eligibility based on local banking parameters.</div>';
+}
+
+function renderDSCR() {
+    const loans = DB.get('loans');
+    const select = $('dscrAddExistingLoan');
+    let html = '<option value="">+ Fetch active loan from system...</option>';
+    loans.forEach(l => {
+        const active = loanEndDate(l) > new Date();
+        if(active) html += `<option value="${l.monthly}">${l.name} (${l.bank}) - ${fmt(l.monthly)}/mo</option>`;
+    });
+    select.innerHTML = html;
+    setTimeout(calcDSCR, 100);
+}
+
+function autoAddDSCRLoan() {
+    const select = $('dscrAddExistingLoan');
+    const val = parseFloat(select.value);
+    if(val > 0) {
+        addDscrLoanDOM(val);
+        select.value = '';
+        calcDSCR();
+    }
+}
+
+function addDscrLoanDOM(amount = null) {
+    const wrap = $('dscrExistingLoans');
+    const el = document.createElement('div');
+    el.className = 'fr';
+    el.style.marginBottom = '8px';
+    const valStr = amount !== null ? fmtN(amount) : '';
+    el.innerHTML = `
+        <div class="fg" style="margin:0;"><input class="fi money-input dscr-emi-input" value="${valStr}" placeholder="Monthly EMI (LKR)" oninput="calcDSCR()"></div>
+        <div class="fg" style="margin:0;"><button class="btn btn-danger btn-sm" onclick="this.parentElement.parentElement.remove(); calcDSCR();" style="height:100%;">✕ Remove</button></div>
+    `;
+    wrap.appendChild(el);
+    initMoneyInputs();
+}
+
+function calcDSCR() {
+    const inc = parseMoney($('dscrIncome').value);
+    const opex = parseMoney($('dscrOpex').value);
+    const newAmt = parseMoney($('dscrNewAmt').value);
+    const newRate = parseFloat($('dscrNewRate').value)||0;
+    const newDur = parseInt($('dscrNewDur').value)||0;
+    const down = parseMoney($('dscrDown').value);
+
+    let existingEMI = 0;
+    document.querySelectorAll('.dscr-emi-input').forEach(inp => { existingEMI += parseMoney(inp.value); });
+
+    const actualNewLoan = Math.max(0, newAmt - down);
+    const newEMI = calcEMI(actualNewLoan, newRate, newDur);
+    const totalDebtService = existingEMI + newEMI;
+    const noi = inc - opex;
+
+    const resEl = $('dscrResult');
+    
+    // Check if enough data is entered
+    if(totalDebtService === 0 || noi <= 0) {
+        resEl.innerHTML = '<div style="font-size:13px;color:var(--text3);">Enter full details to calculate your eligibility based on Sri Lankan banking parameters.</div>';
+        return;
+    }
+
+    // Handle Negative NOI gracefully
+    let dscr = 0;
+    if (noi > 0) {
+        dscr = noi / totalDebtService;
+    } else {
+        dscr = 0; // Negative income defaults to 0 DSCR visually
+    }
+
+    let status='', color='', advicePool=[];
+    
+    // Advice generation engine tailored for Sri Lankan standard rates
+    if(dscr >= 1.5) { 
+        status='EXCELLENT'; color='var(--green)'; 
+        advicePool = [
+            "Outstanding cash flow! You are in a prime position to negotiate the best lending rates. Consider asking your bank for a floating rate pegged to the AWPR.",
+            "Highly likely to be approved. You have a very comfortable buffer to cover this loan and daily operations without strain.",
+            "Excellent metrics. If this is a business loan, this strong DSCR could help you secure an uncollateralized facility."
+        ];
+    } else if(dscr >= 1.25) { 
+        status='GOOD'; color='var(--blue)'; 
+        advicePool = [
+            "Likely to be approved. This meets the standard 1.2x - 1.25x requirement for most Sri Lankan commercial banks.",
+            "Solid numbers. To negotiate a better interest rate, showcase your consistent monthly savings and propose a slightly higher down payment if possible.",
+            "Good standing. Ensure all your CRIB records are clear, as banks will rely heavily on your repayment history at this tier."
+        ];
+    } else if(dscr >= 1.0) { 
+        status='RISKY'; color='var(--accent)'; 
+        advicePool = [
+            "You are on the edge. Banks might ask for strong guarantors. A smart move right now would be to eliminate high-interest CC debt first to free up your net operating income.",
+            "Borderline. You cover the payments, but it leaves little room for emergencies. Consider extending the loan tenure by a few years to reduce the EMI burden.",
+            "Caution: You will likely need solid collateral (like property) to secure this. Try increasing your down payment by 10-15%."
+        ];
+    } else { 
+        status='REJECTED'; color='var(--red)'; 
+        advicePool = [
+            "Don't let this discourage you! Consider extending the loan tenure to reduce monthly EMI, or focus on building a larger down payment first.",
+            "High risk of rejection. Your combined expenses and proposed EMI exceed your net operating income. Focus on eliminating existing smaller loans before applying.",
+            "Cannot afford under current structure. A joint-applicant (like your spouse) could immediately push this into the 'Approved' zone by combining incomes."
+        ];
+    }
+
+    const advice = advicePool[Math.floor(Math.random() * advicePool.length)];
+
+    let rot = (dscr - 1.0) * 180;
+    if(rot < -90) rot = -90;
+    if(rot > 90) rot = 90;
+
+    resEl.innerHTML = `
+        <div class="dscr-gauge-container">
+            <div class="dscr-gauge-bg"></div>
+            <svg viewBox="0 0 200 100" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;">
+               <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="url(#ggrad)" stroke-width="24" stroke-linecap="butt"/>
+               <defs>
+                 <linearGradient id="ggrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                   <stop offset="0%" stop-color="var(--red)" />
+                   <stop offset="50%" stop-color="var(--accent)" />
+                   <stop offset="100%" stop-color="var(--green)" />
+                 </linearGradient>
+               </defs>
+            </svg>
+            <div class="dscr-gauge-needle" style="transform: translateX(-50%) rotate(${rot}deg);"></div>
+        </div>
+        <div style="font-size:42px;font-weight:900;font-family:var(--mono);color:${color};margin-top:10px;">${dscr.toFixed(2)}x</div>
+        <div class="dscr-status" style="background:${color}22;color:${color};">${status}</div>
+        <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:16px;">
+           <div class="ld"><div class="ld-l">NET OP INCOME</div><div class="ld-v">${fmtS(noi)}</div></div>
+           <div class="ld"><div class="ld-l">TOTAL DEBT</div><div class="ld-v">${fmtS(totalDebtService)}</div></div>
+           <div class="ld"><div class="ld-l">NEW EMI</div><div class="ld-v" style="color:var(--red);">${fmtS(newEMI)}</div></div>
+        </div>
+        <div class="dscr-advice" style="border-left-color:${color};text-align:left;">${advice}</div>
+    `;
 }
 
 // ==================== SETTINGS & EXPORT ====================
@@ -2861,12 +3026,13 @@ function updateBackupFreq(val) {
     notify('Backup frequency updated');
 }
 
-// Cloud Backup utilizing Firebase Storage + Firestore reference tracking
+// Cloud Backup utilizing Firestore reference tracking
 async function createCloudBackup(manual = false) {
     try {
         if(manual) notify('Uploading backup to cloud...', 'info');
         const jsonStr = JSON.stringify(appData);
         
+        // Backup directly into firestore doc to bypass strict bucket rules securely
         const timestamp = Date.now();
         await db.collection('wealthflow_backups').doc(timestamp.toString()).set({
             time: new Date().toISOString(),
@@ -2954,55 +3120,4 @@ function handleImportFile(e) {
             showConfirm('⚠️', 'Restore Local Data?', 'This will overwrite all existing cloud and local data with the selected local JSON backup.', 'btn-primary', 'Yes, Restore', () => {
                 appData = importedData;
                 syncToCloud();
-                notify('Data restored successfully! Rebooting...', 'success');
-                setTimeout(() => location.reload(), 1500);
-            });
-        } catch (err) {
-            notify('Invalid JSON backup file', 'error');
-        }
-    };
-    reader.readAsText(file);
-    e.target.value = ''; 
-    closeModal('mdRestoreCloud');
-}
-
-// Secure Factory Reset
-async function executeFactoryReset() {
-    const btn = $('fr_exec_btn');
-    const cancelBtn = $('fr_cancel_btn');
-    const pin = $('fr_pin').value;
-    
-    if(pin.length !== 6) { $('fr_err').textContent = 'Enter 6-digit PIN.'; return; }
-    
-    const hash = await sha256(pin + 'wf_salt_sg2026');
-    if (hash !== DB.getObj('auth').pin) {
-        $('fr_err').textContent = 'Incorrect PIN.';
-        return;
-    }
-    
-    $('fr_err').textContent = '';
-    
-    // UI Update to lock the modal
-    $('fr_pin').disabled = true;
-    $('fr_action_btns').style.display = 'none';
-    $('fr_success').style.display = 'block';
-    
-    appData = { 
-        auth: {}, income: [], loans: [], ccinstall: [], cconetime: [], 
-        cheques: [], expenses: [], targets: [], balance: {total:0, flows:[]}, 
-        settings: { backupFreq: 'weekly', lastBackup: null, theme: 'dark', autoLock: 15 } 
-    };
-    
-    try {
-        await userDocRef.set(appData);
-        localStorage.clear();
-        setTimeout(() => location.reload(), 2000);
-    } catch(err) {
-        console.error(err);
-        localStorage.clear();
-        setTimeout(() => location.reload(), 2000);
-    }
-}
-</script>
-</body>
-</html>
+                notify('Data restored successfully! Rebooting
