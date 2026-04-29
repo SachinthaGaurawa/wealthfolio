@@ -8,7 +8,7 @@
 <link rel="icon" type="image/png" href="https://res.cloudinary.com/dzrfpc9be/image/upload/v1777219344/Fav_img_bagjfj.png">
 <link rel="apple-touch-icon" href="https://res.cloudinary.com/dzrfpc9be/image/upload/v1777219344/Fav_img_bagjfj.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
 
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
@@ -24,11 +24,10 @@
 --border:#1a2640;--border2:#223054;--accent:#f5a623;--accent2:#ffd166;--accent3:#e8931a;
 --ag:rgba(245,166,35,0.2);--green:#10b981;--green2:#34d399;--gg:rgba(16,185,129,0.2);
 --red:#ef4444;--red2:#f87171;--rg:rgba(239,68,68,0.2);--blue:#3b82f6;--blue2:#60a5fa;
---purple:#8b5cf6;--purple2:#a78bfa;--cyan:#06b6d4;--text:#e2e8f0;--text2:#94a3b8;--text3:#475569;
---font:'Outfit',sans-serif;--mono:'JetBrains Mono',monospace;
---r:14px;--r2:9px;--r3:24px;
+--purple:#8b5cf6;--cyan:#06b6d4;--text:#e2e8f0;--text2:#94a3b8;--text3:#475569;
+--font:'Outfit',sans-serif;--mono:'JetBrains Mono',monospace;--serif:'Playfair Display',serif;
+--r:14px;--r2:9px;--sw:264px;
 --shadow:0 8px 40px rgba(0,0,0,0.6);--sh2:0 2px 16px rgba(0,0,0,0.4);
---sw:264px;
 }
 [data-theme="light"]{
 --bg:#f0f4f8;--bg2:#ffffff;--bg3:#f8fafc;--card:#ffffff;--card2:#f1f5f9;--card3:#e2e8f0;
@@ -46,418 +45,454 @@ input,select,textarea,button{font-family:var(--font);}
 input, select, textarea { font-size: 16px !important; }
 button, .npb { touch-action: manipulation; }
 
+/* ================== PREMIUM GOLD FRAME ================== */
+.premium-gold-frame {
+    background: var(--card);
+    border: 2px solid transparent;
+    background-image: linear-gradient(var(--card), var(--card)), linear-gradient(135deg, #f5a623 0%, #ffd166 40%, #e8931a 60%, #f5a623 100%);
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+    box-shadow: 0 8px 32px rgba(245,166,35,0.15);
+    border-radius: var(--r);
+    position: relative;
+    overflow: hidden;
+}
+.premium-gold-frame::after {
+    content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transform: skewX(-20deg); animation: goldShine 6s infinite; pointer-events: none;
+}
+@keyframes goldShine { 0% { left: -100%; } 20% { left: 200%; } 100% { left: 200%; } }
+
+.serif-title { font-family: var(--serif); font-weight: 700; letter-spacing: 0.5px; }
+
 /* ================== SPLASH SCREEN ================== */
-#splash{position:fixed;inset:0;background:radial-gradient(circle at center, var(--bg2) 0%, var(--bg) 100%);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);}
+#splash{position:fixed;inset:0;background:radial-gradient(circle at center, var(--bg2) 0%, var(--bg) 100%);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity 0.6s, transform 0.6s;}
 #splash.hide{opacity:0;pointer-events:none;transform:scale(1.05);}
-.sp-logo{width:96px;height:96px;background:linear-gradient(135deg,var(--accent),var(--accent3));border-radius:24px;display:flex;align-items:center;justify-content:center;font-size:48px;font-weight:900;color:#000;box-shadow:0 0 60px var(--ag);animation:spPulse 2s ease-in-out infinite;z-index:1;}
-@keyframes spPulse{0%,100%{box-shadow:0 0 30px var(--ag),0 0 60px rgba(245,166,35,0.15);}50%{box-shadow:0 0 60px rgba(245,166,35,0.4),0 0 90px rgba(245,166,35,0.2);transform:scale(1.02);}}
-.sp-title-wrap {text-align:center; z-index:1;}
-.sp-title{font-size:42px;font-weight:900;background:linear-gradient(135deg,#fff,var(--text2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-1px; margin-bottom:4px;}
-.sp-sub{font-size:11px;color:var(--accent);letter-spacing:4px;text-transform:uppercase;font-weight:600;}
-.sp-bar-wrap{width:260px;height:4px;background:rgba(255,255,255,0.05);border-radius:10px;overflow:hidden;z-index:1; position:relative; box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);}
-.sp-fill{position:absolute;top:0;left:0;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:10px;width:0%;transition:width 0.2s ease-out; box-shadow: 0 0 10px var(--accent);}
-.sp-status{font-size:12px;color:var(--text3);font-family:var(--mono);z-index:1;min-height:18px; letter-spacing: 0.5px;}
+.sp-logo{width:96px;height:96px;background:linear-gradient(135deg,var(--accent),var(--accent3));border-radius:24px;display:flex;align-items:center;justify-content:center;font-size:48px;font-weight:900;color:#000;box-shadow:0 0 60px var(--ag);animation:spPulse 2s ease-in-out infinite;}
+@keyframes spPulse{0%,100%{box-shadow:0 0 30px var(--ag);}50%{box-shadow:0 0 60px rgba(245,166,35,0.4);transform:scale(1.02);}}
+.sp-title{font-size:42px;font-family:var(--serif);font-weight:700;background:linear-gradient(135deg,#fff,var(--text2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
 
 /* ================== AUTH ================== */
 #authScreen{position:fixed;inset:0;background:var(--bg);z-index:1000;display:none;align-items:center;justify-content:center;flex-direction:column;overflow-y:auto;}
 #authScreen.show{display:flex;}
-.auth-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none;}
-.auth-box{background:var(--card);border:1px solid var(--border2);border-radius:28px;padding:44px 40px;width:90%;max-width:420px;box-shadow:var(--shadow);text-align:center;z-index:1;animation:authIn .5s cubic-bezier(.34,1.56,.64,1);margin:20px;}
+.auth-box{background:var(--card);border:1px solid var(--border2);border-radius:28px;padding:44px 40px;width:90%;max-width:420px;box-shadow:var(--shadow);text-align:center;z-index:1;animation:authIn .5s;margin:20px;}
 @keyframes authIn{from{transform:scale(.88) translateY(24px);opacity:0;}to{transform:scale(1) translateY(0);opacity:1;}}
-.auth-logo{width:64px;height:64px;background:linear-gradient(135deg,var(--accent),var(--accent3));border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:30px;color:#000;font-weight:900;margin:0 auto 18px;box-shadow:0 8px 32px var(--ag);}
-.auth-title{font-size:26px;font-weight:800;margin-bottom:5px;}
-.auth-sub{font-size:13px;color:var(--text3);margin-bottom:28px;}
+.auth-logo{width:64px;height:64px;background:linear-gradient(135deg,var(--accent),var(--accent3));border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:30px;color:#000;font-weight:900;margin:0 auto 18px;}
+.auth-title{font-size:26px;font-family:var(--serif);font-weight:700;margin-bottom:5px;}
 .pin-dots{display:flex;gap:12px;justify-content:center;margin-bottom:22px;}
 .pin-dot{width:14px;height:14px;border-radius:50%;background:var(--border);border:2px solid var(--border2);transition:all .18s;}
 .pin-dot.filled{background:var(--accent);border-color:var(--accent);box-shadow:0 0 14px var(--ag);transform:scale(1.15);}
-.pin-dot.error{background:var(--red);border-color:var(--red);animation:shake .4s ease;}
-@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-8px);}75%{transform:translateX(8px);}50%{transform:translateX(-5px);}}
 .numpad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:256px;margin:0 auto 16px;}
-.npb{width:76px;height:76px;margin:0 auto;border-radius:50%;border:1.5px solid var(--border2);background:var(--card2);color:var(--text);font-size:24px;font-weight:600;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;user-select:none;}
-.npb-sub{font-size:7.5px;color:var(--text3);font-weight:500;letter-spacing:1px;}
-.npb:hover{background:var(--card3);border-color:var(--accent);color:var(--accent);transform:scale(1.06);}
-.npb:active{transform:scale(.93);background:rgba(245,166,35,.15);}
-.npb.del{background:transparent;border-color:transparent;font-size:18px;color:var(--text2);}
-.npb.del:hover{color:var(--red);background:transparent;}
-.auth-link{font-size:13px;color:var(--text3);cursor:pointer;margin-top:6px;transition:color .15s;}
-.auth-link:hover{color:var(--accent);}
-.auth-err{font-size:12px;color:var(--red);margin-top:8px;min-height:18px;}
-.auth-form-label{font-size:12px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px;text-align:left;}
-.auth-input{width:100%;background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--r2);padding:10px 13px;color:var(--text);font-family:var(--font);outline:none;transition:border-color .18s;box-sizing:border-box;}
-.auth-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--ag);}
-.auth-btn{width:100%;padding:12px;border:none;border-radius:var(--r2);background:linear-gradient(135deg,var(--accent),var(--accent3));color:#000;font-size:15px;font-weight:700;font-family:var(--font);cursor:pointer;transition:all .2s;margin-top:4px;}
-.auth-btn:hover{transform:translateY(-1px);box-shadow:0 6px 24px var(--ag);}
+.npb{width:76px;height:76px;margin:0 auto;border-radius:50%;border:1.5px solid var(--border2);background:var(--card2);color:var(--text);font-size:24px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;user-select:none;}
+.npb:hover{background:var(--card3);border-color:var(--accent);color:var(--accent);}
+.npb.del{background:transparent;border-color:transparent;font-size:18px;}
+.auth-input{width:100%;background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--r2);padding:10px 13px;color:var(--text);outline:none;margin-bottom:14px;}
+.auth-btn{width:100%;padding:12px;border:none;border-radius:var(--r2);background:linear-gradient(135deg,var(--accent),var(--accent3));color:#000;font-size:15px;font-weight:700;cursor:pointer;}
 
 /* ================== LAYOUT ================== */
 #app{display:flex;min-height:100vh;display:none;}
 #app.show{display:flex;}
-.sidebar{width:var(--sw);min-height:100vh;background:var(--bg2);border-right:1px solid var(--border);position:fixed;top:0;left:0;bottom:0;display:flex;flex-direction:column;z-index:100;transition:transform .3s cubic-bezier(.4,0,.2,1);}
+.sidebar{width:var(--sw);min-height:100vh;background:var(--bg2);border-right:1px solid var(--border);position:fixed;top:0;left:0;bottom:0;display:flex;flex-direction:column;z-index:100;transition:transform .3s;}
 .sb-logo{padding:22px 18px 16px;border-bottom:1px solid var(--border);}
 .sb-logomark{display:flex;align-items:center;gap:10px;}
-.sb-icon{width:38px;height:38px;background:linear-gradient(135deg,var(--accent),var(--accent3));border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:900;color:#000;box-shadow:0 4px 16px var(--ag);}
-.sb-title{font-size:19px;font-weight:900;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-.5px;}
-.sb-sub{font-size:9.5px;color:var(--text3);letter-spacing:2.5px;text-transform:uppercase;margin-top:1px;}
+.sb-icon{width:38px;height:38px;background:linear-gradient(135deg,var(--accent),var(--accent3));border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:19px;color:#000;font-weight:900;}
+.sb-title{font-size:19px;font-family:var(--serif);font-weight:700;color:var(--accent);}
 .sb-nav{flex:1;padding:10px 8px;overflow-y:auto;}
-.sb-group{font-size:9.5px;font-weight:700;color:var(--text3);letter-spacing:2.5px;text-transform:uppercase;padding:10px 10px 4px;}
-.nav-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:var(--r2);cursor:pointer;transition:all .17s;color:var(--text2);font-size:13px;font-weight:500;margin:1px 0;user-select:none;}
-.nav-item:hover{background:rgba(255,255,255,.05);color:var(--text);}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:var(--r2);cursor:pointer;color:var(--text2);font-size:13px;font-weight:500;margin:1px 0;}
 .nav-item.active{background:linear-gradient(135deg,rgba(245,166,35,.18),rgba(255,209,102,.07));color:var(--accent);border:1px solid rgba(245,166,35,.22);}
-[data-theme="light"] .nav-item.active{background:rgba(245,166,35,.1);}
-.nav-icon{font-size:14px;width:20px;text-align:center;flex-shrink:0;}
-.nb{margin-left:auto;background:var(--red);color:#fff;font-size:9px;font-weight:700;padding:1px 6px;border-radius:10px;min-width:17px;text-align:center;}
-.sb-footer{padding:12px 16px;border-top:1px solid var(--border);}
-.sb-user{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px;}
-.sb-date{font-size:11px;color:var(--accent);font-family:var(--mono);}
-.sb-ver{font-size:10px;color:var(--text3);margin-top:3px;}
 .main{margin-left:var(--sw);flex:1;display:flex;flex-direction:column;min-height:100vh;}
-.topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:12px 26px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;gap:10px;}
-.tb-left{display:flex;align-items:center;gap:10px;}
-.mobile-btn{display:none;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:7px 9px;cursor:pointer;color:var(--text);font-size:16px;align-items:center;justify-content:center;}
-.pg-title{font-size:17px;font-weight:700;}
-.pg-title span{color:var(--accent);}
-.tb-right{display:flex;align-items:center;gap:8px;}
+.topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:12px 26px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+.pg-title{font-size:19px;font-family:var(--serif);font-weight:700;color:var(--accent);}
+.tb-right{display:flex;align-items:center;gap:10px;}
 
-/* Accurate Online/Offline UI (IMG_7965 & IMG_7968) */
+/* Redesigned Network Indicators */
 .network-wrap { display: flex; align-items: center; gap: 8px; margin-right: 8px; }
-.online-badge { padding: 6px 16px; border-radius: 24px; display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-family: var(--mono); font-size: 13px; transition: all 0.3s; }
-.online-badge.on { background: rgba(16, 185, 129, 0.15); color: var(--green); border: 1px solid rgba(16, 185, 129, 0.3); }
-.online-badge.off { background: rgba(239, 68, 68, 0.15); color: var(--red); border: 1px solid rgba(239, 68, 68, 0.3); }
-.online-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+.online-badge { display:flex; align-items:center; gap:6px; padding:6px 14px; border-radius:20px; font-size:12px; font-weight:700; font-family:var(--mono); color:#fff; transition:all 0.3s; box-shadow: var(--sh2); border: none;}
+.online-badge.on { background: #10b981; }
+.online-badge.off { background: #ef4444; }
+.online-dot { width:8px; height:8px; border-radius:50%; background:#fff; animation:dotPulse 1.5s infinite; }
+@keyframes dotPulse{0%,100%{opacity:1;}50%{opacity:.4;}}
 
-.sync-indicator { font-size: 11px; font-weight: 600; color: var(--blue); font-family: var(--mono); opacity: 0; transition: opacity 0.3s; }
-.sync-indicator.active { opacity: 1; }
-
-.tb-action-icon { background:transparent; border:none; color:var(--text2); cursor:pointer; padding:6px; outline:none; display:flex; align-items:center; justify-content:center; border-radius: 50%; transition: color 0.2s;}
+.tb-action-icon { background:transparent; border:none; color:var(--text2); cursor:pointer; padding:6px; border-radius: 50%; }
 .tb-action-icon:hover { color:var(--accent); }
-.spin-once svg { animation: trueSpin 0.7s cubic-bezier(0.4, 0, 0.2, 1); }
-@keyframes trueSpin { 100% { transform: rotate(360deg); } }
-
-.month-badge{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:5px 11px;font-size:11.5px;font-weight:600;color:var(--text2);font-family:var(--mono);}
-.content{padding:22px 26px;flex:1;}
+.content{padding:22px 26px;flex:1;overflow-x:hidden;}
 .page{display:none;}
 .page.active{display:block;animation:pgIn .28s ease;}
 @keyframes pgIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
-.sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:99;}
-.sb-overlay.show{display:block;}
 
-/* ================== BUTTONS & CARDS ================== */
-.btn{padding:7px 14px;border-radius:var(--r2);border:none;cursor:pointer;font-family:var(--font);font-size:13px;font-weight:600;transition:all .17s;display:inline-flex;align-items:center;gap:5px;white-space:nowrap;}
+/* ================== COMPONENTS ================== */
+.btn{padding:7px 14px;border-radius:var(--r2);border:none;cursor:pointer;font-weight:600;display:inline-flex;align-items:center;gap:5px;}
 .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent3));color:#000;}
 .btn-secondary{background:var(--card2);color:var(--text);border:1px solid var(--border);}
 .btn-danger{background:var(--rg);color:var(--red);border:1px solid rgba(239,68,68,.3);}
 .btn-success{background:var(--gg);color:var(--green);border:1px solid rgba(16,185,129,.3);}
 .btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border);}
-.btn-sm{padding:5px 10px;font-size:12px;}
 
-.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px;box-shadow:var(--sh2);transition:border-color .2s;}
-.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px; flex-wrap: wrap; gap: 10px;}
-.card-title{font-size:14px;font-weight:700;}
-.card-sub{font-size:11px;color:var(--text3);margin-top:2px;}
-.stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px 20px;position:relative;overflow:hidden;}
-.stat-card::after{content:'';position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-radius:50%;opacity:.08;}
-.sc-gold::after{background:var(--accent);} .sc-green::after{background:var(--green);}
-.sc-red::after{background:var(--red);} .sc-blue::after{background:var(--blue);}
-.stat-label{font-size:10.5px;color:var(--text3);font-weight:600;letter-spacing:.5px;text-transform:uppercase;}
-.stat-val{font-size:21px;font-weight:800;font-family:var(--mono);margin:5px 0 3px;letter-spacing:-1px;}
-.sc-gold .stat-val{color:var(--accent);} .sc-green .stat-val{color:var(--green);}
-.sc-red .stat-val{color:var(--red);} .sc-blue .stat-val{color:var(--blue);}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px;box-shadow:var(--sh2);}
+.card-title{font-size:15px;font-weight:700;}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px 20px;}
+.stat-label{font-size:10.5px;color:var(--text3);font-weight:600;text-transform:uppercase;}
+.stat-val{font-size:21px;font-weight:800;font-family:var(--mono);margin:5px 0 3px;}
+.sc-gold .stat-val{color:var(--accent);} .sc-green .stat-val{color:var(--green);} .sc-red .stat-val{color:var(--red);}
 
-/* ================== GRID & TABLE ================== */
 .g2{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
 .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
 .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
 .g5{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;}
 
-.tbl-wrap{overflow-x:auto;border-radius:var(--r2);border:1px solid var(--border); margin-bottom: 10px; width: 100%;}
-table{width:100%;border-collapse:collapse;font-size:13px; min-width: 800px;}
-thead th{background:var(--bg2);color:var(--text3);font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;padding:9px 13px;text-align:left;white-space:nowrap;}
+.tbl-wrap{overflow-x:auto;border-radius:var(--r2);border:1px solid var(--border); margin-bottom: 10px; width:100%;}
+table{width:100%;border-collapse:collapse;font-size:13px; min-width: 600px;}
+thead th{background:var(--bg2);color:var(--text3);font-size:10px;font-weight:700;text-transform:uppercase;padding:9px 13px;text-align:left;}
 tbody tr{border-top:1px solid rgba(255,255,255,.03);}
-tbody td{padding:10px 13px;vertical-align:middle;}
-.td-mono{font-family:var(--mono);font-size:12px;}
-.td-r{color:var(--red);font-family:var(--mono);font-size:12px;}
-.td-a{color:var(--accent);font-family:var(--mono);font-size:12px;}
+tbody td{padding:10px 13px;}
 
-.badge{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:20px;font-size:10.5px;font-weight:600;white-space:nowrap;}
-.bg-g{background:rgba(16,185,129,.13);color:var(--green);}
-.bg-r{background:var(--rg);color:var(--red);}
-.bg-a{background:rgba(245,166,35,.13);color:var(--accent);}
-.bg-b{background:rgba(59,130,246,.13);color:var(--blue);}
-
-/* ================== FORM ================== */
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(6px);z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .23s;padding:14px;}
+.mo.open{opacity:1;pointer-events:all;}
+.md{background:var(--card);border:1px solid var(--border2);border-radius:18px;padding:24px;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;transform:scale(.94);}
+.mo.open .md{transform:scale(1);}
 .fg{margin-bottom:13px;}
-.fl{font-size:11.5px;font-weight:600;color:var(--text2);display:block;margin-bottom:4px;letter-spacing:.2px;}
-.fi,.fs,.fta{width:100%;background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--r2);padding:8px 11px;color:var(--text);font-family:var(--font);outline:none;box-sizing:border-box;}
-.fi:focus,.fs:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--ag);}
+.fl{font-size:11.5px;font-weight:600;color:var(--text2);display:block;margin-bottom:4px;}
+.fi,.fs,.fta{width:100%;background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--r2);padding:8px 11px;color:var(--text);outline:none;}
 .fr{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));}
 
-/* ================== GOLDEN AI INSIGHTS CARD ================== */
-.ai-card {
-    border: 2px solid rgba(245, 166, 35, 0.5);
-    border-radius: 18px;
-    padding: 24px;
-    background: linear-gradient(135deg, rgba(15, 23, 41, 0.95), rgba(10, 15, 28, 0.95));
-    box-shadow: 0 8px 32px rgba(245, 166, 35, 0.1);
-    position: relative;
-    overflow: hidden;
-    margin-bottom: 20px;
+/* Professional Date Highlight */
+.payout-badge {
+    display: inline-flex;
+    align-items: center;
+    background: linear-gradient(135deg, var(--accent), var(--accent3));
+    color: #000;
+    padding: 3px 10px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    box-shadow: 0 2px 8px var(--ag);
+    letter-spacing: 0.5px;
 }
-.ai-card::before {
-    content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-    background: radial-gradient(circle at center, rgba(245, 166, 35, 0.08) 0%, transparent 60%);
-    pointer-events: none; z-index: 0;
-}
-.ai-header {
-    display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; position: relative; z-index: 1; flex-wrap: wrap; gap: 12px;
-}
-.ai-title {
-    font-size: 18px; font-weight: 800; display: flex; align-items: center; gap: 8px; color: #fff;
-}
-.ai-btn {
-    background: var(--accent); color: #000; padding: 8px 18px; border-radius: 20px; font-weight: 700; border: none; cursor: pointer; transition: all 0.2s; font-family: var(--font);
-}
-.ai-btn:hover { background: var(--accent2); transform: scale(1.03); box-shadow: 0 4px 15px rgba(245,166,35,0.4); }
-.ai-btn:disabled { opacity: 0.6; cursor: wait; transform: none; }
-#aiInsightsArea { position: relative; z-index: 1; font-size: 14px; color: var(--text2); line-height: 1.6; }
 
-/* ================== RESPONSIVE FIXES ================== */
+/* ================== RESPONSIVE ================== */
 @media(max-width:900px){
   .sidebar{transform:translateX(-100%);}
   .sidebar.open{transform:translateX(0);}
-  .main{margin-left:0;}
-  .mobile-btn{display:flex;}
+  .main{margin-left:0; width: 100vw;}
+  .content { padding: 14px; }
   .g5{grid-template-columns:repeat(3,1fr);}
-  .g4, .g3{grid-template-columns:repeat(2,1fr);}
-  .content{padding:14px 16px;}
+  .g4{grid-template-columns:repeat(2,1fr);}
 }
-@media(max-width:540px){
-  .g4,.g3,.g2{grid-template-columns:1fr;}
-  .g5{grid-template-columns:repeat(2,1fr);}
-  .auth-box{padding:32px 24px;}
-  .tb-right {gap: 4px;}
-  .month-badge { display: none; }
-  .fr { grid-template-columns: 1fr; } /* Fix mobile stacking */
-  .sh-actions { display: flex; flex-direction: column; width: 100%; gap: 10px; align-items: flex-start; }
-  .sh-actions > * { width: 100%; }
-  .sort-bar { flex-wrap: wrap; }
+@media(max-width:768px){
+  .g5, .g4, .g3, .g2, .fr { grid-template-columns: 1fr !important; }
+  .dash-chart-row { display: flex; flex-direction: column; gap: 16px; }
+  .auth-box { width: 95%; padding: 30px 20px; }
+  .card { padding: 14px; }
+  .network-wrap { margin-right: 0; }
+  .online-badge { padding: 5px 10px; font-size: 11px; }
+  .pg-title { font-size: 16px; }
 }
-
-/* Modals & other existing styles remain compact */
-.mo{position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(6px);z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;padding:14px;}
-.mo.open{opacity:1;pointer-events:all;}
-.md{background:var(--card);border:1px solid var(--border2);border-radius:18px;padding:24px;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;transform:scale(.94) translateY(14px);transition:transform .2s;}
-.mo.open .md{transform:scale(1) translateY(0);}
-.md-sm{max-width:420px;}
-.md-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
-.md-title{font-size:16px;font-weight:700;}
-.md-x{background:transparent;border:none;font-size:18px;cursor:pointer;color:var(--text2);}
-.md-ftr{display:flex;gap:8px;justify-content:flex-end;margin-top:20px;padding-top:16px;border-top:1px solid var(--border);}
-.sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;gap:10px;flex-wrap:wrap;}
-.sh-title{font-size:17px;font-weight:700;}
-.sh-actions{display:flex;gap:7px;align-items:center;flex-wrap:wrap;}
-.sort-bar{display:flex;gap:5px;align-items:center;}
-.sb-btn{padding:3px 9px;background:var(--card2);border:1px solid var(--border);border-radius:6px;font-size:11px;font-weight:600;color:var(--text3);cursor:pointer;}
-.sb-btn.active{background:rgba(245,166,35,.1);color:var(--accent);border-color:rgba(245,166,35,.3);}
+@media(max-width:480px){
+  .topbar { padding: 10px; flex-wrap: wrap; gap: 10px;}
+  .tb-left, .tb-right { width: 100%; justify-content: space-between; }
+  .online-badge span:last-child { display: none; } /* Hide text on small screens */
+  .mo { padding: 10px; }
+  .md { padding: 16px; }
+}
 </style>
 </head>
 <body>
 
-<div id="splash" class="hide" style="display:none;"></div>
-<div id="authScreen" style="display:none;"></div>
+<div id="splash">
+  <div class="sp-logo">₣</div>
+  <div class="sp-title">WealthFlow</div>
+  <div style="font-size:12px;color:var(--accent);">Securing connection...</div>
+</div>
 
-<div id="app" class="show">
-  <div class="sb-overlay" id="sbOverlay" onclick="closeSb()"></div>
+<div id="authScreen">
+  <div class="auth-box" id="authLogin">
+    <div class="auth-logo">₣</div>
+    <div class="auth-title">Welcome Back</div>
+    <div class="pin-dots" id="loginDots"></div>
+    <div class="numpad" id="loginPad"></div>
+    <div style="color:var(--red); font-size: 12px; height: 18px;" id="loginErr"></div>
+  </div>
+</div>
+
+<div id="app">
   <aside class="sidebar" id="sidebar">
     <div class="sb-logo">
       <div class="sb-logomark">
         <div class="sb-icon">₣</div>
-        <div><div class="sb-title">WealthFlow</div><div class="sb-sub">Infinity Engine</div></div>
+        <div class="sb-title">WealthFlow</div>
       </div>
     </div>
     <nav class="sb-nav">
-      <div class="sb-group">Overview</div>
-      <div class="nav-item active" onclick="showPage('dashboard',this)"><span class="nav-icon">📊</span> Dashboard</div>
-      <div class="sb-group">Finance</div>
-      <div class="nav-item" onclick="showPage('income',this)"><span class="nav-icon">💰</span> Income & Investments</div>
-      <div class="nav-item" onclick="showPage('loans',this)"><span class="nav-icon">🏦</span> Bank Loans</div>
+      <div class="nav-item active" onclick="showPage('dashboard',this)">📊 Dashboard</div>
+      <div class="nav-item" onclick="showPage('monthly',this)">📅 Monthly Plan</div>
+      <div class="nav-item" onclick="showPage('income',this)">💰 Income & Investments</div>
+      <div class="nav-item" onclick="showPage('expenses',this)">🧾 Monthly Expenses</div>
     </nav>
   </aside>
 
   <div class="main">
     <header class="topbar">
       <div class="tb-left">
-        <button class="mobile-btn" onclick="openSb()">☰</button>
-        <div class="pg-title" id="pgTitle">📊 <span>Dashboard</span></div>
+        <button class="btn btn-ghost" style="padding:4px 8px; font-size: 16px;" onclick="openSb()">☰</button>
+        <div class="pg-title" id="pgTitle">Dashboard</div>
       </div>
       <div class="tb-right">
         <div class="network-wrap">
-           <div class="online-badge on" id="onlineBadge"><span class="online-dot" id="onlineDot"></span><span id="onlineText">Online</span></div>
-           <div id="syncIndicator" class="sync-indicator">Syncing...</div>
+           <div class="online-badge on" id="onlineBadge"><span class="online-dot"></span><span id="onlineText">Online</span></div>
         </div>
-        <button class="tb-action-icon" id="topRefreshBtn" onclick="refreshApp(this)" title="Sync System">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.3"/></svg>
-        </button>
+        <button class="btn btn-primary btn-sm" id="topAddBtn" style="display:none;" onclick="handleTopAdd()">+ Add</button>
       </div>
     </header>
 
     <div class="content">
       <div class="page active" id="page-dashboard">
+        <div class="g5" id="dashStats" style="margin-bottom:16px;"></div>
         
-        <div class="ai-card">
-            <div class="ai-header">
-                <div class="ai-title">✨ Gemini AI Insights</div>
-                <button class="ai-btn" id="aiGenBtn" onclick="generateAIInsights()">Generate Insight</button>
+        <div class="premium-gold-frame card" style="margin-bottom:16px;">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+                <div class="serif-title" style="font-size: 18px; color: var(--accent);">✨ Elite Financial Insight</div>
+                <button class="btn btn-primary btn-sm" style="color: #000; font-weight: 700;" onclick="generateAIInsights()">Generate Insight</button>
             </div>
-            <div id="aiInsightsArea">
-                Click generate to receive a real-time AI analysis of your current monthly cash flow based on local Sri Lankan context.
+            <div id="aiInsightsArea" style="font-size:14px; color:var(--text); line-height:1.6; min-height: 40px;">
+                Press generate to receive an instant, AI-driven professional analysis of your current monthly cash flow.
             </div>
         </div>
 
-        <div class="g4" id="dashStats" style="margin-bottom:16px;"></div>
+        <div class="dash-chart-row g2">
+          <div class="card">
+            <div class="card-title" style="margin-bottom:10px;">Monthly Overview</div>
+            <div style="height:210px;"><canvas id="dashChart"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-title" style="margin-bottom:10px;">Expense Breakdown</div>
+            <div style="height:210px;"><canvas id="dashPie"></canvas></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="page" id="page-monthly">
+        <div class="card-title" style="margin-bottom: 16px;">Monthly Financial Plan</div>
+        <div id="monthlyContent"></div>
       </div>
 
       <div class="page" id="page-income">
-        <div class="sh">
-          <div class="sh-title">Income & Investments</div>
-          <div class="sh-actions">
-            <button class="btn btn-primary btn-sm" onclick="openModal('mdIncome')">+ Add Source</button>
-          </div>
+        <div style="display:flex; justify-content:space-between; margin-bottom: 16px;">
+          <div class="card-title">Income & Investments</div>
+          <button class="btn btn-primary btn-sm" onclick="openModal('mdIncome')">+ Add Source</button>
         </div>
         <div id="incomeList"></div>
       </div>
 
-      <div class="page" id="page-loans">
-        <div class="sh">
-          <div class="sh-title">Bank Loans</div>
-          <div class="sh-actions">
-            <button class="btn btn-primary btn-sm" onclick="openModal('mdLoan')">+ Add Loan</button>
-          </div>
+      <div class="page" id="page-expenses">
+        <div style="display:flex; justify-content:space-between; margin-bottom: 16px;">
+          <div class="card-title">Monthly Expenses</div>
+          <button class="btn btn-primary btn-sm" onclick="openModal('mdExpense')">+ Add Expense</button>
         </div>
-        <div id="loansList"></div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Description</th><th>Amount</th><th>Actions</th></tr></thead>
+          <tbody id="expBody"></tbody>
+        </table></div>
       </div>
-
     </div>
   </div>
 </div>
 
 <div class="mo" id="mdIncome"><div class="md">
-  <div class="md-hdr"><div class="md-title" id="mdIncomeTitle">Add Income Source</div><button class="md-x" onclick="closeModal('mdIncome')">✕</button></div>
-  <div class="fr"><div class="fg"><label class="fl">Source Name *</label><input class="fi" id="i_name"></div><div class="fg"><label class="fl">Company *</label><input class="fi" id="i_company"></div></div>
-  <div class="fr"><div class="fg"><label class="fl">Amount (LKR) *</label><input class="fi money-input" id="i_amount"></div><div class="fg"><label class="fl">Annual Rate (%) *</label><input class="fi" id="i_rate" type="number"></div></div>
-  <div class="fr"><div class="fg"><label class="fl">Start Date *</label><input class="fi" id="i_start" type="date"></div><div class="fg"><label class="fl">End Date</label><input class="fi" id="i_end" type="date"></div></div>
-  
-  <div class="fr"><div class="fg"><label class="fl">Frequency *</label><select class="fs" id="i_freq"><option value="monthly">Monthly</option></select></div><div class="fg"><label class="fl">First Payment Date *</label><input class="fi" id="i_first_pay" type="date"></div></div>
-  
-  <div class="md-ftr"><button class="btn btn-ghost" onclick="closeModal('mdIncome')">Cancel</button><button class="btn btn-primary" onclick="saveIncome()">💾 Save Source</button></div>
+  <div style="display:flex; justify-content:space-between; margin-bottom: 16px;"><div class="card-title">Add Income Source</div><button class="btn btn-ghost" onclick="closeModal('mdIncome')">✕</button></div>
+  <div class="fg"><label class="fl">Source Name</label><input class="fi" id="i_name"></div>
+  <div class="fr">
+    <div class="fg"><label class="fl">Amount (LKR)</label><input class="fi" type="number" id="i_amount"></div>
+    <div class="fg"><label class="fl">Next Payout Date</label><input class="fi" id="i_day" type="date"></div>
+  </div>
+  <button class="btn btn-primary" style="width:100%; margin-top: 10px;" onclick="saveIncome()">Save Source</button>
 </div></div>
 
-<div id="notifs" style="position:fixed;bottom:20px;right:20px;z-index:9999;"></div>
+<div class="mo" id="mdExpense"><div class="md md-sm">
+  <div style="display:flex; justify-content:space-between; margin-bottom: 16px;"><div class="card-title">Add Expense</div><button class="btn btn-ghost" onclick="closeModal('mdExpense')">✕</button></div>
+  <div class="fg"><label class="fl">Description</label><input class="fi" id="e_desc"></div>
+  <div class="fg"><label class="fl">Amount (LKR)</label><input class="fi" type="number" id="e_amount"></div>
+  <button class="btn btn-primary" style="width:100%; margin-top: 10px;" onclick="saveExpense()">Save Expense</button>
+</div></div>
 
 <script>
-// Mocking AppData for demo purposes in snippet. 
-let appData = { income: [], loans: [], expenses: [], settings: {} };
-const $ = id => document.getElementById(id);
-const uid = () => '_' + Date.now().toString(36) + Math.random().toString(36).substr(2,5);
-const parseMoney = (s) => parseFloat(String(s).replace(/,/g,'')) || 0;
-const fmtN = (n) => parseFloat(n||0).toLocaleString('en-US', {minimumFractionDigits:2});
-const fmt = (n) => 'LKR ' + fmtN(n);
+// Base Data Structure
+let appData = { income: [], expenses: [], auth: { pin: '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92' } }; // Default PIN '123456' for demo
 
+const $ = id => document.getElementById(id);
+const uid = () => '_' + Math.random().toString(36).substr(2,9);
+const fmt = n => 'LKR ' + parseFloat(n).toLocaleString('en-US', {minimumFractionDigits:2});
+
+// Setup Network Status Redesign
+function setSyncStatus(state) {
+    const badge = $('onlineBadge');
+    const text = $('onlineText');
+    if(state === 'online') {
+        badge.className = 'online-badge on';
+        text.textContent = 'Online';
+    } else {
+        badge.className = 'online-badge off';
+        text.textContent = 'Offline';
+    }
+}
+window.addEventListener('online', () => setSyncStatus('online'));
+window.addEventListener('offline', () => setSyncStatus('offline'));
+
+// Authentication
+let pinBuffer = '';
+function initAuthUI() {
+    const keys = [1,2,3,4,5,6,7,8,9,'','0','⌫'];
+    $('loginPad').innerHTML = keys.map(k => {
+        if(k==='') return '<div></div>';
+        if(k==='⌫') return `<button class="npb del" onclick="pinBackspace()">${k}</button>`;
+        return `<button class="npb" onclick="pinDigit('${k}')">${k}</button>`;
+    }).join('');
+    buildDots(0);
+}
+function buildDots(filled) {
+    $('loginDots').innerHTML = Array.from({length:6}, (_,i) => `<div class="pin-dot ${i<filled?'filled':''}"></div>`).join('');
+}
+function pinDigit(d) {
+    if(pinBuffer.length >= 6) return;
+    pinBuffer += d;
+    buildDots(pinBuffer.length);
+    if(pinBuffer.length === 6) setTimeout(checkPin, 100);
+}
+function pinBackspace() {
+    pinBuffer = pinBuffer.slice(0,-1);
+    buildDots(pinBuffer.length);
+}
+async function checkPin() {
+    // Demo bypass for immediate viewing. In production, check SHA256.
+    $('authScreen').classList.remove('show');
+    $('app').classList.add('show');
+    renderDash();
+}
+
+// AI Insight Generator
+async function generateAIInsights() {
+    const btn = document.querySelector('.premium-gold-frame button');
+    const area = $('aiInsightsArea');
+    btn.disabled = true;
+    btn.textContent = 'Analysing...';
+    
+    // Golden pulse animation while loading
+    area.innerHTML = '<div style="display:flex;align-items:center;gap:10px;"><div class="online-dot" style="background:var(--accent);"></div> <span style="font-family:var(--serif); font-style:italic;">Reviewing your financial landscape...</span></div>';
+
+    const inc = appData.income.reduce((sum, i) => sum + parseFloat(i.amount), 0);
+    const exp = appData.expenses.reduce((sum, e) => sum + parseFloat(e.amount), 0);
+    
+    const prompt = `Act as an elite financial advisor in Sri Lanka. My monthly income is LKR ${inc} and expenses are LKR ${exp}. Give a sophisticated, 2-sentence actionable insight.`;
+
+    try {
+        const res = await fetch('/api/ai', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ prompt })
+        });
+        const data = await res.json();
+        
+        area.innerHTML = `
+            <div style="font-family:var(--serif); font-size:16px; color:var(--text); line-height:1.7; border-left: 3px solid var(--accent); padding-left: 14px; background: rgba(245,166,35,0.05); padding: 12px; border-radius: 0 8px 8px 0;">
+                ${data.reply || data.error}
+            </div>`;
+    } catch(e) {
+        area.innerHTML = '<span style="color:var(--red); font-family:var(--serif);">Connection to AI Core failed. Please verify your API keys and network connection.</span>';
+    }
+    
+    btn.disabled = false;
+    btn.textContent = 'Generate Insight';
+}
+
+// Navigation & Modals
 function showPage(name, navEl) {
     document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
     document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
     $('page-'+name).classList.add('active');
     if(navEl) navEl.classList.add('active');
-    closeSb();
+    
+    const titles = {dashboard: 'Dashboard', monthly: 'Monthly Plan', income: 'Income', expenses: 'Expenses'};
+    $('pgTitle').textContent = titles[name];
+    
+    const tb = $('topAddBtn');
+    if(name === 'income' || name === 'expenses') { tb.style.display=''; tb.textContent = '+ Add'; } else tb.style.display='none';
+    
+    if(name === 'dashboard') renderDash();
     if(name === 'income') renderIncome();
-    if(name === 'loans') renderLoans();
+    if(name === 'expenses') renderExpenses();
+    
+    $('sidebar').classList.remove('open');
 }
+function handleTopAdd() {
+    const active = document.querySelector('.page.active').id.replace('page-','');
+    if(active === 'income') openModal('mdIncome');
+    if(active === 'expenses') openModal('mdExpense');
+}
+function openSb() { $('sidebar').classList.add('open'); }
 function openModal(id) { $(id).classList.add('open'); }
 function closeModal(id) { $(id).classList.remove('open'); }
-function openSb() { $('sidebar').classList.add('open'); $('sbOverlay').classList.add('show'); }
-function closeSb() { $('sidebar').classList.remove('open'); $('sbOverlay').classList.remove('show'); }
 
-// --- EXACT ONLINE / OFFLINE LOGIC ---
-function setSyncStatus(state) {
-    const badge = $('onlineBadge');
-    if(state === 'online') {
-        if(badge) { badge.className = 'online-badge on'; $('onlineText').textContent = 'Online'; }
-    } else {
-        if(badge) { badge.className = 'online-badge off'; $('onlineText').textContent = 'Offline'; }
-    }
-}
-window.addEventListener('online', () => setSyncStatus('online'));
-window.addEventListener('offline', () => setSyncStatus('offline'));
-setSyncStatus(navigator.onLine ? 'online' : 'offline');
-
-// --- AI GENERATION LOGIC ---
-async function generateAIInsights() {
-    const btn = $('aiGenBtn');
-    const area = $('aiInsightsArea');
-    
-    btn.textContent = 'Generating...';
-    btn.disabled = true;
-    area.innerHTML = '<div style="animation: trueSpin 1s infinite alternate; color: var(--accent); font-weight: bold;">Scanning financial parameters...</div>';
-
-    // Mock data gathering for prompt
-    const prompt = `Analyze this financial data for a Sri Lankan businessman. Provide 3 highly professional, short, actionable insights. Total Income: LKR 1,500,000. Total Debt Servicing: LKR 400,000.`;
-
-    try {
-        // Attempt Vercel API first
-        let response = await fetch('/api/ai', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ prompt })
-        });
-        
-        if (!response.ok) throw new Error('Vercel API failed');
-        let data = await response.json();
-        area.innerHTML = data.reply.replace(/\n/g, '<br>');
-    } catch (e) {
-        console.warn('Vercel API failed. Executing strict direct fallback.', e);
-        // Fallback to direct Gemini hit
-        try {
-            let res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyCU6KyYWjUg7Iikf3XdYteCiJnbJ_2ZZCQ', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-            });
-            let data = await res.json();
-            let text = data.candidates[0].content.parts[0].text;
-            area.innerHTML = text.replace(/\n/g, '<br>');
-        } catch (err) {
-            area.innerHTML = '<span style="color:var(--red); font-weight:bold;">⚠️ Failed to establish secure connection with AI. Please check your network.</span>';
-        }
-    }
-    
-    btn.textContent = 'Generate Insight';
-    btn.disabled = false;
-}
-
-// --- INCOME LOGIC (UPDATED WITH DATE) ---
-let editMode = null;
+// Data Management
 function saveIncome() {
-    const name=$('i_name').value.trim(), company=$('i_company').value.trim(), amount=parseMoney($('i_amount').value);
-    const firstPay = $('i_first_pay').value; // Now using date instead of day
-    if(!name||!company||!amount||!firstPay) { alert('Fill fields'); return; }
+    const n = $('i_name').value, a = $('i_amount').value, d = $('i_day').value;
+    if(n && a && d) {
+        appData.income.push({id:uid(), name:n, amount:a, date:d});
+        closeModal('mdIncome'); renderIncome(); renderDash();
+        $('i_name').value=''; $('i_amount').value=''; $('i_day').value='';
+    }
+}
+function renderIncome() {
+    const el = $('incomeList');
+    if(!appData.income.length) { el.innerHTML='<div style="padding:20px; text-align:center; color:var(--text3);">No income sources recorded.</div>'; return; }
     
-    const rec = { id:editMode||uid(), name, company, amount, firstPay, monthly: amount * 0.1 }; // Mock calc
-    appData.income.push(rec);
-    closeModal('mdIncome'); renderIncome();
+    el.innerHTML = appData.income.map(i => `
+        <div class="card" style="margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
+            <div>
+                <div style="font-weight:700; font-size:15px;">${i.name}</div>
+                <div style="margin-top:6px;"><span class="payout-badge">Next Payout: ${i.date}</span></div>
+            </div>
+            <div style="font-family:var(--mono); color:var(--green); font-size:18px; font-weight:700;">${fmt(i.amount)}</div>
+        </div>
+    `).join('');
+}
+function saveExpense() {
+    const d = $('e_desc').value, a = $('e_amount').value;
+    if(d && a) {
+        appData.expenses.push({id:uid(), desc:d, amount:a});
+        closeModal('mdExpense'); renderExpenses(); renderDash();
+        $('e_desc').value=''; $('e_amount').value='';
+    }
+}
+function renderExpenses() {
+    const el = $('expBody');
+    if(!appData.expenses.length) { el.innerHTML='<tr><td colspan="3" style="text-align:center; padding:20px;">No expenses recorded.</td></tr>'; return; }
+    el.innerHTML = appData.expenses.map(e => `
+        <tr>
+            <td style="font-weight:600;">${e.desc}</td>
+            <td style="color:var(--red); font-family:var(--mono);">${fmt(e.amount)}</td>
+            <td><button class="btn btn-danger btn-sm" onclick="appData.expenses=appData.expenses.filter(x=>x.id!=='${e.id}'); renderExpenses(); renderDash();">✕</button></td>
+        </tr>
+    `).join('');
+}
+function renderDash() {
+    const inc = appData.income.reduce((sum, i) => sum + parseFloat(i.amount), 0);
+    const exp = appData.expenses.reduce((sum, e) => sum + parseFloat(e.amount), 0);
+    $('dashStats').innerHTML = `
+        <div class="stat-card"><div class="stat-label">Total Income</div><div class="stat-val" style="color:var(--green);">${fmt(inc)}</div></div>
+        <div class="stat-card"><div class="stat-label">Total Expenses</div><div class="stat-val" style="color:var(--red);">${fmt(exp)}</div></div>
+        <div class="stat-card"><div class="stat-label">Net Balance</div><div class="stat-val" style="color:var(--accent);">${fmt(inc-exp)}</div></div>
+    `;
 }
 
-function renderIncome() {
-    const el=$('incomeList');
-    if(!appData.income.length) { el.innerHTML='<div style="padding:20px;">No income recorded.</div>'; return; }
-    
-    el.innerHTML=appData.income.map(source=>{
-        return`<div class="card" style="margin-bottom:12px;">
-            <div style="display:flex;align-items:flex-start;justify-content:space-between;">
-                <div><div style="font-size:15px;font-weight:700;">${source.name}</div><div style="font-size:12px;color:var(--text3);">🏛️ ${source.company}</div></div>
-                <div style="text-align:right;"><div style="font-size:21px;font-weight:800;font-family:var(--mono);color:var(--green);">${fmt(source.monthly)}</div>
-                <div style="font-size:11px;color:var(--accent);font-weight:700;">Receives on: ${source.firstPay}</div></div>
-            </div>
-        </div>`;
-    }).join('');
-}
+// Boot
+window.onload = () => {
+    initAuthUI();
+    setTimeout(() => {
+        $('splash').classList.add('hide');
+        $('authScreen').classList.add('show');
+        setSyncStatus(navigator.onLine ? 'online' : 'offline');
+    }, 1500);
+};
 </script>
 </body>
 </html>
