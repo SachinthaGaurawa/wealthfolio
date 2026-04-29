@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>WealthFlow | Personal Financial System</title>
+<title>WealthFlow | Infinity Engine</title>
 <link rel="icon" type="image/x-icon" href="https://res.cloudinary.com/dzrfpc9be/image/upload/v1777219304/Fav_img_rkpnbl.ico">
 <link rel="icon" type="image/png" href="https://res.cloudinary.com/dzrfpc9be/image/upload/v1777219344/Fav_img_bagjfj.png">
 <link rel="apple-touch-icon" href="https://res.cloudinary.com/dzrfpc9be/image/upload/v1777219344/Fav_img_bagjfj.png">
@@ -123,7 +123,7 @@ button, .npb { touch-action: manipulation; }
 .pg-title span{color:var(--accent);}
 .tb-right{display:flex;align-items:center;gap:8px;flex-wrap: wrap;}
 
-/* Advanced Network Indicators matching user images */
+/* Advanced Network Indicators (Luxury Animation) */
 .network-wrap { display: flex; align-items: center; gap: 8px; margin-right: 8px; }
 .online-badge{
     display:flex;align-items:center;gap:8px;padding:6px 16px;border-radius:30px;
@@ -135,10 +135,16 @@ button, .npb { touch-action: manipulation; }
 .online-badge.off{
     background:rgba(69, 10, 10, 0.6); color:#ef4444; border: 1.5px solid rgba(239,68,68,0.3);
 }
-.online-dot{width:10px;height:10px;border-radius:50%;background:currentColor;box-shadow: 0 0 8px currentColor;}
-.online-badge.on .online-dot { animation: none; }
-.online-badge.off .online-dot { animation: dotPulse 1.5s infinite; }
-@keyframes dotPulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+.online-dot{width:10px;height:10px;border-radius:50%;background:currentColor;}
+
+/* Professional Breathing Pulse */
+@keyframes luxuryPulse {
+    0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 10px currentColor; }
+    50% { opacity: 0.4; transform: scale(0.85); box-shadow: 0 0 3px currentColor; }
+}
+.online-badge.on .online-dot, .online-badge.off .online-dot {
+    animation: luxuryPulse 3s ease-in-out infinite;
+}
 
 .sync-indicator { font-size: 11px; font-weight: 600; color: var(--blue); font-family: var(--mono); opacity: 0; transition: opacity 0.3s; letter-spacing: 0.5px; display: flex; align-items: center; gap: 4px; white-space: nowrap;}
 .sync-indicator.active { opacity: 1; }
@@ -439,7 +445,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
 .setting-info .setting-desc{font-size:11px;color:var(--text3);margin-top:4px;}
 .toggle{width:44px;height:24px;background:var(--border);border-radius:100px;position:relative;cursor:pointer;transition:background .2s;flex-shrink:0;}
 .toggle.on{background:var(--accent);}
-.toggle::after{content:'absolute';top:2px;left:2px;width:20px;height:20px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 4px rgba(0,0,0,.3);}
+.toggle::after{content:'';position:absolute;top:2px;left:2px;width:20px;height:20px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 4px rgba(0,0,0,.3);}
 .toggle.on::after{transform:translateX(20px);}
 
 /* ================== OFFLINE BANNER ================== */
@@ -597,7 +603,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
     <div class="sb-footer">
       <div class="sb-user">👤 Sachintha Gaurawa</div>
       <div class="sb-date" id="sbDate">-</div>
-      <div class="sb-ver">WealthFlow v5.0 · Elite</div>
+      <div class="sb-ver">WealthFlow v5.2 · Elite</div>
     </div>
   </aside>
 
@@ -878,7 +884,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
   
   <div class="fg"><label class="fl">Export Format</label>
     <select class="fs" id="expFormat" onchange="toggleExportOptions()">
-        <option value="pdf">Professional PDF Report</option>
+        <option value="pdf">Professional PDF Statement</option>
         <option value="json">Raw Data JSON (Local Download)</option>
     </select>
   </div>
@@ -910,8 +916,8 @@ tbody td{padding:10px 13px;vertical-align:middle;}
   </div>
   <div id="fr_success" style="display:none; text-align:center; padding: 20px 0;">
       <div style="font-size:40px; margin-bottom:10px;">✅</div>
-      <div style="color:var(--green); font-weight:700; font-size:16px;">System Wiped</div>
-      <div style="font-size:12px; color:var(--text2); margin-top:5px;">Rebooting...</div>
+      <div style="color:var(--green); font-weight:700; font-size:16px;">System Wiped Successfully</div>
+      <div style="font-size:14px; color:var(--text2); margin-top:8px; font-family:var(--mono);" id="fr_countdown">Rebooting in 3...</div>
   </div>
 </div></div>
 
@@ -922,7 +928,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
   <p style="font-size:12px;color:var(--text2);margin-bottom:8px;">Select a recent backup from your Google Drive folder to restore.</p>
   <div class="fr">
     <div class="fg" style="grid-column: span 2;"><select class="fs" id="restoreSelect"></select></div>
-    <div class="fg"><button class="btn btn-primary" style="width:100%; justify-content:center;" id="restoreBtn" onclick="executeDriveRestore()">Restore from Drive</button></div>
+    <div class="fg"><button class="btn btn-primary" style="width:100%; justify-content:center;" id="restoreBtn" onclick="requestDrivePermission('restore')">Fetch & Restore</button></div>
   </div>
 
   <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:18px 0 8px; border-top:1px solid var(--border); padding-top:18px;">Option 2: Local File Recovery</div>
@@ -936,7 +942,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
   <div class="fr"><div class="fg"><label class="fl">Source Name *</label><input class="fi" id="i_name" placeholder="Fixed Deposit - Commercial Bank"></div><div class="fg"><label class="fl">Company / Person *</label><input class="fi" id="i_company" placeholder="Commercial Bank"></div></div>
   <div class="fr"><div class="fg"><label class="fl">Invested Amount (LKR) *</label><input class="fi money-input" id="i_amount" placeholder="13,700,000" oninput="calcIncomeM()"></div><div class="fg"><label class="fl">Annual Rate (%) *</label><input class="fi" id="i_rate" type="number" placeholder="57" step="0.1" oninput="calcIncomeM()"></div></div>
   <div class="fr"><div class="fg"><label class="fl">Start Date *</label><input class="fi" id="i_start" type="date"></div><div class="fg"><label class="fl">End Date</label><input class="fi" id="i_end" type="date"></div></div>
-  <div class="fr"><div class="fg"><label class="fl">Frequency *</label><select class="fs" id="i_freq" onchange="calcIncomeM()"><option value="monthly">Monthly</option><option value="annual">Annual</option><option value="quarterly">Quarterly</option></select></div><div class="fg"><label class="fl">Payment Start Date *</label><input class="fi" id="i_day" type="date"></div></div>
+  <div class="fr"><div class="fg"><label class="fl">Frequency *</label><select class="fs" id="i_freq" onchange="calcIncomeM()"><option value="monthly">Monthly</option><option value="annual">Annual</option><option value="quarterly">Quarterly</option></select></div><div class="fg"><label class="fl">First Payment Date *</label><input class="fi" id="i_day" type="date"></div></div>
   <div class="fg"><label class="fl">Override Monthly Amount</label><input class="fi money-input" id="i_override" placeholder="Leave blank to auto-calculate"></div>
   <div class="fcalc" id="i_calc"></div>
   <div class="fg"><label class="fl">Notes</label><textarea class="fta" id="i_notes" placeholder="Additional details..."></textarea></div>
@@ -1071,7 +1077,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
 
 <script>
 // =====================================================
-// WEALTHFLOW v5.0 - Infinity Cloud Financial System
+// WEALTHFLOW v5.2 - Infinity Cloud Financial System
 // Owner: Sachintha Gaurawa
 // =====================================================
 
@@ -1226,7 +1232,7 @@ function lockApp() {
 // ==================== AI INSIGHTS ====================
 async function generateAIInsights() {
     const area = $('aiInsightsArea');
-    area.innerHTML = '<div style="display:flex;align-items:center;gap:8px;color:var(--accent);"><div class="online-dot" style="animation: dotPulse 1.5s infinite;"></div><span style="font-weight:600;">Analysing your portfolio...</span></div>';
+    area.innerHTML = '<div style="display:flex;align-items:center;gap:8px;color:var(--accent);"><div class="online-dot" style="animation: luxuryPulse 1.5s infinite;"></div><span style="font-weight:600;">Analysing your portfolio...</span></div>';
     
     try {
         const inc = DB.get('income').reduce((s, x) => s + x.monthly, 0);
@@ -1237,7 +1243,7 @@ async function generateAIInsights() {
         Context: My current estimated monthly income from investments is LKR ${inc}. 
         My tracked monthly expenses are LKR ${exp}. 
         My base balance tracked is LKR ${balData.total}. 
-        Provide a concise, professional, and insightful 2-to-3 sentence financial recommendation based on this data.`;
+        Provide a concise, professional, and insightful 2-to-3 sentence financial recommendation based on this data. Focus on advanced wealth building strategies.`;
         
         const response = await fetch('/api/ai', {
             method: 'POST',
@@ -1256,7 +1262,7 @@ async function generateAIInsights() {
     }
 }
 
-// ==================== GOOGLE DRIVE BACKUP ENGINE ====================
+// ==================== GOOGLE DRIVE BACKUP ENGINE (WITH SESSION CACHE) ====================
 let gapiToken = null;
 let tokenClient;
 
@@ -1268,11 +1274,22 @@ function initDriveAuth() {
         callback: (tokenResponse) => {
             if (tokenResponse && tokenResponse.access_token) {
                 gapiToken = tokenResponse.access_token;
+                // Securely store token in session memory so refreshing doesn't prompt again
+                sessionStorage.setItem('wf_gapi_token', gapiToken);
+                sessionStorage.setItem('wf_gapi_expiry', Date.now() + (tokenResponse.expires_in * 1000) - 60000);
+                
                 if (window.pendingDriveAction === 'backup') executeDriveBackup();
                 if (window.pendingDriveAction === 'restore') fetchDriveBackups();
             }
         }
     });
+
+    // Check if token exists in session memory
+    const savedToken = sessionStorage.getItem('wf_gapi_token');
+    const savedExpiry = sessionStorage.getItem('wf_gapi_expiry');
+    if (savedToken && savedExpiry && Date.now() < parseInt(savedExpiry)) {
+        gapiToken = savedToken;
+    }
 }
 
 window.addEventListener('load', () => {
@@ -1281,11 +1298,14 @@ window.addEventListener('load', () => {
 
 async function requestDrivePermission(action) {
     window.pendingDriveAction = action;
-    if (!gapiToken && tokenClient) {
-        tokenClient.requestAccessToken();
-    } else if (gapiToken) {
+    
+    // If token exists and is valid, execute immediately without prompting
+    const savedExpiry = sessionStorage.getItem('wf_gapi_expiry');
+    if (gapiToken && savedExpiry && Date.now() < parseInt(savedExpiry)) {
         if (action === 'backup') executeDriveBackup();
         if (action === 'restore') fetchDriveBackups();
+    } else if (tokenClient) {
+        tokenClient.requestAccessToken();
     }
 }
 
@@ -1298,7 +1318,7 @@ async function executeDriveBackup() {
     const metadata = {
         name: `WealthFlow_Backup_${today()}_${Date.now()}.json`,
         mimeType: 'application/json',
-        parents: ['1M8_zbBavMm_SeZiwjboYb3rvlczHyIVz'] // Forced to provided folder ID
+        parents: ['1M8_zbBavMm_SeZiwjboYb3rvlczHyIVz']
     };
 
     const form = new FormData();
@@ -1318,10 +1338,10 @@ async function executeDriveBackup() {
             DB.set('settings', s);
             notify('Drive backup complete! ☁️', 'success');
         } else {
-            notify('Drive upload failed.', 'error');
+            notify('Drive upload failed. Please reconnect.', 'error');
+            sessionStorage.removeItem('wf_gapi_token');
         }
     } catch (e) {
-        console.error(e);
         notify('Network error during backup.', 'error');
     }
 }
@@ -1332,7 +1352,6 @@ async function fetchDriveBackups() {
     sel.innerHTML = '<option>Searching Drive...</option>';
     
     try {
-        // Query specific folder for files containing 'WealthFlow_Backup'
         const q = encodeURIComponent(`'1M8_zbBavMm_SeZiwjboYb3rvlczHyIVz' in parents and name contains 'WealthFlow_Backup' and trashed = false`);
         const res = await fetch(`https://www.googleapis.com/drive/v3/files?q=${q}&orderBy=createdTime desc&pageSize=5&fields=files(id,name,createdTime)`, {
             headers: { 'Authorization': 'Bearer ' + gapiToken }
@@ -1347,6 +1366,7 @@ async function fetchDriveBackups() {
         }
     } catch(e) {
         sel.innerHTML = '<option value="">Failed to fetch backups</option>';
+        sessionStorage.removeItem('wf_gapi_token');
     }
 }
 
@@ -1373,7 +1393,6 @@ async function executeDriveRestore() {
         setTimeout(() => location.reload(), 1500);
 
     } catch(e) {
-        console.error(e);
         notify('Failed to restore backup.', 'error');
         $('restoreBtn').disabled = false;
     }
@@ -1687,7 +1706,6 @@ function finishBoot() {
         setTimeout(() => { if($('splash')) $('splash').style.display='none'; }, 600);
         
         initTheme();
-        setupBackupReminder();
 
         $('authScreen').classList.add('show');
         if(!auth.pin) {
@@ -1731,17 +1749,6 @@ function setupOnlineStatus() {
     window.addEventListener('online', updateStatus);
     window.addEventListener('offline', updateStatus);
     updateStatus(); // check initial status
-}
-
-function setupBackupReminder() {
-    const settings = DB.getObj('settings', {backupFreq:'weekly',lastBackup:null});
-    if(!settings.lastBackup) return;
-    const last = new Date(settings.lastBackup);
-    const now = new Date();
-    const days = Math.floor((now-last)/(1000*86400));
-    if(days >= 14) {
-        setTimeout(() => notify(`⚠️ It has been ${days} days since your last manual export. Consider downloading a PDF or JSON.`, 'warn'), 3000);
-    }
 }
 
 function refreshApp(btn) {
@@ -2631,12 +2638,17 @@ function renderDash() {
         netData.push(md.balance);
         yrInc+=md.income; yrExp+=md.totalExp;
     }
+    
+    const balData = DB.getObj('balance',{total:0});
+    // Advanced Net Worth Projection Insight
+    const currentNetWorth = balData.total + yrInc - yrExp;
+
     $('dashStats').innerHTML = `
         <div class="stat-card sc-green"><div class="stat-label">Year Income</div><div class="stat-val">${fmtS(yrInc)}</div></div>
         <div class="stat-card sc-red"><div class="stat-label">Year Expenses</div><div class="stat-val">${fmtS(yrExp)}</div></div>
         <div class="stat-card sc-gold"><div class="stat-label">Net Savings</div><div class="stat-val">${fmtS(yrInc-yrExp)}</div></div>
+        <div class="stat-card sc-cyan"><div class="stat-label">Proj. Net Worth</div><div class="stat-val">${fmtS(currentNetWorth)}</div></div>
         <div class="stat-card sc-blue"><div class="stat-label">Avg Monthly Exp</div><div class="stat-val">${fmtS(yrExp/12)}</div></div>
-        <div class="stat-card sc-cyan"><div class="stat-label">Savings Rate</div><div class="stat-val">${yrInc>0?Math.round((yrInc-yrExp)/yrInc*100):0}%</div></div>
     `;
 
     const ctxC = $('dashChart');
@@ -2817,18 +2829,16 @@ function calcDSCR() {
 
     const resEl = $('dscrResult');
     
-    // Check if enough data is entered
     if(totalDebtService === 0) {
         resEl.innerHTML = '<div style="font-size:13px;color:var(--text3);">Enter full details to calculate your eligibility based on Sri Lankan banking parameters.</div>';
         return;
     }
 
-    // Handle Negative NOI or 0 gracefully
     let dscr = 0;
     if (noi > 0) {
         dscr = noi / totalDebtService;
     } else {
-        dscr = 0; // Negative income defaults to 0 DSCR visually
+        dscr = 0; 
     }
 
     let status='', color='', advicePool=[];
@@ -2981,78 +2991,85 @@ function executeExport() {
         URL.revokeObjectURL(url);
         notify('JSON Data exported successfully!', 'success');
     } else {
-        generatePDFReport();
+        generateElitePDFReport();
     }
     closeModal('mdExport');
 }
 
-function generatePDFReport() {
+// Elite Banking PDF Engine (Fully Overhauled)
+function generateElitePDFReport() {
     const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
+    const doc = new jsPDF('p', 'mm', 'a4');
     
     const year = parseInt($('expPdfYear').value);
     const month = parseInt($('expPdfMonth').value);
     const md = getMonthlyData(year, month);
+    const balData = DB.getObj('balance', {total:0});
+    const currentNetWorth = balData.total + md.income - md.totalExp;
     
     const darkBlue = [15, 23, 42];
     const accentGold = [245, 166, 35];
-    const lightGrey = [241, 245, 249];
     const textGrey = [100, 116, 139];
+    const borderGrey = [226, 232, 240];
 
-    // Header Block
+    // Bank-Style Header
     doc.setFillColor(...darkBlue);
     doc.rect(0, 0, 210, 45, 'F');
 
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(26);
+    doc.setFontSize(28);
     doc.setTextColor(...accentGold);
-    doc.text("WEALTHFLOW", 14, 20);
+    doc.text("WEALTHFLOW", 14, 22);
 
     doc.setFont("helvetica", "normal");
     doc.setFontSize(10);
     doc.setTextColor(255, 255, 255);
-    doc.text("PRIVATE FINANCIAL STATEMENT", 14, 28);
+    doc.text("PRIVATE WEALTH STATEMENT", 14, 30);
     
-    doc.setFontSize(10);
-    doc.text(`PREPARED FOR: SACHINTHA GAURAWA`, 120, 20);
-    doc.text(`PERIOD: ${MONTHS[month].toUpperCase()} ${year}`, 120, 28);
-    doc.text(`GENERATED: ${today()}`, 120, 36);
+    doc.setFontSize(9);
+    doc.text(`ACCOUNT HOLDER: SACHINTHA GAURAWA`, 130, 20);
+    doc.text(`STATEMENT PERIOD: ${MONTHS[month].toUpperCase()} ${year}`, 130, 28);
+    doc.text(`GENERATED ON: ${today()}`, 130, 36);
 
-    // Executive Summary Box
-    doc.setDrawColor(226, 232, 240);
-    doc.setFillColor(...lightGrey);
-    doc.roundedRect(14, 55, 182, 30, 3, 3, 'FD');
+    // Luxury Summary Box
+    doc.setDrawColor(...borderGrey);
+    doc.setLineWidth(0.5);
+    doc.setFillColor(250, 250, 250);
+    doc.roundedRect(14, 55, 182, 36, 2, 2, 'FD');
     
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(10);
+    doc.setFontSize(9);
     doc.setTextColor(...textGrey);
-    doc.text("TOTAL INCOME", 24, 65);
-    doc.text("TOTAL EXPENSES", 85, 65);
-    doc.text("NET BALANCE", 146, 65);
+    doc.text("TOTAL CASH INFLOW", 24, 65);
+    doc.text("TOTAL OBLIGATIONS", 85, 65);
+    doc.text("PROJECTED NET WORTH", 146, 65);
 
     doc.setFontSize(16);
     doc.setTextColor(16, 185, 129); 
-    doc.text(`${fmtN(md.income)}`, 24, 76);
+    doc.text(`${fmtN(md.income)}`, 24, 78);
     
     doc.setTextColor(239, 68, 68); 
-    doc.text(`${fmtN(md.totalExp)}`, 85, 76);
+    doc.text(`${fmtN(md.totalExp)}`, 85, 78);
     
     doc.setTextColor(...darkBlue); 
-    doc.text(`${fmtN(md.balance)}`, 146, 76);
+    doc.text(`${fmtN(currentNetWorth)}`, 146, 78);
 
-    let startY = 100;
+    let startY = 105;
 
-    const tableOptions = {
-        theme: 'plain',
-        headStyles: { fillColor: lightGrey, textColor: darkBlue, fontStyle: 'bold', fontSize: 10 },
-        bodyStyles: { fontSize: 10, textColor: [51, 65, 85] },
-        alternateRowStyles: { fillColor: [250, 250, 250] },
+    // Elegant Table Styles
+    const eliteTableOptions = {
+        theme: 'grid',
+        headStyles: { fillColor: [241, 245, 249], textColor: darkBlue, fontStyle: 'bold', fontSize: 9, lineColor: borderGrey, lineWidth: 0.1 },
+        bodyStyles: { fontSize: 9, textColor: [51, 65, 85], lineColor: borderGrey, lineWidth: 0.1 },
+        alternateRowStyles: { fillColor: [252, 252, 252] },
+        columnStyles: { 2: { halign: 'right' } }, // Right align money
         margin: { left: 14, right: 14 }
     };
 
+    // Income Ledger
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(14); doc.setTextColor(...darkBlue);
-    doc.text("Income & Returns", 14, startY);
+    doc.setFontSize(12); doc.setTextColor(...darkBlue);
+    doc.text("INCOME & RETURN YIELDS", 14, startY);
     
     const activeIncome = DB.get('income').filter(s => {
         const dt = new Date(year,month,1);
@@ -3063,126 +3080,5 @@ function generatePDFReport() {
 
     if(activeIncome.length > 0) {
         doc.autoTable({
-            startY: startY + 5,
-            head: [['Source', 'Institution', 'Amount (LKR)']],
-            body: activeIncome.map(i => [i.name, i.company, fmtN(i.monthly)]),
-            ...tableOptions
-        });
-        startY = doc.lastAutoTable.finalY + 15;
-    } else {
-        doc.setFont("helvetica", "normal"); doc.setFontSize(10); doc.setTextColor(...textGrey);
-        doc.text("No income registered for this period.", 14, startY + 8); startY += 18;
-    }
-
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(14); doc.setTextColor(...darkBlue);
-    doc.text("Debt Servicing", 14, startY);
-    if(md.loanItems.length > 0) {
-        doc.autoTable({
-            startY: startY + 5,
-            head: [['Facility Name', 'Institution', 'EMI (LKR)']],
-            body: md.loanItems.map(l => [l.name, l.bank, fmtN(l.amount)]),
-            ...tableOptions
-        });
-        startY = doc.lastAutoTable.finalY + 15;
-    } else {
-        doc.setFont("helvetica", "normal"); doc.setFontSize(10); doc.setTextColor(...textGrey);
-        doc.text("No debt obligations for this period.", 14, startY + 8); startY += 18;
-    }
-
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(14); doc.setTextColor(...darkBlue);
-    doc.text("Operating Expenses", 14, startY);
-    const combinedExp = [];
-    md.ccItems2.forEach(c => combinedExp.push([c.name + ' (CC Instalment)', c.bank, fmtN(c.amount)]));
-    md.expItems.forEach(e => combinedExp.push([e.name, e.cat, fmtN(e.amount)]));
-
-    if(combinedExp.length > 0) {
-        doc.autoTable({
-            startY: startY + 5,
-            head: [['Description', 'Category', 'Amount (LKR)']],
-            body: combinedExp,
-            ...tableOptions
-        });
-    } else {
-        doc.setFont("helvetica", "normal"); doc.setFontSize(10); doc.setTextColor(...textGrey);
-        doc.text("No operating expenses for this period.", 14, startY + 8);
-    }
-
-    const pageCount = doc.internal.getNumberOfPages();
-    for(let i = 1; i <= pageCount; i++) {
-        doc.setPage(i);
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(8);
-        doc.setTextColor(148, 163, 184);
-        doc.text(`Page ${i} of ${pageCount}`, 196, 290, { align: 'right' });
-        doc.text("Generated securely by WealthFlow", 14, 290);
-    }
-
-    doc.save(`WealthFlow_Statement_${MONTHS_S[month]}_${year}.pdf`);
-    notify('Professional Statement downloaded.', 'success');
-}
-
-// Local JSON Restore functionality
-function handleImportFile(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = function(evt) {
-        try {
-            const importedData = JSON.parse(evt.target.result);
-            showConfirm('⚠️', 'Restore Local Data?', 'This will overwrite all existing data with the selected JSON backup.', 'btn-primary', 'Yes, Restore', () => {
-                appData = importedData;
-                syncToCloud();
-                notify('Data restored successfully! Rebooting...', 'success');
-                setTimeout(() => location.reload(), 1500);
-            });
-        } catch (err) {
-            notify('Invalid JSON backup file', 'error');
-        }
-    };
-    reader.readAsText(file);
-    e.target.value = ''; 
-    closeModal('mdRestoreCloud');
-}
-
-// Secure Factory Reset
-async function executeFactoryReset() {
-    const btn = $('fr_exec_btn');
-    const cancelBtn = $('fr_cancel_btn');
-    const pin = $('fr_pin').value;
-    
-    if(pin.length !== 6) { $('fr_err').textContent = 'Enter 6-digit PIN.'; return; }
-    
-    const hash = await sha256(pin + 'wf_salt_sg2026');
-    if (hash !== DB.getObj('auth').pin) {
-        $('fr_err').textContent = 'Incorrect PIN.';
-        return;
-    }
-    
-    $('fr_err').textContent = '';
-    
-    // UI Update to lock the modal
-    $('fr_pin').disabled = true;
-    $('fr_action_btns').style.display = 'none';
-    $('fr_success').style.display = 'block';
-    
-    appData = { 
-        auth: {}, income: [], loans: [], ccinstall: [], cconetime: [], 
-        cheques: [], expenses: [], targets: [], balance: {total:0, flows:[]}, 
-        settings: { backupFreq: 'weekly', lastBackup: null, theme: 'dark', autoLock: 15 } 
-    };
-    
-    try {
-        await userDocRef.set(appData);
-        localStorage.clear();
-        setTimeout(() => location.reload(), 2000);
-    } catch(err) {
-        console.error(err);
-        localStorage.clear();
-        setTimeout(() => location.reload(), 2000);
-    }
-}
-</script>
-</body>
-</html>
+            startY: startY + 6,
+            head: [['Facility / Source Name', 'Financial Institution', 'Yield Amount (L
