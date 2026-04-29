@@ -12,7 +12,6 @@
 
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -25,7 +24,7 @@
 --border:#1a2640;--border2:#223054;--accent:#f5a623;--accent2:#ffd166;--accent3:#e8931a;
 --ag:rgba(245,166,35,0.2);--green:#10b981;--green2:#34d399;--gg:rgba(16,185,129,0.2);
 --red:#ef4444;--red2:#f87171;--rg:rgba(239,68,68,0.2);--blue:#3b82f6;--blue2:#60a5fa;
---purple:#8b5cf6;--purple2:#a78bfa;--cyan:#06b6d4;--text:#e2e8f0;--text2:#94a3b8;--text3:#475569;
+--purple:#8b5cf6;--cyan:#06b6d4;--text:#e2e8f0;--text2:#94a3b8;--text3:#475569;
 --font:'Outfit',sans-serif;--mono:'JetBrains Mono',monospace;
 --r:14px;--r2:9px;--r3:24px;
 --shadow:0 8px 40px rgba(0,0,0,0.6);--sh2:0 2px 16px rgba(0,0,0,0.4);
@@ -124,17 +123,41 @@ button, .npb { touch-action: manipulation; }
 .pg-title span{color:var(--accent);}
 .tb-right{display:flex;align-items:center;gap:8px;}
 
-/* Network Indicators */
+/* Custom Online/Offline Network Indicators */
 .network-wrap { display: flex; align-items: center; gap: 8px; margin-right: 8px; }
-.online-badge{display:flex;align-items:center;gap:6px;padding:5px 14px;border-radius:20px;font-size:12px;font-weight:700;font-family:var(--mono);transition:all 0.3s; box-shadow: var(--sh2);}
-.online-badge.on{background:rgba(5, 46, 22, 0.8);color:#10b981; border: 1px solid #047857; box-shadow: 0 0 10px rgba(16,185,129,0.2);}
-.online-badge.off{background:rgba(69, 10, 10, 0.8);color:#ef4444; border: 1px solid #b91c1c; box-shadow: 0 0 10px rgba(239,68,68,0.2);}
-.online-dot{width:8px;height:8px;border-radius:50%;background:currentColor;animation:dotPulse 1.5s infinite;}
-@keyframes dotPulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+.online-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 18px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: var(--mono);
+    transition: all 0.3s;
+    letter-spacing: 0.5px;
+}
+.online-badge.on {
+    background-color: #0d2b1f;
+    color: #00e676;
+    border: 1px solid #14402d;
+}
+.online-badge.off {
+    background-color: #2b0d12;
+    color: #ff4d4d;
+    border: 1px solid #40141b;
+}
+.online-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: currentColor;
+    animation: dotPulse 2s infinite;
+}
+@keyframes dotPulse{0%,100%{opacity:1;}50%{opacity:.4;}}
 .sync-indicator { font-size: 11px; font-weight: 600; color: var(--blue); font-family: var(--mono); opacity: 0; transition: opacity 0.3s; letter-spacing: 0.5px; display: flex; align-items: center; gap: 4px;}
 .sync-indicator.active { opacity: 1; }
 
-/* Custom Action Icons in Topbar */
 .tb-action-icon { background:transparent; border:none; color:var(--text2); cursor:pointer; padding:6px; outline:none; display:flex; align-items:center; justify-content:center; border-radius: 50%; transition: color 0.2s;}
 .tb-action-icon:hover { color:var(--accent); }
 .tb-action-icon svg { width: 22px; height: 22px; }
@@ -191,15 +214,46 @@ button, .npb { touch-action: manipulation; }
 .sc-cyan .stat-val{color:var(--cyan);}
 .stat-meta{font-size:11px;color:var(--text3);}
 
-/* Golden Frame for Insights */
-.golden-frame {
+/* Professional Golden Frame for Insights */
+.gemini-insight-box {
+    background: #0d121f;
     border: 2px solid var(--accent);
-    background: linear-gradient(135deg, rgba(245,166,35,0.08) 0%, rgba(13,23,41,1) 100%);
-    box-shadow: 0 0 20px rgba(245,166,35,0.15), inset 0 0 15px rgba(245,166,35,0.05);
-    border-radius: var(--r);
-    position: relative;
-    padding: 20px;
-    margin-bottom: 16px;
+    border-radius: 12px;
+    padding: 22px 26px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 20px rgba(245, 166, 35, 0.12);
+}
+.gemini-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+.gemini-title {
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.gemini-btn {
+    background-color: var(--accent);
+    color: #000;
+    font-weight: 700;
+    font-family: var(--font);
+    font-size: 13px;
+    border-radius: 20px;
+    padding: 8px 18px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.gemini-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(245, 166, 35, 0.3);
 }
 
 /* ================== GRID ================== */
@@ -398,7 +452,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
 .setting-info .setting-desc{font-size:11px;color:var(--text3);margin-top:4px;}
 .toggle{width:44px;height:24px;background:var(--border);border-radius:100px;position:relative;cursor:pointer;transition:background .2s;flex-shrink:0;}
 .toggle.on{background:var(--accent);}
-.toggle::after{content:'';position:absolute;top:2px;left:2px;width:20px;height:20px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 4px rgba(0,0,0,.3);}
+.toggle::after{content:'absolute;top:2px;left:2px;width:20px;height:20px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 4px rgba(0,0,0,.3);}
 .toggle.on::after{transform:translateX(20px);}
 
 /* ================== OFFLINE BANNER ================== */
@@ -432,7 +486,8 @@ tbody td{padding:10px 13px;vertical-align:middle;}
   .celeb-box{padding:32px 28px;}
   .tb-right {gap: 4px;}
   .month-badge { display: none; }
-  .card { padding: 15px; }
+  .gemini-header { flex-direction: column; align-items: flex-start; }
+  .gemini-btn { width: 100%; margin-top: 10px; }
 }
 </style>
 </head>
@@ -581,18 +636,18 @@ tbody td{padding:10px 13px;vertical-align:middle;}
     </header>
 
     <div class="content">
-      <div id="offlineBanner">📡 You are currently offline. Changes are saved locally and will auto-sync seamlessly when connected.</div>
+      <div id="offlineBanner">📡 Connection lost. Your data is safely stored locally and will sync automatically when back online.</div>
 
       <div class="page active" id="page-dashboard">
         <div class="g5" id="dashStats" style="margin-bottom:16px;"></div>
         
-        <div class="golden-frame">
-            <div class="card-header" style="margin-bottom:10px;">
-                <div class="card-title" style="color:var(--accent);">✨ Gemini AI Financial Insights</div>
-                <button class="btn btn-primary btn-xs" onclick="generateAIInsights()">Generate Insight</button>
+        <div class="gemini-insight-box">
+            <div class="gemini-header">
+                <div class="gemini-title">✨ Gemini AI Insights</div>
+                <button class="gemini-btn" onclick="generateAIInsights()">Generate Insight</button>
             </div>
-            <div id="aiInsightsArea" style="font-size:14px; color:var(--text); line-height:1.6;">
-                Click generate to receive a real-time AI analysis of your current monthly cash flow based on the local Sri Lankan context.
+            <div id="aiInsightsArea" style="font-size:14px; color:#94a3b8; line-height:1.6;">
+                Click generate to receive an AI analysis of your current monthly cash flow based on local Sri Lankan context.
             </div>
         </div>
 
@@ -875,8 +930,8 @@ tbody td{padding:10px 13px;vertical-align:middle;}
 <div class="mo" id="mdRestoreCloud"><div class="md md-sm">
   <div class="md-hdr"><div class="md-title">Restore Data</div><button class="md-x" onclick="closeModal('mdRestoreCloud')">✕</button></div>
   
-  <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:18px 0 8px;">Option 1: Cloud Recovery</div>
-  <p style="font-size:12px;color:var(--text2);margin-bottom:8px;">Select a recent cloud backup from Firebase Storage to restore.</p>
+  <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:18px 0 8px;">Option 1: Secure Cloud Recovery</div>
+  <p style="font-size:12px;color:var(--text2);margin-bottom:8px;">Select from your 5 most recent automated cloud backups to restore.</p>
   <div class="fr">
     <div class="fg" style="grid-column: span 2;"><select class="fs" id="restoreSelect"></select></div>
     <div class="fg"><button class="btn btn-primary" style="width:100%; justify-content:center;" id="restoreBtn" onclick="executeCloudRestore()">Restore Cloud</button></div>
@@ -884,7 +939,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
 
   <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:18px 0 8px; border-top:1px solid var(--border); padding-top:18px;">Option 2: Local File Recovery</div>
   <p style="font-size:12px;color:var(--text2);margin-bottom:8px;">Upload a previously downloaded JSON backup file to restore.</p>
-  <button class="btn btn-secondary" style="width:100%; justify-content:center;" onclick="$('importFile').click()">Browse Local JSON File</button>
+  <button class="btn btn-secondary" style="width:100%; justify-content:center;" onclick="document.getElementById('importFile').click()">Browse Local JSON File</button>
 
 </div></div>
 
@@ -1087,7 +1142,7 @@ function setSyncStatus(state) {
     const syncInd = $('syncIndicator');
     
     if(state === 'syncing') {
-        if(badge) { badge.className = 'online-badge syncing'; $('onlineText').textContent = 'Online'; }
+        if(badge) { badge.className = 'online-badge on'; $('onlineText').textContent = 'Syncing...'; }
         if(syncInd) { syncInd.classList.add('active'); }
         if(setBadge) { setBadge.className = 'badge syncing'; setBadge.textContent = 'Syncing...'; }
     } else if (state === 'online') {
@@ -1553,7 +1608,10 @@ function setupOnlineStatus() {
     function updateStatus() {
         if(navigator.onLine) {
             setSyncStatus('online');
-            setTimeout(checkAutoBackup, 2000);
+            setTimeout(() => {
+                syncToCloud(); 
+                checkAutoBackup();
+            }, 1000);
         } else {
             setSyncStatus('offline');
             const banner = $('offlineBanner');
@@ -1564,6 +1622,7 @@ function setupOnlineStatus() {
         updateStatus(); 
         const banner = $('offlineBanner');
         if(banner) banner.classList.remove('show');
+        notify('Connection restored. Syncing data...', 'info');
     });
     window.addEventListener('offline', updateStatus);
 }
@@ -2990,13 +3049,12 @@ function updateBackupFreq(val) {
     notify('Backup frequency updated');
 }
 
-// Cloud Backup utilizing Firestore reference tracking
+// Seamless Firebase Cloud Backup
 async function createCloudBackup(manual = false) {
     try {
         if(manual) notify('Uploading backup to cloud...', 'info');
         const jsonStr = JSON.stringify(appData);
         
-        // Backup directly into firestore doc to bypass strict bucket rules securely
         const timestamp = Date.now();
         await db.collection('wealthflow_backups').doc(timestamp.toString()).set({
             time: new Date().toISOString(),
