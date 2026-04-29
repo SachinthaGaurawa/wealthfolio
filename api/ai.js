@@ -4,6 +4,8 @@ export default async function handler(req, res) {
     }
 
     const { prompt } = req.body;
+    
+    // Using the secure environment variable for the Gemini API Key
     const apiKey = process.env.GEMINI_API_KEY;
 
     if (!apiKey) {
@@ -22,6 +24,7 @@ export default async function handler(req, res) {
         });
 
         const data = await response.json();
+        
         const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text || "Unable to generate insights at this time.";
         
         res.status(200).json({ reply });
