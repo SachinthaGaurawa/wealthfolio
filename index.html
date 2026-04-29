@@ -12,10 +12,10 @@
 
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 
 <style>
 /* ================== THEME VARIABLES ================== */
@@ -24,7 +24,7 @@
 --border:#1a2640;--border2:#223054;--accent:#f5a623;--accent2:#ffd166;--accent3:#e8931a;
 --ag:rgba(245,166,35,0.2);--green:#10b981;--green2:#34d399;--gg:rgba(16,185,129,0.2);
 --red:#ef4444;--red2:#f87171;--rg:rgba(239,68,68,0.2);--blue:#3b82f6;--blue2:#60a5fa;
---purple:#8b5cf6;--cyan:#06b6d4;--text:#e2e8f0;--text2:#94a3b8;--text3:#475569;
+--purple:#8b5cf6;--purple2:#a78bfa;--cyan:#06b6d4;--text:#e2e8f0;--text2:#94a3b8;--text3:#475569;
 --font:'Outfit',sans-serif;--mono:'JetBrains Mono',monospace;
 --r:14px;--r2:9px;--r3:24px;
 --shadow:0 8px 40px rgba(0,0,0,0.6);--sh2:0 2px 16px rgba(0,0,0,0.4);
@@ -115,49 +115,35 @@ button, .npb { touch-action: manipulation; }
 .sb-user{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px;}
 .sb-date{font-size:11px;color:var(--accent);font-family:var(--mono);}
 .sb-ver{font-size:10px;color:var(--text3);margin-top:3px;}
-.main{margin-left:var(--sw);flex:1;display:flex;flex-direction:column;min-height:100vh;}
+.main{margin-left:var(--sw);flex:1;display:flex;flex-direction:column;min-height:100vh;max-width: 100vw;overflow-x: hidden;}
 .topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:12px 26px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;gap:10px;}
 .tb-left{display:flex;align-items:center;gap:10px;}
 .mobile-btn{display:none;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:7px 9px;cursor:pointer;color:var(--text);font-size:16px;align-items:center;justify-content:center;}
 .pg-title{font-size:17px;font-weight:700;}
 .pg-title span{color:var(--accent);}
-.tb-right{display:flex;align-items:center;gap:8px;}
+.tb-right{display:flex;align-items:center;gap:8px;flex-wrap: wrap;}
 
-/* Custom Online/Offline Network Indicators */
+/* Advanced Network Indicators matching user images */
 .network-wrap { display: flex; align-items: center; gap: 8px; margin-right: 8px; }
-.online-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 18px;
-    border-radius: 20px;
-    font-size: 13px;
-    font-weight: 700;
-    font-family: var(--mono);
-    transition: all 0.3s;
-    letter-spacing: 0.5px;
+.online-badge{
+    display:flex;align-items:center;gap:8px;padding:6px 16px;border-radius:30px;
+    font-size:14px;font-weight:600;font-family:var(--mono);transition:all 0.3s;
 }
-.online-badge.on {
-    background-color: #0d2b1f;
-    color: #00e676;
-    border: 1px solid #14402d;
+.online-badge.on{
+    background:rgba(5, 46, 22, 0.6); color:#10b981; border: 1.5px solid rgba(16,185,129,0.3);
 }
-.online-badge.off {
-    background-color: #2b0d12;
-    color: #ff4d4d;
-    border: 1px solid #40141b;
+.online-badge.off{
+    background:rgba(69, 10, 10, 0.6); color:#ef4444; border: 1.5px solid rgba(239,68,68,0.3);
 }
-.online-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background-color: currentColor;
-    animation: dotPulse 2s infinite;
-}
+.online-dot{width:10px;height:10px;border-radius:50%;background:currentColor;box-shadow: 0 0 8px currentColor;}
+.online-badge.on .online-dot { animation: none; }
+.online-badge.off .online-dot { animation: dotPulse 1.5s infinite; }
 @keyframes dotPulse{0%,100%{opacity:1;}50%{opacity:.4;}}
-.sync-indicator { font-size: 11px; font-weight: 600; color: var(--blue); font-family: var(--mono); opacity: 0; transition: opacity 0.3s; letter-spacing: 0.5px; display: flex; align-items: center; gap: 4px;}
+
+.sync-indicator { font-size: 11px; font-weight: 600; color: var(--blue); font-family: var(--mono); opacity: 0; transition: opacity 0.3s; letter-spacing: 0.5px; display: flex; align-items: center; gap: 4px; white-space: nowrap;}
 .sync-indicator.active { opacity: 1; }
 
+/* Custom Action Icons in Topbar */
 .tb-action-icon { background:transparent; border:none; color:var(--text2); cursor:pointer; padding:6px; outline:none; display:flex; align-items:center; justify-content:center; border-radius: 50%; transition: color 0.2s;}
 .tb-action-icon:hover { color:var(--accent); }
 .tb-action-icon svg { width: 22px; height: 22px; }
@@ -189,7 +175,7 @@ button, .npb { touch-action: manipulation; }
 .btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important;}
 
 /* ================== CARDS ================== */
-.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px;box-shadow:var(--sh2);transition:border-color .2s;}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px;box-shadow:var(--sh2);transition:border-color .2s; overflow: hidden; width: 100%;}
 .card:hover{border-color:var(--border2);}
 .card-sm{padding:14px;}
 .card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
@@ -214,46 +200,47 @@ button, .npb { touch-action: manipulation; }
 .sc-cyan .stat-val{color:var(--cyan);}
 .stat-meta{font-size:11px;color:var(--text3);}
 
-/* Professional Golden Frame for Insights */
-.gemini-insight-box {
-    background: #0d121f;
-    border: 2px solid var(--accent);
-    border-radius: 12px;
-    padding: 22px 26px;
+/* Professional Golden Frame matching the requested design */
+.golden-frame {
+    border: 1.5px solid var(--accent);
+    background: var(--card);
+    border-radius: 18px;
+    padding: 24px;
     margin-bottom: 20px;
-    box-shadow: 0 4px 20px rgba(245, 166, 35, 0.12);
+    box-shadow: 0 0 15px rgba(245,166,35,0.05);
+    position: relative;
+    width: 100%;
 }
-.gemini-header {
+.gf-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 12px;
+    margin-bottom: 16px;
     flex-wrap: wrap;
     gap: 12px;
 }
-.gemini-title {
-    color: #ffffff;
+.gf-title {
     font-size: 18px;
     font-weight: 700;
+    color: #fff;
     display: flex;
     align-items: center;
     gap: 8px;
 }
-.gemini-btn {
-    background-color: var(--accent);
+.gf-btn {
+    background: var(--accent);
     color: #000;
-    font-weight: 700;
-    font-family: var(--font);
-    font-size: 13px;
     border-radius: 20px;
     padding: 8px 18px;
+    font-weight: 700;
+    font-size: 13px;
     border: none;
     cursor: pointer;
     transition: all 0.2s;
 }
-.gemini-btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(245, 166, 35, 0.3);
+.gf-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(245,166,35,0.3);
 }
 
 /* ================== GRID ================== */
@@ -261,10 +248,10 @@ button, .npb { touch-action: manipulation; }
 .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
 .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
 .g5{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;}
-.dash-chart-row { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 16px; }
+.dash-chart-row { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 16px; width: 100%;}
 
 /* ================== TABLE ================== */
-.tbl-wrap{overflow-x:auto;border-radius:var(--r2);border:1px solid var(--border); margin-bottom: 10px; -webkit-overflow-scrolling: touch;}
+.tbl-wrap{overflow-x:auto;border-radius:var(--r2);border:1px solid var(--border); margin-bottom: 10px; width: 100%; -webkit-overflow-scrolling: touch;}
 table{width:100%;border-collapse:collapse;font-size:13px; min-width: 600px;}
 thead th{background:var(--bg2);color:var(--text3);font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;padding:9px 13px;text-align:left;white-space:nowrap;}
 tbody tr{border-top:1px solid rgba(255,255,255,.03);transition:background .1s;}
@@ -452,11 +439,11 @@ tbody td{padding:10px 13px;vertical-align:middle;}
 .setting-info .setting-desc{font-size:11px;color:var(--text3);margin-top:4px;}
 .toggle{width:44px;height:24px;background:var(--border);border-radius:100px;position:relative;cursor:pointer;transition:background .2s;flex-shrink:0;}
 .toggle.on{background:var(--accent);}
-.toggle::after{content:'absolute;top:2px;left:2px;width:20px;height:20px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 4px rgba(0,0,0,.3);}
+.toggle::after{content:'absolute';top:2px;left:2px;width:20px;height:20px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 4px rgba(0,0,0,.3);}
 .toggle.on::after{transform:translateX(20px);}
 
 /* ================== OFFLINE BANNER ================== */
-#offlineBanner{display:none;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.25);border-radius:var(--r2);padding:10px 16px;font-size:13px;color:var(--red);margin-bottom:14px;text-align:center;align-items:center;justify-content:center;gap:8px;}
+#offlineBanner{display:none;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.25);border-radius:var(--r2);padding:10px 16px;font-size:13px;color:var(--red);margin-bottom:14px;text-align:center;align-items:center;justify-content:center;gap:8px; font-weight: 500;}
 #offlineBanner.show{display:flex;}
 
 /* ================== LIST ITEMS ================== */
@@ -486,8 +473,9 @@ tbody td{padding:10px 13px;vertical-align:middle;}
   .celeb-box{padding:32px 28px;}
   .tb-right {gap: 4px;}
   .month-badge { display: none; }
-  .gemini-header { flex-direction: column; align-items: flex-start; }
-  .gemini-btn { width: 100%; margin-top: 10px; }
+  .card { padding: 15px; }
+  .gf-header { flex-direction: column; align-items: flex-start; }
+  .gf-btn { width: 100%; text-align: center; }
 }
 </style>
 </head>
@@ -636,18 +624,18 @@ tbody td{padding:10px 13px;vertical-align:middle;}
     </header>
 
     <div class="content">
-      <div id="offlineBanner">📡 Connection lost. Your data is safely stored locally and will sync automatically when back online.</div>
+      <div id="offlineBanner">📡 Data is saving securely to local storage. Auto-sync will trigger when connection recovers.</div>
 
       <div class="page active" id="page-dashboard">
         <div class="g5" id="dashStats" style="margin-bottom:16px;"></div>
         
-        <div class="gemini-insight-box">
-            <div class="gemini-header">
-                <div class="gemini-title">✨ Gemini AI Insights</div>
-                <button class="gemini-btn" onclick="generateAIInsights()">Generate Insight</button>
+        <div class="golden-frame">
+            <div class="gf-header">
+                <div class="gf-title">✨ Gemini AI Insights</div>
+                <button class="gf-btn" onclick="generateAIInsights()">Generate Insight</button>
             </div>
-            <div id="aiInsightsArea" style="font-size:14px; color:#94a3b8; line-height:1.6;">
-                Click generate to receive an AI analysis of your current monthly cash flow based on local Sri Lankan context.
+            <div id="aiInsightsArea" style="font-size:14px; color:var(--text2); line-height:1.6;">
+                Click generate to receive a real-time AI analysis of your current monthly cash flow based on the local Sri Lankan context.
             </div>
         </div>
 
@@ -891,7 +879,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
   <div class="fg"><label class="fl">Export Format</label>
     <select class="fs" id="expFormat" onchange="toggleExportOptions()">
         <option value="pdf">Professional PDF Report</option>
-        <option value="json">Raw Data JSON (Full Backup)</option>
+        <option value="json">Raw Data JSON (Local Download)</option>
     </select>
   </div>
   
@@ -930,11 +918,11 @@ tbody td{padding:10px 13px;vertical-align:middle;}
 <div class="mo" id="mdRestoreCloud"><div class="md md-sm">
   <div class="md-hdr"><div class="md-title">Restore Data</div><button class="md-x" onclick="closeModal('mdRestoreCloud')">✕</button></div>
   
-  <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:18px 0 8px;">Option 1: Secure Cloud Recovery</div>
-  <p style="font-size:12px;color:var(--text2);margin-bottom:8px;">Select from your 5 most recent automated cloud backups to restore.</p>
+  <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:18px 0 8px;">Option 1: Google Drive Recovery</div>
+  <p style="font-size:12px;color:var(--text2);margin-bottom:8px;">Select a recent backup from your Google Drive folder to restore.</p>
   <div class="fr">
     <div class="fg" style="grid-column: span 2;"><select class="fs" id="restoreSelect"></select></div>
-    <div class="fg"><button class="btn btn-primary" style="width:100%; justify-content:center;" id="restoreBtn" onclick="executeCloudRestore()">Restore Cloud</button></div>
+    <div class="fg"><button class="btn btn-primary" style="width:100%; justify-content:center;" id="restoreBtn" onclick="executeDriveRestore()">Restore from Drive</button></div>
   </div>
 
   <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:18px 0 8px; border-top:1px solid var(--border); padding-top:18px;">Option 2: Local File Recovery</div>
@@ -1142,9 +1130,9 @@ function setSyncStatus(state) {
     const syncInd = $('syncIndicator');
     
     if(state === 'syncing') {
-        if(badge) { badge.className = 'online-badge on'; $('onlineText').textContent = 'Syncing...'; }
+        if(badge) { badge.className = 'online-badge on'; $('onlineText').textContent = 'Online'; }
         if(syncInd) { syncInd.classList.add('active'); }
-        if(setBadge) { setBadge.className = 'badge syncing'; setBadge.textContent = 'Syncing...'; }
+        if(setBadge) { setBadge.className = 'badge bg-g'; setBadge.textContent = 'Syncing...'; }
     } else if (state === 'online') {
         if(badge) { badge.className = 'online-badge on'; $('onlineText').textContent = 'Online'; }
         if(syncInd) { syncInd.classList.remove('active'); }
@@ -1238,7 +1226,7 @@ function lockApp() {
 // ==================== AI INSIGHTS ====================
 async function generateAIInsights() {
     const area = $('aiInsightsArea');
-    area.innerHTML = '<div style="display:flex;align-items:center;gap:8px;color:var(--accent);"><div class="online-dot"></div><span>Analysing your portfolio...</span></div>';
+    area.innerHTML = '<div style="display:flex;align-items:center;gap:8px;color:var(--accent);"><div class="online-dot" style="animation: dotPulse 1.5s infinite;"></div><span style="font-weight:600;">Analysing your portfolio...</span></div>';
     
     try {
         const inc = DB.get('income').reduce((s, x) => s + x.monthly, 0);
@@ -1259,12 +1247,135 @@ async function generateAIInsights() {
         
         const data = await response.json();
         if (data.reply) {
-            area.innerHTML = data.reply;
+            area.innerHTML = `<span style="color:#fff; font-weight:500;">${data.reply}</span>`;
         } else {
             area.innerHTML = '<span style="color:var(--red);">AI analysis currently unavailable.</span>';
         }
     } catch (e) {
         area.innerHTML = '<span style="color:var(--red);">Connection issue. Please verify your network to communicate with the AI Engine.</span>';
+    }
+}
+
+// ==================== GOOGLE DRIVE BACKUP ENGINE ====================
+let gapiToken = null;
+let tokenClient;
+
+function initDriveAuth() {
+    if (typeof google === 'undefined') return;
+    tokenClient = google.accounts.oauth2.initTokenClient({
+        client_id: '1020193373377-paqvs1sgqr75l0lbcs9hju02fmouc0da.apps.googleusercontent.com',
+        scope: 'https://www.googleapis.com/auth/drive.file',
+        callback: (tokenResponse) => {
+            if (tokenResponse && tokenResponse.access_token) {
+                gapiToken = tokenResponse.access_token;
+                if (window.pendingDriveAction === 'backup') executeDriveBackup();
+                if (window.pendingDriveAction === 'restore') fetchDriveBackups();
+            }
+        }
+    });
+}
+
+window.addEventListener('load', () => {
+    setTimeout(initDriveAuth, 2000);
+});
+
+async function requestDrivePermission(action) {
+    window.pendingDriveAction = action;
+    if (!gapiToken && tokenClient) {
+        tokenClient.requestAccessToken();
+    } else if (gapiToken) {
+        if (action === 'backup') executeDriveBackup();
+        if (action === 'restore') fetchDriveBackups();
+    }
+}
+
+async function executeDriveBackup() {
+    if (!gapiToken) return;
+    notify('Uploading backup to Google Drive...', 'info');
+    
+    const fileContent = JSON.stringify(appData);
+    const file = new Blob([fileContent], { type: 'application/json' });
+    const metadata = {
+        name: `WealthFlow_Backup_${today()}_${Date.now()}.json`,
+        mimeType: 'application/json',
+        parents: ['1M8_zbBavMm_SeZiwjboYb3rvlczHyIVz'] // Forced to provided folder ID
+    };
+
+    const form = new FormData();
+    form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
+    form.append('file', file);
+
+    try {
+        const res = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+            method: 'POST',
+            headers: { 'Authorization': 'Bearer ' + gapiToken },
+            body: form
+        });
+        
+        if (res.ok) {
+            const s = DB.getObj('settings');
+            s.lastBackup = new Date().toISOString();
+            DB.set('settings', s);
+            notify('Drive backup complete! ☁️', 'success');
+        } else {
+            notify('Drive upload failed.', 'error');
+        }
+    } catch (e) {
+        console.error(e);
+        notify('Network error during backup.', 'error');
+    }
+}
+
+async function fetchDriveBackups() {
+    if (!gapiToken) return;
+    const sel = $('restoreSelect');
+    sel.innerHTML = '<option>Searching Drive...</option>';
+    
+    try {
+        // Query specific folder for files containing 'WealthFlow_Backup'
+        const q = encodeURIComponent(`'1M8_zbBavMm_SeZiwjboYb3rvlczHyIVz' in parents and name contains 'WealthFlow_Backup' and trashed = false`);
+        const res = await fetch(`https://www.googleapis.com/drive/v3/files?q=${q}&orderBy=createdTime desc&pageSize=5&fields=files(id,name,createdTime)`, {
+            headers: { 'Authorization': 'Bearer ' + gapiToken }
+        });
+        
+        const data = await res.json();
+        if (data.files && data.files.length > 0) {
+            sel.innerHTML = data.files.map(f => `<option value="${f.id}">${new Date(f.createdTime).toLocaleString()}</option>`).join('');
+            $('restoreBtn').disabled = false;
+        } else {
+            sel.innerHTML = '<option value="">No backups found in folder</option>';
+        }
+    } catch(e) {
+        sel.innerHTML = '<option value="">Failed to fetch backups</option>';
+    }
+}
+
+async function executeDriveRestore() {
+    const fileId = $('restoreSelect').value;
+    if (!fileId || !gapiToken) return;
+
+    try {
+        notify('Downloading backup...', 'info');
+        $('restoreBtn').disabled = true;
+        
+        const res = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`, {
+            headers: { 'Authorization': 'Bearer ' + gapiToken }
+        });
+        
+        if (!res.ok) throw new Error("Download failed");
+        
+        const restoredData = await res.json();
+        
+        appData = restoredData;
+        syncToCloud();
+        closeModal('mdRestoreCloud');
+        notify('Data restored successfully! Rebooting...', 'success');
+        setTimeout(() => location.reload(), 1500);
+
+    } catch(e) {
+        console.error(e);
+        notify('Failed to restore backup.', 'error');
+        $('restoreBtn').disabled = false;
     }
 }
 
@@ -1577,7 +1688,6 @@ function finishBoot() {
         
         initTheme();
         setupBackupReminder();
-        checkAutoBackup();
 
         $('authScreen').classList.add('show');
         if(!auth.pin) {
@@ -1608,23 +1718,19 @@ function setupOnlineStatus() {
     function updateStatus() {
         if(navigator.onLine) {
             setSyncStatus('online');
-            setTimeout(() => {
-                syncToCloud(); 
-                checkAutoBackup();
-            }, 1000);
+            const banner = $('offlineBanner');
+            if(banner) banner.classList.remove('show');
+            // Auto sync to cloud when connection is restored
+            syncToCloud();
         } else {
             setSyncStatus('offline');
             const banner = $('offlineBanner');
             if(banner) banner.classList.add('show');
         }
     }
-    window.addEventListener('online', () => { 
-        updateStatus(); 
-        const banner = $('offlineBanner');
-        if(banner) banner.classList.remove('show');
-        notify('Connection restored. Syncing data...', 'info');
-    });
+    window.addEventListener('online', updateStatus);
     window.addEventListener('offline', updateStatus);
+    updateStatus(); // check initial status
 }
 
 function setupBackupReminder() {
@@ -1638,28 +1744,6 @@ function setupBackupReminder() {
     }
 }
 
-function checkAutoBackup() {
-    const settings = DB.getObj('settings', {backupFreq:'weekly', lastBackup:null});
-    if(!navigator.onLine) return;
-    
-    let shouldBackup = false;
-    if(!settings.lastBackup) {
-        shouldBackup = true;
-    } else {
-        const last = new Date(settings.lastBackup);
-        const now = new Date();
-        const days = Math.floor((now-last)/(1000*86400));
-        
-        if(settings.backupFreq === 'daily' && days >= 1) shouldBackup = true;
-        if(settings.backupFreq === 'weekly' && days >= 7) shouldBackup = true;
-        if(settings.backupFreq === 'monthly' && days >= 30) shouldBackup = true;
-    }
-    
-    if(shouldBackup) {
-        createCloudBackup(false); 
-    }
-}
-
 function refreshApp(btn) {
     if(btn) {
         btn.classList.remove('spin-once');
@@ -1670,7 +1754,12 @@ function refreshApp(btn) {
     if(active) renderPage(active.id.replace('page-',''));
     updateCCOTBadge();
     updateChequeBadge();
-    notify('System Synchronised ✓', 'success');
+    if(navigator.onLine) {
+        syncToCloud();
+        notify('System Synchronised ✓', 'success');
+    } else {
+        notify('Offline: Sync will occur when connection is restored.', 'warn');
+    }
 }
 
 function notify(msg, type='success') {
@@ -1859,7 +1948,7 @@ function renderIncome() {
                 <div class="ld"><div class="ld-l">INVESTED</div><div class="ld-v" style="color:var(--accent);">${fmt(source.amount)}</div></div>
                 <div class="ld"><div class="ld-l">ANNUAL RATE</div><div class="ld-v">${source.rate}%</div></div>
                 <div class="ld"><div class="ld-l">STATUS</div><div class="ld-v">${active?'<span class="badge bg-g">● Active</span>':'<span class="badge bg-gr">Ended</span>'}</div></div>
-                <div class="ld"><div class="ld-l">PAYMENT DATE</div><div class="ld-v"><span style="color:var(--accent);font-weight:700;background:rgba(245,166,35,0.1);padding:2px 6px;border-radius:4px;">📅 ${source.day}</span></div></div>
+                <div class="ld"><div class="ld-l">PAYMENT START</div><div class="ld-v"><span style="color:var(--accent);font-weight:700;background:rgba(245,166,35,0.1);padding:3px 8px;border-radius:4px;">📅 ${source.day}</span></div></div>
                 ${dLeft!==null?`<div class="ld"><div class="ld-l">DAYS LEFT</div><div class="ld-v" style="${dLeft<60?'color:var(--red)':''}">${dLeft>0?dLeft+' days':'Ended'}</div></div>`:''}
             </div>
             ${source.notes?`<div style="margin-top:10px;font-size:12px;color:var(--text3);padding:7px 11px;background:var(--bg2);border-radius:6px;">${source.notes}</div>`:''}
@@ -2847,22 +2936,14 @@ function renderSettings() {
                 <button class="btn btn-primary btn-sm" onclick="openModal('mdExport')">Export</button>
             </div>
             
-            <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:24px 0 8px;">Cloud Backup & Restore</div>
+            <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:24px 0 8px;">Google Drive Backup Integration</div>
             <div class="setting-row">
-                <div class="setting-info"><div class="setting-label">Auto-Backup Frequency</div><div class="setting-desc">The system will auto-upload a JSON copy to Firebase Storage.</div></div>
-                <select class="fi" style="width:120px;" onchange="updateBackupFreq(this.value)">
-                    <option value="daily" ${s.backupFreq==='daily'?'selected':''}>Daily</option>
-                    <option value="weekly" ${s.backupFreq==='weekly'?'selected':''}>Weekly</option>
-                    <option value="monthly" ${s.backupFreq==='monthly'?'selected':''}>Monthly</option>
-                </select>
+                <div class="setting-info"><div class="setting-label">Manual Cloud Backup</div><div class="setting-desc">Push an instant JSON backup straight to your secure Google Drive.</div></div>
+                <button class="btn btn-primary btn-sm" onclick="requestDrivePermission('backup')">Backup Now</button>
             </div>
             <div class="setting-row">
-                <div class="setting-info"><div class="setting-label">Manual Cloud Backup</div><div class="setting-desc">Push an instant JSON backup to your secure cloud bucket.</div></div>
-                <button class="btn btn-primary btn-sm" onclick="createCloudBackup(true)">Backup Now</button>
-            </div>
-            <div class="setting-row">
-                <div class="setting-info"><div class="setting-label">Restore Data System</div><div class="setting-desc">Restore from latest cloud snapshots or a local JSON file.</div></div>
-                <button class="btn btn-secondary btn-sm" onclick="openRestoreModal()">Restore Data</button>
+                <div class="setting-info"><div class="setting-label">Restore Data System</div><div class="setting-desc">Restore from the latest 5 Google Drive snapshots or a local JSON.</div></div>
+                <button class="btn btn-secondary btn-sm" onclick="requestDrivePermission('restore'); openModal('mdRestoreCloud');">Restore Data</button>
             </div>
 
             <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:24px 0 8px;">Danger Zone</div>
@@ -3042,96 +3123,7 @@ function generatePDFReport() {
     notify('Professional Statement downloaded.', 'success');
 }
 
-function updateBackupFreq(val) {
-    const s = DB.getObj('settings', {});
-    s.backupFreq = val;
-    DB.set('settings', s);
-    notify('Backup frequency updated');
-}
-
-// Seamless Firebase Cloud Backup
-async function createCloudBackup(manual = false) {
-    try {
-        if(manual) notify('Uploading backup to cloud...', 'info');
-        const jsonStr = JSON.stringify(appData);
-        
-        const timestamp = Date.now();
-        await db.collection('wealthflow_backups').doc(timestamp.toString()).set({
-            time: new Date().toISOString(),
-            data: jsonStr
-        });
-        
-        const s = DB.getObj('settings');
-        s.lastBackup = new Date().toISOString();
-        
-        const refsDoc = db.collection('users').doc('backup_refs');
-        const docSnap = await refsDoc.get();
-        let refs = [];
-        if(docSnap.exists) refs = docSnap.data().files || [];
-        
-        refs.push({ id: timestamp.toString(), time: new Date().toISOString() });
-        if(refs.length > 5) refs.shift(); // Keep latest 5
-        
-        await refsDoc.set({ files: refs });
-        DB.set('settings', s);
-
-        if(manual) notify('Cloud backup complete! ☁️', 'success');
-    } catch(e) {
-        console.error(e);
-        if(manual) notify('Cloud backup failed. Check permissions.', 'error');
-    }
-}
-
-async function openRestoreModal() {
-    const sel = $('restoreSelect');
-    sel.innerHTML = '<option>Fetching cloud backups...</option>';
-    $('restoreBtn').disabled = true;
-    openModal('mdRestoreCloud');
-
-    try {
-        const docSnap = await db.collection('users').doc('backup_refs').get();
-        let refs = [];
-        if(docSnap.exists) refs = docSnap.data().files || [];
-
-        if(refs.length === 0) {
-            sel.innerHTML = '<option value="">No cloud backups found</option>';
-        } else {
-            sel.innerHTML = refs.map((b, i) => `<option value="${b.id}">${new Date(b.time).toLocaleString()}</option>`).reverse().join('');
-            $('restoreBtn').disabled = false;
-        }
-    } catch(e) {
-        console.error(e);
-        sel.innerHTML = '<option value="">Failed to fetch backups</option>';
-    }
-}
-
-async function executeCloudRestore() {
-    const backupId = $('restoreSelect').value;
-    if(!backupId) return;
-
-    try {
-        notify('Downloading backup...', 'info');
-        $('restoreBtn').disabled = true;
-        
-        const doc = await db.collection('wealthflow_backups').doc(backupId).get();
-        if(!doc.exists) throw new Error("Backup file missing");
-        
-        const restoredData = JSON.parse(doc.data().data);
-        
-        appData = restoredData;
-        syncToCloud();
-        closeModal('mdRestoreCloud');
-        notify('Data restored successfully! Rebooting...', 'success');
-        setTimeout(() => location.reload(), 1500);
-
-    } catch(e) {
-        console.error(e);
-        notify('Failed to restore backup.', 'error');
-        $('restoreBtn').disabled = false;
-    }
-}
-
-// Local JSON Restore
+// Local JSON Restore functionality
 function handleImportFile(e) {
     const file = e.target.files[0];
     if (!file) return;
@@ -3139,7 +3131,7 @@ function handleImportFile(e) {
     reader.onload = function(evt) {
         try {
             const importedData = JSON.parse(evt.target.result);
-            showConfirm('⚠️', 'Restore Local Data?', 'This will overwrite all existing cloud and local data with the selected local JSON backup.', 'btn-primary', 'Yes, Restore', () => {
+            showConfirm('⚠️', 'Restore Local Data?', 'This will overwrite all existing data with the selected JSON backup.', 'btn-primary', 'Yes, Restore', () => {
                 appData = importedData;
                 syncToCloud();
                 notify('Data restored successfully! Rebooting...', 'success');
