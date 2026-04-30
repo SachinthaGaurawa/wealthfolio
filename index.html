@@ -814,6 +814,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
           <div id="balFlows"></div>
         </div>
       </div>
+        
 
         <div class="page" id="page-dscr">
                 <div class="sh">
@@ -823,17 +824,58 @@ tbody td{padding:10px 13px;vertical-align:middle;}
                 <div class="g2">
                   <div class="card">
                     <div class="card-header"><div class="card-title">Your Financial Profile</div></div>
-                    <div class="fg">
-                        <label class="fl">Gross Monthly Income (LKR)</label>
-                        <input class="fi money-input" id="dscrIncome" placeholder="1,125,000" oninput="calcDSCR()">
-                        <div id="dscrIncSugg" style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap;"></div>
+                    
+                    <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:10px 0 8px;">Gross Monthly Income</div>
+                    <div class="fr">
+                         <div class="fg">
+                            <select class="fs" id="dscrKnownIncome" onchange="autoFillDSCR('income')">
+                                <option value="">Select known income...</option>
+                                <!-- Populated dynamically -->
+                            </select>
+                        </div>
+                        <div class="fg"><input class="fi money-input" id="dscrIncome" placeholder="Or enter custom amount (LKR)" oninput="calcDSCR()"></div>
                     </div>
-                    <div class="fg">
-                        <label class="fl">Monthly Operating Expenses (LKR)</label>
-                        <input class="fi money-input" id="dscrOpex" placeholder="100,000" oninput="calcDSCR()">
-                        <div id="dscrOpexSugg" style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap;"></div>
-                        <span class="fhint" style="display:block; margin-top:6px;">Utilities, food, transport, etc. (excluding loan payments)</span>
+        
+                    <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:10px 0 8px;">Monthly Operating Expenses</div>
+                     <div class="fr">
+                         <div class="fg">
+                            <select class="fs" id="dscrKnownOpex" onchange="autoFillDSCR('opex')">
+                                <option value="">Select known expenses...</option>
+                                 <!-- Populated dynamically -->
+                            </select>
+                        </div>
+                        <div class="fg"><input class="fi money-input" id="dscrOpex" placeholder="Or enter custom amount (LKR)" oninput="calcDSCR()"></div>
                     </div>
+                    
+                    <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:18px 0 8px;">Existing Loan Payments</div>
+                    <div class="fg">
+                        <select class="fs" id="dscrAddExistingLoan" onchange="autoAddDSCRLoan()">
+                            <option value="">+ Fetch active loan from system...</option>
+                        </select>
+                    </div>
+                    <div id="dscrExistingLoans" style="margin-bottom:10px;"></div>
+                    
+                    <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:18px 0 8px;">Proposed New Loan</div>
+                    <div class="fr">
+                      <div class="fg"><label class="fl">Loan Amount (LKR)</label><input class="fi money-input" id="dscrNewAmt" placeholder="20,000,000" oninput="calcDSCR()"></div>
+                      <div class="fg"><label class="fl">Annual Rate (%)</label><input class="fi" id="dscrNewRate" type="number" placeholder="14" step="0.1" oninput="calcDSCR()"></div>
+                    </div>
+                    <div class="fr">
+                      <div class="fg"><label class="fl">Duration (months)</label><input class="fi" id="dscrNewDur" type="number" placeholder="120" oninput="calcDSCR()"></div>
+                      <div class="fg"><label class="fl">Down Payment (LKR)</label><input class="fi money-input" id="dscrDown" placeholder="0" oninput="calcDSCR()"></div>
+                    </div>
+                    <div class="fg"><label class="fl">Purpose</label><input class="fi" id="dscrPurpose" placeholder="Land / House / Vehicle..."></div>
+                    <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:6px;" onclick="calcDSCR()">📐 Calculate Bank DSCR</button>
+                  </div>
+                  <div class="card">
+                    <div class="card-header"><div class="card-title">Analysis Result</div></div>
+                    <div id="dscrResult" style="text-align:center;padding:20px 0;">
+                      <div style="font-size:13px;color:var(--text3);">Fill in the form to calculate eligibility based on local banking parameters.</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+                      
               
             <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:18px 0 8px;">Existing Loan Payments</div>
             <div class="fg">
@@ -2798,10 +2840,13 @@ function renderRecentActivity() {
     </div>`).join('');
 }
 
+    
 // ==================== DSCR CALCULATOR ====================
 function clearDSCR() {
     $('dscrIncome').value = '';
     $('dscrOpex').value = '';
+    $('dscrKnownIncome').value = '';
+    $('dscrKnownOpex').value = '';
     $('dscrNewAmt').value = '';
     $('dscrNewRate').value = '';
     $('dscrNewDur').value = '';
@@ -2811,17 +2856,56 @@ function clearDSCR() {
     $('dscrExistingLoans').innerHTML = '';
     $('dscrResult').innerHTML = '<div style="font-size:13px;color:var(--text3);">Enter loan details to calculate eligibility based on local banking parameters.</div>';
 }
-    
 
 function renderDSCR() {
+    // Populate Existing Loans
     const loans = DB.get('loans');
-    const select = $('dscrAddExistingLoan');
-    let html = '<option value="">+ Fetch active loan from system...</option>';
+    const selectLoan = $('dscrAddExistingLoan');
+    let htmlLoan = '<option value="">+ Fetch active loan from system...</option>';
     loans.forEach(l => {
         const active = loanEndDate(l) > new Date();
-        if(active) html += `<option value="${l.monthly}">${l.name} (${l.bank}) - ${fmt(l.monthly)}/mo</option>`;
+        if(active) htmlLoan += `<option value="${l.monthly}">${l.name} (${l.bank}) - ${fmt(l.monthly)}/mo</option>`;
     });
-    select.innerHTML = html;
+    selectLoan.innerHTML = htmlLoan;
+
+    // Populate Known Income
+    const incSelect = $('dscrKnownIncome');
+    const totalInc = DB.get('income').reduce((sum, x) => sum + x.monthly, 0);
+    incSelect.innerHTML = `<option value="">Select known income...</option>
+                           <option value="${totalInc}">Total Tracked Income: ${fmtN(totalInc)}</option>`;
+
+    // Populate Known Expenses (Average of last 3 months to be realistic)
+    const expSelect = $('dscrKnownOpex');
+    const expenses = DB.get('expenses');
+    // Simple average calculation
+    const totalExp = expenses.reduce((sum, x) => sum + x.amount, 0);
+    const uniqueMonths = new Set(expenses.map(x=>x.month)).size || 1;
+    const avgExp = Math.round(totalExp / uniqueMonths);
+    
+    expSelect.innerHTML = `<option value="">Select known expenses...</option>
+                           <option value="${avgExp}">Avg Tracked Monthly Opex: ${fmtN(avgExp)}</option>`;
+
+    setTimeout(calcDSCR, 100);
+}
+
+function autoFillDSCR(type) {
+    if(type === 'income') {
+        const val = $('dscrKnownIncome').value;
+        if(val) {
+             $('dscrIncome').value = fmtN(val);
+             calcDSCR();
+        }
+    } else if (type === 'opex') {
+        const val = $('dscrKnownOpex').value;
+        if(val) {
+             $('dscrOpex').value = fmtN(val);
+             calcDSCR();
+        }
+    }
+}
+
+
+    
 
     // AI Automation: Fetch system data for quick add
     const now = new Date();
