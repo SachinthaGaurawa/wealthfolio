@@ -1,6 +1,5 @@
 // =====================================================
-// WEALTHFLOW v6.0 - Infinity Cloud Financial System
-// Elite Premium Edition
+// WEALTHFLOW v5.1 - Infinity Cloud Financial System
 // =====================================================
 
 const firebaseConfig = {
@@ -23,7 +22,7 @@ const userDocRef = db.collection('users').doc('master_profile');
 let appData = { 
     auth: {}, income: [], loans: [], ccinstall: [], cconetime: [], 
     cheques: [], expenses: [], targets: [], balance: {total:0, flows:[]}, 
-    settings: { backupFreq: 'weekly', lastBackup: null, theme: 'dark', autoLock: 15, haptics: true, biometricEnabled: false, bioCredId: null } 
+    settings: { backupFreq: 'weekly', lastBackup: null, theme: 'dark', autoLock: 15, haptics: true } 
 };
 let isInitialised = false;
 let inactivityTimer = 0;
@@ -127,16 +126,6 @@ function initMoneyInputs() {
     });
 }
 
-// ==================== HAPTIC FEEDBACK ENGINE ====================
-document.body.addEventListener('pointerdown', (e) => {
-    const s = DB.getObj('settings', {haptics: true});
-    if(s.haptics && navigator.vibrate) {
-        if(e.target.closest('button, .btn, .ib, .mtab, .npb, .nav-item')) {
-            try { navigator.vibrate(30); } catch(err){}
-        }
-    }
-});
-
 // ==================== AUTO LOCK ====================
 function resetAutoLockTimer() { inactivityTimer = 0; }
 document.onmousemove = resetAutoLockTimer;
@@ -171,7 +160,7 @@ async function generateAIInsights() {
         const exp = DB.get('expenses').reduce((s, x) => s + x.amount, 0);
         const balData = DB.getObj('balance', {total:0});
         
-        const prompt = `Act as an expert Sri Lankan financial advisor. 
+        const prompt = `Act as an expert Sri Lankan financial advisor for Sachintha Gaurawa. 
         Context: My current estimated monthly income from investments is LKR ${inc}. 
         My tracked monthly expenses are LKR ${exp}. 
         My base balance tracked is LKR ${balData.total}. 
@@ -349,7 +338,7 @@ async function executeDriveRestore() {
     }
 }
 
-// ==================== AUTH, PIN & BIOMETRIC SYSTEM ====================
+// ==================== AUTH / PIN SYSTEM ====================
 async function sha256(msg) {
     const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(msg));
     return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
@@ -376,13 +365,6 @@ function buildDots(containerId, len=6, filled=0) {
 function initAuthUI() {
     buildNumpad('loginPad'); buildNumpad('setupPad'); buildNumpad('newPinPad');
     buildDots('loginDots'); buildDots('setupDots'); buildDots('newPinDots');
-    
-    const s = DB.getObj('settings');
-    if (s.biometricEnabled) {
-        $('bioLoginBtn').style.display = 'block';
-    } else {
-        $('bioLoginBtn').style.display = 'none';
-    }
 }
 
 function pinDigit(padId, digit) {
@@ -478,66 +460,6 @@ async function handlePinComplete(padId) {
     }
 }
 
-// ----------------- WEBAUTHN / BIOMETRICS -----------------
-async function setupBiometric() {
-    if (!window.PublicKeyCredential) {
-        notify("Biometrics not supported on this device/browser.", "error");
-        return;
-    }
-    try {
-        const challenge = crypto.getRandomValues(new Uint8Array(32));
-        const userId = crypto.getRandomValues(new Uint8Array(16));
-        const publicKey = {
-            challenge: challenge,
-            rp: { name: "WealthFlow Elite", id: window.location.hostname },
-            user: { id: userId, name: "sg@wealthflow.app", displayName: "Sachintha Gaurawa" },
-            pubKeyCredParams: [{ type: "public-key", alg: -7 }, { type: "public-key", alg: -257 }],
-            authenticatorSelection: { authenticatorAttachment: "platform", userVerification: "required" },
-            timeout: 60000,
-            attestation: "direct"
-        };
-        const cred = await navigator.credentials.create({ publicKey });
-        const s = DB.getObj('settings');
-        s.biometricEnabled = true;
-        s.bioCredId = Array.from(new Uint8Array(cred.rawId));
-        DB.set('settings', s);
-        notify("Face/Touch ID Enabled! 🛡️", "success");
-        renderSettings();
-        $('bioLoginBtn').style.display = 'block';
-    } catch (err) {
-        console.error(err);
-        notify("Biometric setup failed. Device may not support it.", "error");
-    }
-}
-
-async function loginWithBiometric() {
-    const s = DB.getObj('settings');
-    if (!s.biometricEnabled || !s.bioCredId) return;
-
-    try {
-        const challenge = crypto.getRandomValues(new Uint8Array(32));
-        const publicKey = {
-            challenge: challenge,
-            allowCredentials: [{
-                type: "public-key",
-                id: new Uint8Array(s.bioCredId)
-            }],
-            userVerification: "required",
-            timeout: 60000
-        };
-        const assertion = await navigator.credentials.get({ publicKey });
-        if (assertion) {
-            $('loginErr').textContent = '';
-            resetAutoLockTimer();
-            launchApp();
-            notify("Welcome back! 👋", "success");
-        }
-    } catch (err) {
-        console.error(err);
-        $('loginErr').textContent = 'Biometric verification failed. Please use PIN.';
-    }
-}
-
 function showAuthView(viewId) {
     ['authLogin','authSetup','authForgot','authNewPin','authRecovShow','authSecQ'].forEach(id => {
         const el = $(id); if(el) el.style.display='none';
@@ -547,9 +469,6 @@ function showAuthView(viewId) {
     buildDots('loginDots', 6, 0);
     buildDots('setupDots', 6, 0);
     buildDots('newPinDots', 6, 0);
-    if(viewId === 'authLogin' && DB.getObj('settings').biometricEnabled) {
-        $('bioLoginBtn').style.display = 'block';
-    }
 }
 
 async function saveSecQ() {
@@ -1982,7 +1901,7 @@ function calcDSCR() {
 
 // ==================== SETTINGS (ULTRA-PREMIUM UPGRADE) ====================
 function renderSettings() {
-    const s = DB.getObj('settings', { backupFreq: 'weekly', lastBackup: null, theme: 'dark', autoLock: 15, haptics: true, biometricEnabled: false });
+    const s = DB.getObj('settings', { backupFreq: 'weekly', lastBackup: null, theme: 'dark', autoLock: 15, haptics: true });
     
     $('settingsContent').innerHTML = `
         <div class="settings-section" style="background: linear-gradient(145deg, var(--card), var(--bg2)); border: 1px solid var(--border2);">
@@ -1999,12 +1918,6 @@ function renderSettings() {
 
         <div class="settings-section" style="background: linear-gradient(145deg, var(--card), var(--bg2)); border: 1px solid var(--border2);">
             <div class="settings-title" style="color:var(--green);">🛡️ Core Security & Access</div>
-            <div class="setting-row">
-                <div class="setting-info"><div class="setting-label">Face ID / Touch ID Auth</div><div class="setting-desc">Use device biometrics to unlock the vault.</div></div>
-                ${s.biometricEnabled 
-                    ? `<button class="btn btn-success btn-sm" onclick="toggleSetting('biometricEnabled', false); toggleSetting('bioCredId', null); notify('Biometrics disabled.', 'info');">✅ Enabled</button>`
-                    : `<button class="btn btn-secondary btn-sm" onclick="setupBiometric()">Enable Biometrics</button>`}
-            </div>
             <div class="setting-row">
                 <div class="setting-info"><div class="setting-label">Auto-Lock Engine</div><div class="setting-desc">Secure the vault after inactivity to prevent unauthorized access.</div></div>
                 <select class="fi" style="width:140px; border-color:var(--border2);" onchange="updateAutoLock(this.value)">
@@ -2072,9 +1985,23 @@ function toggleSetting(key, val) {
 function triggerHaptic() {
     const s = DB.getObj('settings', {haptics: true});
     if(s.haptics && navigator.vibrate) {
-        navigator.vibrate(40);
+        // Safe haptic implementation that works across different browsers
+        try {
+            if (typeof window.navigator.vibrate === 'function') {
+                window.navigator.vibrate(40);
+            }
+        } catch(e) {
+            // Ignore errors on non-supporting devices
+        }
     }
 }
+
+// Intercept button clicks for luxury haptics
+document.addEventListener('click', (e) => {
+    if(e.target.tagName === 'BUTTON' || e.target.closest('.btn') || e.target.closest('.ib') || e.target.closest('.mtab')) {
+        triggerHaptic();
+    }
+});
 
 // ==================== EXPORT & REPORTING ====================
 function toggleExportOptions() {
@@ -2140,24 +2067,118 @@ function generateLuxuryPDFReport() {
     // Luxury Brand Colors (Pantone 2965 C Dark Navy and Premium Gold)
     const brandNavy = [10, 25, 47]; 
     const brandGold = [212, 175, 55];
-    const lightGrey = [24I'm having a hard time fulfilling your request. Can I help you with something else instead?
+    const lightGrey = [248, 249, 250];
+    const textGrey = [100, 116, 139];
+    const darkText = [30, 41, 59];
 
+    // Background Pattern / Watermark simulation
+    doc.setFillColor(252, 253, 255);
+    doc.rect(0, 0, 210, 297, 'F');
+    doc.setDrawColor(240, 240, 240);
+    for(let i=0; i<300; i+=15) { doc.line(0, i, 210, i); }
 
+    // Luxury Header Block
+    doc.setFillColor(...brandNavy);
+    doc.rect(0, 0, 210, 55, 'F');
 
+    // Branding (Elegant Serif feel)
+    doc.setFont("times", "bold");
+    doc.setFontSize(32);
+    doc.setTextColor(...brandGold);
+    doc.text("WEALTHFLOW", 15, 25);
 
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9);
+    doc.setTextColor(200, 200, 200);
+    doc.text("PRIVATE WEALTH MANAGEMENT STATEMENT", 16, 33);
+    
+    // Client Meta Info (Right aligned)
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(10);
+    doc.setTextColor(255, 255, 255);
+    doc.text(`PREPARED EXCLUSIVELY FOR:`, 195, 22, { align: 'right' });
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(...brandGold);
+    doc.text(`SACHINTHA GAURAWA`, 195, 28, { align: 'right' });
+    
+    doc.setTextColor(200, 200, 200);
+    doc.setFontSize(9);
+    doc.text(`STATEMENT PERIOD: ${MONTHS[month].toUpperCase()} ${year}`, 195, 38, { align: 'right' });
+    doc.text(`GENERATED ON: ${today()}`, 195, 44, { align: 'right' });
 
+    // Decorative Gold Accent Line
+    doc.setFillColor(...brandGold);
+    doc.rect(0, 55, 210, 2, 'F');
 
-const db = firebase.firestore();
+    // Executive Summary Box (Glassmorphism / Clean UI look)
+    doc.setDrawColor(220, 226, 230);
+    doc.setFillColor(255, 255, 255);
+    doc.roundedRect(15, 65, 180, 35, 4, 4, 'FD');
+    
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(10);
+    doc.setTextColor(...textGrey);
+    doc.text("TOTAL INFLOW", 30, 78, { align: 'center' });
+    doc.text("TOTAL OUTFLOW", 105, 78, { align: 'center' });
+    doc.text("NET POSITION", 180, 78, { align: 'center' });
 
-// Safely attempt offline persistence
-try { 
-    db.enablePersistence({
-        synchronizeTabs: true
-    }).catch(function(err) {
-        console.warn("Offline persistence issue:", err.code);
+    doc.setFontSize(18);
+    doc.setTextColor(16, 185, 129); // Green
+    doc.text(`${fmtN(md.income)}`, 30, 88, { align: 'center' });
+    
+    doc.setTextColor(239, 68, 68); // Red
+    doc.text(`${fmtN(md.totalExp)}`, 105, 88, { align: 'center' });
+    
+    doc.setTextColor(...brandNavy); 
+    doc.text(`${fmtN(md.balance)}`, 180, 88, { align: 'center' });
+
+    let startY = 115;
+
+    // Advanced Table Config
+    const tableOptions = {
+        theme: 'grid',
+        headStyles: { fillColor: lightGrey, textColor: brandNavy, fontStyle: 'bold', fontSize: 10, lineColor: 230, lineWidth: 0.1 },
+        bodyStyles: { fontSize: 10, textColor: darkText, lineColor: 240, lineWidth: 0.1 },
+        alternateRowStyles: { fillColor: [252, 252, 252] },
+        margin: { left: 15, right: 15 },
+        columnStyles: { 2: { halign: 'right', fontStyle: 'bold' } } // Right align money
+    };
+
+    // 1. Income
+    doc.setFont("times", "bold");
+    doc.setFontSize(16); doc.setTextColor(...brandNavy);
+    doc.text("I. Asset Yields & Income", 15, startY);
+    
+    const activeIncome = DB.get('income').filter(s => {
+        const dt = new Date(year,month,1);
+        const start = new Date(s.start+'T00:00:00');
+        const end = s.end ? new Date(s.end+'T00:00:00') : null;
+        return start <= dt && (!end || end >= dt);
     });
-} catch (err) { 
-    console.warn("Persistence setup failed:", err); 
-}
 
-const userDocRef = db.collection('users').doc('master_profile');    
+    if(activeIncome.length > 0) {
+        doc.autoTable({
+            startY: startY + 6,
+            head: [['Yield Source', 'Managing Institution', 'Realized Return (LKR)']],
+            body: activeIncome.map(i => [i.name, i.company, fmtN(i.monthly)]),
+            ...tableOptions
+        });
+        startY = doc.lastAutoTable.finalY + 18;
+    } else {
+        doc.setFont("helvetica", "italic"); doc.setFontSize(10); doc.setTextColor(...textGrey);
+        doc.text("No yields realized for this fiscal period.", 15, startY + 10); startY += 20;
+    }
+
+    // 2. Debt
+    doc.setFont("times", "bold");
+    doc.setFontSize(16); doc.setTextColor(...brandNavy);
+    doc.text("II. Debt Servicing (Loans)", 15, startY);
+    if(md.loanItems.length > 0) {
+        doc.autoTable({
+            startY: startY + 6,
+            head: [['Facility / Product', 'Banking Institution', 'Monthly Payment (LKR)']],
+            body: md.loanItems.map(l => [l.name, l.bank, fmtN(l.amount)]),
+            ...tableOptions
+        });
+        startY = doc.lastAutoTable.finalY + 18;
+    }I seem to be encountering an error. Can I try something else for you?
