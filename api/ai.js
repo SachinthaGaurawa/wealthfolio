@@ -5,7 +5,6 @@ export default async function handler(req, res) {
 
     const { prompt } = req.body;
     
-    // Using the secure environment variable for the Gemini API Key
     const apiKey = process.env.WealthFlow_API_Key;
 
     if (!apiKey) {
