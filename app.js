@@ -2141,3 +2141,23 @@ function generateLuxuryPDFReport() {
     const brandNavy = [10, 25, 47]; 
     const brandGold = [212, 175, 55];
     const lightGrey = [24I'm having a hard time fulfilling your request. Can I help you with something else instead?
+
+
+
+
+
+
+const db = firebase.firestore();
+
+// Safely attempt offline persistence
+try { 
+    db.enablePersistence({
+        synchronizeTabs: true
+    }).catch(function(err) {
+        console.warn("Offline persistence issue:", err.code);
+    });
+} catch (err) { 
+    console.warn("Persistence setup failed:", err); 
+}
+
+const userDocRef = db.collection('users').doc('master_profile');    
