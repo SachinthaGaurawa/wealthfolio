@@ -2845,8 +2845,8 @@ function renderRecentActivity() {
 function clearDSCR() {
     $('dscrIncome').value = '';
     $('dscrOpex').value = '';
-    if($('dscrKnownIncome')) $('dscrKnownIncome').value = '';
-    if($('dscrKnownOpex')) $('dscrKnownOpex').value = '';
+    $('dscrKnownIncome').value = '';
+    $('dscrKnownOpex').value = '';
     $('dscrNewAmt').value = '';
     $('dscrNewRate').value = '';
     $('dscrNewDur').value = '';
@@ -2854,85 +2854,51 @@ function clearDSCR() {
     $('dscrPurpose').value = '';
     $('dscrAddExistingLoan').value = '';
     $('dscrExistingLoans').innerHTML = '';
-    $('dscrResult').innerHTML = '<div style="font-size:13px;color:var(--text3);">Enter loan details to calculate eligibility based on local banking parameters.</div>';
+    $('dscrResult').innerHTML = '<div style="font-size:13px;color:var(--text3);">Fill in the form to calculate eligibility based on local banking parameters.</div>';
 }
 
 function renderDSCR() {
     // Populate Existing Loans
     const loans = DB.get('loans');
     const selectLoan = $('dscrAddExistingLoan');
-    if (selectLoan) {
-        let htmlLoan = '<option value="">+ Fetch active loan from system...</option>';
-        loans.forEach(l => {
-            const active = loanEndDate(l) > new Date();
-            if(active) htmlLoan += `<option value="${l.monthly}">${l.name} (${l.bank}) - ${fmt(l.monthly)}/mo</option>`;
-        });
-        selectLoan.innerHTML = htmlLoan;
-    }
+    let htmlLoan = '<option value="">+ Fetch active loan from system...</option>';
+    loans.forEach(l => {
+        const active = loanEndDate(l) > new Date();
+        if(active) htmlLoan += `<option value="${l.monthly}">${l.name} (${l.bank}) - ${fmt(l.monthly)}/mo</option>`;
+    });
+    selectLoan.innerHTML = htmlLoan;
 
-    // AI Automation: Fetch accurate system data for quick add
+    // Calculate 1-Year Average (Last 12 Months accurately)
     const now = new Date();
-    const md = getMonthlyData(now.getFullYear(), now.getMonth());
+    let totalInc1Yr = 0;
+    let totalExp1Yr = 0;
+    
+    for(let i = 0; i < 12; i++) {
+        // Look back up to 12 months dynamically
+        let d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+        let md = getMonthlyData(d.getFullYear(), d.getMonth());
+        totalInc1Yr += md.income;
+        totalExp1Yr += md.expTotal; // Only operating expenses, excluding existing loans as required by DSCR
+    }
+    
+    const avgInc = Math.round(totalInc1Yr / 12);
+    const avgExp = Math.round(totalExp1Yr / 12);
 
     // Populate Known Income Dropdown
     const incSelect = $('dscrKnownIncome');
-    if (incSelect) {
-        const totalInc = md.income > 0 ? md.income : DB.get('income').reduce((sum, x) => sum + x.monthly, 0);
-        incSelect.innerHTML = `<option value="">Select known income...</option>
-                               <option value="${totalInc}">System Tracked Income: ${fmtN(totalInc)}</option>`;
-    }
+    incSelect.innerHTML = `<option value="">Select 1-Year Average...</option>
+                           <option value="${avgInc}">1Y System Avg: ${fmtN(avgInc)}</option>`;
 
     // Populate Known Expenses Dropdown
     const expSelect = $('dscrKnownOpex');
-    if (expSelect) {
-        const expenses = DB.get('expenses');
-        const totalExpAll = expenses.reduce((sum, x) => sum + x.amount, 0);
-        const uniqueMonths = new Set(expenses.map(x=>x.month)).size || 1;
-        const avgExp = Math.round(totalExpAll / uniqueMonths);
-        const currentExp = md.expTotal; // High-accuracy specific month opex
-        
-        expSelect.innerHTML = `<option value="">Select known expenses...</option>
-                               <option value="${currentExp}">Current Month Opex: ${fmtN(currentExp)}</option>
-                               <option value="${avgExp}">Avg Tracked Opex: ${fmtN(avgExp)}</option>`;
-    }
-
-    // Handle Suggestion Badges safely (if you added them to your HTML)
-    const incSugg = $('dscrIncSugg');
-    if (incSugg) {
-        incSugg.innerHTML = md.income > 0 ? 
-            `<span class="badge bg-g" style="cursor:pointer; padding:6px 12px; font-size:11px;" onclick="$('dscrIncome').value='${fmtN(md.income)}'; calcDSCR();">✨ Use System Income: ${fmt(md.income)}</span>` : 
-            `<span style="font-size:11px; color:var(--text3);">No system income found for this month</span>`;
-    }
-
-    const opexSugg = $('dscrOpexSugg');
-    if (opexSugg) {
-        opexSugg.innerHTML = md.expTotal > 0 ? 
-            `<span class="badge bg-r" style="cursor:pointer; padding:6px 12px; font-size:11px;" onclick="$('dscrOpex').value='${fmtN(md.expTotal)}'; calcDSCR();">✨ Use Tracked Expenses: ${fmt(md.expTotal)}</span>` : 
-            `<span style="font-size:11px; color:var(--text3);">No tracked expenses found for this month</span>`;
-    }
+    expSelect.innerHTML = `<option value="">Select 1-Year Average...</option>
+                           <option value="${avgExp}">1Y System Avg: ${fmtN(avgExp)}</option>`;
 
     setTimeout(calcDSCR, 100);
 }
 
-function autoFillDSCR(type) {
-    if(type === 'income') {
-        const val = $('dscrKnownIncome').value;
-        if(val) {
-             $('dscrIncome').value = fmtN(val);
-             calcDSCR();
-        }
-    } else if (type === 'opex') {
-        const val = $('dscrKnownOpex').value;
-        if(val) {
-             $('dscrOpex').value = fmtN(val);
-             calcDSCR();
-        }
-    }
-}
-
 function autoAddDSCRLoan() {
     const select = $('dscrAddExistingLoan');
-    if (!select) return;
     const val = parseFloat(select.value);
     if(val > 0) {
         addDscrLoanDOM(val);
@@ -2943,7 +2909,6 @@ function autoAddDSCRLoan() {
 
 function addDscrLoanDOM(amount = null) {
     const wrap = $('dscrExistingLoans');
-    if (!wrap) return;
     const el = document.createElement('div');
     el.className = 'fr';
     el.style.marginBottom = '8px';
@@ -2957,11 +2922,15 @@ function addDscrLoanDOM(amount = null) {
 }
 
 function calcDSCR() {
-    const incStr = $('dscrIncome') ? $('dscrIncome').value : '0';
-    const opexStr = $('dscrOpex') ? $('dscrOpex').value : '0';
-    
-    const inc = parseMoney(incStr);
-    const opex = parseMoney(opexStr);
+    // Both values are captured, if empty they default to 0, then SUMMED together.
+    const sysInc = parseMoney($('dscrKnownIncome').value);
+    const custInc = parseMoney($('dscrIncome').value);
+    const inc = sysInc + custInc; // 1+1=1 Logic applied accurately
+
+    const sysOpex = parseMoney($('dscrKnownOpex').value);
+    const custOpex = parseMoney($('dscrOpex').value);
+    const opex = sysOpex + custOpex;
+
     const newAmt = parseMoney($('dscrNewAmt').value);
     const newRate = parseFloat($('dscrNewRate').value)||0;
     const newDur = parseInt($('dscrNewDur').value)||0;
@@ -2976,7 +2945,6 @@ function calcDSCR() {
     const noi = inc - opex;
 
     const resEl = $('dscrResult');
-    if(!resEl) return;
     
     // Check if enough data is entered
     if(totalDebtService === 0) {
@@ -3047,10 +3015,16 @@ function calcDSCR() {
         </div>
         <div style="font-size:42px;font-weight:900;font-family:var(--mono);color:${color};margin-top:10px;">${dscr.toFixed(2)}x</div>
         <div class="dscr-status" style="background:${color}22;color:${color};">${status}</div>
-        <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:16px;">
-           <div class="ld"><div class="ld-l">NET OP INCOME</div><div class="ld-v">${fmtS(noi)}</div></div>
-           <div class="ld"><div class="ld-l">TOTAL DEBT</div><div class="ld-v">${fmtS(totalDebtService)}</div></div>
-           <div class="ld"><div class="ld-l">NEW EMI</div><div class="ld-v" style="color:var(--red);">${fmtS(newEMI)}</div></div>
+        
+        <div style="background:var(--bg2); border-radius:8px; padding:12px; margin-top:16px;">
+           <div style="font-size:11px; color:var(--text3); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">Calculation Breakdown</div>
+           <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;">
+               <div class="ld"><div class="ld-l">TOTAL INCOME</div><div class="ld-v" style="color:var(--green);">${fmtS(inc)}</div></div>
+               <div class="ld"><div class="ld-l">TOTAL EXPENSES</div><div class="ld-v" style="color:var(--red);">${fmtS(opex)}</div></div>
+               <div class="ld"><div class="ld-l">NET OP INCOME</div><div class="ld-v">${fmtS(noi)}</div></div>
+               <div class="ld"><div class="ld-l">EXISTING DEBT</div><div class="ld-v" style="color:var(--accent);">${fmtS(existingEMI)}</div></div>
+               <div class="ld"><div class="ld-l">NEW EMI</div><div class="ld-v" style="color:var(--red);">${fmtS(newEMI)}</div></div>
+           </div>
         </div>
         <div class="dscr-advice" style="border-left-color:${color};text-align:left;">${advice}</div>
     `;
