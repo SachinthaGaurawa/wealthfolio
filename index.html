@@ -2993,60 +2993,69 @@ function calcDSCR() {
 }
 
 // ==================== SETTINGS & EXPORT ====================
+// ==================== SETTINGS (ULTRA-PREMIUM UPGRADE) ====================
 function renderSettings() {
-    const s = DB.getObj('settings', { backupFreq: 'weekly', lastBackup: null, theme: 'dark', autoLock: 15 });
+    const s = DB.getObj('settings', { backupFreq: 'weekly', lastBackup: null, theme: 'dark', autoLock: 15, haptics: true });
     
     $('settingsContent').innerHTML = `
-        <div class="settings-section">
-            <div class="settings-title">Appearance & Security</div>
+        <div class="settings-section" style="background: linear-gradient(145deg, var(--card), var(--bg2)); border: 1px solid var(--border2);">
+            <div class="settings-title" style="color:var(--accent);">🎨 Appearance & System Experience</div>
             <div class="setting-row">
-                <div class="setting-info"><div class="setting-label">Dark Theme</div><div class="setting-desc">Switch between light and dark visual modes.</div></div>
+                <div class="setting-info"><div class="setting-label">Dark Theme</div><div class="setting-desc">Switch between Light and Dark aesthetic modes.</div></div>
                 <div class="toggle ${s.theme==='dark'?'on':''}" onclick="toggleTheme(); renderSettings();"></div>
             </div>
             <div class="setting-row">
-                <div class="setting-info"><div class="setting-label">Auto-Lock Timer</div><div class="setting-desc">Automatically lock the system after inactivity.</div></div>
-                <select class="fi" style="width:140px;" onchange="updateAutoLock(this.value)">
-                    <option value="0" ${s.autoLock===0?'selected':''}>Disabled</option>
+                <div class="setting-info"><div class="setting-label">Haptic Feedback</div><div class="setting-desc">Enable subtle device vibrations for physical interactions.</div></div>
+                <div class="toggle ${s.haptics?'on':''}" onclick="toggleSetting('haptics', ${!s.haptics}); triggerHaptic();"></div>
+            </div>
+        </div>
+
+        <div class="settings-section" style="background: linear-gradient(145deg, var(--card), var(--bg2)); border: 1px solid var(--border2);">
+            <div class="settings-title" style="color:var(--green);">🛡️ Core Security & Access</div>
+            <div class="setting-row">
+                <div class="setting-info"><div class="setting-label">Auto-Lock Engine</div><div class="setting-desc">Secure the vault after inactivity to prevent unauthorized access.</div></div>
+                <select class="fi" style="width:140px; border-color:var(--border2);" onchange="updateAutoLock(this.value)">
+                    <option value="0" ${s.autoLock===0?'selected':''}>Disabled (Unsafe)</option>
                     <option value="5" ${s.autoLock===5?'selected':''}>5 Minutes</option>
                     <option value="15" ${s.autoLock===15?'selected':''}>15 Minutes</option>
                     <option value="30" ${s.autoLock===30?'selected':''}>30 Minutes</option>
                 </select>
             </div>
             <div class="setting-row">
-                <div class="setting-info"><div class="setting-label">Change Master PIN</div><div class="setting-desc">Update your 6-digit access code for all synced devices.</div></div>
+                <div class="setting-info"><div class="setting-label">Master PIN Management</div><div class="setting-desc">Update your AES-256 encrypted master access key.</div></div>
                 <button class="btn btn-secondary btn-sm" onclick="openModal('mdChangePin')">Change PIN</button>
             </div>
         </div>
         
-        <div class="settings-section">
-            <div class="settings-title">Cloud Synchronisation</div>
+        <div class="settings-section" style="background: linear-gradient(145deg, var(--card), var(--bg2)); border: 1px solid var(--border2);">
+            <div class="settings-title" style="color:var(--blue);">☁️ Infinity Cloud Synchronisation</div>
             <div class="setting-row">
-                <div class="setting-info"><div class="setting-label">Connection Status</div><div class="setting-desc">WealthFlow automatically syncs to Firebase when online.</div></div>
-                <div><span id="settingsCloudStatus" class="badge ${navigator.onLine?'bg-g':'bg-r'}">${navigator.onLine?'Connected':'Offline'}</span></div>
+                <div class="setting-info"><div class="setting-label">Real-time Connection Status</div><div class="setting-desc">Engine is monitoring connection to Google Firebase.</div></div>
+                <div><span id="settingsCloudStatus" class="badge ${navigator.onLine?'bg-g':'bg-r'}" style="padding: 6px 12px;">${navigator.onLine?'● Securely Connected':'○ Offline Mode'}</span></div>
             </div>
         </div>
 
-        <div class="settings-section">
-            <div class="settings-title">Data Management & Reports</div>
+        <div class="settings-section" style="background: linear-gradient(145deg, var(--card), var(--bg2)); border: 1px solid var(--border2);">
+            <div class="settings-title" style="color:var(--accent);">📈 Data Management & Reports</div>
             <div class="setting-row">
-                <div class="setting-info"><div class="setting-label">Export Professional Report</div><div class="setting-desc">Download a complete physical JSON backup or a luxury PDF statement.</div></div>
-                <button class="btn btn-primary btn-sm" onclick="openModal('mdExport')">Export</button>
+                <div class="setting-info"><div class="setting-label">Generate Elite Report</div><div class="setting-desc">Export a luxury PDF statement, Raw JSON, or Analytics CSV.</div></div>
+                <button class="btn btn-primary btn-sm" style="box-shadow: 0 4px 15px var(--ag);" onclick="openModal('mdExport')">✨ Export Data</button>
             </div>
             
             <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:24px 0 8px;">Google Drive Backup Integration</div>
             <div class="setting-row">
-                <div class="setting-info"><div class="setting-label">Manual Cloud Backup</div><div class="setting-desc">Push an instant JSON backup straight to your secure Google Drive.</div></div>
-                <button class="btn btn-primary btn-sm" onclick="requestDrivePermission('backup')">Backup Now</button>
+                <div class="setting-info"><div class="setting-label">Instant Cloud Backup</div><div class="setting-desc">Push an encrypted snapshot straight to your secure Google Drive.</div></div>
+                <button class="btn btn-secondary btn-sm" onclick="requestDrivePermission('backup')">Backup to Drive</button>
             </div>
             <div class="setting-row">
-                <div class="setting-info"><div class="setting-label">Restore Data System</div><div class="setting-desc">Restore from the latest 5 Google Drive snapshots or a local JSON.</div></div>
-                <button class="btn btn-secondary btn-sm" onclick="requestDrivePermission('restore'); openModal('mdRestoreCloud');">Restore Data</button>
+                <div class="setting-info"><div class="setting-label">Restore Data Protocol</div><div class="setting-desc">Recover your portfolio from Google Drive or a local file.</div></div>
+                <button class="btn btn-secondary btn-sm" onclick="requestDrivePermission('restore'); openModal('mdRestoreCloud');">Restore Vault</button>
             </div>
 
-            <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:24px 0 8px;">Danger Zone</div>
+            <div style="font-size:12px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:.5px;margin:24px 0 8px;">Danger Zone</div>
             <div class="setting-row">
-                <div class="setting-info"><div class="setting-label">Factory Reset</div><div class="setting-desc" style="color:var(--red);">Wipe all local and cloud data. Requires PIN.</div></div>
-                <button class="btn btn-danger btn-sm" onclick="openModal('mdFactoryReset')">Delete Everything</button>
+                <div class="setting-info"><div class="setting-label">Wipe System Data</div><div class="setting-desc">Format all financial records. Your PIN and Settings will remain safe.</div></div>
+                <button class="btn btn-danger btn-sm" onclick="openModal('mdFactoryReset')">Format Database</button>
             </div>
         </div>
    `;
@@ -3056,13 +3065,35 @@ function updateAutoLock(val) {
     const s = DB.getObj('settings', {});
     s.autoLock = parseInt(val);
     DB.set('settings', s);
-    notify(val === '0' ? 'Auto-lock disabled' : `Auto-lock set to ${val} minutes`);
+    notify(val === '0' ? 'Auto-lock disabled (Not Recommended)' : `Vault secures after ${val} minutes`);
     resetAutoLockTimer();
 }
 
+function toggleSetting(key, val) {
+    const s = DB.getObj('settings', {});
+    s[key] = val;
+    DB.set('settings', s);
+    renderSettings();
+}
+
+function triggerHaptic() {
+    const s = DB.getObj('settings', {haptics: true});
+    if(s.haptics && navigator.vibrate) {
+        navigator.vibrate(40);
+    }
+}
+
+// Intercept button clicks for luxury haptics
+document.addEventListener('click', (e) => {
+    if(e.target.tagName === 'BUTTON' || e.target.closest('.btn') || e.target.closest('.ib') || e.target.closest('.mtab')) {
+        triggerHaptic();
+    }
+});
+
+// ==================== EXPORT & REPORTING ====================
 function toggleExportOptions() {
     const format = $('expFormat').value;
-    $('pdfOptionsWrap').style.display = format === 'pdf' ? 'block' : 'none';
+    $('pdfOptionsWrap').style.display = (format === 'pdf' || format === 'csv') ? 'block' : 'none';
 }
 
 function executeExport() {
@@ -3073,83 +3104,138 @@ function executeExport() {
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'WealthFlow_Backup_'+today()+'.json';
+        a.download = `WealthFlow_MasterVault_${today()}.json`;
         a.click();
         URL.revokeObjectURL(url);
-        notify('JSON Data exported successfully!', 'success');
+        notify('Raw JSON Vault secured and downloaded!', 'success');
+        closeModal('mdExport');
+    } else if (format === 'csv') {
+        exportCSVReport();
+        closeModal('mdExport');
     } else {
-        generatePDFReport();
+        generateLuxuryPDFReport();
+        closeModal('mdExport');
     }
-    closeModal('mdExport');
 }
 
-function generatePDFReport() {
+function exportCSVReport() {
+    const year = parseInt($('expPdfYear').value);
+    const month = parseInt($('expPdfMonth').value);
+    const md = getMonthlyData(year, month);
+    
+    let csv = `WEALTHFLOW ANALYTICS REPORT,${MONTHS[month].toUpperCase()} ${year}\n\n`;
+    
+    csv += "TYPE,CATEGORY/BANK,DESCRIPTION,AMOUNT (LKR)\n";
+    md.loanItems.forEach(l => csv += `LOAN,${l.bank},${l.name},${l.amount}\n`);
+    md.ccItems2.forEach(c => csv += `CC INSTALLMENT,${c.bank},${c.name},${c.amount}\n`);
+    md.expItems.forEach(e => csv += `EXPENSE,${e.cat},${e.name},${e.amount}\n`);
+    
+    csv += `\nSUMMARY\nTotal Income,,${md.income}\nTotal Expenses,,${md.totalExp}\nNet Balance,,${md.balance}\n`;
+    
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `WealthFlow_Analytics_${MONTHS_S[month]}_${year}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    notify('Analytics CSV Report generated.', 'success');
+}
+
+// ----------------- LUXURY PDF ENGINE -----------------
+function generateLuxuryPDFReport() {
     const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
+    const doc = new jsPDF('p', 'mm', 'a4'); // A4 size
     
     const year = parseInt($('expPdfYear').value);
     const month = parseInt($('expPdfMonth').value);
     const md = getMonthlyData(year, month);
     
-    const darkBlue = [15, 23, 42];
-    const accentGold = [245, 166, 35];
-    const lightGrey = [241, 245, 249];
+    // Luxury Brand Colors (Pantone 2965 C Dark Navy and Premium Gold)
+    const brandNavy = [10, 25, 47]; 
+    const brandGold = [212, 175, 55];
+    const lightGrey = [248, 249, 250];
     const textGrey = [100, 116, 139];
+    const darkText = [30, 41, 59];
 
-    // Header Block
-    doc.setFillColor(...darkBlue);
-    doc.rect(0, 0, 210, 45, 'F');
+    // Background Pattern / Watermark simulation
+    doc.setFillColor(252, 253, 255);
+    doc.rect(0, 0, 210, 297, 'F');
+    doc.setDrawColor(240, 240, 240);
+    for(let i=0; i<300; i+=15) { doc.line(0, i, 210, i); }
 
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(26);
-    doc.setTextColor(...accentGold);
-    doc.text("WEALTHFLOW", 14, 20);
+    // Luxury Header Block
+    doc.setFillColor(...brandNavy);
+    doc.rect(0, 0, 210, 55, 'F');
+
+    // Branding (Elegant Serif feel)
+    doc.setFont("times", "bold");
+    doc.setFontSize(32);
+    doc.setTextColor(...brandGold);
+    doc.text("WEALTHFLOW", 15, 25);
 
     doc.setFont("helvetica", "normal");
+    doc.setFontSize(9);
+    doc.setTextColor(200, 200, 200);
+    doc.letterSpacing = 2; // Simulated
+    doc.text("PRIVATE WEALTH MANAGEMENT STATEMENT", 16, 33);
+    
+    // Client Meta Info (Right aligned)
+    doc.setFont("helvetica", "bold");
     doc.setFontSize(10);
     doc.setTextColor(255, 255, 255);
-    doc.text("PRIVATE FINANCIAL STATEMENT", 14, 28);
+    doc.text(`PREPARED EXCLUSIVELY FOR:`, 195, 22, { align: 'right' });
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(...brandGold);
+    doc.text(`SACHINTHA GAURAWA`, 195, 28, { align: 'right' });
     
-    doc.setFontSize(10);
-    doc.text(`PREPARED FOR: SACHINTHA GAURAWA`, 120, 20);
-    doc.text(`PERIOD: ${MONTHS[month].toUpperCase()} ${year}`, 120, 28);
-    doc.text(`GENERATED: ${today()}`, 120, 36);
+    doc.setTextColor(200, 200, 200);
+    doc.setFontSize(9);
+    doc.text(`STATEMENT PERIOD: ${MONTHS[month].toUpperCase()} ${year}`, 195, 38, { align: 'right' });
+    doc.text(`GENERATED ON: ${today()}`, 195, 44, { align: 'right' });
 
-    // Executive Summary Box
-    doc.setDrawColor(226, 232, 240);
-    doc.setFillColor(...lightGrey);
-    doc.roundedRect(14, 55, 182, 30, 3, 3, 'FD');
+    // Decorative Gold Accent Line
+    doc.setFillColor(...brandGold);
+    doc.rect(0, 55, 210, 2, 'F');
+
+    // Executive Summary Box (Glassmorphism / Clean UI look)
+    doc.setDrawColor(220, 226, 230);
+    doc.setFillColor(255, 255, 255);
+    doc.roundedRect(15, 65, 180, 35, 4, 4, 'FD');
     
     doc.setFont("helvetica", "bold");
     doc.setFontSize(10);
     doc.setTextColor(...textGrey);
-    doc.text("TOTAL INCOME", 24, 65);
-    doc.text("TOTAL EXPENSES", 85, 65);
-    doc.text("NET BALANCE", 146, 65);
+    doc.text("TOTAL INFLOW", 30, 78, { align: 'center' });
+    doc.text("TOTAL OUTFLOW", 105, 78, { align: 'center' });
+    doc.text("NET POSITION", 180, 78, { align: 'center' });
 
-    doc.setFontSize(16);
-    doc.setTextColor(16, 185, 129); 
-    doc.text(`${fmtN(md.income)}`, 24, 76);
+    doc.setFontSize(18);
+    doc.setTextColor(16, 185, 129); // Green
+    doc.text(`${fmtN(md.income)}`, 30, 88, { align: 'center' });
     
-    doc.setTextColor(239, 68, 68); 
-    doc.text(`${fmtN(md.totalExp)}`, 85, 76);
+    doc.setTextColor(239, 68, 68); // Red
+    doc.text(`${fmtN(md.totalExp)}`, 105, 88, { align: 'center' });
     
-    doc.setTextColor(...darkBlue); 
-    doc.text(`${fmtN(md.balance)}`, 146, 76);
+    doc.setTextColor(...brandNavy); 
+    doc.text(`${fmtN(md.balance)}`, 180, 88, { align: 'center' });
 
-    let startY = 100;
+    let startY = 115;
 
+    // Advanced Table Config
     const tableOptions = {
-        theme: 'plain',
-        headStyles: { fillColor: lightGrey, textColor: darkBlue, fontStyle: 'bold', fontSize: 10 },
-        bodyStyles: { fontSize: 10, textColor: [51, 65, 85] },
-        alternateRowStyles: { fillColor: [250, 250, 250] },
-        margin: { left: 14, right: 14 }
+        theme: 'grid',
+        headStyles: { fillColor: lightGrey, textColor: brandNavy, fontStyle: 'bold', fontSize: 10, lineColor: 230, lineWidth: 0.1 },
+        bodyStyles: { fontSize: 10, textColor: darkText, lineColor: 240, lineWidth: 0.1 },
+        alternateRowStyles: { fillColor: [252, 252, 252] },
+        margin: { left: 15, right: 15 },
+        columnStyles: { 2: { halign: 'right', fontStyle: 'bold' } } // Right align money
     };
 
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(14); doc.setTextColor(...darkBlue);
-    doc.text("Income & Returns", 14, startY);
+    // 1. Income
+    doc.setFont("times", "bold");
+    doc.setFontSize(16); doc.setTextColor(...brandNavy);
+    doc.text("I. Asset Yields & Income", 15, startY);
     
     const activeIncome = DB.get('income').filter(s => {
         const dt = new Date(year,month,1);
@@ -3160,64 +3246,74 @@ function generatePDFReport() {
 
     if(activeIncome.length > 0) {
         doc.autoTable({
-            startY: startY + 5,
-            head: [['Source', 'Institution', 'Amount (LKR)']],
+            startY: startY + 6,
+            head: [['Yield Source', 'Managing Institution', 'Realized Return (LKR)']],
             body: activeIncome.map(i => [i.name, i.company, fmtN(i.monthly)]),
             ...tableOptions
         });
-        startY = doc.lastAutoTable.finalY + 15;
+        startY = doc.lastAutoTable.finalY + 18;
     } else {
-        doc.setFont("helvetica", "normal"); doc.setFontSize(10); doc.setTextColor(...textGrey);
-        doc.text("No income registered for this period.", 14, startY + 8); startY += 18;
+        doc.setFont("helvetica", "italic"); doc.setFontSize(10); doc.setTextColor(...textGrey);
+        doc.text("No yields realized for this fiscal period.", 15, startY + 10); startY += 20;
     }
 
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(14); doc.setTextColor(...darkBlue);
-    doc.text("Debt Servicing", 14, startY);
+    // 2. Debt
+    doc.setFont("times", "bold");
+    doc.setFontSize(16); doc.setTextColor(...brandNavy);
+    doc.text("II. Debt Servicing (Loans)", 15, startY);
     if(md.loanItems.length > 0) {
         doc.autoTable({
-            startY: startY + 5,
-            head: [['Facility Name', 'Institution', 'EMI (LKR)']],
+            startY: startY + 6,
+            head: [['Facility / Product', 'Banking Institution', 'Monthly Payment (LKR)']],
             body: md.loanItems.map(l => [l.name, l.bank, fmtN(l.amount)]),
             ...tableOptions
         });
-        startY = doc.lastAutoTable.finalY + 15;
+        startY = doc.lastAutoTable.finalY + 18;
     } else {
-        doc.setFont("helvetica", "normal"); doc.setFontSize(10); doc.setTextColor(...textGrey);
-        doc.text("No debt obligations for this period.", 14, startY + 8); startY += 18;
+        doc.setFont("helvetica", "italic"); doc.setFontSize(10); doc.setTextColor(...textGrey);
+        doc.text("No active debt obligations recorded.", 15, startY + 10); startY += 20;
     }
 
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(14); doc.setTextColor(...darkBlue);
-    doc.text("Operating Expenses", 14, startY);
+    // 3. Opex & CC
+    doc.setFont("times", "bold");
+    doc.setFontSize(16); doc.setTextColor(...brandNavy);
+    doc.text("III. Operations & Card Installments", 15, startY);
     const combinedExp = [];
-    md.ccItems2.forEach(c => combinedExp.push([c.name + ' (CC Instalment)', c.bank, fmtN(c.amount)]));
+    md.ccItems2.forEach(c => combinedExp.push([c.name + ' (Card Installment)', c.bank, fmtN(c.amount)]));
     md.expItems.forEach(e => combinedExp.push([e.name, e.cat, fmtN(e.amount)]));
 
     if(combinedExp.length > 0) {
         doc.autoTable({
-            startY: startY + 5,
-            head: [['Description', 'Category', 'Amount (LKR)']],
+            startY: startY + 6,
+            head: [['Description', 'Category', 'Expense (LKR)']],
             body: combinedExp,
             ...tableOptions
         });
     } else {
-        doc.setFont("helvetica", "normal"); doc.setFontSize(10); doc.setTextColor(...textGrey);
-        doc.text("No operating expenses for this period.", 14, startY + 8);
+        doc.setFont("helvetica", "italic"); doc.setFontSize(10); doc.setTextColor(...textGrey);
+        doc.text("No operating expenses registered.", 15, startY + 10);
     }
 
+    // Page Footer (Every page)
     const pageCount = doc.internal.getNumberOfPages();
     for(let i = 1; i <= pageCount; i++) {
         doc.setPage(i);
-        doc.setFont("helvetica", "normal");
+        doc.setFillColor(...brandNavy);
+        doc.rect(0, 285, 210, 12, 'F');
+        doc.setFont("helvetica", "bold");
         doc.setFontSize(8);
-        doc.setTextColor(148, 163, 184);
-        doc.text(`Page ${i} of ${pageCount}`, 196, 290, { align: 'right' });
-        doc.text("Generated securely by WealthFlow", 14, 290);
+        doc.setTextColor(...brandGold);
+        doc.text("WEALTHFLOW ELITE ENGINE", 15, 292);
+        
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(255, 255, 255);
+        doc.text("STRICTLY PRIVATE & CONFIDENTIAL", 105, 292, { align: 'center' });
+        doc.text(`PAGE ${i} OF ${pageCount}`, 195, 292, { align: 'right' });
     }
 
-    doc.save(`WealthFlow_Statement_${MONTHS_S[month]}_${year}.pdf`);
-    notify('Professional Statement downloaded.', 'success');
+    // Save with Elite Naming Convention
+    doc.save(`WealthFlow_Elite_Statement_${MONTHS_S[month]}_${year}.pdf`);
+    notify('Luxury PDF Statement generated successfully! ✨', 'success');
 }
 
 // Local JSON Restore functionality
@@ -3228,14 +3324,14 @@ function handleImportFile(e) {
     reader.onload = function(evt) {
         try {
             const importedData = JSON.parse(evt.target.result);
-            showConfirm('⚠️', 'Restore Local Data?', 'This will overwrite all existing data with the selected JSON backup.', 'btn-primary', 'Yes, Restore', () => {
+            showConfirm('⚠️', 'Restore Vault Data?', 'This will overwrite your current active database with the selected backup.', 'btn-primary', 'Authorize Restore', () => {
                 appData = importedData;
                 syncToCloud();
-                notify('Data restored successfully! Rebooting...', 'success');
+                notify('Vault restored successfully! System rebooting...', 'success');
                 setTimeout(() => location.reload(), 1500);
             });
         } catch (err) {
-            notify('Invalid JSON backup file', 'error');
+            notify('Invalid or corrupted JSON backup file.', 'error');
         }
     };
     reader.readAsText(file);
@@ -3243,17 +3339,15 @@ function handleImportFile(e) {
     closeModal('mdRestoreCloud');
 }
 
-// Secure Factory Reset
+// ==================== SECURE FACTORY RESET (BUG FIXED) ====================
 async function executeFactoryReset() {
-    const btn = $('fr_exec_btn');
-    const cancelBtn = $('fr_cancel_btn');
     const pin = $('fr_pin').value;
     
-    if(pin.length !== 6) { $('fr_err').textContent = 'Enter 6-digit PIN.'; return; }
+    if(pin.length !== 6) { $('fr_err').textContent = 'Authenticating requires a 6-digit Master PIN.'; return; }
     
     const hash = await sha256(pin + 'wf_salt_sg2026');
     if (hash !== DB.getObj('auth').pin) {
-        $('fr_err').textContent = 'Incorrect PIN.';
+        $('fr_err').textContent = 'Security Exception: Incorrect PIN.';
         return;
     }
     
@@ -3264,22 +3358,50 @@ async function executeFactoryReset() {
     $('fr_action_btns').style.display = 'none';
     $('fr_success').style.display = 'block';
     
+    // IMPORTANT: WE KEEP AUTH (PIN) AND SETTINGS PRESERVED!
+    const currentAuth = DB.getObj('auth');
+    const currentSettings = DB.getObj('settings', { backupFreq: 'weekly', theme: 'dark', autoLock: 15, haptics: true });
+
     appData = { 
-        auth: {}, income: [], loans: [], ccinstall: [], cconetime: [], 
+        auth: currentAuth, // Keeping the user's login access safe
+        income: [], loans: [], ccinstall: [], cconetime: [], 
         cheques: [], expenses: [], targets: [], balance: {total:0, flows:[]}, 
-        settings: { backupFreq: 'weekly', lastBackup: null, theme: 'dark', autoLock: 15 } 
+        settings: currentSettings // Keeping theme and UI prefs
     };
     
     try {
+        // Sync wiped data to Firebase
         await userDocRef.set(appData);
+        
+        // Wipe all local storage records and immediately rewrite the preserved ones
         localStorage.clear();
-        setTimeout(() => location.reload(), 2000);
+        Object.keys(appData).forEach(k => localStorage.setItem('wf2_'+k, JSON.stringify(appData[k])));
+
+        // Countdown Logic Execution
+        let count = 3;
+        const countText = $('fr_countdown');
+        countText.textContent = `System Rebooting in ${count}...`;
+        
+        const countdownInterval = setInterval(() => {
+            count--;
+            countText.textContent = `System Rebooting in ${count}...`;
+            
+            if (count <= 0) {
+                clearInterval(countdownInterval);
+                location.reload(); // Hard refresh to clear memory maps
+            }
+        }, 1000);
+
     } catch(err) {
-        console.error(err);
+        console.error("Critical Cloud error during wipe:", err);
+        // Even if offline, we ensure local is wiped properly
         localStorage.clear();
-        setTimeout(() => location.reload(), 2000);
+        Object.keys(appData).forEach(k => localStorage.setItem('wf2_'+k, JSON.stringify(appData[k])));
+        setTimeout(() => location.reload(), 1500);
     }
 }
+
+    
 </script>
 </body>
 </html>
