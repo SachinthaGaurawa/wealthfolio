@@ -8,7 +8,7 @@
 <link rel="icon" type="image/png" href="https://res.cloudinary.com/dzrfpc9be/image/upload/v1777219344/Fav_img_bagjfj.png">
 <link rel="apple-touch-icon" href="https://res.cloudinary.com/dzrfpc9be/image/upload/v1777219344/Fav_img_bagjfj.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
@@ -25,7 +25,7 @@
 --ag:rgba(245,166,35,0.2);--green:#10b981;--green2:#34d399;--gg:rgba(16,185,129,0.2);
 --red:#ef4444;--red2:#f87171;--rg:rgba(239,68,68,0.2);--blue:#3b82f6;--blue2:#60a5fa;
 --purple:#8b5cf6;--purple2:#a78bfa;--cyan:#06b6d4;--text:#e2e8f0;--text2:#94a3b8;--text3:#475569;
---font:'Outfit',sans-serif;--mono:'JetBrains Mono',monospace;--serif:'Playfair Display',serif;
+--font:'Outfit',sans-serif;--mono:'JetBrains Mono',monospace;
 --r:14px;--r2:9px;--r3:24px;
 --shadow:0 8px 40px rgba(0,0,0,0.6);--sh2:0 2px 16px rgba(0,0,0,0.4);
 --sw:264px;
@@ -52,7 +52,7 @@ button, .npb { touch-action: manipulation; }
 .sp-logo{width:96px;height:96px;background:linear-gradient(135deg,var(--accent),var(--accent3));border-radius:24px;display:flex;align-items:center;justify-content:center;font-size:48px;font-weight:900;color:#000;box-shadow:0 0 60px var(--ag);animation:spPulse 2s ease-in-out infinite;z-index:1;}
 @keyframes spPulse{0%,100%{box-shadow:0 0 30px var(--ag),0 0 60px rgba(245,166,35,0.15);}50%{box-shadow:0 0 60px rgba(245,166,35,0.4),0 0 90px rgba(245,166,35,0.2);transform:scale(1.02);}}
 .sp-title-wrap {text-align:center; z-index:1;}
-.sp-title{font-family:var(--serif);font-size:42px;font-weight:700;background:linear-gradient(135deg,#fff,var(--text2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-1px; margin-bottom:4px;}
+.sp-title{font-size:42px;font-weight:900;background:linear-gradient(135deg,#fff,var(--text2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-1px; margin-bottom:4px;}
 .sp-sub{font-size:11px;color:var(--accent);letter-spacing:4px;text-transform:uppercase;font-weight:600;}
 .sp-bar-wrap{width:260px;height:4px;background:rgba(255,255,255,0.05);border-radius:10px;overflow:hidden;z-index:1; position:relative; box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);}
 .sp-fill{position:absolute;top:0;left:0;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:10px;width:0%;transition:width 0.2s ease-out; box-shadow: 0 0 10px var(--accent);}
@@ -68,7 +68,7 @@ button, .npb { touch-action: manipulation; }
 .auth-box{background:var(--card);border:1px solid var(--border2);border-radius:28px;padding:44px 40px;width:90%;max-width:420px;box-shadow:var(--shadow);text-align:center;z-index:1;animation:authIn .5s cubic-bezier(.34,1.56,.64,1);margin:20px;}
 @keyframes authIn{from{transform:scale(.88) translateY(24px);opacity:0;}to{transform:scale(1) translateY(0);opacity:1;}}
 .auth-logo{width:64px;height:64px;background:linear-gradient(135deg,var(--accent),var(--accent3));border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:30px;color:#000;font-weight:900;margin:0 auto 18px;box-shadow:0 8px 32px var(--ag);}
-.auth-title{font-family:var(--serif);font-size:26px;font-weight:700;margin-bottom:5px;}
+.auth-title{font-size:26px;font-weight:800;margin-bottom:5px;}
 .auth-sub{font-size:13px;color:var(--text3);margin-bottom:28px;}
 .pin-dots{display:flex;gap:12px;justify-content:center;margin-bottom:22px;}
 .pin-dot{width:14px;height:14px;border-radius:50%;background:var(--border);border:2px solid var(--border2);transition:all .18s;}
@@ -100,7 +100,7 @@ button, .npb { touch-action: manipulation; }
 .sb-logo{padding:22px 18px 16px;border-bottom:1px solid var(--border);}
 .sb-logomark{display:flex;align-items:center;gap:10px;}
 .sb-icon{width:38px;height:38px;background:linear-gradient(135deg,var(--accent),var(--accent3));border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:900;color:#000;box-shadow:0 4px 16px var(--ag);}
-.sb-title{font-family:var(--serif);font-size:19px;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-.5px;}
+.sb-title{font-size:19px;font-weight:900;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-.5px;}
 .sb-sub{font-size:9.5px;color:var(--text3);letter-spacing:2.5px;text-transform:uppercase;margin-top:1px;}
 .sb-nav{flex:1;padding:10px 8px;overflow-y:auto;}
 .sb-group{font-size:9.5px;font-weight:700;color:var(--text3);letter-spacing:2.5px;text-transform:uppercase;padding:10px 10px 4px;}
@@ -123,7 +123,7 @@ button, .npb { touch-action: manipulation; }
 .pg-title span{color:var(--accent);}
 .tb-right{display:flex;align-items:center;gap:8px;flex-wrap: wrap;}
 
-/* Advanced Network Indicators */
+/* Luxury Network Indicators */
 .network-wrap { display: flex; align-items: center; gap: 8px; margin-right: 8px; }
 .online-badge{
     display:flex;align-items:center;gap:8px;padding:6px 16px;border-radius:30px;
@@ -135,11 +135,15 @@ button, .npb { touch-action: manipulation; }
 .online-badge.off{
     background:rgba(69, 10, 10, 0.6); color:#ef4444; border: 1.5px solid rgba(239,68,68,0.3);
 }
-.online-dot{width:10px;height:10px;border-radius:50%;background:currentColor;box-shadow: 0 0 8px currentColor;}
-.online-badge.on .online-dot { animation: pulseLuxury 3s ease-in-out infinite; }
-.online-badge.off .online-dot { animation: none; }
-@keyframes pulseLuxury { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.9); } }
-
+.online-dot{
+    width:10px;height:10px;border-radius:50%;background:currentColor;
+    box-shadow: 0 0 8px currentColor;
+    animation: luxuryBlink 3.5s ease-in-out infinite;
+}
+@keyframes luxuryBlink {
+    0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 10px currentColor; }
+    50% { opacity: 0.3; transform: scale(0.85); box-shadow: 0 0 2px currentColor; }
+}
 .sync-indicator { font-size: 11px; font-weight: 600; color: var(--blue); font-family: var(--mono); opacity: 0; transition: opacity 0.3s; letter-spacing: 0.5px; display: flex; align-items: center; gap: 4px; white-space: nowrap;}
 .sync-indicator.active { opacity: 1; }
 
@@ -336,7 +340,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
 .celeb-x:hover{background:var(--rg);color:var(--red);}
 .celeb-emoji{font-size:68px;animation:eBounce .6s infinite alternate;}
 @keyframes eBounce{to{transform:translateY(-16px);}}
-.celeb-title{font-family:var(--serif);font-size:34px;font-weight:700;background:linear-gradient(135deg,#ffd166,#f5a623,#ef476f);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin:10px 0 4px;letter-spacing:-1px;}
+.celeb-title{font-size:34px;font-weight:900;background:linear-gradient(135deg,#ffd166,#f5a623,#ef476f);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin:10px 0 4px;letter-spacing:-1px;}
 .celeb-sub{font-size:14px;color:var(--text2);}
 .celeb-amt{font-size:22px;font-weight:800;font-family:var(--mono);color:var(--green);margin-top:10px;}
 .conf-piece{position:fixed;pointer-events:none;z-index:1001;}
@@ -439,7 +443,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
 .setting-info .setting-desc{font-size:11px;color:var(--text3);margin-top:4px;}
 .toggle{width:44px;height:24px;background:var(--border);border-radius:100px;position:relative;cursor:pointer;transition:background .2s;flex-shrink:0;}
 .toggle.on{background:var(--accent);}
-.toggle::after{content:'';position:absolute;top:2px;left:2px;width:20px;height:20px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 4px rgba(0,0,0,.3);}
+.toggle::after{content:'absolute';top:2px;left:2px;width:20px;height:20px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 4px rgba(0,0,0,.3);}
 .toggle.on::after{transform:translateX(20px);}
 
 /* ================== OFFLINE BANNER ================== */
@@ -498,7 +502,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
   <div class="auth-box" id="authLogin">
     <div class="auth-logo">₣</div>
     <div class="auth-title">Welcome Back</div>
-    <div class="auth-sub">Enter your 6-digit master PIN</div>
+    <div class="auth-sub">Sachintha Gaurawa · Enter your 6-digit PIN</div>
     <div class="pin-dots" id="loginDots"></div>
     <div class="numpad" id="loginPad"></div>
     <div class="auth-err" id="loginErr"></div>
@@ -595,7 +599,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
       <div class="nav-item" onclick="showPage('settings',this)"><span class="nav-icon">⚙️</span> Settings</div>
     </nav>
     <div class="sb-footer">
-      <div class="sb-user" id="sbUsernameDisplay">👤 User</div>
+      <div class="sb-user">👤 Sachintha Gaurawa</div>
       <div class="sb-date" id="sbDate">-</div>
       <div class="sb-ver">WealthFlow v5.0 · Elite</div>
     </div>
@@ -878,7 +882,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
   
   <div class="fg"><label class="fl">Export Format</label>
     <select class="fs" id="expFormat" onchange="toggleExportOptions()">
-        <option value="pdf">Professional PDF Report</option>
+        <option value="pdf">Professional PDF Statement</option>
         <option value="json">Raw Data JSON (Local Download)</option>
     </select>
   </div>
@@ -901,7 +905,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
 
 <div class="mo" id="mdFactoryReset"><div class="md md-sm">
   <div class="md-hdr"><div class="md-title" style="color:var(--red);">⚠️ Factory Reset</div><button class="md-x" onclick="closeModal('mdFactoryReset')">✕</button></div>
-  <p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.5;">This will securely wipe your data while retaining your Master PIN configuration.</p>
+  <p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.5;">This will wipe ALL data from your devices and the cloud. Enter your PIN to confirm.</p>
   <div class="fg"><label class="fl">Master PIN *</label><input class="fi auth-numpad-only" id="fr_pin" type="password" inputmode="numeric" maxlength="6" placeholder="••••••" style="letter-spacing: 4px; font-family:var(--mono); text-align:center; font-size:24px;"></div>
   <div class="auth-err" id="fr_err"></div>
   <div class="md-ftr" id="fr_action_btns">
@@ -911,7 +915,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
   <div id="fr_success" style="display:none; text-align:center; padding: 20px 0;">
       <div style="font-size:40px; margin-bottom:10px;">✅</div>
       <div style="color:var(--green); font-weight:700; font-size:16px;">System Wiped</div>
-      <div style="font-size:12px; color:var(--text2); margin-top:5px;">Rebooting in <span id="fr_count">3</span>...</div>
+      <div style="font-size:14px; color:var(--text2); margin-top:8px; font-weight:600;" id="fr_countdown">Rebooting in 3...</div>
   </div>
 </div></div>
 
@@ -1072,6 +1076,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
 <script>
 // =====================================================
 // WEALTHFLOW v5.0 - Infinity Cloud Financial System
+// Owner: Sachintha Gaurawa
 // =====================================================
 
 const firebaseConfig = {
@@ -1131,7 +1136,7 @@ function setSyncStatus(state) {
     if(state === 'syncing') {
         if(badge) { badge.className = 'online-badge on'; $('onlineText').textContent = 'Online'; }
         if(syncInd) { syncInd.classList.add('active'); }
-        if(setBadge) { setBadge.className = 'badge bg-g'; setBadge.textContent = 'Syncing...'; }
+        if(setBadge) { setBadge.className = 'badge syncing'; setBadge.textContent = 'Syncing...'; }
     } else if (state === 'online') {
         if(badge) { badge.className = 'online-badge on'; $('onlineText').textContent = 'Online'; }
         if(syncInd) { syncInd.classList.remove('active'); }
@@ -1232,7 +1237,7 @@ async function generateAIInsights() {
         const exp = DB.get('expenses').reduce((s, x) => s + x.amount, 0);
         const balData = DB.getObj('balance', {total:0});
         
-        const prompt = `Act as an expert Sri Lankan financial advisor. 
+        const prompt = `Act as an expert Sri Lankan financial advisor for Sachintha Gaurawa. 
         Context: My current estimated monthly income from investments is LKR ${inc}. 
         My tracked monthly expenses are LKR ${exp}. 
         My base balance tracked is LKR ${balData.total}. 
@@ -1261,17 +1266,35 @@ let tokenClient;
 
 function initDriveAuth() {
     if (typeof google === 'undefined') return;
+    
     tokenClient = google.accounts.oauth2.initTokenClient({
         client_id: '1020193373377-paqvs1sgqr75l0lbcs9hju02fmouc0da.apps.googleusercontent.com',
         scope: 'https://www.googleapis.com/auth/drive.file',
         callback: (tokenResponse) => {
             if (tokenResponse && tokenResponse.access_token) {
                 gapiToken = tokenResponse.access_token;
+                // Cache the token securely for 1 hour to prevent constant reprompting
+                const expiry = Date.now() + ((tokenResponse.expires_in - 10) * 1000);
+                localStorage.setItem('wf_drive_token', JSON.stringify({ token: gapiToken, expiry }));
+                
                 if (window.pendingDriveAction === 'backup') executeDriveBackup();
                 if (window.pendingDriveAction === 'restore') fetchDriveBackups();
             }
         }
     });
+
+    // Check cached token
+    const cached = localStorage.getItem('wf_drive_token');
+    if (cached) {
+        try {
+            const parsed = JSON.parse(cached);
+            if (Date.now() < parsed.expiry) {
+                gapiToken = parsed.token;
+            } else {
+                localStorage.removeItem('wf_drive_token');
+            }
+        } catch(e) {}
+    }
 }
 
 window.addEventListener('load', () => {
@@ -1280,12 +1303,19 @@ window.addEventListener('load', () => {
 
 async function requestDrivePermission(action) {
     window.pendingDriveAction = action;
-    if (!gapiToken && tokenClient) {
-        // Suppress initial popup if session is known; otherwise it explicitly triggers only on user action
-        tokenClient.requestAccessToken({prompt: ''});
-    } else if (gapiToken) {
+    
+    // If we have a valid cached token, just proceed silently
+    if (gapiToken) {
         if (action === 'backup') executeDriveBackup();
         if (action === 'restore') fetchDriveBackups();
+        return;
+    }
+    
+    // Otherwise, trigger the actual Google Prompt UI
+    if (tokenClient) {
+        tokenClient.requestAccessToken();
+    } else {
+        notify('Google Services failing to load. Check connection.', 'error');
     }
 }
 
@@ -1318,7 +1348,9 @@ async function executeDriveBackup() {
             DB.set('settings', s);
             notify('Drive backup complete! ☁️', 'success');
         } else {
-            notify('Drive upload failed.', 'error');
+            notify('Drive upload failed. Token might be expired.', 'error');
+            localStorage.removeItem('wf_drive_token');
+            gapiToken = null;
         }
     } catch (e) {
         console.error(e);
@@ -1337,6 +1369,12 @@ async function fetchDriveBackups() {
             headers: { 'Authorization': 'Bearer ' + gapiToken }
         });
         
+        if(!res.ok) {
+            localStorage.removeItem('wf_drive_token');
+            gapiToken = null;
+            throw new Error('Token Expired');
+        }
+
         const data = await res.json();
         if (data.files && data.files.length > 0) {
             sel.innerHTML = data.files.map(f => `<option value="${f.id}">${new Date(f.createdTime).toLocaleString()}</option>`).join('');
@@ -1346,6 +1384,9 @@ async function fetchDriveBackups() {
         }
     } catch(e) {
         sel.innerHTML = '<option value="">Failed to fetch backups</option>';
+        if(e.message === 'Token Expired') {
+             notify('Session expired. Please click restore again to re-authenticate.', 'warn');
+        }
     }
 }
 
@@ -1705,7 +1746,6 @@ function launchApp() {
     renderPage('dashboard');
     updateCCOTBadge();
     updateChequeBadge();
-    $('sbUsernameDisplay').innerHTML = `👤 Sachintha Gaurawa <br><span style="font-size:9.5px; font-weight:400; color:var(--text3); display:block; margin-top:2px;">AVANTIO VENTURES (PRIVATE) LIMITED</span>`;
 }
 
 function updateDateTime() {
@@ -1720,6 +1760,7 @@ function setupOnlineStatus() {
             setSyncStatus('online');
             const banner = $('offlineBanner');
             if(banner) banner.classList.remove('show');
+            // Auto sync to cloud when connection is restored
             syncToCloud();
         } else {
             setSyncStatus('offline');
@@ -1729,7 +1770,7 @@ function setupOnlineStatus() {
     }
     window.addEventListener('online', updateStatus);
     window.addEventListener('offline', updateStatus);
-    updateStatus(); 
+    updateStatus(); // check initial status
 }
 
 function setupBackupReminder() {
@@ -2816,16 +2857,18 @@ function calcDSCR() {
 
     const resEl = $('dscrResult');
     
+    // Check if enough data is entered
     if(totalDebtService === 0) {
         resEl.innerHTML = '<div style="font-size:13px;color:var(--text3);">Enter full details to calculate your eligibility based on Sri Lankan banking parameters.</div>';
         return;
     }
 
+    // Handle Negative NOI or 0 gracefully
     let dscr = 0;
     if (noi > 0) {
         dscr = noi / totalDebtService;
     } else {
-        dscr = 0; 
+        dscr = 0; // Negative income defaults to 0 DSCR visually
     }
 
     let status='', color='', advicePool=[];
@@ -2945,7 +2988,7 @@ function renderSettings() {
 
             <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:24px 0 8px;">Danger Zone</div>
             <div class="setting-row">
-                <div class="setting-info"><div class="setting-label">Factory Reset</div><div class="setting-desc" style="color:var(--red);">Wipe all local and cloud data securely.</div></div>
+                <div class="setting-info"><div class="setting-label">Factory Reset</div><div class="setting-desc" style="color:var(--red);">Wipe all local and cloud data. Requires PIN.</div></div>
                 <button class="btn btn-danger btn-sm" onclick="openModal('mdFactoryReset')">Delete Everything</button>
             </div>
         </div>
@@ -2983,7 +3026,8 @@ function executeExport() {
     closeModal('mdExport');
 }
 
-function generatePDFReport() {
+// Highly Professional Luxury PDF Statement Generator with Native Web Sharing Support
+async function generatePDFReport() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
     
@@ -2991,63 +3035,72 @@ function generatePDFReport() {
     const month = parseInt($('expPdfMonth').value);
     const md = getMonthlyData(year, month);
     
-    const primaryColor = [11, 17, 32];
-    const goldColor = [212, 175, 55];
-    const greyColor = [100, 116, 139];
-    
-    doc.setFont("times", "bold");
-    doc.setFillColor(...primaryColor);
-    doc.rect(0, 0, 210, 40, 'F');
-    
-    doc.setTextColor(...goldColor);
+    const navyBlue = [13, 23, 41];
+    const gold = [245, 166, 35];
+    const white = [255, 255, 255];
+    const lightGray = [248, 250, 252];
+    const textDark = [30, 41, 59];
+    const green = [16, 185, 129];
+    const red = [239, 68, 68];
+
+    // Luxury Header
+    doc.setFillColor(...navyBlue);
+    doc.rect(0, 0, 210, 50, 'F');
+
+    doc.setFont("helvetica", "bold");
     doc.setFontSize(28);
+    doc.setTextColor(...gold);
     doc.text("WEALTHFLOW", 14, 22);
+
+    doc.setFontSize(9);
+    doc.setTextColor(200, 200, 200);
+    doc.text("PRIVATE & CONFIDENTIAL FINANCIAL STATEMENT", 14, 29);
     
-    doc.setTextColor(255, 255, 255);
-    doc.setFont("times", "normal");
-    doc.setFontSize(11);
-    doc.text("PRIVATE FINANCIAL STATEMENT", 14, 30);
+    // Right side header info
+    doc.setFontSize(9);
+    doc.setTextColor(...white);
+    doc.text(`PREPARED FOR: SACHINTHA GAURAWA`, 196, 20, { align: 'right' });
+    doc.text(`STATEMENT PERIOD: ${MONTHS[month].toUpperCase()} ${year}`, 196, 27, { align: 'right' });
+    doc.text(`GENERATED ON: ${today()}`, 196, 34, { align: 'right' });
+    doc.setDrawColor(...gold);
+    doc.setLineWidth(0.5);
+    doc.line(14, 38, 196, 38);
+
+    // Executive Summary Box
+    doc.setFillColor(...lightGray);
+    doc.setDrawColor(220, 220, 220);
+    doc.roundedRect(14, 60, 182, 35, 3, 3, 'FD');
     
+    doc.setFont("helvetica", "bold");
     doc.setFontSize(10);
-    doc.text(`PREPARED FOR: SACHINTHA GAURAWA`, 120, 20);
-    doc.text(`PERIOD: ${MONTHS[month].toUpperCase()} ${year}`, 120, 26);
-    doc.text(`GENERATED: ${today()}`, 120, 32);
+    doc.setTextColor(...textDark);
+    doc.text("TOTAL INCOME", 24, 70);
+    doc.text("TOTAL EXPENSES", 85, 70);
+    doc.text("NET SURPLUS", 146, 70);
 
-    doc.setDrawColor(...goldColor);
-    doc.line(14, 50, 196, 50);
+    doc.setFontSize(18);
+    doc.setTextColor(...green); 
+    doc.text(`${fmtN(md.income)}`, 24, 82);
+    doc.setTextColor(...red); 
+    doc.text(`${fmtN(md.totalExp)}`, 85, 82);
+    doc.setTextColor(...navyBlue); 
+    doc.text(`${fmtN(md.balance)}`, 146, 82);
 
-    doc.setFont("times", "bold");
-    doc.setFontSize(12);
-    doc.setTextColor(...greyColor);
-    doc.text("TOTAL INCOME", 20, 62);
-    doc.text("TOTAL EXPENSES", 85, 62);
-    doc.text("NET BALANCE", 155, 62);
-
-    doc.setFontSize(16);
-    doc.setTextColor(34, 197, 94);
-    doc.text(`${fmtN(md.income)}`, 20, 72);
-    
-    doc.setTextColor(239, 68, 68);
-    doc.text(`${fmtN(md.totalExp)}`, 85, 72);
-    
-    doc.setTextColor(...primaryColor);
-    doc.text(`${fmtN(md.balance)}`, 155, 72);
-
-    doc.line(14, 82, 196, 82);
-
-    let startY = 95;
+    let startY = 110;
 
     const tableOptions = {
-        theme: 'plain',
-        headStyles: { fillColor: [248, 250, 252], textColor: primaryColor, fontStyle: 'bold', fontSize: 11, font: 'times' },
-        bodyStyles: { fontSize: 10, textColor: [51, 65, 85], font: 'times' },
-        alternateRowStyles: { fillColor: [252, 253, 255] },
+        theme: 'grid',
+        headStyles: { fillColor: navyBlue, textColor: white, fontStyle: 'bold', fontSize: 10, halign: 'center' },
+        bodyStyles: { fontSize: 10, textColor: textDark },
+        alternateRowStyles: { fillColor: [250, 250, 250] },
+        styles: { cellPadding: 6, lineColor: [220, 220, 220], lineWidth: 0.1 },
         margin: { left: 14, right: 14 }
     };
 
-    doc.setFont("times", "bold");
-    doc.setFontSize(14); doc.setTextColor(...primaryColor);
-    doc.text("INCOME & RETURNS", 14, startY);
+    // Income Table
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(14); doc.setTextColor(...navyBlue);
+    doc.text("Income & Capital Returns", 14, startY);
     
     const activeIncome = DB.get('income').filter(s => {
         const dt = new Date(year,month,1);
@@ -3058,104 +3111,30 @@ function generatePDFReport() {
 
     if(activeIncome.length > 0) {
         doc.autoTable({
-            startY: startY + 5,
-            head: [['Source', 'Institution', 'Amount (LKR)']],
+            startY: startY + 6,
+            head: [['Source Description', 'Institution / Entity', 'Amount (LKR)']],
             body: activeIncome.map(i => [i.name, i.company, fmtN(i.monthly)]),
-            ...tableOptions
+            ...tableOptions,
+            columnStyles: { 2: { halign: 'right', fontStyle: 'bold', textColor: green } }
         });
-        startY = doc.lastAutoTable.finalY + 15;
+        startY = doc.lastAutoTable.finalY + 18;
     } else {
-        doc.setFont("times", "normal"); doc.setFontSize(11); doc.setTextColor(...greyColor);
-        doc.text("No income registered for this period.", 14, startY + 8); startY += 18;
+        doc.setFont("helvetica", "normal"); doc.setFontSize(10); doc.setTextColor(150, 150, 150);
+        doc.text("No income registered for this period.", 14, startY + 10); startY += 20;
     }
 
-    doc.setFont("times", "bold");
-    doc.setFontSize(14); doc.setTextColor(...primaryColor);
-    doc.text("DEBT SERVICING", 14, startY);
+    // Debt Table
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(14); doc.setTextColor(...navyBlue);
+    doc.text("Debt Obligations & Servicing", 14, startY);
     if(md.loanItems.length > 0) {
         doc.autoTable({
-            startY: startY + 5,
-            head: [['Facility Name', 'Institution', 'EMI (LKR)']],
+            startY: startY + 6,
+            head: [['Facility Name', 'Financial Institution', 'Monthly EMI (LKR)']],
             body: md.loanItems.map(l => [l.name, l.bank, fmtN(l.amount)]),
-            ...tableOptions
+            ...tableOptions,
+            columnStyles: { 2: { halign: 'right', fontStyle: 'bold', textColor: red } }
         });
-        startY = doc.lastAutoTable.finalY + 15;
+        startY = doc.lastAutoTable.finalY + 18;
     } else {
-        doc.setFont("times", "normal"); doc.setFontSize(11); doc.setTextColor(...greyColor);
-        doc.text("No debt obligations for this period.", 14, startY + 8); startY += 18;
-    }
-
-    doc.setFont("times", "bold");
-    doc.setFontSize(14); doc.setTextColor(...primaryColor);
-    doc.text("OPERATING EXPENSES", 14, startY);
-    const combinedExp = [];
-    md.ccItems2.forEach(c => combinedExp.push([c.name + ' (CC Instalment)', c.bank, fmtN(c.amount)]));
-    md.expItems.forEach(e => combinedExp.push([e.name, e.cat, fmtN(e.amount)]));
-
-    if(combinedExp.length > 0) {
-        doc.autoTable({
-            startY: startY + 5,
-            head: [['Description', 'Category', 'Amount (LKR)']],
-            body: combinedExp,
-            ...tableOptions
-        });
-    } else {
-        doc.setFont("times", "normal"); doc.setFontSize(11); doc.setTextColor(...greyColor);
-        doc.text("No operating expenses for this period.", 14, startY + 8);
-    }
-
-    const pageCount = doc.internal.getNumberOfPages();
-    for(let i = 1; i <= pageCount; i++) {
-        doc.setPage(i);
-        doc.setFont("times", "normal");
-        doc.setFontSize(8);
-        doc.setTextColor(148, 163, 184);
-        doc.text(`Page ${i} of ${pageCount}`, 196, 290, { align: 'right' });
-        doc.text("Generated securely via WealthFlow Infinity Engine", 14, 290);
-    }
-
-    const pdfBlob = doc.output('blob');
-    const fileName = `WealthFlow_Statement_${MONTHS_S[month]}_${year}.pdf`;
-    const pdfFile = new File([pdfBlob], fileName, { type: 'application/pdf' });
-
-    if (navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
-        navigator.share({
-            files: [pdfFile],
-            title: 'WealthFlow Financial Statement',
-            text: 'Secure financial statement generated via WealthFlow Infinity Engine.'
-        }).then(() => {
-            notify('Statement shared securely.', 'success');
-        }).catch(err => {
-            downloadFallback(pdfBlob, fileName);
-        });
-    } else {
-        downloadFallback(pdfBlob, fileName);
-    }
-}
-
-function downloadFallback(blob, name) {
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = name;
-    a.click();
-    URL.revokeObjectURL(url);
-    notify('Professional Statement downloaded.', 'success');
-}
-
-// Local JSON Restore functionality
-function handleImportFile(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = function(evt) {
-        try {
-            const importedData = JSON.parse(evt.target.result);
-            showConfirm('⚠️', 'Restore Local Data?', 'This will overwrite all existing data with the selected JSON backup.', 'btn-primary', 'Yes, Restore', () => {
-                appData = importedData;
-                syncToCloud();
-                notify('Data restored successfully! Rebooting...', 'success');
-                setTimeout(() => location.reload(), 1500);
-            });
-        } catch (err) {
-            notify('Invalid JSON backup
+        doc.setFont("helvetica
