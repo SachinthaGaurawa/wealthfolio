@@ -148,7 +148,6 @@ button, .npb { touch-action: manipulation; }
 .sync-indicator { font-size: 11px; font-weight: 600; color: var(--blue); font-family: var(--mono); opacity: 0; transition: opacity 0.3s; letter-spacing: 0.5px; display: flex; align-items: center; gap: 4px; white-space: nowrap;}
 .sync-indicator.active { opacity: 1; }
 
-/* Custom Action Icons in Topbar */
 .tb-action-icon { background:transparent; border:none; color:var(--text2); cursor:pointer; padding:6px; outline:none; display:flex; align-items:center; justify-content:center; border-radius: 50%; transition: color 0.2s;}
 .tb-action-icon:hover { color:var(--accent); }
 .tb-action-icon svg { width: 22px; height: 22px; }
@@ -814,69 +813,36 @@ tbody td{padding:10px 13px;vertical-align:middle;}
           <div id="balFlows"></div>
         </div>
       </div>
-        
 
-        <div class="page" id="page-dscr">
-                <div class="sh">
-                    <div class="sh-title">DSCR Calculator - Sri Lanka Bank Eligibility</div>
-                    <div class="sh-actions"><button class="btn btn-ghost btn-sm" onclick="clearDSCR()">🧹 Clear Form</button></div>
-                </div>
-                <div class="g2">
-                  <div class="card">
-                    <div class="card-header"><div class="card-title">Your Financial Profile</div></div>
-                    
-                    <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:10px 0 8px;">Gross Monthly Income</div>
-                    <div class="fr">
-                         <div class="fg">
-                            <select class="fs" id="dscrKnownIncome" onchange="calcDSCR()">
-                                <option value="">Select 1-Year Average...</option>
-                                </select>
-                        </div>
-                        <div class="fg"><input class="fi money-input" id="dscrIncome" placeholder="Custom amount (LKR)" oninput="calcDSCR()"></div>
-                    </div>
-                    <div class="fhint" style="margin-top:-8px; margin-bottom:12px;">* Both values will be combined if both are provided.</div>
-        
-                    <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:10px 0 8px;">Monthly Operating Expenses</div>
-                     <div class="fr">
-                         <div class="fg">
-                            <select class="fs" id="dscrKnownOpex" onchange="calcDSCR()">
-                                <option value="">Select 1-Year Average...</option>
-                                 </select>
-                        </div>
-                        <div class="fg"><input class="fi money-input" id="dscrOpex" placeholder="Custom amount (LKR)" oninput="calcDSCR()"></div>
-                    </div>
-                    <div class="fhint" style="margin-top:-8px; margin-bottom:12px;">* Excludes existing loans. Both values will be combined.</div>
-                    
-                    <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:18px 0 8px;">Existing Loan Payments</div>
-                    <div class="fg">
-                        <select class="fs" id="dscrAddExistingLoan" onchange="autoAddDSCRLoan()">
-                            <option value="">+ Fetch active loan from system...</option>
-                        </select>
-                    </div>
-                    <div id="dscrExistingLoans" style="margin-bottom:10px;"></div>
-                    
-                    <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:18px 0 8px;">Proposed New Loan</div>
-                    <div class="fr">
-                      <div class="fg"><label class="fl">Loan Amount (LKR)</label><input class="fi money-input" id="dscrNewAmt" placeholder="20,000,000" oninput="calcDSCR()"></div>
-                      <div class="fg"><label class="fl">Annual Rate (%)</label><input class="fi" id="dscrNewRate" type="number" placeholder="14" step="0.1" oninput="calcDSCR()"></div>
-                    </div>
-                    <div class="fr">
-                      <div class="fg"><label class="fl">Duration (months)</label><input class="fi" id="dscrNewDur" type="number" placeholder="120" oninput="calcDSCR()"></div>
-                      <div class="fg"><label class="fl">Down Payment (LKR)</label><input class="fi money-input" id="dscrDown" placeholder="0" oninput="calcDSCR()"></div>
-                    </div>
-                    <div class="fg"><label class="fl">Purpose</label><input class="fi" id="dscrPurpose" placeholder="Land / House / Vehicle..."></div>
-                    <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:6px;" onclick="calcDSCR()">📐 Calculate Bank DSCR</button>
-                  </div>
-                  <div class="card">
-                    <div class="card-header"><div class="card-title">Analysis Result</div></div>
-                    <div id="dscrResult" style="text-align:center;padding:20px 0;">
-                      <div style="font-size:13px;color:var(--text3);">Fill in the form to calculate eligibility based on local banking parameters.</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-                          
-              
+      <div class="page" id="page-dscr">
+        <div class="sh">
+            <div class="sh-title">DSCR Calculator - Sri Lanka Bank Eligibility</div>
+            <div class="sh-actions"><button class="btn btn-ghost btn-sm" onclick="clearDSCR()">🧹 Clear Form</button></div>
+        </div>
+        <div class="g2">
+          <div class="card">
+            <div class="card-header">
+                <div class="card-title">Income Profile</div>
+                <button class="btn btn-secondary btn-sm" onclick="fetchAverageIncome()">🔄 Fetch 1-Year Average</button>
+            </div>
+            
+            <div class="fr">
+                <div class="fg"><label class="fl">System Extracted (LKR)</label><input class="fi money-input" id="dscrIncSys" placeholder="0" oninput="calcDSCR()"></div>
+                <div class="fg"><label class="fl">Custom / Business (LKR)</label><input class="fi money-input" id="dscrIncCust" placeholder="0" oninput="calcDSCR()"></div>
+            </div>
+            <div class="fg"><label class="fl">Total Gross Monthly Income (LKR)</label><input class="fi money-input" id="dscrIncome" readonly style="font-weight:bold; color:var(--green);" placeholder="0"></div>
+            
+            <div class="card-header" style="margin-top:20px;">
+                <div class="card-title">Operating Expenses</div>
+                <button class="btn btn-secondary btn-sm" onclick="fetchAverageExpenses()">🔄 Fetch 1-Year Average</button>
+            </div>
+            
+            <div class="fr">
+                <div class="fg"><label class="fl">System Extracted (LKR)</label><input class="fi money-input" id="dscrExpSys" placeholder="0" oninput="calcDSCR()"></div>
+                <div class="fg"><label class="fl">Custom / Business (LKR)</label><input class="fi money-input" id="dscrExpCust" placeholder="0" oninput="calcDSCR()"></div>
+            </div>
+            <div class="fg"><label class="fl">Total Monthly Operating Expenses (LKR)</label><input class="fi money-input" id="dscrOpex" readonly style="font-weight:bold; color:var(--red);" placeholder="0"></div>
+            
             <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:18px 0 8px;">Existing Loan Payments</div>
             <div class="fg">
                 <select class="fs" id="dscrAddExistingLoan" onchange="autoAddDSCRLoan()">
@@ -1129,6 +1095,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
 // =====================================================
 // WEALTHFLOW v5.0 - Infinity Cloud Financial System
 // Owner: Sachintha Gaurawa
+// Parent: AVANTIO VENTURES (PRIVATE) LIMITED
 // =====================================================
 
 const firebaseConfig = {
@@ -1325,7 +1292,6 @@ function initDriveAuth() {
         callback: (tokenResponse) => {
             if (tokenResponse && tokenResponse.access_token) {
                 gapiToken = tokenResponse.access_token;
-                // Cache the token securely for 1 hour to prevent constant reprompting
                 const expiry = Date.now() + ((tokenResponse.expires_in - 10) * 1000);
                 localStorage.setItem('wf_drive_token', JSON.stringify({ token: gapiToken, expiry }));
                 
@@ -1335,7 +1301,6 @@ function initDriveAuth() {
         }
     });
 
-    // Check cached token
     const cached = localStorage.getItem('wf_drive_token');
     if (cached) {
         try {
@@ -1355,15 +1320,11 @@ window.addEventListener('load', () => {
 
 async function requestDrivePermission(action) {
     window.pendingDriveAction = action;
-    
-    // If we have a valid cached token, just proceed silently
     if (gapiToken) {
         if (action === 'backup') executeDriveBackup();
         if (action === 'restore') fetchDriveBackups();
         return;
     }
-    
-    // Otherwise, trigger the actual Google Prompt UI
     if (tokenClient) {
         tokenClient.requestAccessToken();
     } else {
@@ -1812,7 +1773,6 @@ function setupOnlineStatus() {
             setSyncStatus('online');
             const banner = $('offlineBanner');
             if(banner) banner.classList.remove('show');
-            // Auto sync to cloud when connection is restored
             syncToCloud();
         } else {
             setSyncStatus('offline');
@@ -1822,7 +1782,7 @@ function setupOnlineStatus() {
     }
     window.addEventListener('online', updateStatus);
     window.addEventListener('offline', updateStatus);
-    updateStatus(); // check initial status
+    updateStatus();
 }
 
 function setupBackupReminder() {
@@ -2722,12 +2682,26 @@ function renderDash() {
         netData.push(md.balance);
         yrInc+=md.income; yrExp+=md.totalExp;
     }
+    
+    // Financial Health Score Calculation
+    const savingsRate = yrInc > 0 ? ((yrInc - yrExp) / yrInc) * 100 : 0;
+    let healthScore = 50; 
+    if(savingsRate > 30) healthScore += 30;
+    else if(savingsRate > 10) healthScore += 15;
+    if(yrExp < yrInc) healthScore += 20;
+    healthScore = Math.min(100, Math.max(0, healthScore));
+
+    let healthColor = 'var(--red)';
+    let healthText = 'Critical';
+    if(healthScore > 80) { healthColor = 'var(--green)'; healthText = 'Excellent'; }
+    else if(healthScore > 50) { healthColor = 'var(--blue)'; healthText = 'Stable'; }
+    else if(healthScore > 30) { healthColor = 'var(--accent)'; healthText = 'Caution'; }
+
     $('dashStats').innerHTML = `
         <div class="stat-card sc-green"><div class="stat-label">Year Income</div><div class="stat-val">${fmtS(yrInc)}</div></div>
         <div class="stat-card sc-red"><div class="stat-label">Year Expenses</div><div class="stat-val">${fmtS(yrExp)}</div></div>
         <div class="stat-card sc-gold"><div class="stat-label">Net Savings</div><div class="stat-val">${fmtS(yrInc-yrExp)}</div></div>
-        <div class="stat-card sc-blue"><div class="stat-label">Avg Monthly Exp</div><div class="stat-val">${fmtS(yrExp/12)}</div></div>
-        <div class="stat-card sc-cyan"><div class="stat-label">Savings Rate</div><div class="stat-val">${yrInc>0?Math.round((yrInc-yrExp)/yrInc*100):0}%</div></div>
+        <div class="stat-card" style="border-top:3px solid ${healthColor}"><div class="stat-label">Health Score</div><div class="stat-val" style="color:${healthColor}">${healthScore}%</div><div class="stat-meta">${healthText}</div></div>
     `;
 
     const ctxC = $('dashChart');
@@ -2840,13 +2814,50 @@ function renderRecentActivity() {
     </div>`).join('');
 }
 
-    
 // ==================== DSCR CALCULATOR ====================
+function fetchAverageIncome() {
+    let totalPastYearIncome = 0;
+    const now = new Date();
+    const oneYearAgo = new Date();
+    oneYearAgo.setFullYear(now.getFullYear() - 1);
+    
+    for (let m = 0; m < 12; m++) {
+        let testDate = new Date(now.getFullYear(), now.getMonth() - m, 1);
+        const md = getMonthlyData(testDate.getFullYear(), testDate.getMonth());
+        totalPastYearIncome += md.income;
+    }
+    
+    const monthlyAverage = totalPastYearIncome / 12;
+    $('dscrIncSys').value = fmtN(monthlyAverage);
+    calcDSCR();
+    notify('Fetched 1-Year Average Income successfully', 'success');
+}
+
+function fetchAverageExpenses() {
+    let totalPastYearExpenses = 0;
+    const now = new Date();
+    
+    for (let m = 0; m < 12; m++) {
+        let testDate = new Date(now.getFullYear(), now.getMonth() - m, 1);
+        const md = getMonthlyData(testDate.getFullYear(), testDate.getMonth());
+        totalPastYearExpenses += md.totalExp;
+    }
+    
+    const monthlyAverage = totalPastYearExpenses / 12;
+    $('dscrExpSys').value = fmtN(monthlyAverage);
+    calcDSCR();
+    notify('Fetched 1-Year Average Expenses successfully', 'success');
+}
+
 function clearDSCR() {
+    $('dscrIncSys').value = '';
+    $('dscrIncCust').value = '';
     $('dscrIncome').value = '';
+    
+    $('dscrExpSys').value = '';
+    $('dscrExpCust').value = '';
     $('dscrOpex').value = '';
-    $('dscrKnownIncome').value = '';
-    $('dscrKnownOpex').value = '';
+    
     $('dscrNewAmt').value = '';
     $('dscrNewRate').value = '';
     $('dscrNewDur').value = '';
@@ -2854,46 +2865,18 @@ function clearDSCR() {
     $('dscrPurpose').value = '';
     $('dscrAddExistingLoan').value = '';
     $('dscrExistingLoans').innerHTML = '';
-    $('dscrResult').innerHTML = '<div style="font-size:13px;color:var(--text3);">Fill in the form to calculate eligibility based on local banking parameters.</div>';
+    $('dscrResult').innerHTML = '<div style="font-size:13px;color:var(--text3);">Enter loan details to calculate eligibility based on local banking parameters.</div>';
 }
 
 function renderDSCR() {
-    // Populate Existing Loans
     const loans = DB.get('loans');
-    const selectLoan = $('dscrAddExistingLoan');
-    let htmlLoan = '<option value="">+ Fetch active loan from system...</option>';
+    const select = $('dscrAddExistingLoan');
+    let html = '<option value="">+ Fetch active loan from system...</option>';
     loans.forEach(l => {
         const active = loanEndDate(l) > new Date();
-        if(active) htmlLoan += `<option value="${l.monthly}">${l.name} (${l.bank}) - ${fmt(l.monthly)}/mo</option>`;
+        if(active) html += `<option value="${l.monthly}">${l.name} (${l.bank}) - ${fmt(l.monthly)}/mo</option>`;
     });
-    selectLoan.innerHTML = htmlLoan;
-
-    // Calculate 1-Year Average (Last 12 Months accurately)
-    const now = new Date();
-    let totalInc1Yr = 0;
-    let totalExp1Yr = 0;
-    
-    for(let i = 0; i < 12; i++) {
-        // Look back up to 12 months dynamically
-        let d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-        let md = getMonthlyData(d.getFullYear(), d.getMonth());
-        totalInc1Yr += md.income;
-        totalExp1Yr += md.expTotal; // Only operating expenses, excluding existing loans as required by DSCR
-    }
-    
-    const avgInc = Math.round(totalInc1Yr / 12);
-    const avgExp = Math.round(totalExp1Yr / 12);
-
-    // Populate Known Income Dropdown
-    const incSelect = $('dscrKnownIncome');
-    incSelect.innerHTML = `<option value="">Select 1-Year Average...</option>
-                           <option value="${avgInc}">1Y System Avg: ${fmtN(avgInc)}</option>`;
-
-    // Populate Known Expenses Dropdown
-    const expSelect = $('dscrKnownOpex');
-    expSelect.innerHTML = `<option value="">Select 1-Year Average...</option>
-                           <option value="${avgExp}">1Y System Avg: ${fmtN(avgExp)}</option>`;
-
+    select.innerHTML = html;
     setTimeout(calcDSCR, 100);
 }
 
@@ -2922,14 +2905,15 @@ function addDscrLoanDOM(amount = null) {
 }
 
 function calcDSCR() {
-    // Both values are captured, if empty they default to 0, then SUMMED together.
-    const sysInc = parseMoney($('dscrKnownIncome').value);
-    const custInc = parseMoney($('dscrIncome').value);
-    const inc = sysInc + custInc; // 1+1=1 Logic applied accurately
+    const sysInc = parseMoney($('dscrIncSys').value) || 0;
+    const custInc = parseMoney($('dscrIncCust').value) || 0;
+    const inc = sysInc + custInc;
+    $('dscrIncome').value = fmtN(inc);
 
-    const sysOpex = parseMoney($('dscrKnownOpex').value);
-    const custOpex = parseMoney($('dscrOpex').value);
-    const opex = sysOpex + custOpex;
+    const sysExp = parseMoney($('dscrExpSys').value) || 0;
+    const custExp = parseMoney($('dscrExpCust').value) || 0;
+    const opex = sysExp + custExp;
+    $('dscrOpex').value = fmtN(opex);
 
     const newAmt = parseMoney($('dscrNewAmt').value);
     const newRate = parseFloat($('dscrNewRate').value)||0;
@@ -2946,18 +2930,16 @@ function calcDSCR() {
 
     const resEl = $('dscrResult');
     
-    // Check if enough data is entered
     if(totalDebtService === 0) {
         resEl.innerHTML = '<div style="font-size:13px;color:var(--text3);">Enter full details to calculate your eligibility based on Sri Lankan banking parameters.</div>';
         return;
     }
 
-    // Handle Negative NOI or 0 gracefully
     let dscr = 0;
     if (noi > 0) {
         dscr = noi / totalDebtService;
     } else {
-        dscr = 0; // Negative income defaults to 0 DSCR visually
+        dscr = 0;
     }
 
     let status='', color='', advicePool=[];
@@ -2972,7 +2954,7 @@ function calcDSCR() {
     } else if(dscr >= 1.25) { 
         status='GOOD'; color='var(--blue)'; 
         advicePool = [
-            "Likely to be approved. This meets the standard 1.2x - 1.25x requirement for most Sri Lankan commercial banks.",
+            "Likely to be approved. This meets the standard 1.2x to 1.25x requirement for most Sri Lankan commercial banks.",
             "Solid numbers. To negotiate a better interest rate, showcase your consistent monthly savings and propose a slightly higher down payment if possible.",
             "Good standing. Ensure all your CRIB records are clear, as banks will rely heavily on your repayment history at this tier."
         ];
@@ -2981,12 +2963,12 @@ function calcDSCR() {
         advicePool = [
             "You are on the edge. Banks might ask for strong guarantors. A smart move right now would be to eliminate high-interest CC debt first to free up your net operating income.",
             "Borderline. You cover the payments, but it leaves little room for emergencies. Consider extending the loan tenure by a few years to reduce the EMI burden.",
-            "Caution: You will likely need solid collateral (like property) to secure this. Try increasing your down payment by 10-15%."
+            "Caution: You will likely need solid collateral (like property) to secure this. Try increasing your down payment by 10% to 15%."
         ];
     } else { 
         status='REJECTED'; color='var(--red)'; 
         advicePool = [
-            "Don't let this discourage you! Consider extending the loan tenure to reduce monthly EMI, or focus on building a larger down payment first.",
+            "Do not let this discourage you. Consider extending the loan tenure to reduce monthly EMI, or focus on building a larger down payment first.",
             "High risk of rejection. Your combined expenses and proposed EMI exceed your net operating income. Focus on eliminating existing smaller loans before applying.",
             "Cannot afford under current structure. A joint-applicant (like your spouse) could immediately push this into the 'Approved' zone by combining incomes."
         ];
@@ -3015,16 +2997,10 @@ function calcDSCR() {
         </div>
         <div style="font-size:42px;font-weight:900;font-family:var(--mono);color:${color};margin-top:10px;">${dscr.toFixed(2)}x</div>
         <div class="dscr-status" style="background:${color}22;color:${color};">${status}</div>
-        
-        <div style="background:var(--bg2); border-radius:8px; padding:12px; margin-top:16px;">
-           <div style="font-size:11px; color:var(--text3); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">Calculation Breakdown</div>
-           <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;">
-               <div class="ld"><div class="ld-l">TOTAL INCOME</div><div class="ld-v" style="color:var(--green);">${fmtS(inc)}</div></div>
-               <div class="ld"><div class="ld-l">TOTAL EXPENSES</div><div class="ld-v" style="color:var(--red);">${fmtS(opex)}</div></div>
-               <div class="ld"><div class="ld-l">NET OP INCOME</div><div class="ld-v">${fmtS(noi)}</div></div>
-               <div class="ld"><div class="ld-l">EXISTING DEBT</div><div class="ld-v" style="color:var(--accent);">${fmtS(existingEMI)}</div></div>
-               <div class="ld"><div class="ld-l">NEW EMI</div><div class="ld-v" style="color:var(--red);">${fmtS(newEMI)}</div></div>
-           </div>
+        <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:16px;">
+           <div class="ld"><div class="ld-l">NET OP INCOME</div><div class="ld-v">${fmtS(noi)}</div></div>
+           <div class="ld"><div class="ld-l">TOTAL DEBT</div><div class="ld-v">${fmtS(totalDebtService)}</div></div>
+           <div class="ld"><div class="ld-l">NEW EMI</div><div class="ld-v" style="color:var(--red);">${fmtS(newEMI)}</div></div>
         </div>
         <div class="dscr-advice" style="border-left-color:${color};text-align:left;">${advice}</div>
     `;
