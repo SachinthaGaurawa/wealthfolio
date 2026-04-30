@@ -2217,4 +2217,118 @@ function generateLuxuryPDFReport() {
         doc.setTextColor(...brandGold);
         doc.text("WEALTHFLOW ELITE ENGINE", 15, 292);
         
-        doc.setFont("helvetica", "normalI seem to be encountering an error. Can I try something else for you?
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(255, 255, 255);
+        doc.text("STRICTLY PRIVATE & CONFIDENTIAL", 105, 292, { align: 'center' });
+        doc.text(`PAGE ${i} OF ${pageCount}`, 195, 292, { align: 'right' });
+    }
+
+    // Generate blob URL for safe sharing
+    const pdfBlob = doc.output('blob');
+    const pdfUrl = URL.createObjectURL(pdfBlob);
+    
+    // Create an anchor and click it to trigger download
+    const a = document.createElement('a');
+    a.href = pdfUrl;
+    a.download = `WealthFlow_Elite_Statement_${MONTHS_S[month]}_${year}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    // Optional: Copy link to clipboard for the user if they want to paste it somewhere.
+    // Note: Blob URLs only work locally on the user's machine within that session.
+    navigator.clipboard.writeText(pdfUrl).then(() => {
+        notify('Luxury PDF downloaded and local link copied to clipboard! ✨', 'success');
+    }).catch(err => {
+        notify('Luxury PDF Statement downloaded successfully! ✨', 'success');
+    });
+}
+
+// Local JSON Restore functionality
+function handleImportFile(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+        try {
+            const importedData = JSON.parse(evt.target.result);
+            showConfirm('⚠️', 'Restore Vault Data?', 'This will overwrite your current active database with the selected backup.', 'btn-primary', 'Authorize Restore', () => {
+                appData = importedData;
+                syncToCloud();
+                notify('Vault restored successfully! System rebooting...', 'success');
+                setTimeout(() => location.reload(), 1500);
+            });
+        } catch (err) {
+            notify('Invalid or corrupted JSON backup file.', 'error');
+        }
+    };
+    reader.readAsText(file);
+    e.target.value = ''; 
+    closeModal('mdRestoreCloud');
+}
+
+// ==================== SECURE FACTORY RESET (BUG FIXED) ====================
+async function executeFactoryReset() {
+    const pin = $('fr_pin').value;
+    
+    if(pin.length !== 6) { $('fr_err').textContent = 'Authenticating requires a 6-digit Master PIN.'; return; }
+    
+    const hash = await sha256(pin + 'wf_salt_sg2026');
+    if (hash !== DB.getObj('auth').pin) {
+        $('fr_err').textContent = 'Security Exception: Incorrect PIN.';
+        return;
+    }
+    
+    $('fr_err').textContent = '';
+    
+    // UI Update to lock the modal
+    $('fr_pin').disabled = true;
+    $('fr_action_btns').style.display = 'none';
+    $('fr_success').style.display = 'block';
+    
+    // IMPORTANT: WE KEEP AUTH (PIN) AND SETTINGS PRESERVED!
+    const currentAuth = DB.getObj('auth');
+    const currentSettings = DB.getObj('settings', { backupFreq: 'weekly', theme: 'dark', autoLock: 15, haptics: true });
+
+    appData = { 
+        auth: currentAuth, // Keeping the user's login access safe
+        income: [], loans: [], ccinstall: [], cconetime: [], 
+        cheques: [], expenses: [], targets: [], balance: {total:0, flows:[]}, 
+        settings: currentSettings // Keeping theme and UI prefs
+    };
+    
+    try {
+        // Sync wiped data to Firebase
+        await userDocRef.set(appData);
+        
+        // Wipe all local storage records and immediately rewrite the preserved ones
+        localStorage.clear();
+        Object.keys(appData).forEach(k => localStorage.setItem('wf2_'+k, JSON.stringify(appData[k])));
+
+        // Countdown Logic Execution
+        let count = 3;
+        const countText = $('fr_countdown');
+        countText.textContent = `System Rebooting in ${count}...`;
+        
+        // FIXED: Clear any existing intervals and ensure precise countdown
+        if(window.frInterval) clearInterval(window.frInterval);
+        
+        window.frInterval = setInterval(() => {
+            count--;
+            countText.textContent = `System Rebooting in ${count}...`;
+            
+            if (count <= 0) {
+                clearInterval(window.frInterval);
+                closeModal('mdFactoryReset'); // Force close modal before reload
+                location.reload(true); // Hard refresh to clear memory maps
+            }
+        }, 1000);
+
+    } catch(err) {
+        console.error("Critical Cloud error during wipe:", err);
+        // Even if offline, we ensure local is wiped properly
+        localStorage.clear();
+        Object.keys(appData).forEach(k => localStorage.setItem('wf2_'+k, JSON.stringify(appData[k])));
+        setTimeout(() => location.reload(true), 1500);
+    }
+}
