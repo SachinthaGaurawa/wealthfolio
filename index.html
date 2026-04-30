@@ -892,14 +892,15 @@ tbody td{padding:10px 13px;vertical-align:middle;}
 
 <div id="notifs"></div>
 
-<div class="mo" id="mdExport"><div class="md md-sm">
-  <div class="md-hdr"><div class="md-title">Export Financial Report</div><button class="md-x" onclick="closeModal('mdExport')">✕</button></div>
-  <p style="font-size:13px;color:var(--text2);margin-bottom:16px;">Select format and timeframe to generate a highly professional statement for your business or personal records.</p>
+<div class="mo" id="mdExport"><div class="md md-sm" style="border: 1px solid var(--accent); box-shadow: 0 0 40px rgba(212,175,55,0.1);">
+  <div class="md-hdr"><div class="md-title" style="color:var(--accent);">✨ Export Elite Report</div><button class="md-x" onclick="closeModal('mdExport')">✕</button></div>
+  <p style="font-size:13px;color:var(--text2);margin-bottom:16px;">Generate a highly professional, bank-grade statement for your business or personal records.</p>
   
   <div class="fg"><label class="fl">Export Format</label>
     <select class="fs" id="expFormat" onchange="toggleExportOptions()">
-        <option value="pdf">Elite Private PDF Statement</option>
-        <option value="json">Raw Data JSON (Local Download)</option>
+        <option value="pdf">Elite Private PDF Statement (Premium)</option>
+        <option value="csv">Excel / CSV Report (Analytics)</option>
+        <option value="json">Raw Data JSON (Local Backup)</option>
     </select>
   </div>
   
@@ -916,22 +917,22 @@ tbody td{padding:10px 13px;vertical-align:middle;}
       </div>
   </div>
 
-  <div class="md-ftr"><button class="btn btn-ghost" onclick="closeModal('mdExport')">Cancel</button><button class="btn btn-primary" onclick="executeExport()">📥 Generate & Share</button></div>
+  <div class="md-ftr"><button class="btn btn-ghost" onclick="closeModal('mdExport')">Cancel</button><button class="btn btn-primary" onclick="executeExport()">📥 Generate Report</button></div>
 </div></div>
 
-<div class="mo" id="mdFactoryReset"><div class="md md-sm">
-  <div class="md-hdr"><div class="md-title" style="color:var(--red);">⚠️ Factory Reset</div><button class="md-x" onclick="closeModal('mdFactoryReset')">✕</button></div>
-  <p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.5;">This will wipe ALL data from your devices and the cloud. Enter your PIN to confirm.</p>
+<div class="mo" id="mdFactoryReset"><div class="md md-sm" style="border: 1px solid var(--red);">
+  <div class="md-hdr"><div class="md-title" style="color:var(--red);">⚠️ Core System Reset</div><button class="md-x" onclick="closeModal('mdFactoryReset')">✕</button></div>
+  <p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.5;">This will wipe ALL financial data from your devices and the cloud. <b>Your Master PIN and Settings will be kept safe.</b> Enter your PIN to confirm.</p>
   <div class="fg"><label class="fl">Master PIN *</label><input class="fi auth-numpad-only" id="fr_pin" type="password" inputmode="numeric" maxlength="6" placeholder="••••••" style="letter-spacing: 4px; font-family:var(--mono); text-align:center; font-size:24px;"></div>
   <div class="auth-err" id="fr_err"></div>
   <div class="md-ftr" id="fr_action_btns">
     <button class="btn btn-ghost" id="fr_cancel_btn" onclick="closeModal('mdFactoryReset')">Cancel</button>
-    <button class="btn btn-danger" id="fr_exec_btn" onclick="executeFactoryReset()">Delete Everything</button>
+    <button class="btn btn-danger" id="fr_exec_btn" onclick="executeFactoryReset()">Authenticate & Wipe</button>
   </div>
   <div id="fr_success" style="display:none; text-align:center; padding: 20px 0;">
       <div style="font-size:40px; margin-bottom:10px;">✅</div>
-      <div style="color:var(--green); font-weight:700; font-size:16px;">System Wiped</div>
-      <div style="font-size:14px; color:var(--text2); margin-top:8px; font-weight:600;" id="fr_countdown">Rebooting in 3...</div>
+      <div style="color:var(--green); font-weight:700; font-size:16px;">Core Data Wiped Successfully</div>
+      <div style="font-size:14px; color:var(--text2); margin-top:8px; font-weight:600;" id="fr_countdown">System Rebooting in 3...</div>
   </div>
 </div></div>
 
