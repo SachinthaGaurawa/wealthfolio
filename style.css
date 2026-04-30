@@ -405,3 +405,11 @@ tbody td{padding:10px 13px;vertical-align:middle;}
   .gf-header { flex-direction: column; align-items: flex-start; }
   .gf-btn { width: 100%; text-align: center; }
 }
+
+
+
+
+.haptic-feedback {
+    transition: transform 0.1s;
+    transform: scale(0.98);
+}
