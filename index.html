@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>WealthFlow | Personal Financial System</title>
+<title>WealthFlow | Elite Financial System</title>
 <link rel="icon" type="image/x-icon" href="https://res.cloudinary.com/dzrfpc9be/image/upload/v1777219304/Fav_img_rkpnbl.ico">
 <link rel="icon" type="image/png" href="https://res.cloudinary.com/dzrfpc9be/image/upload/v1777219344/Fav_img_bagjfj.png">
 <link rel="apple-touch-icon" href="https://res.cloudinary.com/dzrfpc9be/image/upload/v1777219344/Fav_img_bagjfj.png">
@@ -123,7 +123,7 @@ button, .npb { touch-action: manipulation; }
 .pg-title span{color:var(--accent);}
 .tb-right{display:flex;align-items:center;gap:8px;flex-wrap: wrap;}
 
-/* Advanced Network Indicators matching user images */
+/* ================== LUXURY NETWORK INDICATORS ================== */
 .network-wrap { display: flex; align-items: center; gap: 8px; margin-right: 8px; }
 .online-badge{
     display:flex;align-items:center;gap:8px;padding:6px 16px;border-radius:30px;
@@ -135,10 +135,15 @@ button, .npb { touch-action: manipulation; }
 .online-badge.off{
     background:rgba(69, 10, 10, 0.6); color:#ef4444; border: 1.5px solid rgba(239,68,68,0.3);
 }
-.online-dot{width:10px;height:10px;border-radius:50%;background:currentColor;box-shadow: 0 0 8px currentColor;}
-.online-badge.on .online-dot { animation: none; }
-.online-badge.off .online-dot { animation: dotPulse 1.5s infinite; }
-@keyframes dotPulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+.online-dot{
+    width:10px;height:10px;border-radius:50%;background:currentColor;
+    box-shadow: 0 0 8px currentColor;
+    animation: luxuryBlink 3.5s ease-in-out infinite;
+}
+@keyframes luxuryBlink {
+    0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 12px currentColor; }
+    50% { opacity: 0.3; transform: scale(0.9); box-shadow: 0 0 2px currentColor; }
+}
 
 .sync-indicator { font-size: 11px; font-weight: 600; color: var(--blue); font-family: var(--mono); opacity: 0; transition: opacity 0.3s; letter-spacing: 0.5px; display: flex; align-items: center; gap: 4px; white-space: nowrap;}
 .sync-indicator.active { opacity: 1; }
@@ -200,7 +205,7 @@ button, .npb { touch-action: manipulation; }
 .sc-cyan .stat-val{color:var(--cyan);}
 .stat-meta{font-size:11px;color:var(--text3);}
 
-/* Professional Golden Frame matching the requested design */
+/* ================== PROFESSIONAL GOLDEN FRAME ================== */
 .golden-frame {
     border: 1.5px solid var(--accent);
     background: var(--card);
@@ -874,11 +879,11 @@ tbody td{padding:10px 13px;vertical-align:middle;}
 
 <div class="mo" id="mdExport"><div class="md md-sm">
   <div class="md-hdr"><div class="md-title">Export Financial Report</div><button class="md-x" onclick="closeModal('mdExport')">✕</button></div>
-  <p style="font-size:13px;color:var(--text2);margin-bottom:16px;">Select format and timeframe to download a professional report for your business or personal records.</p>
+  <p style="font-size:13px;color:var(--text2);margin-bottom:16px;">Select format and timeframe to generate a highly professional statement for your business or personal records.</p>
   
   <div class="fg"><label class="fl">Export Format</label>
     <select class="fs" id="expFormat" onchange="toggleExportOptions()">
-        <option value="pdf">Professional PDF Report</option>
+        <option value="pdf">Elite Private PDF Statement</option>
         <option value="json">Raw Data JSON (Local Download)</option>
     </select>
   </div>
@@ -896,7 +901,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
       </div>
   </div>
 
-  <div class="md-ftr"><button class="btn btn-ghost" onclick="closeModal('mdExport')">Cancel</button><button class="btn btn-primary" onclick="executeExport()">📥 Download</button></div>
+  <div class="md-ftr"><button class="btn btn-ghost" onclick="closeModal('mdExport')">Cancel</button><button class="btn btn-primary" onclick="executeExport()">📥 Generate & Share</button></div>
 </div></div>
 
 <div class="mo" id="mdFactoryReset"><div class="md md-sm">
@@ -911,7 +916,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
   <div id="fr_success" style="display:none; text-align:center; padding: 20px 0;">
       <div style="font-size:40px; margin-bottom:10px;">✅</div>
       <div style="color:var(--green); font-weight:700; font-size:16px;">System Wiped</div>
-      <div style="font-size:12px; color:var(--text2); margin-top:5px;">Rebooting...</div>
+      <div style="font-size:14px; color:var(--text2); margin-top:8px; font-weight:600;" id="fr_countdown">Rebooting in 3...</div>
   </div>
 </div></div>
 
@@ -1132,7 +1137,7 @@ function setSyncStatus(state) {
     if(state === 'syncing') {
         if(badge) { badge.className = 'online-badge on'; $('onlineText').textContent = 'Online'; }
         if(syncInd) { syncInd.classList.add('active'); }
-        if(setBadge) { setBadge.className = 'badge bg-g'; setBadge.textContent = 'Syncing...'; }
+        if(setBadge) { setBadge.className = 'badge syncing'; setBadge.textContent = 'Syncing...'; }
     } else if (state === 'online') {
         if(badge) { badge.className = 'online-badge on'; $('onlineText').textContent = 'Online'; }
         if(syncInd) { syncInd.classList.remove('active'); }
@@ -1262,17 +1267,35 @@ let tokenClient;
 
 function initDriveAuth() {
     if (typeof google === 'undefined') return;
+    
     tokenClient = google.accounts.oauth2.initTokenClient({
         client_id: '1020193373377-paqvs1sgqr75l0lbcs9hju02fmouc0da.apps.googleusercontent.com',
         scope: 'https://www.googleapis.com/auth/drive.file',
         callback: (tokenResponse) => {
             if (tokenResponse && tokenResponse.access_token) {
                 gapiToken = tokenResponse.access_token;
+                // Cache the token securely for 1 hour to prevent constant reprompting
+                const expiry = Date.now() + ((tokenResponse.expires_in - 10) * 1000);
+                localStorage.setItem('wf_drive_token', JSON.stringify({ token: gapiToken, expiry }));
+                
                 if (window.pendingDriveAction === 'backup') executeDriveBackup();
                 if (window.pendingDriveAction === 'restore') fetchDriveBackups();
             }
         }
     });
+
+    // Check cached token
+    const cached = localStorage.getItem('wf_drive_token');
+    if (cached) {
+        try {
+            const parsed = JSON.parse(cached);
+            if (Date.now() < parsed.expiry) {
+                gapiToken = parsed.token;
+            } else {
+                localStorage.removeItem('wf_drive_token');
+            }
+        } catch(e) {}
+    }
 }
 
 window.addEventListener('load', () => {
@@ -1281,11 +1304,19 @@ window.addEventListener('load', () => {
 
 async function requestDrivePermission(action) {
     window.pendingDriveAction = action;
-    if (!gapiToken && tokenClient) {
-        tokenClient.requestAccessToken();
-    } else if (gapiToken) {
+    
+    // If we have a valid cached token, just proceed silently
+    if (gapiToken) {
         if (action === 'backup') executeDriveBackup();
         if (action === 'restore') fetchDriveBackups();
+        return;
+    }
+    
+    // Otherwise, trigger the actual Google Prompt UI
+    if (tokenClient) {
+        tokenClient.requestAccessToken();
+    } else {
+        notify('Google Services failing to load. Check connection.', 'error');
     }
 }
 
@@ -1298,7 +1329,7 @@ async function executeDriveBackup() {
     const metadata = {
         name: `WealthFlow_Backup_${today()}_${Date.now()}.json`,
         mimeType: 'application/json',
-        parents: ['1M8_zbBavMm_SeZiwjboYb3rvlczHyIVz'] // Forced to provided folder ID
+        parents: ['1M8_zbBavMm_SeZiwjboYb3rvlczHyIVz']
     };
 
     const form = new FormData();
@@ -1318,7 +1349,9 @@ async function executeDriveBackup() {
             DB.set('settings', s);
             notify('Drive backup complete! ☁️', 'success');
         } else {
-            notify('Drive upload failed.', 'error');
+            notify('Drive upload failed. Token might be expired.', 'error');
+            localStorage.removeItem('wf_drive_token');
+            gapiToken = null;
         }
     } catch (e) {
         console.error(e);
@@ -1332,12 +1365,17 @@ async function fetchDriveBackups() {
     sel.innerHTML = '<option>Searching Drive...</option>';
     
     try {
-        // Query specific folder for files containing 'WealthFlow_Backup'
         const q = encodeURIComponent(`'1M8_zbBavMm_SeZiwjboYb3rvlczHyIVz' in parents and name contains 'WealthFlow_Backup' and trashed = false`);
         const res = await fetch(`https://www.googleapis.com/drive/v3/files?q=${q}&orderBy=createdTime desc&pageSize=5&fields=files(id,name,createdTime)`, {
             headers: { 'Authorization': 'Bearer ' + gapiToken }
         });
         
+        if(!res.ok) {
+            localStorage.removeItem('wf_drive_token');
+            gapiToken = null;
+            throw new Error('Token Expired');
+        }
+
         const data = await res.json();
         if (data.files && data.files.length > 0) {
             sel.innerHTML = data.files.map(f => `<option value="${f.id}">${new Date(f.createdTime).toLocaleString()}</option>`).join('');
@@ -1347,6 +1385,9 @@ async function fetchDriveBackups() {
         }
     } catch(e) {
         sel.innerHTML = '<option value="">Failed to fetch backups</option>';
+        if(e.message === 'Token Expired') {
+             notify('Session expired. Please click restore again to re-authenticate.', 'warn');
+        }
     }
 }
 
@@ -2241,7 +2282,6 @@ function renderCCOT() {
         </tr>`;
     }).join('');
 }
-
 // ==================== CHEQUES ====================
 function saveCheque() {
     const no=$('chq_no').value.trim(), party=$('chq_party').value.trim(), bank=$('chq_bank').value, amount=parseMoney($('chq_amount').value), issue=$('chq_issue').value, release=$('chq_release').value;
