@@ -123,7 +123,7 @@ button, .npb { touch-action: manipulation; }
 .pg-title span{color:var(--accent);}
 .tb-right{display:flex;align-items:center;gap:8px;flex-wrap: wrap;}
 
-/* Luxury Network Indicators */
+/* Advanced Network Indicators matching user images */
 .network-wrap { display: flex; align-items: center; gap: 8px; margin-right: 8px; }
 .online-badge{
     display:flex;align-items:center;gap:8px;padding:6px 16px;border-radius:30px;
@@ -135,15 +135,11 @@ button, .npb { touch-action: manipulation; }
 .online-badge.off{
     background:rgba(69, 10, 10, 0.6); color:#ef4444; border: 1.5px solid rgba(239,68,68,0.3);
 }
-.online-dot{
-    width:10px;height:10px;border-radius:50%;background:currentColor;
-    box-shadow: 0 0 8px currentColor;
-    animation: luxuryBlink 3.5s ease-in-out infinite;
-}
-@keyframes luxuryBlink {
-    0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 10px currentColor; }
-    50% { opacity: 0.3; transform: scale(0.85); box-shadow: 0 0 2px currentColor; }
-}
+.online-dot{width:10px;height:10px;border-radius:50%;background:currentColor;box-shadow: 0 0 8px currentColor;}
+.online-badge.on .online-dot { animation: none; }
+.online-badge.off .online-dot { animation: dotPulse 1.5s infinite; }
+@keyframes dotPulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+
 .sync-indicator { font-size: 11px; font-weight: 600; color: var(--blue); font-family: var(--mono); opacity: 0; transition: opacity 0.3s; letter-spacing: 0.5px; display: flex; align-items: center; gap: 4px; white-space: nowrap;}
 .sync-indicator.active { opacity: 1; }
 
@@ -882,7 +878,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
   
   <div class="fg"><label class="fl">Export Format</label>
     <select class="fs" id="expFormat" onchange="toggleExportOptions()">
-        <option value="pdf">Professional PDF Statement</option>
+        <option value="pdf">Professional PDF Report</option>
         <option value="json">Raw Data JSON (Local Download)</option>
     </select>
   </div>
@@ -915,7 +911,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
   <div id="fr_success" style="display:none; text-align:center; padding: 20px 0;">
       <div style="font-size:40px; margin-bottom:10px;">✅</div>
       <div style="color:var(--green); font-weight:700; font-size:16px;">System Wiped</div>
-      <div style="font-size:14px; color:var(--text2); margin-top:8px; font-weight:600;" id="fr_countdown">Rebooting in 3...</div>
+      <div style="font-size:12px; color:var(--text2); margin-top:5px;">Rebooting...</div>
   </div>
 </div></div>
 
@@ -1136,7 +1132,7 @@ function setSyncStatus(state) {
     if(state === 'syncing') {
         if(badge) { badge.className = 'online-badge on'; $('onlineText').textContent = 'Online'; }
         if(syncInd) { syncInd.classList.add('active'); }
-        if(setBadge) { setBadge.className = 'badge syncing'; setBadge.textContent = 'Syncing...'; }
+        if(setBadge) { setBadge.className = 'badge bg-g'; setBadge.textContent = 'Syncing...'; }
     } else if (state === 'online') {
         if(badge) { badge.className = 'online-badge on'; $('onlineText').textContent = 'Online'; }
         if(syncInd) { syncInd.classList.remove('active'); }
@@ -1266,35 +1262,17 @@ let tokenClient;
 
 function initDriveAuth() {
     if (typeof google === 'undefined') return;
-    
     tokenClient = google.accounts.oauth2.initTokenClient({
         client_id: '1020193373377-paqvs1sgqr75l0lbcs9hju02fmouc0da.apps.googleusercontent.com',
         scope: 'https://www.googleapis.com/auth/drive.file',
         callback: (tokenResponse) => {
             if (tokenResponse && tokenResponse.access_token) {
                 gapiToken = tokenResponse.access_token;
-                // Cache the token securely for 1 hour to prevent constant reprompting
-                const expiry = Date.now() + ((tokenResponse.expires_in - 10) * 1000);
-                localStorage.setItem('wf_drive_token', JSON.stringify({ token: gapiToken, expiry }));
-                
                 if (window.pendingDriveAction === 'backup') executeDriveBackup();
                 if (window.pendingDriveAction === 'restore') fetchDriveBackups();
             }
         }
     });
-
-    // Check cached token
-    const cached = localStorage.getItem('wf_drive_token');
-    if (cached) {
-        try {
-            const parsed = JSON.parse(cached);
-            if (Date.now() < parsed.expiry) {
-                gapiToken = parsed.token;
-            } else {
-                localStorage.removeItem('wf_drive_token');
-            }
-        } catch(e) {}
-    }
 }
 
 window.addEventListener('load', () => {
@@ -1303,19 +1281,11 @@ window.addEventListener('load', () => {
 
 async function requestDrivePermission(action) {
     window.pendingDriveAction = action;
-    
-    // If we have a valid cached token, just proceed silently
-    if (gapiToken) {
+    if (!gapiToken && tokenClient) {
+        tokenClient.requestAccessToken();
+    } else if (gapiToken) {
         if (action === 'backup') executeDriveBackup();
         if (action === 'restore') fetchDriveBackups();
-        return;
-    }
-    
-    // Otherwise, trigger the actual Google Prompt UI
-    if (tokenClient) {
-        tokenClient.requestAccessToken();
-    } else {
-        notify('Google Services failing to load. Check connection.', 'error');
     }
 }
 
@@ -1328,7 +1298,7 @@ async function executeDriveBackup() {
     const metadata = {
         name: `WealthFlow_Backup_${today()}_${Date.now()}.json`,
         mimeType: 'application/json',
-        parents: ['1M8_zbBavMm_SeZiwjboYb3rvlczHyIVz']
+        parents: ['1M8_zbBavMm_SeZiwjboYb3rvlczHyIVz'] // Forced to provided folder ID
     };
 
     const form = new FormData();
@@ -1348,9 +1318,7 @@ async function executeDriveBackup() {
             DB.set('settings', s);
             notify('Drive backup complete! ☁️', 'success');
         } else {
-            notify('Drive upload failed. Token might be expired.', 'error');
-            localStorage.removeItem('wf_drive_token');
-            gapiToken = null;
+            notify('Drive upload failed.', 'error');
         }
     } catch (e) {
         console.error(e);
@@ -1364,17 +1332,12 @@ async function fetchDriveBackups() {
     sel.innerHTML = '<option>Searching Drive...</option>';
     
     try {
+        // Query specific folder for files containing 'WealthFlow_Backup'
         const q = encodeURIComponent(`'1M8_zbBavMm_SeZiwjboYb3rvlczHyIVz' in parents and name contains 'WealthFlow_Backup' and trashed = false`);
         const res = await fetch(`https://www.googleapis.com/drive/v3/files?q=${q}&orderBy=createdTime desc&pageSize=5&fields=files(id,name,createdTime)`, {
             headers: { 'Authorization': 'Bearer ' + gapiToken }
         });
         
-        if(!res.ok) {
-            localStorage.removeItem('wf_drive_token');
-            gapiToken = null;
-            throw new Error('Token Expired');
-        }
-
         const data = await res.json();
         if (data.files && data.files.length > 0) {
             sel.innerHTML = data.files.map(f => `<option value="${f.id}">${new Date(f.createdTime).toLocaleString()}</option>`).join('');
@@ -1384,9 +1347,6 @@ async function fetchDriveBackups() {
         }
     } catch(e) {
         sel.innerHTML = '<option value="">Failed to fetch backups</option>';
-        if(e.message === 'Token Expired') {
-             notify('Session expired. Please click restore again to re-authenticate.', 'warn');
-        }
     }
 }
 
@@ -3026,8 +2986,7 @@ function executeExport() {
     closeModal('mdExport');
 }
 
-// Highly Professional Luxury PDF Statement Generator with Native Web Sharing Support
-async function generatePDFReport() {
+function generatePDFReport() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
     
@@ -3035,72 +2994,65 @@ async function generatePDFReport() {
     const month = parseInt($('expPdfMonth').value);
     const md = getMonthlyData(year, month);
     
-    const navyBlue = [13, 23, 41];
-    const gold = [245, 166, 35];
-    const white = [255, 255, 255];
-    const lightGray = [248, 250, 252];
-    const textDark = [30, 41, 59];
-    const green = [16, 185, 129];
-    const red = [239, 68, 68];
+    const darkBlue = [15, 23, 42];
+    const accentGold = [245, 166, 35];
+    const lightGrey = [241, 245, 249];
+    const textGrey = [100, 116, 139];
 
-    // Luxury Header
-    doc.setFillColor(...navyBlue);
-    doc.rect(0, 0, 210, 50, 'F');
+    // Header Block
+    doc.setFillColor(...darkBlue);
+    doc.rect(0, 0, 210, 45, 'F');
 
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(28);
-    doc.setTextColor(...gold);
-    doc.text("WEALTHFLOW", 14, 22);
+    doc.setFontSize(26);
+    doc.setTextColor(...accentGold);
+    doc.text("WEALTHFLOW", 14, 20);
 
-    doc.setFontSize(9);
-    doc.setTextColor(200, 200, 200);
-    doc.text("PRIVATE & CONFIDENTIAL FINANCIAL STATEMENT", 14, 29);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10);
+    doc.setTextColor(255, 255, 255);
+    doc.text("PRIVATE FINANCIAL STATEMENT", 14, 28);
     
-    // Right side header info
-    doc.setFontSize(9);
-    doc.setTextColor(...white);
-    doc.text(`PREPARED FOR: SACHINTHA GAURAWA`, 196, 20, { align: 'right' });
-    doc.text(`STATEMENT PERIOD: ${MONTHS[month].toUpperCase()} ${year}`, 196, 27, { align: 'right' });
-    doc.text(`GENERATED ON: ${today()}`, 196, 34, { align: 'right' });
-    doc.setDrawColor(...gold);
-    doc.setLineWidth(0.5);
-    doc.line(14, 38, 196, 38);
+    doc.setFontSize(10);
+    doc.text(`PREPARED FOR: SACHINTHA GAURAWA`, 120, 20);
+    doc.text(`PERIOD: ${MONTHS[month].toUpperCase()} ${year}`, 120, 28);
+    doc.text(`GENERATED: ${today()}`, 120, 36);
 
     // Executive Summary Box
-    doc.setFillColor(...lightGray);
-    doc.setDrawColor(220, 220, 220);
-    doc.roundedRect(14, 60, 182, 35, 3, 3, 'FD');
+    doc.setDrawColor(226, 232, 240);
+    doc.setFillColor(...lightGrey);
+    doc.roundedRect(14, 55, 182, 30, 3, 3, 'FD');
     
     doc.setFont("helvetica", "bold");
     doc.setFontSize(10);
-    doc.setTextColor(...textDark);
-    doc.text("TOTAL INCOME", 24, 70);
-    doc.text("TOTAL EXPENSES", 85, 70);
-    doc.text("NET SURPLUS", 146, 70);
+    doc.setTextColor(...textGrey);
+    doc.text("TOTAL INCOME", 24, 65);
+    doc.text("TOTAL EXPENSES", 85, 65);
+    doc.text("NET BALANCE", 146, 65);
 
-    doc.setFontSize(18);
-    doc.setTextColor(...green); 
-    doc.text(`${fmtN(md.income)}`, 24, 82);
-    doc.setTextColor(...red); 
-    doc.text(`${fmtN(md.totalExp)}`, 85, 82);
-    doc.setTextColor(...navyBlue); 
-    doc.text(`${fmtN(md.balance)}`, 146, 82);
+    doc.setFontSize(16);
+    doc.setTextColor(16, 185, 129); 
+    doc.text(`${fmtN(md.income)}`, 24, 76);
+    
+    doc.setTextColor(239, 68, 68); 
+    doc.text(`${fmtN(md.totalExp)}`, 85, 76);
+    
+    doc.setTextColor(...darkBlue); 
+    doc.text(`${fmtN(md.balance)}`, 146, 76);
 
-    let startY = 110;
+    let startY = 100;
 
     const tableOptions = {
-        theme: 'grid',
-        headStyles: { fillColor: navyBlue, textColor: white, fontStyle: 'bold', fontSize: 10, halign: 'center' },
-        bodyStyles: { fontSize: 10, textColor: textDark },
+        theme: 'plain',
+        headStyles: { fillColor: lightGrey, textColor: darkBlue, fontStyle: 'bold', fontSize: 10 },
+        bodyStyles: { fontSize: 10, textColor: [51, 65, 85] },
         alternateRowStyles: { fillColor: [250, 250, 250] },
-        styles: { cellPadding: 6, lineColor: [220, 220, 220], lineWidth: 0.1 },
         margin: { left: 14, right: 14 }
     };
 
-    // Income Table
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(14); doc.setTextColor(...navyBlue);
-    doc.text("Income & Capital Returns", 14, startY);
+    doc.setFontSize(14); doc.setTextColor(...darkBlue);
+    doc.text("Income & Returns", 14, startY);
     
     const activeIncome = DB.get('income').filter(s => {
         const dt = new Date(year,month,1);
@@ -3111,30 +3063,126 @@ async function generatePDFReport() {
 
     if(activeIncome.length > 0) {
         doc.autoTable({
-            startY: startY + 6,
-            head: [['Source Description', 'Institution / Entity', 'Amount (LKR)']],
+            startY: startY + 5,
+            head: [['Source', 'Institution', 'Amount (LKR)']],
             body: activeIncome.map(i => [i.name, i.company, fmtN(i.monthly)]),
-            ...tableOptions,
-            columnStyles: { 2: { halign: 'right', fontStyle: 'bold', textColor: green } }
+            ...tableOptions
         });
-        startY = doc.lastAutoTable.finalY + 18;
+        startY = doc.lastAutoTable.finalY + 15;
     } else {
-        doc.setFont("helvetica", "normal"); doc.setFontSize(10); doc.setTextColor(150, 150, 150);
-        doc.text("No income registered for this period.", 14, startY + 10); startY += 20;
+        doc.setFont("helvetica", "normal"); doc.setFontSize(10); doc.setTextColor(...textGrey);
+        doc.text("No income registered for this period.", 14, startY + 8); startY += 18;
     }
 
-    // Debt Table
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(14); doc.setTextColor(...navyBlue);
-    doc.text("Debt Obligations & Servicing", 14, startY);
+    doc.setFontSize(14); doc.setTextColor(...darkBlue);
+    doc.text("Debt Servicing", 14, startY);
     if(md.loanItems.length > 0) {
         doc.autoTable({
-            startY: startY + 6,
-            head: [['Facility Name', 'Financial Institution', 'Monthly EMI (LKR)']],
+            startY: startY + 5,
+            head: [['Facility Name', 'Institution', 'EMI (LKR)']],
             body: md.loanItems.map(l => [l.name, l.bank, fmtN(l.amount)]),
-            ...tableOptions,
-            columnStyles: { 2: { halign: 'right', fontStyle: 'bold', textColor: red } }
+            ...tableOptions
         });
-        startY = doc.lastAutoTable.finalY + 18;
+        startY = doc.lastAutoTable.finalY + 15;
     } else {
-        doc.setFont("helvetica
+        doc.setFont("helvetica", "normal"); doc.setFontSize(10); doc.setTextColor(...textGrey);
+        doc.text("No debt obligations for this period.", 14, startY + 8); startY += 18;
+    }
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(14); doc.setTextColor(...darkBlue);
+    doc.text("Operating Expenses", 14, startY);
+    const combinedExp = [];
+    md.ccItems2.forEach(c => combinedExp.push([c.name + ' (CC Instalment)', c.bank, fmtN(c.amount)]));
+    md.expItems.forEach(e => combinedExp.push([e.name, e.cat, fmtN(e.amount)]));
+
+    if(combinedExp.length > 0) {
+        doc.autoTable({
+            startY: startY + 5,
+            head: [['Description', 'Category', 'Amount (LKR)']],
+            body: combinedExp,
+            ...tableOptions
+        });
+    } else {
+        doc.setFont("helvetica", "normal"); doc.setFontSize(10); doc.setTextColor(...textGrey);
+        doc.text("No operating expenses for this period.", 14, startY + 8);
+    }
+
+    const pageCount = doc.internal.getNumberOfPages();
+    for(let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(8);
+        doc.setTextColor(148, 163, 184);
+        doc.text(`Page ${i} of ${pageCount}`, 196, 290, { align: 'right' });
+        doc.text("Generated securely by WealthFlow", 14, 290);
+    }
+
+    doc.save(`WealthFlow_Statement_${MONTHS_S[month]}_${year}.pdf`);
+    notify('Professional Statement downloaded.', 'success');
+}
+
+// Local JSON Restore functionality
+function handleImportFile(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+        try {
+            const importedData = JSON.parse(evt.target.result);
+            showConfirm('⚠️', 'Restore Local Data?', 'This will overwrite all existing data with the selected JSON backup.', 'btn-primary', 'Yes, Restore', () => {
+                appData = importedData;
+                syncToCloud();
+                notify('Data restored successfully! Rebooting...', 'success');
+                setTimeout(() => location.reload(), 1500);
+            });
+        } catch (err) {
+            notify('Invalid JSON backup file', 'error');
+        }
+    };
+    reader.readAsText(file);
+    e.target.value = ''; 
+    closeModal('mdRestoreCloud');
+}
+
+// Secure Factory Reset
+async function executeFactoryReset() {
+    const btn = $('fr_exec_btn');
+    const cancelBtn = $('fr_cancel_btn');
+    const pin = $('fr_pin').value;
+    
+    if(pin.length !== 6) { $('fr_err').textContent = 'Enter 6-digit PIN.'; return; }
+    
+    const hash = await sha256(pin + 'wf_salt_sg2026');
+    if (hash !== DB.getObj('auth').pin) {
+        $('fr_err').textContent = 'Incorrect PIN.';
+        return;
+    }
+    
+    $('fr_err').textContent = '';
+    
+    // UI Update to lock the modal
+    $('fr_pin').disabled = true;
+    $('fr_action_btns').style.display = 'none';
+    $('fr_success').style.display = 'block';
+    
+    appData = { 
+        auth: {}, income: [], loans: [], ccinstall: [], cconetime: [], 
+        cheques: [], expenses: [], targets: [], balance: {total:0, flows:[]}, 
+        settings: { backupFreq: 'weekly', lastBackup: null, theme: 'dark', autoLock: 15 } 
+    };
+    
+    try {
+        await userDocRef.set(appData);
+        localStorage.clear();
+        setTimeout(() => location.reload(), 2000);
+    } catch(err) {
+        console.error(err);
+        localStorage.clear();
+        setTimeout(() => location.reload(), 2000);
+    }
+}
+</script>
+</body>
+</html>
