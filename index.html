@@ -892,6 +892,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
 
 <div id="notifs"></div>
 
+<!-- ================== EXPORT MODAL ================== -->
 <div class="mo" id="mdExport"><div class="md md-sm" style="border: 1px solid var(--accent); box-shadow: 0 0 40px rgba(212,175,55,0.1);">
   <div class="md-hdr"><div class="md-title" style="color:var(--accent);">✨ Export Elite Report</div><button class="md-x" onclick="closeModal('mdExport')">✕</button></div>
   <p style="font-size:13px;color:var(--text2);margin-bottom:16px;">Generate a highly professional, bank-grade statement for your business or personal records.</p>
@@ -920,6 +921,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
   <div class="md-ftr"><button class="btn btn-ghost" onclick="closeModal('mdExport')">Cancel</button><button class="btn btn-primary" onclick="executeExport()">📥 Generate Report</button></div>
 </div></div>
 
+<!-- ================== SECURE FACTORY RESET ================== -->
 <div class="mo" id="mdFactoryReset"><div class="md md-sm" style="border: 1px solid var(--red);">
   <div class="md-hdr"><div class="md-title" style="color:var(--red);">⚠️ Core System Reset</div><button class="md-x" onclick="closeModal('mdFactoryReset')">✕</button></div>
   <p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.5;">This will wipe ALL financial data from your devices and the cloud. <b>Your Master PIN and Settings will be kept safe.</b> Enter your PIN to confirm.</p>
@@ -1115,7 +1117,7 @@ const userDocRef = db.collection('users').doc('master_profile');
 let appData = { 
     auth: {}, income: [], loans: [], ccinstall: [], cconetime: [], 
     cheques: [], expenses: [], targets: [], balance: {total:0, flows:[]}, 
-    settings: { backupFreq: 'weekly', lastBackup: null, theme: 'dark', autoLock: 15 } 
+    settings: { backupFreq: 'weekly', lastBackup: null, theme: 'dark', autoLock: 15, haptics: true } 
 };
 let isInitialised = false;
 let inactivityTimer = 0;
@@ -1156,11 +1158,11 @@ function setSyncStatus(state) {
     } else if (state === 'online') {
         if(badge) { badge.className = 'online-badge on'; $('onlineText').textContent = 'Online'; }
         if(syncInd) { syncInd.classList.remove('active'); }
-        if(setBadge) { setBadge.className = 'badge bg-g'; setBadge.textContent = 'Connected'; }
+        if(setBadge) { setBadge.className = 'badge bg-g'; setBadge.textContent = '● Securely Connected'; }
     } else {
         if(badge) { badge.className = 'online-badge off'; $('onlineText').textContent = 'Offline'; }
         if(syncInd) { syncInd.classList.remove('active'); }
-        if(setBadge) { setBadge.className = 'badge bg-r'; setBadge.textContent = 'Offline'; }
+        if(setBadge) { setBadge.className = 'badge bg-r'; setBadge.textContent = '○ Offline Mode'; }
     }
 }
 
@@ -2992,7 +2994,6 @@ function calcDSCR() {
     `;
 }
 
-// ==================== SETTINGS & EXPORT ====================
 // ==================== SETTINGS (ULTRA-PREMIUM UPGRADE) ====================
 function renderSettings() {
     const s = DB.getObj('settings', { backupFreq: 'weekly', lastBackup: null, theme: 'dark', autoLock: 15, haptics: true });
