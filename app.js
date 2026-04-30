@@ -2189,4 +2189,32 @@ function generateLuxuryPDFReport() {
     // 3. Opex & CC
     doc.setFont("times", "bold");
     doc.setFontSize(16); doc.setTextColor(...brandNavy);
-    doc.I seem to be encountering an error. Can I try something else for you?
+    doc.text("III. Operations & Card Installments", 15, startY);
+    const combinedExp = [];
+    md.ccItems2.forEach(c => combinedExp.push([c.name + ' (Card Installment)', c.bank, fmtN(c.amount)]));
+    md.expItems.forEach(e => combinedExp.push([e.name, e.cat, fmtN(e.amount)]));
+
+    if(combinedExp.length > 0) {
+        doc.autoTable({
+            startY: startY + 6,
+            head: [['Description', 'Category', 'Expense (LKR)']],
+            body: combinedExp,
+            ...tableOptions
+        });
+    } else {
+        doc.setFont("helvetica", "italic"); doc.setFontSize(10); doc.setTextColor(...textGrey);
+        doc.text("No operating expenses registered.", 15, startY + 10);
+    }
+
+    // Page Footer (Every page)
+    const pageCount = doc.internal.getNumberOfPages();
+    for(let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFillColor(...brandNavy);
+        doc.rect(0, 285, 210, 12, 'F');
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(8);
+        doc.setTextColor(...brandGold);
+        doc.text("WEALTHFLOW ELITE ENGINE", 15, 292);
+        
+        doc.setFont("helvetica", "normalI seem to be encountering an error. Can I try something else for you?
