@@ -816,65 +816,65 @@ tbody td{padding:10px 13px;vertical-align:middle;}
       </div>
         
 
-        <div class="page" id="page-dscr">
-                <div class="sh">
-                    <div class="sh-title">DSCR Calculator - Sri Lanka Bank Eligibility</div>
-                    <div class="sh-actions"><button class="btn btn-ghost btn-sm" onclick="clearDSCR()">🧹 Clear Form</button></div>
+    <div class="page" id="page-dscr">
+            <div class="sh">
+                <div class="sh-title">DSCR Calculator - Sri Lanka Bank Eligibility</div>
+                <div class="sh-actions"><button class="btn btn-ghost btn-sm" onclick="clearDSCR()">🧹 Clear Form</button></div>
+            </div>
+            <div class="g2">
+              <div class="card">
+                <div class="card-header"><div class="card-title">Your Financial Profile</div></div>
+                
+                <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:10px 0 8px;">Gross Monthly Income</div>
+                <div class="fr">
+                     <div class="fg">
+                        <select class="fs" id="dscrKnownIncome" onchange="calcDSCR()">
+                            <option value="">Select 1-Year Average...</option>
+                            </select>
+                    </div>
+                    <div class="fg"><input class="fi money-input" id="dscrIncome" placeholder="Custom amount (LKR)" oninput="calcDSCR()"></div>
                 </div>
-                <div class="g2">
-                  <div class="card">
-                    <div class="card-header"><div class="card-title">Your Financial Profile</div></div>
-                    
-                    <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:10px 0 8px;">Gross Monthly Income</div>
-                    <div class="fr">
-                         <div class="fg">
-                            <select class="fs" id="dscrKnownIncome" onchange="autoFillDSCR('income')">
-                                <option value="">Select known income...</option>
-                                <!-- Populated dynamically -->
-                            </select>
-                        </div>
-                        <div class="fg"><input class="fi money-input" id="dscrIncome" placeholder="Or enter custom amount (LKR)" oninput="calcDSCR()"></div>
+                <div class="fhint" style="margin-top:-8px; margin-bottom:12px;">* Both values will be combined if both are provided.</div>
+    
+                <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:10px 0 8px;">Monthly Operating Expenses</div>
+                 <div class="fr">
+                     <div class="fg">
+                        <select class="fs" id="dscrKnownOpex" onchange="calcDSCR()">
+                            <option value="">Select 1-Year Average...</option>
+                             </select>
                     </div>
-        
-                    <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:10px 0 8px;">Monthly Operating Expenses</div>
-                     <div class="fr">
-                         <div class="fg">
-                            <select class="fs" id="dscrKnownOpex" onchange="autoFillDSCR('opex')">
-                                <option value="">Select known expenses...</option>
-                                 <!-- Populated dynamically -->
-                            </select>
-                        </div>
-                        <div class="fg"><input class="fi money-input" id="dscrOpex" placeholder="Or enter custom amount (LKR)" oninput="calcDSCR()"></div>
-                    </div>
-                    
-                    <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:18px 0 8px;">Existing Loan Payments</div>
-                    <div class="fg">
-                        <select class="fs" id="dscrAddExistingLoan" onchange="autoAddDSCRLoan()">
-                            <option value="">+ Fetch active loan from system...</option>
-                        </select>
-                    </div>
-                    <div id="dscrExistingLoans" style="margin-bottom:10px;"></div>
-                    
-                    <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:18px 0 8px;">Proposed New Loan</div>
-                    <div class="fr">
-                      <div class="fg"><label class="fl">Loan Amount (LKR)</label><input class="fi money-input" id="dscrNewAmt" placeholder="20,000,000" oninput="calcDSCR()"></div>
-                      <div class="fg"><label class="fl">Annual Rate (%)</label><input class="fi" id="dscrNewRate" type="number" placeholder="14" step="0.1" oninput="calcDSCR()"></div>
-                    </div>
-                    <div class="fr">
-                      <div class="fg"><label class="fl">Duration (months)</label><input class="fi" id="dscrNewDur" type="number" placeholder="120" oninput="calcDSCR()"></div>
-                      <div class="fg"><label class="fl">Down Payment (LKR)</label><input class="fi money-input" id="dscrDown" placeholder="0" oninput="calcDSCR()"></div>
-                    </div>
-                    <div class="fg"><label class="fl">Purpose</label><input class="fi" id="dscrPurpose" placeholder="Land / House / Vehicle..."></div>
-                    <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:6px;" onclick="calcDSCR()">📐 Calculate Bank DSCR</button>
-                  </div>
-                  <div class="card">
-                    <div class="card-header"><div class="card-title">Analysis Result</div></div>
-                    <div id="dscrResult" style="text-align:center;padding:20px 0;">
-                      <div style="font-size:13px;color:var(--text3);">Fill in the form to calculate eligibility based on local banking parameters.</div>
-                    </div>
-                  </div>
+                    <div class="fg"><input class="fi money-input" id="dscrOpex" placeholder="Custom amount (LKR)" oninput="calcDSCR()"></div>
+                </div>
+                <div class="fhint" style="margin-top:-8px; margin-bottom:12px;">* Excludes existing loans. Both values will be combined.</div>
+                
+                <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:18px 0 8px;">Existing Loan Payments</div>
+                <div class="fg">
+                    <select class="fs" id="dscrAddExistingLoan" onchange="autoAddDSCRLoan()">
+                        <option value="">+ Fetch active loan from system...</option>
+                    </select>
+                </div>
+                <div id="dscrExistingLoans" style="margin-bottom:10px;"></div>
+                
+                <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:18px 0 8px;">Proposed New Loan</div>
+                <div class="fr">
+                  <div class="fg"><label class="fl">Loan Amount (LKR)</label><input class="fi money-input" id="dscrNewAmt" placeholder="20,000,000" oninput="calcDSCR()"></div>
+                  <div class="fg"><label class="fl">Annual Rate (%)</label><input class="fi" id="dscrNewRate" type="number" placeholder="14" step="0.1" oninput="calcDSCR()"></div>
+                </div>
+                <div class="fr">
+                  <div class="fg"><label class="fl">Duration (months)</label><input class="fi" id="dscrNewDur" type="number" placeholder="120" oninput="calcDSCR()"></div>
+                  <div class="fg"><label class="fl">Down Payment (LKR)</label><input class="fi money-input" id="dscrDown" placeholder="0" oninput="calcDSCR()"></div>
+                </div>
+                <div class="fg"><label class="fl">Purpose</label><input class="fi" id="dscrPurpose" placeholder="Land / House / Vehicle..."></div>
+                <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:6px;" onclick="calcDSCR()">📐 Calculate Bank DSCR</button>
+              </div>
+              <div class="card">
+                <div class="card-header"><div class="card-title">Analysis Result</div></div>
+                <div id="dscrResult" style="text-align:center;padding:20px 0;">
+                  <div style="font-size:13px;color:var(--text3);">Fill in the form to calculate eligibility based on local banking parameters.</div>
                 </div>
               </div>
+            </div>
+          </div>
                       
               
             <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:18px 0 8px;">Existing Loan Payments</div>
