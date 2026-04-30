@@ -2845,8 +2845,8 @@ function renderRecentActivity() {
 function clearDSCR() {
     $('dscrIncome').value = '';
     $('dscrOpex').value = '';
-    $('dscrKnownIncome').value = '';
-    $('dscrKnownOpex').value = '';
+    if($('dscrKnownIncome')) $('dscrKnownIncome').value = '';
+    if($('dscrKnownOpex')) $('dscrKnownOpex').value = '';
     $('dscrNewAmt').value = '';
     $('dscrNewRate').value = '';
     $('dscrNewDur').value = '';
@@ -2861,29 +2861,55 @@ function renderDSCR() {
     // Populate Existing Loans
     const loans = DB.get('loans');
     const selectLoan = $('dscrAddExistingLoan');
-    let htmlLoan = '<option value="">+ Fetch active loan from system...</option>';
-    loans.forEach(l => {
-        const active = loanEndDate(l) > new Date();
-        if(active) htmlLoan += `<option value="${l.monthly}">${l.name} (${l.bank}) - ${fmt(l.monthly)}/mo</option>`;
-    });
-    selectLoan.innerHTML = htmlLoan;
+    if (selectLoan) {
+        let htmlLoan = '<option value="">+ Fetch active loan from system...</option>';
+        loans.forEach(l => {
+            const active = loanEndDate(l) > new Date();
+            if(active) htmlLoan += `<option value="${l.monthly}">${l.name} (${l.bank}) - ${fmt(l.monthly)}/mo</option>`;
+        });
+        selectLoan.innerHTML = htmlLoan;
+    }
 
-    // Populate Known Income
+    // AI Automation: Fetch accurate system data for quick add
+    const now = new Date();
+    const md = getMonthlyData(now.getFullYear(), now.getMonth());
+
+    // Populate Known Income Dropdown
     const incSelect = $('dscrKnownIncome');
-    const totalInc = DB.get('income').reduce((sum, x) => sum + x.monthly, 0);
-    incSelect.innerHTML = `<option value="">Select known income...</option>
-                           <option value="${totalInc}">Total Tracked Income: ${fmtN(totalInc)}</option>`;
+    if (incSelect) {
+        const totalInc = md.income > 0 ? md.income : DB.get('income').reduce((sum, x) => sum + x.monthly, 0);
+        incSelect.innerHTML = `<option value="">Select known income...</option>
+                               <option value="${totalInc}">System Tracked Income: ${fmtN(totalInc)}</option>`;
+    }
 
-    // Populate Known Expenses (Average of last 3 months to be realistic)
+    // Populate Known Expenses Dropdown
     const expSelect = $('dscrKnownOpex');
-    const expenses = DB.get('expenses');
-    // Simple average calculation
-    const totalExp = expenses.reduce((sum, x) => sum + x.amount, 0);
-    const uniqueMonths = new Set(expenses.map(x=>x.month)).size || 1;
-    const avgExp = Math.round(totalExp / uniqueMonths);
-    
-    expSelect.innerHTML = `<option value="">Select known expenses...</option>
-                           <option value="${avgExp}">Avg Tracked Monthly Opex: ${fmtN(avgExp)}</option>`;
+    if (expSelect) {
+        const expenses = DB.get('expenses');
+        const totalExpAll = expenses.reduce((sum, x) => sum + x.amount, 0);
+        const uniqueMonths = new Set(expenses.map(x=>x.month)).size || 1;
+        const avgExp = Math.round(totalExpAll / uniqueMonths);
+        const currentExp = md.expTotal; // High-accuracy specific month opex
+        
+        expSelect.innerHTML = `<option value="">Select known expenses...</option>
+                               <option value="${currentExp}">Current Month Opex: ${fmtN(currentExp)}</option>
+                               <option value="${avgExp}">Avg Tracked Opex: ${fmtN(avgExp)}</option>`;
+    }
+
+    // Handle Suggestion Badges safely (if you added them to your HTML)
+    const incSugg = $('dscrIncSugg');
+    if (incSugg) {
+        incSugg.innerHTML = md.income > 0 ? 
+            `<span class="badge bg-g" style="cursor:pointer; padding:6px 12px; font-size:11px;" onclick="$('dscrIncome').value='${fmtN(md.income)}'; calcDSCR();">✨ Use System Income: ${fmt(md.income)}</span>` : 
+            `<span style="font-size:11px; color:var(--text3);">No system income found for this month</span>`;
+    }
+
+    const opexSugg = $('dscrOpexSugg');
+    if (opexSugg) {
+        opexSugg.innerHTML = md.expTotal > 0 ? 
+            `<span class="badge bg-r" style="cursor:pointer; padding:6px 12px; font-size:11px;" onclick="$('dscrOpex').value='${fmtN(md.expTotal)}'; calcDSCR();">✨ Use Tracked Expenses: ${fmt(md.expTotal)}</span>` : 
+            `<span style="font-size:11px; color:var(--text3);">No tracked expenses found for this month</span>`;
+    }
 
     setTimeout(calcDSCR, 100);
 }
@@ -2904,28 +2930,9 @@ function autoFillDSCR(type) {
     }
 }
 
-
-    
-
-    // AI Automation: Fetch system data for quick add
-    const now = new Date();
-    const md = getMonthlyData(now.getFullYear(), now.getMonth());
-    
-    // Suggestion Badges (Auto-fill buttons)
-    $('dscrIncSugg').innerHTML = md.income > 0 ? 
-        `<span class="badge bg-g" style="cursor:pointer; padding:6px 12px; font-size:11px;" onclick="$('dscrIncome').value='${fmtN(md.income)}'; calcDSCR();">✨ Use System Income: ${fmt(md.income)}</span>` : 
-        `<span style="font-size:11px; color:var(--text3);">No system income found for this month</span>`;
-        
-    $('dscrOpexSugg').innerHTML = md.expTotal > 0 ? 
-        `<span class="badge bg-r" style="cursor:pointer; padding:6px 12px; font-size:11px;" onclick="$('dscrOpex').value='${fmtN(md.expTotal)}'; calcDSCR();">✨ Use Tracked Expenses: ${fmt(md.expTotal)}</span>` : 
-        `<span style="font-size:11px; color:var(--text3);">No tracked expenses found for this month</span>`;
-
-    setTimeout(calcDSCR, 100);
-}
-    
-
 function autoAddDSCRLoan() {
     const select = $('dscrAddExistingLoan');
+    if (!select) return;
     const val = parseFloat(select.value);
     if(val > 0) {
         addDscrLoanDOM(val);
@@ -2936,6 +2943,7 @@ function autoAddDSCRLoan() {
 
 function addDscrLoanDOM(amount = null) {
     const wrap = $('dscrExistingLoans');
+    if (!wrap) return;
     const el = document.createElement('div');
     el.className = 'fr';
     el.style.marginBottom = '8px';
@@ -2949,8 +2957,11 @@ function addDscrLoanDOM(amount = null) {
 }
 
 function calcDSCR() {
-    const inc = parseMoney($('dscrIncome').value);
-    const opex = parseMoney($('dscrOpex').value);
+    const incStr = $('dscrIncome') ? $('dscrIncome').value : '0';
+    const opexStr = $('dscrOpex') ? $('dscrOpex').value : '0';
+    
+    const inc = parseMoney(incStr);
+    const opex = parseMoney(opexStr);
     const newAmt = parseMoney($('dscrNewAmt').value);
     const newRate = parseFloat($('dscrNewRate').value)||0;
     const newDur = parseInt($('dscrNewDur').value)||0;
@@ -2965,6 +2976,7 @@ function calcDSCR() {
     const noi = inc - opex;
 
     const resEl = $('dscrResult');
+    if(!resEl) return;
     
     // Check if enough data is entered
     if(totalDebtService === 0) {
