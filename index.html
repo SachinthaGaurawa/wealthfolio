@@ -815,17 +815,26 @@ tbody td{padding:10px 13px;vertical-align:middle;}
         </div>
       </div>
 
-      <div class="page" id="page-dscr">
-        <div class="sh">
-            <div class="sh-title">DSCR Calculator - Sri Lanka Bank Eligibility</div>
-            <div class="sh-actions"><button class="btn btn-ghost btn-sm" onclick="clearDSCR()">🧹 Clear Form</button></div>
-        </div>
-        <div class="g2">
-          <div class="card">
-            <div class="card-header"><div class="card-title">Your Financial Profile</div></div>
-            <div class="fg"><label class="fl">Gross Monthly Income (LKR)</label><input class="fi money-input" id="dscrIncome" placeholder="1,125,000" oninput="calcDSCR()"></div>
-            <div class="fg"><label class="fl">Monthly Operating Expenses (LKR)</label><input class="fi money-input" id="dscrOpex" placeholder="100,000" oninput="calcDSCR()"><span class="fhint">Utilities, food, transport, etc. (excluding loan payments)</span></div>
-            
+        <div class="page" id="page-dscr">
+                <div class="sh">
+                    <div class="sh-title">DSCR Calculator - Sri Lanka Bank Eligibility</div>
+                    <div class="sh-actions"><button class="btn btn-ghost btn-sm" onclick="clearDSCR()">🧹 Clear Form</button></div>
+                </div>
+                <div class="g2">
+                  <div class="card">
+                    <div class="card-header"><div class="card-title">Your Financial Profile</div></div>
+                    <div class="fg">
+                        <label class="fl">Gross Monthly Income (LKR)</label>
+                        <input class="fi money-input" id="dscrIncome" placeholder="1,125,000" oninput="calcDSCR()">
+                        <div id="dscrIncSugg" style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap;"></div>
+                    </div>
+                    <div class="fg">
+                        <label class="fl">Monthly Operating Expenses (LKR)</label>
+                        <input class="fi money-input" id="dscrOpex" placeholder="100,000" oninput="calcDSCR()">
+                        <div id="dscrOpexSugg" style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap;"></div>
+                        <span class="fhint" style="display:block; margin-top:6px;">Utilities, food, transport, etc. (excluding loan payments)</span>
+                    </div>
+              
             <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:18px 0 8px;">Existing Loan Payments</div>
             <div class="fg">
                 <select class="fs" id="dscrAddExistingLoan" onchange="autoAddDSCRLoan()">
@@ -2802,6 +2811,7 @@ function clearDSCR() {
     $('dscrExistingLoans').innerHTML = '';
     $('dscrResult').innerHTML = '<div style="font-size:13px;color:var(--text3);">Enter loan details to calculate eligibility based on local banking parameters.</div>';
 }
+    
 
 function renderDSCR() {
     const loans = DB.get('loans');
@@ -2812,8 +2822,23 @@ function renderDSCR() {
         if(active) html += `<option value="${l.monthly}">${l.name} (${l.bank}) - ${fmt(l.monthly)}/mo</option>`;
     });
     select.innerHTML = html;
+
+    // AI Automation: Fetch system data for quick add
+    const now = new Date();
+    const md = getMonthlyData(now.getFullYear(), now.getMonth());
+    
+    // Suggestion Badges (Auto-fill buttons)
+    $('dscrIncSugg').innerHTML = md.income > 0 ? 
+        `<span class="badge bg-g" style="cursor:pointer; padding:6px 12px; font-size:11px;" onclick="$('dscrIncome').value='${fmtN(md.income)}'; calcDSCR();">✨ Use System Income: ${fmt(md.income)}</span>` : 
+        `<span style="font-size:11px; color:var(--text3);">No system income found for this month</span>`;
+        
+    $('dscrOpexSugg').innerHTML = md.expTotal > 0 ? 
+        `<span class="badge bg-r" style="cursor:pointer; padding:6px 12px; font-size:11px;" onclick="$('dscrOpex').value='${fmtN(md.expTotal)}'; calcDSCR();">✨ Use Tracked Expenses: ${fmt(md.expTotal)}</span>` : 
+        `<span style="font-size:11px; color:var(--text3);">No tracked expenses found for this month</span>`;
+
     setTimeout(calcDSCR, 100);
 }
+    
 
 function autoAddDSCRLoan() {
     const select = $('dscrAddExistingLoan');
