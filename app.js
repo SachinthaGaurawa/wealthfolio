@@ -2181,4 +2181,12 @@ function generateLuxuryPDFReport() {
             ...tableOptions
         });
         startY = doc.lastAutoTable.finalY + 18;
-    }I seem to be encountering an error. Can I try something else for you?
+    } else {
+        doc.setFont("helvetica", "italic"); doc.setFontSize(10); doc.setTextColor(...textGrey);
+        doc.text("No active debt obligations recorded.", 15, startY + 10); startY += 20;
+    }
+
+    // 3. Opex & CC
+    doc.setFont("times", "bold");
+    doc.setFontSize(16); doc.setTextColor(...brandNavy);
+    doc.I seem to be encountering an error. Can I try something else for you?
