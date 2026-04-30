@@ -21,8 +21,8 @@
 /* ================== THEME VARIABLES ================== */
 :root{
 --bg:#060a14;--bg2:#0b1120;--bg3:#0d1729;--card:#0f1729;--card2:#131d30;--card3:#1a2540;
---border:#1a2640;--border2:#223054;--accent:#f5a623;--accent2:#ffd166;--accent3:#e8931a;
---ag:rgba(245,166,35,0.2);--green:#10b981;--green2:#34d399;--gg:rgba(16,185,129,0.2);
+--border:#1a2640;--border2:#223054;--accent:#d4af37;--accent2:#f5a623;--accent3:#ffd166;
+--ag:rgba(212,175,55,0.2);--green:#10b981;--green2:#34d399;--gg:rgba(16,185,129,0.2);
 --red:#ef4444;--red2:#f87171;--rg:rgba(239,68,68,0.2);--blue:#3b82f6;--blue2:#60a5fa;
 --purple:#8b5cf6;--purple2:#a78bfa;--cyan:#06b6d4;--text:#e2e8f0;--text2:#94a3b8;--text3:#475569;
 --font:'Outfit',sans-serif;--mono:'JetBrains Mono',monospace;
@@ -50,7 +50,7 @@ button, .npb { touch-action: manipulation; }
 #splash{position:fixed;inset:0;background:radial-gradient(circle at center, var(--bg2) 0%, var(--bg) 100%);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);}
 #splash.hide{opacity:0;pointer-events:none;transform:scale(1.05);}
 .sp-logo{width:96px;height:96px;background:linear-gradient(135deg,var(--accent),var(--accent3));border-radius:24px;display:flex;align-items:center;justify-content:center;font-size:48px;font-weight:900;color:#000;box-shadow:0 0 60px var(--ag);animation:spPulse 2s ease-in-out infinite;z-index:1;}
-@keyframes spPulse{0%,100%{box-shadow:0 0 30px var(--ag),0 0 60px rgba(245,166,35,0.15);}50%{box-shadow:0 0 60px rgba(245,166,35,0.4),0 0 90px rgba(245,166,35,0.2);transform:scale(1.02);}}
+@keyframes spPulse{0%,100%{box-shadow:0 0 30px var(--ag),0 0 60px rgba(212,175,55,0.15);}50%{box-shadow:0 0 60px rgba(212,175,55,0.4),0 0 90px rgba(212,175,55,0.2);transform:scale(1.02);}}
 .sp-title-wrap {text-align:center; z-index:1;}
 .sp-title{font-size:42px;font-weight:900;background:linear-gradient(135deg,#fff,var(--text2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-1px; margin-bottom:4px;}
 .sp-sub{font-size:11px;color:var(--accent);letter-spacing:4px;text-transform:uppercase;font-weight:600;}
@@ -63,7 +63,7 @@ button, .npb { touch-action: manipulation; }
 #authScreen.show{display:flex;}
 .auth-bg{position:absolute;inset:0;overflow:hidden;}
 .auth-orb{position:absolute;border-radius:50%;filter:blur(100px);}
-.auth-orb1{width:500px;height:500px;background:rgba(245,166,35,.05);top:-200px;right:-200px;}
+.auth-orb1{width:500px;height:500px;background:rgba(212,175,55,.05);top:-200px;right:-200px;}
 .auth-orb2{width:400px;height:400px;background:rgba(59,130,246,.04);bottom:-100px;left:-150px;}
 .auth-box{background:var(--card);border:1px solid var(--border2);border-radius:28px;padding:44px 40px;width:90%;max-width:420px;box-shadow:var(--shadow);text-align:center;z-index:1;animation:authIn .5s cubic-bezier(.34,1.56,.64,1);margin:20px;}
 @keyframes authIn{from{transform:scale(.88) translateY(24px);opacity:0;}to{transform:scale(1) translateY(0);opacity:1;}}
@@ -79,7 +79,7 @@ button, .npb { touch-action: manipulation; }
 .npb{width:76px;height:76px;margin:0 auto;border-radius:50%;border:1.5px solid var(--border2);background:var(--card2);color:var(--text);font-size:24px;font-weight:600;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;user-select:none;}
 .npb-sub{font-size:7.5px;color:var(--text3);font-weight:500;letter-spacing:1px;}
 .npb:hover{background:var(--card3);border-color:var(--accent);color:var(--accent);transform:scale(1.06);}
-.npb:active{transform:scale(.93);background:rgba(245,166,35,.15);}
+.npb:active{transform:scale(.93);background:rgba(212,175,55,.15);}
 .npb.del{background:transparent;border-color:transparent;font-size:18px;color:var(--text2);}
 .npb.del:hover{color:var(--red);background:transparent;}
 .auth-link{font-size:13px;color:var(--text3);cursor:pointer;margin-top:6px;transition:color .15s;}
@@ -106,8 +106,8 @@ button, .npb { touch-action: manipulation; }
 .sb-group{font-size:9.5px;font-weight:700;color:var(--text3);letter-spacing:2.5px;text-transform:uppercase;padding:10px 10px 4px;}
 .nav-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:var(--r2);cursor:pointer;transition:all .17s;color:var(--text2);font-size:13px;font-weight:500;margin:1px 0;user-select:none;position:relative;}
 .nav-item:hover{background:rgba(255,255,255,.05);color:var(--text);}
-.nav-item.active{background:linear-gradient(135deg,rgba(245,166,35,.18),rgba(255,209,102,.07));color:var(--accent);border:1px solid rgba(245,166,35,.22);}
-[data-theme="light"] .nav-item.active{background:rgba(245,166,35,.1);}
+.nav-item.active{background:linear-gradient(135deg,rgba(212,175,55,.18),rgba(245,166,35,.07));color:var(--accent);border:1px solid rgba(212,175,55,.22);}
+[data-theme="light"] .nav-item.active{background:rgba(212,175,55,.1);}
 .nav-icon{font-size:14px;width:20px;text-align:center;flex-shrink:0;}
 .nb{margin-left:auto;background:var(--red);color:#fff;font-size:9px;font-weight:700;padding:1px 6px;border-radius:10px;min-width:17px;text-align:center;animation:nbPulse 2s infinite;}
 @keyframes nbPulse{0%,100%{opacity:1;}50%{opacity:.6;}}
@@ -211,7 +211,7 @@ button, .npb { touch-action: manipulation; }
     border-radius: 18px;
     padding: 24px;
     margin-bottom: 20px;
-    box-shadow: 0 0 15px rgba(245,166,35,0.05);
+    box-shadow: 0 0 15px rgba(212,175,55,0.05);
     position: relative;
     width: 100%;
 }
@@ -244,7 +244,7 @@ button, .npb { touch-action: manipulation; }
 }
 .gf-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(245,166,35,0.3);
+    box-shadow: 0 4px 15px rgba(212,175,55,0.3);
 }
 
 /* ================== GRID ================== */
@@ -275,7 +275,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
 .badge{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:20px;font-size:10.5px;font-weight:600;white-space:nowrap;}
 .bg-g{background:rgba(16,185,129,.13);color:var(--green);}
 .bg-r{background:var(--rg);color:var(--red);}
-.bg-a{background:rgba(245,166,35,.13);color:var(--accent);}
+.bg-a{background:rgba(212,175,55,.13);color:var(--accent);}
 .bg-b{background:rgba(59,130,246,.13);color:var(--blue);}
 .bg-gr{background:rgba(148,163,184,.1);color:var(--text2);}
 .bg-p{background:rgba(139,92,246,.13);color:var(--purple);}
@@ -326,7 +326,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
 /* ================== COUNTDOWN ================== */
 .cd{display:inline-flex;align-items:center;gap:3px;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:700;font-family:var(--mono);}
 .cd-safe{background:var(--gg);color:var(--green);}
-.cd-warn{background:rgba(245,166,35,.13);color:var(--accent);}
+.cd-warn{background:rgba(212,175,55,.13);color:var(--accent);}
 .cd-danger{background:var(--rg);color:var(--red);animation:blink 1.4s infinite;}
 .cd-done{background:rgba(148,163,184,.1);color:var(--text3);}
 @keyframes blink{0%,100%{opacity:1;}50%{opacity:.55;}}
@@ -334,13 +334,13 @@ tbody td{padding:10px 13px;vertical-align:middle;}
 /* ================== CELEBRATION ================== */
 #celeb{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);}
 #celeb.show{display:flex;}
-.celeb-box{background:var(--card);border:2px solid rgba(245,166,35,.4);border-radius:28px;padding:44px 56px;text-align:center;animation:celebPop .6s cubic-bezier(.34,1.56,.64,1);box-shadow:0 0 80px rgba(245,166,35,.2),var(--shadow);position:relative;max-width:460px;width:100%;margin:20px;}
+.celeb-box{background:var(--card);border:2px solid rgba(212,175,55,.4);border-radius:28px;padding:44px 56px;text-align:center;animation:celebPop .6s cubic-bezier(.34,1.56,.64,1);box-shadow:0 0 80px rgba(212,175,55,.2),var(--shadow);position:relative;max-width:460px;width:100%;margin:20px;}
 @keyframes celebPop{from{transform:scale(.3);opacity:0;}to{transform:scale(1);opacity:1;}}
 .celeb-x{position:absolute;top:16px;right:16px;background:rgba(255,255,255,.08);border:1px solid var(--border);border-radius:8px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text2);font-size:14px;transition:all .17s;}
 .celeb-x:hover{background:var(--rg);color:var(--red);}
 .celeb-emoji{font-size:68px;animation:eBounce .6s infinite alternate;}
 @keyframes eBounce{to{transform:translateY(-16px);}}
-.celeb-title{font-size:34px;font-weight:900;background:linear-gradient(135deg,#ffd166,#f5a623,#ef476f);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin:10px 0 4px;letter-spacing:-1px;}
+.celeb-title{font-size:34px;font-weight:900;background:linear-gradient(135deg,#ffd166,#d4af37,#ef476f);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin:10px 0 4px;letter-spacing:-1px;}
 .celeb-sub{font-size:14px;color:var(--text2);}
 .celeb-amt{font-size:22px;font-weight:800;font-family:var(--mono);color:var(--green);margin-top:10px;}
 .conf-piece{position:fixed;pointer-events:none;z-index:1001;}
@@ -364,12 +364,12 @@ tbody td{padding:10px 13px;vertical-align:middle;}
 /* ================== SORT BAR ================== */
 .sort-bar{display:flex;gap:5px;align-items:center;}
 .sb-btn{padding:3px 9px;background:var(--card2);border:1px solid var(--border);border-radius:6px;font-size:11px;font-weight:600;color:var(--text3);cursor:pointer;transition:all .17s;}
-.sb-btn:hover,.sb-btn.active{background:rgba(245,166,35,.1);color:var(--accent);border-color:rgba(245,166,35,.3);}
+.sb-btn:hover,.sb-btn.active{background:rgba(212,175,55,.1);color:var(--accent);border-color:rgba(212,175,55,.3);}
 .sb-lbl{font-size:11px;color:var(--text3);}
 
 /* ================== MONTH HERO ================== */
 .mhero{background:linear-gradient(135deg,var(--bg3),#0d1d3c);border:1px solid var(--border2);border-radius:var(--r);padding:20px 24px;margin-bottom:18px;position:relative;overflow:hidden;}
-.mhero::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 80% 50%,rgba(245,166,35,.04),transparent 60%);}
+.mhero::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 80% 50%,rgba(212,175,55,.04),transparent 60%);}
 .mh-lbl{font-size:11px;font-weight:700;color:var(--accent);letter-spacing:2px;text-transform:uppercase;margin-bottom:5px;}
 .mh-bal{font-size:38px;font-weight:900;font-family:var(--mono);letter-spacing:-2px;line-height:1;}
 .mh-pos{color:var(--green);}
@@ -395,7 +395,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
 
 /* ================== CARDS & FLOW ================== */
 .tgt-card,.loan-card,.inc-card,.chq-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:12px;transition:border-color .2s;}
-.tgt-card:hover{border-color:rgba(245,166,35,.25);}
+.tgt-card:hover{border-color:rgba(212,175,55,.25);}
 .loan-card:hover{border-color:var(--border2);}
 .inc-card:hover{border-color:rgba(16,185,129,.3);}
 .chq-card:hover{border-color:rgba(6,182,212,.3);}
@@ -601,7 +601,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
     <div class="sb-footer">
       <div class="sb-user">👤 Sachintha Gaurawa</div>
       <div class="sb-date" id="sbDate">-</div>
-      <div class="sb-ver">WealthFlow v5.0 · Elite</div>
+      <div class="sb-ver">WealthFlow v5.1 · Elite</div>
     </div>
   </aside>
 
@@ -740,7 +740,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
             <button class="btn btn-primary btn-sm" onclick="openModal('mdCCOT')">+ Add Payment</button>
           </div>
         </div>
-        <div style="background:rgba(245,166,35,.07);border:1px solid rgba(245,166,35,.2);border-radius:var(--r2);padding:11px 15px;margin-bottom:16px;font-size:13px;color:var(--text2);">
+        <div style="background:rgba(212,175,55,.07);border:1px solid rgba(212,175,55,.2);border-radius:var(--r2);padding:11px 15px;margin-bottom:16px;font-size:13px;color:var(--text2);">
           💡 <strong style="color:var(--accent);">50-Day Rule:</strong> One-time CC purchases must be repaid within 50 days. <span style="color:var(--red);">Final 10 days shown in red.</span>
         </div>
         <div class="tbl-wrap"><table>
@@ -821,27 +821,25 @@ tbody td{padding:10px 13px;vertical-align:middle;}
         </div>
         <div class="g2">
           <div class="card">
-            <div class="card-header">
-                <div class="card-title">Income Profile</div>
-                <button class="btn btn-secondary btn-sm" onclick="fetchAverageIncome()">🔄 Fetch 1-Year Average</button>
+            <div class="card-header"><div class="card-title">Your Financial Profile</div></div>
+            
+            <div class="fg">
+                <label class="fl">Gross Monthly Income (LKR)</label>
+                <div style="display:flex; gap:8px; margin-bottom:8px;">
+                    <button class="btn btn-secondary btn-sm" style="white-space:nowrap;" onclick="loadSystemIncomeAvg()">🔄 System 1-Year Avg</button>
+                    <input class="fi money-input" id="dscrSysIncome" placeholder="Calculated Auto" readonly style="background:var(--bg3); opacity:0.8;" data-val="0">
+                </div>
+                <input class="fi money-input" id="dscrCustIncome" placeholder="+ Additional / Custom Income" oninput="calcDSCR()">
             </div>
             
-            <div class="fr">
-                <div class="fg"><label class="fl">System Extracted (LKR)</label><input class="fi money-input" id="dscrIncSys" placeholder="0" oninput="calcDSCR()"></div>
-                <div class="fg"><label class="fl">Custom / Business (LKR)</label><input class="fi money-input" id="dscrIncCust" placeholder="0" oninput="calcDSCR()"></div>
+            <div class="fg">
+                <label class="fl">Monthly Operating Expenses (LKR)</label>
+                <div style="display:flex; gap:8px; margin-bottom:8px;">
+                    <button class="btn btn-secondary btn-sm" style="white-space:nowrap;" onclick="loadSystemOpexAvg()">🔄 System 1-Year Avg</button>
+                    <input class="fi money-input" id="dscrSysOpex" placeholder="Calculated Auto" readonly style="background:var(--bg3); opacity:0.8;" data-val="0">
+                </div>
+                <input class="fi money-input" id="dscrCustOpex" placeholder="+ Additional / Custom Opex" oninput="calcDSCR()">
             </div>
-            <div class="fg"><label class="fl">Total Gross Monthly Income (LKR)</label><input class="fi money-input" id="dscrIncome" readonly style="font-weight:bold; color:var(--green);" placeholder="0"></div>
-            
-            <div class="card-header" style="margin-top:20px;">
-                <div class="card-title">Operating Expenses</div>
-                <button class="btn btn-secondary btn-sm" onclick="fetchAverageExpenses()">🔄 Fetch 1-Year Average</button>
-            </div>
-            
-            <div class="fr">
-                <div class="fg"><label class="fl">System Extracted (LKR)</label><input class="fi money-input" id="dscrExpSys" placeholder="0" oninput="calcDSCR()"></div>
-                <div class="fg"><label class="fl">Custom / Business (LKR)</label><input class="fi money-input" id="dscrExpCust" placeholder="0" oninput="calcDSCR()"></div>
-            </div>
-            <div class="fg"><label class="fl">Total Monthly Operating Expenses (LKR)</label><input class="fi money-input" id="dscrOpex" readonly style="font-weight:bold; color:var(--red);" placeholder="0"></div>
             
             <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:18px 0 8px;">Existing Loan Payments</div>
             <div class="fg">
@@ -1093,9 +1091,7 @@ tbody td{padding:10px 13px;vertical-align:middle;}
 
 <script>
 // =====================================================
-// WEALTHFLOW v5.0 - Infinity Cloud Financial System
-// Owner: Sachintha Gaurawa
-// Parent: AVANTIO VENTURES (PRIVATE) LIMITED
+// WEALTHFLOW v5.1 - Infinity Cloud Financial System
 // =====================================================
 
 const firebaseConfig = {
@@ -1256,7 +1252,7 @@ async function generateAIInsights() {
         const exp = DB.get('expenses').reduce((s, x) => s + x.amount, 0);
         const balData = DB.getObj('balance', {total:0});
         
-        const prompt = `Act as an expert Sri Lankan financial advisor for Sachintha Gaurawa. 
+        const prompt = `Act as an expert Sri Lankan financial advisor. 
         Context: My current estimated monthly income from investments is LKR ${inc}. 
         My tracked monthly expenses are LKR ${exp}. 
         My base balance tracked is LKR ${balData.total}. 
@@ -1292,6 +1288,7 @@ function initDriveAuth() {
         callback: (tokenResponse) => {
             if (tokenResponse && tokenResponse.access_token) {
                 gapiToken = tokenResponse.access_token;
+                // Cache the token securely for 1 hour
                 const expiry = Date.now() + ((tokenResponse.expires_in - 10) * 1000);
                 localStorage.setItem('wf_drive_token', JSON.stringify({ token: gapiToken, expiry }));
                 
@@ -1325,6 +1322,7 @@ async function requestDrivePermission(action) {
         if (action === 'restore') fetchDriveBackups();
         return;
     }
+    
     if (tokenClient) {
         tokenClient.requestAccessToken();
     } else {
@@ -2000,7 +1998,7 @@ function renderIncome() {
                 <div class="ld"><div class="ld-l">INVESTED</div><div class="ld-v" style="color:var(--accent);">${fmt(source.amount)}</div></div>
                 <div class="ld"><div class="ld-l">ANNUAL RATE</div><div class="ld-v">${source.rate}%</div></div>
                 <div class="ld"><div class="ld-l">STATUS</div><div class="ld-v">${active?'<span class="badge bg-g">● Active</span>':'<span class="badge bg-gr">Ended</span>'}</div></div>
-                <div class="ld"><div class="ld-l">PAYMENT START</div><div class="ld-v"><span style="color:var(--accent);font-weight:700;background:rgba(245,166,35,0.1);padding:3px 8px;border-radius:4px;">📅 ${source.day}</span></div></div>
+                <div class="ld"><div class="ld-l">PAYMENT START</div><div class="ld-v"><span style="color:var(--accent);font-weight:700;background:rgba(212,175,55,0.1);padding:3px 8px;border-radius:4px;">📅 ${source.day}</span></div></div>
                 ${dLeft!==null?`<div class="ld"><div class="ld-l">DAYS LEFT</div><div class="ld-v" style="${dLeft<60?'color:var(--red)':''}">${dLeft>0?dLeft+' days':'Ended'}</div></div>`:''}
             </div>
             ${source.notes?`<div style="margin-top:10px;font-size:12px;color:var(--text3);padding:7px 11px;background:var(--bg2);border-radius:6px;">${source.notes}</div>`:''}
@@ -2497,7 +2495,7 @@ function showCelebration(target) {
     $('celebSub').textContent = `You have achieved: "${target.name}"! 🏆`;
     $('celebAmt').textContent = fmt(target.amount);
     $('celeb').classList.add('show');
-    const colors=['#f5a623','#ffd166','#ef476f','#06d6a0','#3b82f6','#8b5cf6'];
+    const colors=['#d4af37','#f5a623','#ffd166','#10b981','#3b82f6'];
     for(let i=0;i<80;i++){
         const c=document.createElement('div');
         c.className='conf-piece';
@@ -2682,26 +2680,12 @@ function renderDash() {
         netData.push(md.balance);
         yrInc+=md.income; yrExp+=md.totalExp;
     }
-    
-    // Financial Health Score Calculation
-    const savingsRate = yrInc > 0 ? ((yrInc - yrExp) / yrInc) * 100 : 0;
-    let healthScore = 50; 
-    if(savingsRate > 30) healthScore += 30;
-    else if(savingsRate > 10) healthScore += 15;
-    if(yrExp < yrInc) healthScore += 20;
-    healthScore = Math.min(100, Math.max(0, healthScore));
-
-    let healthColor = 'var(--red)';
-    let healthText = 'Critical';
-    if(healthScore > 80) { healthColor = 'var(--green)'; healthText = 'Excellent'; }
-    else if(healthScore > 50) { healthColor = 'var(--blue)'; healthText = 'Stable'; }
-    else if(healthScore > 30) { healthColor = 'var(--accent)'; healthText = 'Caution'; }
-
     $('dashStats').innerHTML = `
         <div class="stat-card sc-green"><div class="stat-label">Year Income</div><div class="stat-val">${fmtS(yrInc)}</div></div>
         <div class="stat-card sc-red"><div class="stat-label">Year Expenses</div><div class="stat-val">${fmtS(yrExp)}</div></div>
         <div class="stat-card sc-gold"><div class="stat-label">Net Savings</div><div class="stat-val">${fmtS(yrInc-yrExp)}</div></div>
-        <div class="stat-card" style="border-top:3px solid ${healthColor}"><div class="stat-label">Health Score</div><div class="stat-val" style="color:${healthColor}">${healthScore}%</div><div class="stat-meta">${healthText}</div></div>
+        <div class="stat-card sc-blue"><div class="stat-label">Avg Monthly Exp</div><div class="stat-val">${fmtS(yrExp/12)}</div></div>
+        <div class="stat-card sc-cyan"><div class="stat-label">Savings Rate</div><div class="stat-val">${yrInc>0?Math.round((yrInc-yrExp)/yrInc*100):0}%</div></div>
     `;
 
     const ctxC = $('dashChart');
@@ -2729,7 +2713,7 @@ function renderDash() {
             type: 'doughnut',
             data: {
                 labels: Object.keys(catMap),
-                datasets: [{data: Object.values(catMap), backgroundColor:['#f5a623','#10b981','#ef4444','#3b82f6','#8b5cf6','#06b6d4','#94a3b8','#f87171']}]
+                datasets: [{data: Object.values(catMap), backgroundColor:['#d4af37','#10b981','#ef4444','#3b82f6','#8b5cf6','#06b6d4','#94a3b8','#f87171']}]
             },
             options: { maintainAspectRatio:false, plugins:{legend:{position:'right',labels:{color:document.documentElement.getAttribute('data-theme')==='dark'?'#e2e8f0':'#1e293b',font:{size:10}}}} }
         });
@@ -2815,48 +2799,50 @@ function renderRecentActivity() {
 }
 
 // ==================== DSCR CALCULATOR ====================
-function fetchAverageIncome() {
-    let totalPastYearIncome = 0;
+
+function get12MonthAverages() {
+    let totalInc = 0, totalOpex = 0, monthsWithData = 0;
     const now = new Date();
-    const oneYearAgo = new Date();
-    oneYearAgo.setFullYear(now.getFullYear() - 1);
     
-    for (let m = 0; m < 12; m++) {
-        let testDate = new Date(now.getFullYear(), now.getMonth() - m, 1);
-        const md = getMonthlyData(testDate.getFullYear(), testDate.getMonth());
-        totalPastYearIncome += md.income;
+    for(let i=0; i<12; i++) {
+        let y = now.getFullYear();
+        let m = now.getMonth() - i;
+        if (m < 0) { m += 12; y -= 1; }
+        let md = getMonthlyData(y, m);
+        if (md.income > 0 || md.totalExp > 0) {
+            totalInc += md.income;
+            totalOpex += md.totalExp;
+            monthsWithData++;
+        }
     }
-    
-    const monthlyAverage = totalPastYearIncome / 12;
-    $('dscrIncSys').value = fmtN(monthlyAverage);
-    calcDSCR();
-    notify('Fetched 1-Year Average Income successfully', 'success');
+    if (monthsWithData === 0) monthsWithData = 1;
+    return { avgInc: totalInc / monthsWithData, avgOpex: totalOpex / monthsWithData };
 }
 
-function fetchAverageExpenses() {
-    let totalPastYearExpenses = 0;
-    const now = new Date();
-    
-    for (let m = 0; m < 12; m++) {
-        let testDate = new Date(now.getFullYear(), now.getMonth() - m, 1);
-        const md = getMonthlyData(testDate.getFullYear(), testDate.getMonth());
-        totalPastYearExpenses += md.totalExp;
-    }
-    
-    const monthlyAverage = totalPastYearExpenses / 12;
-    $('dscrExpSys').value = fmtN(monthlyAverage);
+function loadSystemIncomeAvg() {
+    const avgs = get12MonthAverages();
+    const input = $('dscrSysIncome');
+    input.value = fmtN(avgs.avgInc);
+    input.dataset.val = avgs.avgInc;
     calcDSCR();
-    notify('Fetched 1-Year Average Expenses successfully', 'success');
+}
+
+function loadSystemOpexAvg() {
+    const avgs = get12MonthAverages();
+    const input = $('dscrSysOpex');
+    input.value = fmtN(avgs.avgOpex);
+    input.dataset.val = avgs.avgOpex;
+    calcDSCR();
 }
 
 function clearDSCR() {
-    $('dscrIncSys').value = '';
-    $('dscrIncCust').value = '';
-    $('dscrIncome').value = '';
+    $('dscrSysIncome').value = '';
+    $('dscrSysIncome').dataset.val = '0';
+    $('dscrCustIncome').value = '';
     
-    $('dscrExpSys').value = '';
-    $('dscrExpCust').value = '';
-    $('dscrOpex').value = '';
+    $('dscrSysOpex').value = '';
+    $('dscrSysOpex').dataset.val = '0';
+    $('dscrCustOpex').value = '';
     
     $('dscrNewAmt').value = '';
     $('dscrNewRate').value = '';
@@ -2865,7 +2851,7 @@ function clearDSCR() {
     $('dscrPurpose').value = '';
     $('dscrAddExistingLoan').value = '';
     $('dscrExistingLoans').innerHTML = '';
-    $('dscrResult').innerHTML = '<div style="font-size:13px;color:var(--text3);">Enter loan details to calculate eligibility based on local banking parameters.</div>';
+    $('dscrResult').innerHTML = '<div style="font-size:13px;color:var(--text3);">Fill in the form to calculate eligibility based on local banking parameters.</div>';
 }
 
 function renderDSCR() {
@@ -2905,15 +2891,13 @@ function addDscrLoanDOM(amount = null) {
 }
 
 function calcDSCR() {
-    const sysInc = parseMoney($('dscrIncSys').value) || 0;
-    const custInc = parseMoney($('dscrIncCust').value) || 0;
+    const sysInc = parseFloat($('dscrSysIncome').dataset.val) || 0;
+    const custInc = parseMoney($('dscrCustIncome').value);
     const inc = sysInc + custInc;
-    $('dscrIncome').value = fmtN(inc);
 
-    const sysExp = parseMoney($('dscrExpSys').value) || 0;
-    const custExp = parseMoney($('dscrExpCust').value) || 0;
-    const opex = sysExp + custExp;
-    $('dscrOpex').value = fmtN(opex);
+    const sysOpex = parseFloat($('dscrSysOpex').dataset.val) || 0;
+    const custOpex = parseMoney($('dscrCustOpex').value);
+    const opex = sysOpex + custOpex;
 
     const newAmt = parseMoney($('dscrNewAmt').value);
     const newRate = parseFloat($('dscrNewRate').value)||0;
@@ -2931,7 +2915,7 @@ function calcDSCR() {
     const resEl = $('dscrResult');
     
     if(totalDebtService === 0) {
-        resEl.innerHTML = '<div style="font-size:13px;color:var(--text3);">Enter full details to calculate your eligibility based on Sri Lankan banking parameters.</div>';
+        resEl.innerHTML = '<div style="font-size:13px;color:var(--text3);">Enter loan details to calculate your eligibility based on Sri Lankan banking parameters.</div>';
         return;
     }
 
@@ -2939,7 +2923,7 @@ function calcDSCR() {
     if (noi > 0) {
         dscr = noi / totalDebtService;
     } else {
-        dscr = 0;
+        dscr = 0; 
     }
 
     let status='', color='', advicePool=[];
@@ -2954,7 +2938,7 @@ function calcDSCR() {
     } else if(dscr >= 1.25) { 
         status='GOOD'; color='var(--blue)'; 
         advicePool = [
-            "Likely to be approved. This meets the standard 1.2x to 1.25x requirement for most Sri Lankan commercial banks.",
+            "Likely to be approved. This meets the standard 1.2x - 1.25x requirement for most Sri Lankan commercial banks.",
             "Solid numbers. To negotiate a better interest rate, showcase your consistent monthly savings and propose a slightly higher down payment if possible.",
             "Good standing. Ensure all your CRIB records are clear, as banks will rely heavily on your repayment history at this tier."
         ];
@@ -2963,12 +2947,12 @@ function calcDSCR() {
         advicePool = [
             "You are on the edge. Banks might ask for strong guarantors. A smart move right now would be to eliminate high-interest CC debt first to free up your net operating income.",
             "Borderline. You cover the payments, but it leaves little room for emergencies. Consider extending the loan tenure by a few years to reduce the EMI burden.",
-            "Caution: You will likely need solid collateral (like property) to secure this. Try increasing your down payment by 10% to 15%."
+            "Caution: You will likely need solid collateral (like property) to secure this. Try increasing your down payment by 10-15%."
         ];
     } else { 
         status='REJECTED'; color='var(--red)'; 
         advicePool = [
-            "Do not let this discourage you. Consider extending the loan tenure to reduce monthly EMI, or focus on building a larger down payment first.",
+            "Don't let this discourage you! Consider extending the loan tenure to reduce monthly EMI, or focus on building a larger down payment first.",
             "High risk of rejection. Your combined expenses and proposed EMI exceed your net operating income. Focus on eliminating existing smaller loans before applying.",
             "Cannot afford under current structure. A joint-applicant (like your spouse) could immediately push this into the 'Approved' zone by combining incomes."
         ];
@@ -2998,6 +2982,7 @@ function calcDSCR() {
         <div style="font-size:42px;font-weight:900;font-family:var(--mono);color:${color};margin-top:10px;">${dscr.toFixed(2)}x</div>
         <div class="dscr-status" style="background:${color}22;color:${color};">${status}</div>
         <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:16px;">
+           <div class="ld"><div class="ld-l">TOTAL INCOME</div><div class="ld-v" style="color:var(--green);">${fmtS(inc)}</div></div>
            <div class="ld"><div class="ld-l">NET OP INCOME</div><div class="ld-v">${fmtS(noi)}</div></div>
            <div class="ld"><div class="ld-l">TOTAL DEBT</div><div class="ld-v">${fmtS(totalDebtService)}</div></div>
            <div class="ld"><div class="ld-l">NEW EMI</div><div class="ld-v" style="color:var(--red);">${fmtS(newEMI)}</div></div>
