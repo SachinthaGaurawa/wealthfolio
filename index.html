@@ -2485,7 +2485,10 @@ function editIncome(id) {
     $('i_amount').value=fmtN(s.amount); $('i_rate').value=s.rate;
     $('i_start').value=s.start; $('i_end').value=s.end||'';
     $('i_freq').value=s.freq; $('i_day').value=s.day;
-    $('i_override').value=s.monthly||''; $('i_notes').value=s.notes||'';
+    // Only pre-fill override if user had manually set it (check if it differs from auto-calc)
+    const autoCalc = s.freq==='monthly' ? s.amount*s.rate/100/12 : s.freq==='annual' ? s.amount*s.rate/100 : s.amount*s.rate/100/4;
+    $('i_override').value = (Math.abs(s.monthly - autoCalc) > 0.01) ? fmtN(s.monthly) : '';
+    $('i_notes').value=s.notes||'';
     calcIncomeM(); openModal('mdIncome');
 }
 function deleteIncome(id) {
@@ -2554,9 +2557,12 @@ function editLoan(id) {
     const l=DB.get('loans').find(x=>x.id===id); if(!l) return;
     editMode=id; $('mdLoanTitle').textContent='Edit Loan';
     $('l_name').value=l.name; $('l_bank').value=l.bank; $('l_amount').value=fmtN(l.amount);
-    $('l_rate').value=l.rate; $('l_dur').value=l.duration; $('l_monthly').value=fmtN(l.monthly);
+    $('l_rate').value=l.rate; $('l_dur').value=l.duration;
+    // Only pre-fill override if user had manually overridden (check vs auto-calc)
+    const autoEMI = calcEMI(l.amount, l.rate, l.duration);
+    $('l_monthly').value = (Math.abs(l.monthly - Math.round(autoEMI)) > 1) ? fmtN(l.monthly) : '';
     $('l_start').value=l.start; $('l_purpose').value=l.purpose||''; $('l_notes').value=l.notes||'';
-    openModal('mdLoan');
+    calcLoanM(); openModal('mdLoan');
 }
 function deleteLoan(id) {
     showConfirm('🗑️','Delete Loan?','Monthly payments will no longer be tracked.','btn-danger','🗑️ Delete',()=>{
@@ -2665,8 +2671,11 @@ function editCCI(id) {
     editMode=id; $('mdCCITitle').textContent='Edit Installment';
     $('c_product').value=item.product; $('c_buyer').value=item.buyer; $('c_bank').value=item.bank;
     $('c_total').value=fmtN(item.total); $('c_rate').value=item.rate; $('c_dur').value=item.duration;
-    $('c_monthly').value=fmtN(item.monthly); $('c_date').value=item.date; $('c_notes').value=item.notes||'';
-    openModal('mdCCI');
+    // Only pre-fill override if user had manually overridden
+    const autoEMI = calcEMI(item.total, item.rate, item.duration);
+    $('c_monthly').value = (Math.abs(item.monthly - Math.round(autoEMI)) > 1) ? fmtN(item.monthly) : '';
+    $('c_date').value=item.date; $('c_notes').value=item.notes||'';
+    calcCCIM(); openModal('mdCCI');
 }
 function deleteCCI(id) {
     showConfirm('🗑️','Delete Installment?','','btn-danger','🗑️ Delete',()=>{
@@ -4011,30 +4020,46 @@ async function executeFactoryReset() {
         localStorage.clear();
         Object.keys(appData).forEach(k => localStorage.setItem('wf2_'+k, JSON.stringify(appData[k])));
 
-        // Countdown: 3...2...1...Rebooting
+        // Countdown: Show one number at a time with animation
         const countText = $('fr_countdown');
-        let count = 3;
-        countText.textContent = '3...';
-        countText.style.fontSize = '22px';
+        countText.style.fontSize = '48px';
+        countText.style.fontWeight = '800';
+        countText.style.fontFamily = 'var(--mono)';
         countText.style.color = 'var(--red)';
+        countText.style.transition = 'all 0.3s ease';
+        countText.textContent = '3';
+        countText.style.opacity = '1';
+        countText.style.transform = 'scale(1)';
         
         if(window.frInterval) clearInterval(window.frInterval);
+        let count = 3;
         
         window.frInterval = setInterval(() => {
             count--;
-            if (count === 2) {
-                countText.textContent = '3...2...';
-            } else if (count === 1) {
-                countText.textContent = '3...2...1...';
-            } else if (count <= 0) {
-                clearInterval(window.frInterval);
-                countText.textContent = '3...2...1...System Rebooting! 🔄';
-                countText.style.color = 'var(--green)';
-                // Force reload after a tiny delay for the user to see the final message
-                setTimeout(() => {
-                    window.location.href = window.location.href; // Hard reload
-                }, 500);
-            }
+            // Fade out
+            countText.style.opacity = '0';
+            countText.style.transform = 'scale(0.5)';
+            
+            setTimeout(() => {
+                if (count > 0) {
+                    countText.textContent = String(count);
+                    countText.style.color = count === 1 ? '#ef4444' : 'var(--red)';
+                } else {
+                    countText.textContent = 'System Rebooting...';
+                    countText.style.fontSize = '18px';
+                    countText.style.color = 'var(--green)';
+                }
+                // Fade in
+                countText.style.opacity = '1';
+                countText.style.transform = 'scale(1)';
+                
+                if (count <= 0) {
+                    clearInterval(window.frInterval);
+                    setTimeout(() => {
+                        window.location.href = window.location.href;
+                    }, 800);
+                }
+            }, 200);
         }, 1000);
 
     } catch(err) {
