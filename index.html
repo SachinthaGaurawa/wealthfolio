@@ -1117,12 +1117,13 @@ tbody td{padding:10px 13px;vertical-align:middle;}
 </div></div>
 
 <div class="mo" id="mdChangePin"><div class="md md-sm">
-  <div class="md-hdr"><div class="md-title">Change PIN</div><button class="md-x" onclick="closeModal('mdChangePin')">✕</button></div>
-  <div class="fg"><label class="fl">Current PIN *</label><input class="fi auth-numpad-only" id="cp_current" type="password" inputmode="numeric" maxlength="6" placeholder="••••••" style="letter-spacing: 4px; font-family:var(--mono); text-align:center; font-size:24px;"></div>
-  <div class="fg"><label class="fl">New PIN *</label><input class="fi auth-numpad-only" id="cp_new" type="password" inputmode="numeric" maxlength="6" placeholder="••••••" style="letter-spacing: 4px; font-family:var(--mono); text-align:center; font-size:24px;"></div>
-  <div class="fg"><label class="fl">Confirm New PIN *</label><input class="fi auth-numpad-only" id="cp_confirm" type="password" inputmode="numeric" maxlength="6" placeholder="••••••" style="letter-spacing: 4px; font-family:var(--mono); text-align:center; font-size:24px;"></div>
+  <div class="md-hdr"><div class="md-title">🔐 Change Master PIN</div><button class="md-x" onclick="closePinModal()">✕</button></div>
+  <p style="font-size:12px;color:var(--text2);margin-bottom:18px;line-height:1.5;">Your PIN is synced across all devices. Changing it will <b style="color:var(--accent);">sign out all other active sessions</b> for security.</p>
+  <div class="fg"><label class="fl">Current PIN *</label><input class="fi auth-numpad-only" id="cp_current" type="password" inputmode="numeric" maxlength="6" placeholder="Enter current 6-digit PIN" style="letter-spacing: 6px; font-family:var(--mono); text-align:center; font-size:22px; padding:14px;"></div>
+  <div class="fg"><label class="fl">New PIN *</label><input class="fi auth-numpad-only" id="cp_new" type="password" inputmode="numeric" maxlength="6" placeholder="Enter new 6-digit PIN" style="letter-spacing: 6px; font-family:var(--mono); text-align:center; font-size:22px; padding:14px;"></div>
+  <div class="fg"><label class="fl">Confirm New PIN *</label><input class="fi auth-numpad-only" id="cp_confirm" type="password" inputmode="numeric" maxlength="6" placeholder="Re-enter new PIN" style="letter-spacing: 6px; font-family:var(--mono); text-align:center; font-size:22px; padding:14px;"></div>
   <div class="auth-err" id="cp_err"></div>
-  <div class="md-ftr"><button class="btn btn-ghost" onclick="closeModal('mdChangePin')">Cancel</button><button class="btn btn-primary" onclick="changePin()">🔐 Change PIN</button></div>
+  <div class="md-ftr"><button class="btn btn-ghost" onclick="closePinModal()">Cancel</button><button class="btn btn-primary" onclick="changePin()">🔐 Change PIN</button></div>
 </div></div>
 
 <input type="file" id="importFile" accept=".json" style="display:none;" onchange="handleImportFile(event)">
@@ -2359,15 +2360,86 @@ function refreshApp(btn) {
     }
 }
 
+// ==================== HAPTIC FEEDBACK ENGINE ====================
+// Uses multiple strategies: navigator.vibrate (Android/Chrome), AudioContext (iOS/Safari), CSS animations
+let _hapticCtx = null;
+function _getHapticCtx() {
+    if (_hapticCtx) return _hapticCtx;
+    try {
+        _hapticCtx = new (window.AudioContext || window.webkitAudioContext)();
+    } catch(e) {}
+    return _hapticCtx;
+}
+
+function _audioHaptic(freq, duration, gain = 0.3) {
+    const ctx = _getHapticCtx();
+    if (!ctx) return;
+    try {
+        if (ctx.state === 'suspended') ctx.resume();
+        const osc = ctx.createOscillator();
+        const gainNode = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.value = freq;
+        gainNode.gain.setValueAtTime(gain, ctx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration/1000);
+        osc.connect(gainNode);
+        gainNode.connect(ctx.destination);
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + duration/1000);
+    } catch(e) {}
+}
+
 function triggerHaptic(type = 'light') {
-    if (!DB.getObj('settings', {haptics: true}).haptics || !navigator.vibrate) return;
+    const settings = DB.getObj('settings', {haptics: true});
+    if (!settings.haptics) return;
+    
+    // Strategy 1: Native vibration API (Android, Chrome)
+    const hasVibrate = 'vibrate' in navigator;
+    
     try {
         switch (type) {
-            case 'light': navigator.vibrate(10); break;
-            case 'medium': navigator.vibrate(30); break;
-            case 'heavy': navigator.vibrate(50); break;
-            case 'success': navigator.vibrate([15, 30, 15]); break;
-            case 'error': navigator.vibrate([50, 50, 50]); break;
+            case 'light':
+                if (hasVibrate) navigator.vibrate(8);
+                _audioHaptic(200, 20, 0.1);
+                break;
+            case 'medium':
+                if (hasVibrate) navigator.vibrate(25);
+                _audioHaptic(150, 40, 0.15);
+                break;
+            case 'heavy':
+                if (hasVibrate) navigator.vibrate(50);
+                _audioHaptic(100, 60, 0.2);
+                break;
+            case 'success':
+                if (hasVibrate) navigator.vibrate([15, 50, 15]);
+                _audioHaptic(440, 80, 0.12);
+                setTimeout(() => _audioHaptic(660, 100, 0.15), 100);
+                break;
+            case 'error':
+                if (hasVibrate) navigator.vibrate([40, 30, 40, 30, 40]);
+                _audioHaptic(200, 100, 0.15);
+                setTimeout(() => _audioHaptic(150, 120, 0.18), 120);
+                break;
+            case 'warning':
+            case 'warn':
+                if (hasVibrate) navigator.vibrate([30, 50, 30]);
+                _audioHaptic(300, 80, 0.12);
+                break;
+            case 'keypress':
+                if (hasVibrate) navigator.vibrate(5);
+                _audioHaptic(800, 10, 0.05);
+                break;
+            case 'toggle':
+                if (hasVibrate) navigator.vibrate(12);
+                _audioHaptic(500, 30, 0.08);
+                break;
+            case 'delete':
+                if (hasVibrate) navigator.vibrate([20, 20, 30]);
+                _audioHaptic(120, 80, 0.15);
+                break;
+            default:
+                if (hasVibrate) navigator.vibrate(10);
+                _audioHaptic(250, 25, 0.1);
         }
     } catch (e) {}
 }
@@ -2385,8 +2457,22 @@ function notify(msg, type='success') {
 
 // ==================== MODALS ====================
 let editMode = null;
-function openModal(id) { $(id).classList.add('open'); document.body.style.overflow='hidden'; }
-function closeModal(id) { $(id).classList.remove('open'); document.body.style.overflow=''; editMode=null; }
+function openModal(id) { $(id).classList.add('open'); document.body.style.overflow='hidden'; triggerHaptic('medium'); }
+function closeModal(id) { 
+    $(id).classList.remove('open'); 
+    document.body.style.overflow=''; 
+    editMode=null;
+    triggerHaptic('light');
+}
+
+// Specific close for Change PIN modal — clears all fields
+function closePinModal() {
+    $('cp_current').value = '';
+    $('cp_new').value = '';
+    $('cp_confirm').value = '';
+    $('cp_err').textContent = '';
+    closeModal('mdChangePin');
+}
 document.addEventListener('keydown', e => {
     if(e.key==='Escape') document.querySelectorAll('.mo.open').forEach(m=>{m.classList.remove('open');document.body.style.overflow='';});
 });
@@ -2406,6 +2492,7 @@ const addBtnMap = {income:'+ Add Source',loans:'+ Add Loan',ccinstall:'+ Add',cc
 const addModalMap = {income:'mdIncome',loans:'mdLoan',ccinstall:'mdCCI',cconetime:'mdCCOT',cheques:'mdCheque',expenses:'mdExpense',targets:'mdTarget',balance:'mdBalSet'};
 
 function showPage(name, navEl) {
+    triggerHaptic('light');
     document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
     document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
     $('page-'+name).classList.add('active');
