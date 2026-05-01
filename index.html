@@ -478,10 +478,13 @@ tbody td{padding:10px 13px;vertical-align:middle;}
   .auth-box{padding:32px 20px; width: 95%; max-width: none;}
   .celeb-box{padding:32px 28px;}
   .tb-right {gap: 4px;}
+  .tb-left .pg-title { font-size: 14px; }
   .month-badge { display: none; }
   .card { padding: 15px; }
   .gf-header { flex-direction: column; align-items: flex-start; }
   .gf-btn { width: 100%; text-align: center; }
+  .network-wrap { position: absolute; right: 42px; top: 50%; transform: translateY(-50%); margin-right: 0; }
+  .topbar { position: relative; }
 }
 </style>
 </head>
@@ -1311,6 +1314,12 @@ const fmtS = (n) => {
 };
 
 const parseMoney = (s) => parseFloat(String(s).replace(/,/g,'')) || 0;
+function fmtDatePretty(dateStr) {
+    if (!dateStr) return '';
+    const d = new Date(dateStr + 'T00:00:00');
+    if (isNaN(d)) return dateStr;
+    return d.getFullYear() + ' ' + MONTHS[d.getMonth()] + ' ' + d.getDate();
+}
 function emptyState(icon, title, sub) { return `<div class="empty"><div class="empty-icon">${icon}</div><div class="empty-title">${title}</div><div class="empty-sub">${sub}</div></div>`; }
 function monthStrFmt(ymd) { const d = new Date(ymd); return MONTHS_S[d.getMonth()] + ' ' + d.getFullYear(); }
 function getNextOccurenceDate(startDateStr) {
@@ -1852,10 +1861,11 @@ async function changePin() {
     if(currHash !== auth.pin) { $('cp_err').textContent='Current PIN is incorrect'; return; }
     const newHash = await sha256(nw + 'wf_salt_sg2026');
     auth.pin = newHash;
-    DB.set('auth', auth); // This pushes to cloud — all other devices will get the new PIN via onSnapshot
+    auth._pinChangedAt = Date.now(); // Timestamp for forcing logout on other devices
+    DB.set('auth', auth); // Pushes to cloud → other devices detect PIN change via onSnapshot
     closeModal('mdChangePin');
     $('cp_current').value=''; $('cp_new').value=''; $('cp_confirm').value=''; $('cp_err').textContent='';
-    notify('PIN changed on ALL devices! 🔐', 'success');
+    notify('PIN changed on ALL devices! All other sessions will be logged out. 🔐', 'success');
 }
 
 // Switch to a different Google account
@@ -2103,6 +2113,30 @@ window.onload = async function() {
                         isSyncingFromCloud = true;
                         const cloudData = snap.data();
                         let changed = false;
+                        
+                        // Check if PIN was changed on another device
+                        const newAuth = cloudData.auth;
+                        const currentAuth = appData.auth;
+                        if (newAuth && currentAuth && newAuth._pinChangedAt && 
+                            newAuth._pinChangedAt !== currentAuth._pinChangedAt &&
+                            newAuth.pin !== currentAuth.pin) {
+                            // PIN was changed on another device — force logout
+                            console.log('[SYNC] 🔒 PIN changed on another device — forcing logout');
+                            isSyncingFromCloud = false;
+                            // Update local data with new PIN first
+                            appData.auth = newAuth;
+                            localStorage.setItem('wf2_auth', JSON.stringify(newAuth));
+                            // Force back to login screen
+                            if ($('app').classList.contains('show')) {
+                                $('app').classList.remove('show');
+                                $('authScreen').classList.add('show');
+                                pinMode = 'login';
+                                showAuthView('authLogin');
+                                notify('PIN changed from another device. Please re-login with the new PIN.', 'warn');
+                            }
+                            return;
+                        }
+                        
                         Object.keys(cloudData).forEach(key => {
                             if (key === '_lastModified' || key === '_lastModifiedBy') return;
                             // Check if data actually changed to avoid unnecessary re-renders
@@ -2518,7 +2552,7 @@ function renderIncome() {
         const freqL={monthly:'Monthly',annual:'Annual',quarterly:'Quarterly'}[source.freq]||source.freq;
         return`<div class="inc-card">
             <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;">
-                <div><div style="font-size:15px;font-weight:700;">${source.name}</div><div style="font-size:12px;color:var(--text3);margin-top:2px;">🏛️ ${source.company} · Start: ${source.start}${source.end?' → '+source.end:''}</div></div>
+                <div><div style="font-size:15px;font-weight:700;">${source.name}</div><div style="font-size:12px;color:var(--text3);margin-top:2px;">🏛️ ${source.company} · ${fmtDatePretty(source.start)}${source.end?' → '+fmtDatePretty(source.end):''}</div></div>
                 <div style="display:flex;gap:10px;align-items:flex-start;">
                     <div style="text-align:right;"><div style="font-size:21px;font-weight:800;font-family:var(--mono);color:var(--green);">${fmt(source.monthly)}</div><div style="font-size:11px;color:var(--text3);">${freqL}</div></div>
                     <div class="act-btns"><button class="ib e" onclick="editIncome('${source.id}')">✏️</button><button class="ib d" onclick="deleteIncome('${source.id}')">🗑️</button></div>
@@ -2528,7 +2562,7 @@ function renderIncome() {
                 <div class="ld"><div class="ld-l">INVESTED</div><div class="ld-v" style="color:var(--accent);">${fmt(source.amount)}</div></div>
                 <div class="ld"><div class="ld-l">ANNUAL RATE</div><div class="ld-v">${source.rate}%</div></div>
                 <div class="ld"><div class="ld-l">STATUS</div><div class="ld-v">${active?'<span class="badge bg-g">● Active</span>':'<span class="badge bg-gr">Ended</span>'}</div></div>
-                <div class="ld"><div class="ld-l">PAYMENT START</div><div class="ld-v"><span style="color:var(--accent);font-weight:700;background:rgba(212,175,55,0.1);padding:3px 8px;border-radius:4px;">📅 ${source.day}</span></div></div>
+                <div class="ld"><div class="ld-l">PAYMENT START</div><div class="ld-v"><span style="color:var(--accent);font-weight:700;background:rgba(212,175,55,0.1);padding:3px 8px;border-radius:4px;">📅 ${fmtDatePretty(source.day)}</span></div></div>
                 ${dLeft!==null?`<div class="ld"><div class="ld-l">DAYS LEFT</div><div class="ld-v" style="${dLeft<60?'color:var(--red)':''}">${dLeft>0?dLeft+' days':'Ended'}</div></div>`:''}
             </div>
             ${source.notes?`<div style="margin-top:10px;font-size:12px;color:var(--text3);padding:7px 11px;background:var(--bg2);border-radius:6px;">${source.notes}</div>`:''}
