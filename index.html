@@ -501,25 +501,31 @@ tbody td{padding:10px 13px;vertical-align:middle;}
 <div id="authScreen">
   <div class="auth-bg"><div class="auth-orb auth-orb1"></div><div class="auth-orb auth-orb2"></div></div>
 
-  <div class="auth-box" id="authGoogle">
-    <div class="auth-logo">☁️</div>
+  <div class="auth-box" id="authGoogle" style="display:none;">
+    <div class="auth-logo" style="background:linear-gradient(135deg,#4285F4,#34A853);font-size:28px;">☁️</div>
     <div class="auth-title">WealthFlow Cloud</div>
-    <div class="auth-sub">Sign in to sync your financial data globally</div>
-    <button class="auth-btn" onclick="signInWithGoogle()" style="display:flex;align-items:center;justify-content:center;gap:10px;background:#fff;color:#000;border:1px solid #ddd;font-weight:600;">
-        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+    <div class="auth-sub">Sign in to sync your financial data across all devices globally</div>
+    <button class="auth-btn" onclick="signInWithGoogle()" style="display:flex;align-items:center;justify-content:center;gap:12px;background:#fff;color:#333;border:1.5px solid #dadce0;font-weight:600;border-radius:12px;padding:14px 20px;font-size:15px;box-shadow:0 2px 8px rgba(0,0,0,0.08);transition:all .25s;">
+        <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
         Continue with Google
     </button>
+    <div style="margin-top:16px;font-size:11px;color:var(--text3);line-height:1.6;">🔒 End-to-end encrypted · Your data stays yours<br>Powered by Google Firebase & Gemini AI</div>
   </div>
 
-  <div class="auth-box" id="authLogin">
+  <div class="auth-box" id="authLogin" style="display:none;">
     <div class="auth-logo">₣</div>
     <div class="auth-title">Welcome Back</div>
-    <div class="auth-sub">Sachintha Gaurawa · Enter your 6-digit PIN</div>
+    <div class="auth-sub" id="authLoginSub">Enter your 6-digit PIN to unlock</div>
     <div class="pin-dots" id="loginDots"></div>
     <div class="numpad" id="loginPad"></div>
     <div class="auth-err" id="loginErr"></div>
+    <button onclick="loginWithBiometrics()" id="biometricBtn" style="display:none; width:100%; padding:14px 20px; margin-top:16px; border:2px solid var(--accent); border-radius:16px; background:linear-gradient(135deg, rgba(212,175,55,0.08), rgba(212,175,55,0.02)); color:var(--accent); font-size:16px; font-weight:700; font-family:var(--font); cursor:pointer; transition:all .25s; letter-spacing:0.5px; backdrop-filter:blur(10px);">
+        <span style="display:flex;align-items:center;justify-content:center;gap:10px;">
+            <span style="font-size:22px;">🔐</span>
+            <span>Unlock with Biometrics</span>
+        </span>
+    </button>
     <div class="auth-link" onclick="showAuthView('authForgot')">🔑 Forgot Passcode?</div>
-    <div class="auth-link" onclick="loginWithBiometrics()" style="margin-top:12px; font-weight: 600; color: var(--accent);">👆 Unlock with Biometrics</div>
   </div>
 
   <div class="auth-box" id="authSetup" style="display:none;">
@@ -613,9 +619,9 @@ tbody td{padding:10px 13px;vertical-align:middle;}
       <div class="nav-item" onclick="signOutGoogle()" style="color:var(--red);"><span class="nav-icon">🚪</span> Sign Out</div>
     </nav>
     <div class="sb-footer">
-      <div class="sb-user">👤 Sachintha Gaurawa</div>
+      <div class="sb-user" id="sbUser">👤 WealthFlow User</div>
       <div class="sb-date" id="sbDate">-</div>
-      <div class="sb-ver">WealthFlow v5.1 · Elite</div>
+      <div class="sb-ver">WealthFlow v5.2 · Infinity Engine</div>
     </div>
   </aside>
 
@@ -1133,21 +1139,39 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-try { db.enablePersistence(); } catch (err) { console.warn("Offline persistence issue:", err.code); }
-let userDocRef = null;
+// Enable offline persistence (returns a Promise, must use .catch)
+db.enablePersistence({ synchronizeTabs: true }).catch(err => {
+    if (err.code === 'failed-precondition') {
+        console.warn("Persistence failed: Multiple tabs open. Only one tab can use persistence at a time.");
+    } else if (err.code === 'unimplemented') {
+        console.warn("Persistence not available in this browser.");
+    }
+});
 
-// ==================== AUTHENTICATION ====================
+let userDocRef = null;
+let currentUser = null;
+
+// ==================== GOOGLE AUTHENTICATION ====================
 function signInWithGoogle() {
     const provider = new firebase.auth.GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: 'select_account' });
+    
+    // Try popup first (works on desktop), fall back to redirect (works on mobile/PWA)
     firebase.auth().signInWithPopup(provider).catch(err => {
-        console.error("Sign-in failed", err);
-        alert('Sign-in failed. Please try again.');
+        console.warn("Popup blocked or failed, trying redirect...", err.code);
+        if (err.code === 'auth/popup-blocked' || err.code === 'auth/popup-closed-by-user' || err.code === 'auth/cancelled-popup-request') {
+            firebase.auth().signInWithRedirect(provider);
+        } else {
+            console.error("Sign-in failed:", err);
+            notify('Sign-in failed: ' + err.message, 'error');
+        }
     });
 }
 
 function signOutGoogle() {
     firebase.auth().signOut().then(() => {
-        location.reload();
+        localStorage.clear();
+        window.location.reload();
     });
 }
 
@@ -1366,12 +1390,12 @@ async function handleAIScan(e, type) {
             
             if(type === 'expense') {
                 if(result.vendor) $('e_desc').value = result.vendor;
-                if(result.amount) $('e_amount').value = result.amount; // Allow raw numbers to be formatted correctly
+                if(result.amount) {
+                    $('e_amount').value = fmtN(result.amount);
+                }
                 if(result.date) $('e_month').value = result.date.substr(0,7);
                 triggerHaptic('success');
                 notify('Receipt parsed successfully!', 'success');
-                // Re-trigger formatting logic on input if needed
-                formatMoneyInput.call($('e_amount'), {target: $('e_amount')});
             }
             
         } catch(err) {
@@ -1663,7 +1687,7 @@ async function handlePinComplete(padId) {
 }
 
 function showAuthView(viewId) {
-    ['authLogin','authSetup','authForgot','authNewPin','authRecovShow','authSecQ'].forEach(id => {
+    ['authGoogle','authLogin','authSetup','authForgot','authNewPin','authRecovShow','authSecQ'].forEach(id => {
         const el = $(id); if(el) el.style.display='none';
     });
     const el = $(viewId); if(el) el.style.display='';
@@ -1748,22 +1772,42 @@ async function changePin() {
 }
 
 // ==================== BIOMETRICS (WEBAUTHN) ====================
+async function isBiometricAvailable() {
+    if (!window.PublicKeyCredential) return false;
+    try {
+        return await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
+    } catch(e) { return false; }
+}
+
 async function registerBiometrics() {
-    if (!window.PublicKeyCredential) {
-        notify('Biometrics not supported on this device/browser.', 'error');
+    const available = await isBiometricAvailable();
+    if (!available) {
+        notify('Biometrics not available on this device. Make sure FaceID/TouchID/Windows Hello is enabled.', 'error');
         return;
     }
     try {
         const challenge = new Uint8Array(32); crypto.getRandomValues(challenge);
         const userId = new Uint8Array(16); crypto.getRandomValues(userId);
+        
+        const userEmail = currentUser ? currentUser.email : 'owner@wealthflow.app';
+        const userName = currentUser ? (currentUser.displayName || 'WealthFlow User') : 'WealthFlow Owner';
 
         const publicKey = {
             challenge: challenge,
-            rp: { name: "WealthFlow Elite", id: window.location.hostname || "localhost" },
-            user: { id: userId, name: "owner@wealthflow.app", displayName: "WealthFlow Owner" },
-            pubKeyCredParams: [{ type: "public-key", alg: -7 }, { type: "public-key", alg: -257 }],
-            authenticatorSelection: { authenticatorAttachment: "platform", userVerification: "required" },
-            timeout: 60000, attestation: "none"
+            rp: { name: "WealthFlow Infinity", id: window.location.hostname },
+            user: { id: userId, name: userEmail, displayName: userName },
+            pubKeyCredParams: [
+                { type: "public-key", alg: -7 },   // ES256 (Apple, Android)
+                { type: "public-key", alg: -257 }   // RS256 (Windows Hello)
+            ],
+            authenticatorSelection: {
+                authenticatorAttachment: "platform",
+                userVerification: "required",
+                residentKey: "preferred",
+                requireResidentKey: false
+            },
+            timeout: 120000,
+            attestation: "none"
         };
 
         const credential = await navigator.credentials.create({ publicKey });
@@ -1771,19 +1815,38 @@ async function registerBiometrics() {
         
         const auth = DB.getObj('auth');
         auth.biometricId = rawId;
+        auth.biometricRegisteredAt = new Date().toISOString();
         DB.set('auth', auth);
         
-        notify('Biometrics registered successfully!', 'success');
+        // Show the button now
+        const bioBtn = $('biometricBtn');
+        if(bioBtn) bioBtn.style.display = '';
+        
+        notify('Biometrics registered successfully! 🎉', 'success');
         triggerHaptic('success');
+        renderSettings(); // Refresh settings to show status
     } catch (err) {
         console.error("Biometric Reg Error:", err);
-        notify('Biometric registration failed or cancelled.', 'error');
+        if (err.name === 'NotAllowedError') {
+            notify('Biometric registration was cancelled.', 'warn');
+        } else {
+            notify('Biometric registration failed: ' + err.message, 'error');
+        }
     }
 }
 
 async function loginWithBiometrics() {
     const auth = DB.getObj('auth');
-    if (!auth.biometricId || !window.PublicKeyCredential) return;
+    if (!auth.biometricId) {
+        notify('No biometric key registered. Go to Settings to register.', 'warn');
+        return;
+    }
+    
+    const available = await isBiometricAvailable();
+    if (!available) {
+        notify('Biometric hardware not available on this device.', 'error');
+        return;
+    }
     
     try {
         const challenge = new Uint8Array(32); crypto.getRandomValues(challenge);
@@ -1793,19 +1856,28 @@ async function loginWithBiometrics() {
 
         const publicKey = {
             challenge: challenge,
-            rpId: window.location.hostname || "localhost",
-            allowCredentials: [{ type: "public-key", id: rawId, transports: ["internal"] }],
-            userVerification: "required", timeout: 60000
+            rpId: window.location.hostname,
+            allowCredentials: [{
+                type: "public-key",
+                id: rawId,
+                transports: ["internal", "hybrid", "ble", "nfc", "usb"]  // Support ALL transport types
+            }],
+            userVerification: "required",
+            timeout: 120000
         };
 
-        const assertion = await navigator.credentials.get({ publicKey });
+        await navigator.credentials.get({ publicKey });
         $('loginErr').textContent = '';
         triggerHaptic('success');
         resetAutoLockTimer();
         launchApp();
     } catch (err) {
         console.error("Biometric Login Error:", err);
-        notify('Biometric verification failed. Please use PIN.', 'warn');
+        if (err.name === 'NotAllowedError') {
+            notify('Biometric verification cancelled. Use your PIN instead.', 'warn');
+        } else {
+            notify('Biometric failed: ' + err.message + '. Please use PIN.', 'warn');
+        }
     }
 }
 
@@ -1842,6 +1914,7 @@ window.onload = async function() {
 
     firebase.auth().onAuthStateChanged(async (user) => {
         if (user) {
+            currentUser = user;
             userDocRef = db.collection('users').doc(user.uid);
             splashText.textContent = "Fetching cloud state...";
 
@@ -1928,6 +2001,20 @@ function finishBoot() {
         initTheme();
         setupBackupReminder();
 
+        // Update sidebar with Google user info
+        if (currentUser) {
+            const displayName = currentUser.displayName || 'WealthFlow User';
+            const email = currentUser.email || '';
+            if ($('sbUser')) $('sbUser').textContent = '👤 ' + displayName;
+            if ($('authLoginSub')) $('authLoginSub').textContent = displayName + ' · Enter your 6-digit PIN';
+        }
+
+        // Show biometric button only if registered
+        if (auth.biometricId && window.PublicKeyCredential) {
+            const bioBtn = $('biometricBtn');
+            if (bioBtn) bioBtn.style.display = '';
+        }
+
         $('authScreen').classList.add('show');
         if(!auth.pin) {
             pinMode = 'setup';
@@ -1990,21 +2077,52 @@ function updateDateTime() {
 }
 
 function setupOnlineStatus() {
-    function updateStatus() {
-        if(navigator.onLine) {
-            setSyncStatus('online');
-            const banner = $('offlineBanner');
-            if(banner) banner.classList.remove('show');
-            syncToCloud();
-        } else {
-            setSyncStatus('offline');
-            const banner = $('offlineBanner');
-            if(banner) banner.classList.add('show');
+    let lastKnownState = null;
+    
+    async function probeConnection() {
+        try {
+            // Quick fetch to Firebase to verify actual connectivity
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 5000);
+            await fetch('https://firestore.googleapis.com', { method: 'HEAD', mode: 'no-cors', signal: controller.signal });
+            clearTimeout(timeout);
+            return true;
+        } catch(e) {
+            return false;
         }
     }
-    window.addEventListener('online', updateStatus);
+    
+    async function updateStatus() {
+        const browserSaysOnline = navigator.onLine;
+        let isReallyOnline = browserSaysOnline;
+        
+        if (browserSaysOnline) {
+            // Double-check with real probe
+            isReallyOnline = await probeConnection();
+        }
+        
+        if (isReallyOnline !== lastKnownState) {
+            lastKnownState = isReallyOnline;
+            if (isReallyOnline) {
+                setSyncStatus('online');
+                const banner = $('offlineBanner');
+                if(banner) banner.classList.remove('show');
+                // Auto-sync when coming back online
+                if (userDocRef) syncToCloud();
+            } else {
+                setSyncStatus('offline');
+                const banner = $('offlineBanner');
+                if(banner) banner.classList.add('show');
+            }
+        }
+    }
+    
+    window.addEventListener('online', () => setTimeout(updateStatus, 500));
     window.addEventListener('offline', updateStatus);
     updateStatus();
+    
+    // Periodic real connectivity check every 30 seconds
+    setInterval(updateStatus, 30000);
 }
 
 function setupBackupReminder() {
@@ -3229,49 +3347,119 @@ function calcDSCR() {
     `;
 }
 
-// ==================== SETTINGS (ULTRA-PREMIUM UPGRADE) ====================
+// ==================== SETTINGS (ULTRA-PREMIUM UPGRADE v5.2) ====================
 function renderSettings() {
-    const s = DB.getObj('settings', { backupFreq: 'weekly', lastBackup: null, theme: 'dark', autoLock: 15, haptics: true });
+    const s = DB.getObj('settings', { backupFreq: 'weekly', lastBackup: null, theme: 'dark', autoLock: 15, haptics: true, currency: 'LKR', notifications: true, compactMode: false });
+    const auth = DB.getObj('auth');
+    const userEmail = currentUser ? currentUser.email : 'Not connected';
+    const userName = currentUser ? (currentUser.displayName || 'WealthFlow User') : 'Offline User';
+    const userPhoto = currentUser && currentUser.photoURL ? currentUser.photoURL : '';
+    const bioRegistered = !!auth.biometricId;
+    
+    // Calculate data stats
+    const totalIncome = DB.get('income').length;
+    const totalLoans = DB.get('loans').length;
+    const totalExpenses = DB.get('expenses').length;
+    const totalTargets = DB.get('targets').length;
+    const totalRecords = totalIncome + totalLoans + totalExpenses + totalTargets + DB.get('ccinstall').length + DB.get('cconetime').length + DB.get('cheques').length;
     
     $('settingsContent').innerHTML = `
+        <div class="settings-section" style="background: linear-gradient(145deg, rgba(212,175,55,0.05), var(--card)); border: 1px solid var(--accent); position:relative; overflow:hidden;">
+            <div style="position:absolute;top:-20px;right:-20px;font-size:80px;opacity:0.05;">👤</div>
+            <div class="settings-title" style="color:var(--accent);">👤 Account & Identity</div>
+            <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">
+                ${userPhoto ? `<img src="${userPhoto}" style="width:48px;height:48px;border-radius:50%;border:2px solid var(--accent);object-fit:cover;">` : '<div style="width:48px;height:48px;border-radius:50%;background:var(--card3);display:flex;align-items:center;justify-content:center;font-size:24px;">👤</div>'}
+                <div>
+                    <div style="font-weight:700;font-size:16px;">${userName}</div>
+                    <div style="font-size:12px;color:var(--text3);">${userEmail}</div>
+                </div>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px;">
+                <div style="text-align:center;padding:10px;background:var(--bg2);border-radius:10px;">
+                    <div style="font-size:20px;font-weight:800;color:var(--accent);">${totalRecords}</div>
+                    <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;">Records</div>
+                </div>
+                <div style="text-align:center;padding:10px;background:var(--bg2);border-radius:10px;">
+                    <div style="font-size:20px;font-weight:800;color:var(--green);">${totalIncome}</div>
+                    <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;">Income</div>
+                </div>
+                <div style="text-align:center;padding:10px;background:var(--bg2);border-radius:10px;">
+                    <div style="font-size:20px;font-weight:800;color:var(--red);">${totalExpenses}</div>
+                    <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;">Expenses</div>
+                </div>
+                <div style="text-align:center;padding:10px;background:var(--bg2);border-radius:10px;">
+                    <div style="font-size:20px;font-weight:800;color:var(--blue);">${totalTargets}</div>
+                    <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;">Targets</div>
+                </div>
+            </div>
+        </div>
+
         <div class="settings-section" style="background: linear-gradient(145deg, var(--card), var(--bg2)); border: 1px solid var(--border2);">
-            <div class="settings-title" style="color:var(--accent);">🎨 Appearance & System Experience</div>
+            <div class="settings-title" style="color:var(--accent);">🎨 Appearance & Experience</div>
             <div class="setting-row">
                 <div class="setting-info"><div class="setting-label">Dark Theme</div><div class="setting-desc">Switch between Light and Dark aesthetic modes.</div></div>
                 <div class="toggle ${s.theme==='dark'?'on':''}" onclick="toggleTheme(); renderSettings();"></div>
             </div>
             <div class="setting-row">
                 <div class="setting-info"><div class="setting-label">Haptic Feedback</div><div class="setting-desc">Enable subtle device vibrations for physical interactions.</div></div>
-                <div class="toggle ${s.haptics?'on':''}" onclick="toggleSetting('haptics', ${!s.haptics}); triggerHaptic();"></div>
+                <div class="toggle ${s.haptics?'on':''}" onclick="toggleSetting('haptics', ${!s.haptics}); triggerHaptic('light');"></div>
+            </div>
+            <div class="setting-row">
+                <div class="setting-info"><div class="setting-label">Compact Mode</div><div class="setting-desc">Reduce spacing for smaller screens and faster scanning.</div></div>
+                <div class="toggle ${s.compactMode?'on':''}" onclick="toggleSetting('compactMode', ${!s.compactMode});"></div>
+            </div>
+            <div class="setting-row">
+                <div class="setting-info"><div class="setting-label">Currency Display</div><div class="setting-desc">Primary currency for all financial displays.</div></div>
+                <select class="fi" style="width:120px; border-color:var(--border2);" onchange="toggleSetting('currency', this.value)">
+                    <option value="LKR" ${s.currency==='LKR'?'selected':''}>🇱🇰 LKR</option>
+                    <option value="USD" ${s.currency==='USD'?'selected':''}>🇺🇸 USD</option>
+                    <option value="GBP" ${s.currency==='GBP'?'selected':''}>🇬🇧 GBP</option>
+                    <option value="EUR" ${s.currency==='EUR'?'selected':''}>🇪🇺 EUR</option>
+                    <option value="AUD" ${s.currency==='AUD'?'selected':''}>🇦🇺 AUD</option>
+                    <option value="INR" ${s.currency==='INR'?'selected':''}>🇮🇳 INR</option>
+                </select>
             </div>
         </div>
 
         <div class="settings-section" style="background: linear-gradient(145deg, var(--card), var(--bg2)); border: 1px solid var(--border2);">
-            <div class="settings-title" style="color:var(--green);">🛡️ Core Security & Access</div>
+            <div class="settings-title" style="color:var(--green);">🛡️ Security & Access Control</div>
             <div class="setting-row">
-                <div class="setting-info"><div class="setting-label">Auto-Lock Engine</div><div class="setting-desc">Secure the vault after inactivity to prevent unauthorized access.</div></div>
+                <div class="setting-info"><div class="setting-label">Auto-Lock Timer</div><div class="setting-desc">Secure the vault after inactivity to prevent unauthorized access.</div></div>
                 <select class="fi" style="width:140px; border-color:var(--border2);" onchange="updateAutoLock(this.value)">
                     <option value="0" ${s.autoLock===0?'selected':''}>Disabled (Unsafe)</option>
+                    <option value="1" ${s.autoLock===1?'selected':''}>1 Minute</option>
                     <option value="5" ${s.autoLock===5?'selected':''}>5 Minutes</option>
                     <option value="15" ${s.autoLock===15?'selected':''}>15 Minutes</option>
                     <option value="30" ${s.autoLock===30?'selected':''}>30 Minutes</option>
+                    <option value="60" ${s.autoLock===60?'selected':''}>1 Hour</option>
                 </select>
             </div>
             <div class="setting-row">
-                <div class="setting-info"><div class="setting-label">Biometric Key (WebAuthn)</div><div class="setting-desc">Link FaceID / TouchID / Passkey to your account.</div></div>
-                <button class="btn btn-secondary btn-sm" onclick="registerBiometrics()">Register Device</button>
+                <div class="setting-info">
+                    <div class="setting-label">Biometric Key (WebAuthn)</div>
+                    <div class="setting-desc">${bioRegistered ? '✅ Registered on ' + (auth.biometricRegisteredAt ? new Date(auth.biometricRegisteredAt).toLocaleDateString() : 'this device') : '⚪ Not registered — Link FaceID / TouchID / Windows Hello'}</div>
+                </div>
+                <button class="btn ${bioRegistered ? 'btn-ghost' : 'btn-secondary'} btn-sm" onclick="registerBiometrics()">${bioRegistered ? '🔄 Re-register' : '🔐 Register'}</button>
             </div>
             <div class="setting-row">
                 <div class="setting-info"><div class="setting-label">Master PIN Management</div><div class="setting-desc">Update your AES-256 encrypted master access key.</div></div>
                 <button class="btn btn-secondary btn-sm" onclick="openModal('mdChangePin')">Change PIN</button>
             </div>
         </div>
-        
+
         <div class="settings-section" style="background: linear-gradient(145deg, var(--card), var(--bg2)); border: 1px solid var(--border2);">
-            <div class="settings-title" style="color:var(--blue);">☁️ Infinity Cloud Synchronisation</div>
+            <div class="settings-title" style="color:var(--blue);">☁️ Infinity Cloud Sync</div>
             <div class="setting-row">
-                <div class="setting-info"><div class="setting-label">Real-time Connection Status</div><div class="setting-desc">Engine is monitoring connection to Google Firebase.</div></div>
+                <div class="setting-info"><div class="setting-label">Real-time Connection</div><div class="setting-desc">Engine is monitoring connection to Google Firebase.</div></div>
                 <div><span id="settingsCloudStatus" class="badge ${navigator.onLine?'bg-g':'bg-r'}" style="padding: 6px 12px;">${navigator.onLine?'● Securely Connected':'○ Offline Mode'}</span></div>
+            </div>
+            <div class="setting-row">
+                <div class="setting-info"><div class="setting-label">Sync Engine</div><div class="setting-desc">Force a manual cloud synchronization now.</div></div>
+                <button class="btn btn-secondary btn-sm" onclick="syncToCloud(); notify('Cloud sync triggered.', 'info');">⟳ Force Sync</button>
+            </div>
+            <div class="setting-row">
+                <div class="setting-info"><div class="setting-label">Notifications</div><div class="setting-desc">Enable proactive financial alerts and reminders.</div></div>
+                <div class="toggle ${s.notifications!==false?'on':''}" onclick="toggleSetting('notifications', ${s.notifications===false});"></div>
             </div>
         </div>
 
@@ -3282,7 +3470,7 @@ function renderSettings() {
                 <button class="btn btn-primary btn-sm" style="box-shadow: 0 4px 15px var(--ag);" onclick="openModal('mdExport')">✨ Export Data</button>
             </div>
             
-            <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:24px 0 8px;">Google Drive Backup Integration</div>
+            <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:24px 0 8px;">Google Drive Backup</div>
             <div class="setting-row">
                 <div class="setting-info"><div class="setting-label">Instant Cloud Backup</div><div class="setting-desc">Push an encrypted snapshot straight to your secure Google Drive.</div></div>
                 <button class="btn btn-secondary btn-sm" onclick="requestDrivePermission('backup')">Backup to Drive</button>
@@ -3297,6 +3485,12 @@ function renderSettings() {
                 <div class="setting-info"><div class="setting-label">Wipe System Data</div><div class="setting-desc">Format all financial records. Your PIN and Settings will remain safe.</div></div>
                 <button class="btn btn-danger btn-sm" onclick="openModal('mdFactoryReset')">Format Database</button>
             </div>
+        </div>
+        
+        <div style="text-align:center;padding:20px 0;color:var(--text3);font-size:11px;">
+            <div style="margin-bottom:4px;">WealthFlow v5.2 · Infinity Engine</div>
+            <div>© ${new Date().getFullYear()} · Powered by Firebase & Gemini AI</div>
+            <div style="margin-top:8px;font-size:10px;color:var(--border2);">UID: ${currentUser ? currentUser.uid.substring(0,12) + '...' : 'offline'}</div>
         </div>
    `;
 }
@@ -3316,24 +3510,10 @@ function toggleSetting(key, val) {
     renderSettings();
 }
 
-function triggerHaptic() {
-    const s = DB.getObj('settings', {haptics: true});
-    if(s.haptics && navigator.vibrate) {
-        // Safe haptic implementation that works across different browsers
-        try {
-            if (typeof window.navigator.vibrate === 'function') {
-                window.navigator.vibrate(40);
-            }
-        } catch(e) {
-            // Ignore errors on non-supporting devices
-        }
-    }
-}
-
 // Intercept button clicks for luxury haptics
 document.addEventListener('click', (e) => {
     if(e.target.tagName === 'BUTTON' || e.target.closest('.btn') || e.target.closest('.ib') || e.target.closest('.mtab')) {
-        triggerHaptic();
+        triggerHaptic('light');
     }
 });
 
