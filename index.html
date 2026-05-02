@@ -2497,7 +2497,9 @@
             <div class="sp-orb sp-orb1"></div>
             <div class="sp-orb sp-orb2"></div>
         </div>
-        <div class="sp-logo"><img src="https://res.cloudinary.com/dzrfpc9be/image/upload/v1777660556/WealthFlow_Logo_tytp9p.png" alt="WealthFlow"></div>
+        <div class="sp-logo"><img
+                src="https://res.cloudinary.com/dzrfpc9be/image/upload/v1777660556/WealthFlow_Logo_tytp9p.png"
+                alt="WealthFlow"></div>
         <div class="sp-title-wrap">
             <div class="sp-title">WealthFlow</div>
             <div class="sp-sub">Infinity Engine</div>
@@ -2515,7 +2517,9 @@
         </div>
 
         <div class="auth-box" id="authGoogle" style="display:none;">
-            <div class="auth-logo"><img src="https://res.cloudinary.com/dzrfpc9be/image/upload/v1777660556/WealthFlow_Logo_tytp9p.png" alt="WealthFlow"></div>
+            <div class="auth-logo"><img
+                    src="https://res.cloudinary.com/dzrfpc9be/image/upload/v1777660556/WealthFlow_Logo_tytp9p.png"
+                    alt="WealthFlow"></div>
             <div class="auth-title">WealthFlow Cloud</div>
             <div class="auth-sub">Sign in to sync your financial data across all devices globally</div>
             <button class="auth-btn" onclick="signInWithGoogle()"
@@ -2537,7 +2541,9 @@
         </div>
 
         <div class="auth-box" id="authLogin" style="display:none;">
-            <div class="auth-logo"><img src="https://res.cloudinary.com/dzrfpc9be/image/upload/v1777660556/WealthFlow_Logo_tytp9p.png" alt="WealthFlow"></div>
+            <div class="auth-logo"><img
+                    src="https://res.cloudinary.com/dzrfpc9be/image/upload/v1777660556/WealthFlow_Logo_tytp9p.png"
+                    alt="WealthFlow"></div>
             <div class="auth-title">Welcome Back</div>
             <div class="auth-sub" id="authLoginSub">Enter your 6-digit PIN to unlock</div>
             <div class="pin-dots" id="loginDots"></div>
@@ -2626,21 +2632,22 @@
     </div>
 
     <div id="app">
-            <div class="sb-overlay" id="sbOverlay" onclick="closeSb()"></div>
-            <aside class="sidebar" id="sidebar">
-                <div class="sb-logo">
-                    <div class="sb-logomark">
-                        <div class="sb-icon">
-                            <img src="https://res.cloudinary.com/dzrfpc9be/image/upload/v1777660556/WealthFlow_Logo_tytp9p.png" alt="WealthFlow Logo" style="max-width: 100%; height: auto;">
-                        </div>
-                        <div>
-                            <div class="sb-title">WealthFlow</div>
-                            <div class="sb-sub">Infinity Engine</div>
-                        </div>
+        <div class="sb-overlay" id="sbOverlay" onclick="closeSb()"></div>
+        <aside class="sidebar" id="sidebar">
+            <div class="sb-logo">
+                <div class="sb-logomark">
+                    <div class="sb-icon">
+                        <img src="https://res.cloudinary.com/dzrfpc9be/image/upload/v1777660556/WealthFlow_Logo_tytp9p.png"
+                            alt="WealthFlow Logo" style="max-width: 100%; height: auto;">
+                    </div>
+                    <div>
+                        <div class="sb-title">WealthFlow</div>
+                        <div class="sb-sub">Infinity Engine</div>
                     </div>
                 </div>
+            </div>
 
-            
+
             <nav class="sb-nav">
                 <div class="sb-group">Overview</div>
                 <div class="nav-item active" onclick="showPage('dashboard',this)"><span class="nav-icon">📊</span>
@@ -3861,12 +3868,12 @@
         // ==================== AI ENGINE (via Vercel Serverless Proxy) ====================
         async function callAI(prompt, image = null) {
             const s = DB.getObj('settings', {});
-            
+
             // Local fallback logic
             if (s.geminiKey) {
                 const parts = [{ text: prompt }];
                 if (image) parts.push({ inline_data: { mime_type: "image/jpeg", data: image } });
-                
+
                 const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${s.geminiKey}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -4884,10 +4891,10 @@ Provide insights as a numbered list. Be specific with LKR amounts. Include one r
             if (!('vibrate' in navigator)) return;
             const mult = _getHapticMultiplier();
             // Apply intensity multiplier to all vibration durations
-            const scaled = Array.isArray(pattern) 
+            const scaled = Array.isArray(pattern)
                 ? pattern.map((v, i) => i % 2 === 0 ? Math.round(v * mult) : v) // Scale vibrate durations, keep pauses
                 : Math.round(pattern * mult);
-            try { navigator.vibrate(scaled); } catch(e) {}
+            try { navigator.vibrate(scaled); } catch (e) { }
         }
 
         function triggerHaptic(type = 'light') {
@@ -4895,19 +4902,19 @@ Provide insights as a numbered list. Be specific with LKR amounts. Include one r
             if (!settings.haptics) return;
 
             switch (type) {
-                case 'light':        _vibrate([3, 30, 3]); break;            // Crisp double-tap
-                case 'medium':       _vibrate([8, 20, 8, 20, 8]); break;     // Elegant triple-pulse
-                case 'heavy':        _vibrate([15, 30, 25, 30, 15]); break;  // Cascading intensity
-                case 'success':      _vibrate([5, 40, 5, 40, 12, 60, 20]); break;  // Rising celebratory wave
-                case 'error':        _vibrate([40, 20, 40, 20, 60]); break;  // Aggressive warning pulse
+                case 'light': _vibrate([3, 30, 3]); break;            // Crisp double-tap
+                case 'medium': _vibrate([8, 20, 8, 20, 8]); break;     // Elegant triple-pulse
+                case 'heavy': _vibrate([15, 30, 25, 30, 15]); break;  // Cascading intensity
+                case 'success': _vibrate([5, 40, 5, 40, 12, 60, 20]); break;  // Rising celebratory wave
+                case 'error': _vibrate([40, 20, 40, 20, 60]); break;  // Aggressive warning pulse
                 case 'warning':
-                case 'warn':         _vibrate([20, 40, 20, 40, 20]); break;  // Rhythmic caution
-                case 'keypress':     _vibrate(2); break;                     // Ultra-subtle single tick
-                case 'toggle':       _vibrate([6, 25, 10]); break;           // Switch-flip feel
-                case 'delete':       _vibrate([12, 15, 20, 15, 30]); break;  // Descending confirm
-                case 'celebration':  _vibrate([5, 30, 8, 30, 12, 30, 18, 30, 25, 30, 35]); break;  // Grand ascending
+                case 'warn': _vibrate([20, 40, 20, 40, 20]); break;  // Rhythmic caution
+                case 'keypress': _vibrate(2); break;                     // Ultra-subtle single tick
+                case 'toggle': _vibrate([6, 25, 10]); break;           // Switch-flip feel
+                case 'delete': _vibrate([12, 15, 20, 15, 30]); break;  // Descending confirm
+                case 'celebration': _vibrate([5, 30, 8, 30, 12, 30, 18, 30, 25, 30, 35]); break;  // Grand ascending
                 case 'notification': _vibrate([10, 50, 10, 50, 25]); break;  // Attention-grab
-                default:             _vibrate([5, 25, 5]); break;            // Generic tap
+                default: _vibrate([5, 25, 5]); break;            // Generic tap
             }
         }
 
@@ -5356,16 +5363,25 @@ Provide insights as a numbered list. Be specific with LKR amounts. Include one r
             const desc = $('ot_desc').value.trim(), bank = $('ot_bank').value, amount = parseMoney($('ot_amount').value), date = $('ot_date').value;
             if (!desc || !bank || !amount || !date) { notify('Please fill required fields', 'error'); return; }
             const dl = new Date(date + 'T00:00:00'); dl.setDate(dl.getDate() + 50);
-            const rec = { id: editMode || uid(), desc, bank, type: $('ot_type').value, amount, date, deadline: dl.toISOString().split('T')[0], notes: $('ot_notes').value, paid: false };
+            const existing = editMode ? DB.get('cconetime').find(x => x.id === editMode) : null;
+            const rec = { id: editMode || uid(), desc, bank, type: $('ot_type').value, amount, date, deadline: dl.toISOString().split('T')[0], notes: $('ot_notes').value, paid: existing ? existing.paid : false };
             const arr = DB.get('cconetime');
             if (editMode) { const i = arr.findIndex(x => x.id === editMode); if (i > -1) arr[i] = rec; } else arr.push(rec);
             DB.set('cconetime', arr);
             closeModal('mdCCOT'); clearCCOTForm(); renderCCOT(); updateCCOTBadge();
-            notify('Payment added!');
+            notify(editMode ? 'Payment updated!' : 'Payment added!');
         }
         function clearCCOTForm() {
             ['ot_desc', 'ot_amount', 'ot_notes'].forEach(id => $(id).value = '');
             $('ot_bank').value = ''; $('ot_date').value = today(); $('mdCCOTTitle').textContent = 'Add CC One-Time Payment';
+        }
+        function editCCOT(id) {
+            const item = DB.get('cconetime').find(x => x.id === id); if (!item) return;
+            editMode = id; $('mdCCOTTitle').textContent = 'Edit CC Payment';
+            $('ot_desc').value = item.desc; $('ot_bank').value = item.bank;
+            $('ot_type').value = item.type; $('ot_amount').value = fmtN(item.amount);
+            $('ot_date').value = item.date; $('ot_notes').value = item.notes || '';
+            openModal('mdCCOT');
         }
         function markCCOTPaid(id) {
             showConfirm('💳', 'Mark as Paid?', 'Confirm this CC payment has been repaid.', 'btn-success', '✅ Mark Paid', () => {
@@ -5520,9 +5536,23 @@ Provide insights as a numbered list. Be specific with LKR amounts. Include one r
             if (!desc || !amount || !month) { notify('Please fill required fields', 'error'); return; }
             const rec = { id: editMode || uid(), desc, cat, amount, month, recurring: $('e_recurring').value === '1', notes: $('e_notes').value, completed: false };
             const arr = DB.get('expenses');
-            if (editMode) { const i = arr.findIndex(x => x.id === editMode); if (i > -1) arr[i] = rec; } else arr.push(rec);
+            if (editMode) { const i = arr.findIndex(x => x.id === editMode); if (i > -1) { rec.completed = arr[i].completed; arr[i] = rec; } } else arr.push(rec);
             DB.set('expenses', arr); closeModal('mdExpense'); renderExpenses(); renderDash();
-            notify(editMode ? 'Updated!' : 'Expense added!'); editMode = null;
+            notify(editMode ? 'Expense updated!' : 'Expense added!'); editMode = null;
+        }
+        function clearExpenseForm() {
+            ['e_desc', 'e_amount', 'e_notes'].forEach(id => $(id).value = '');
+            $('e_cat').value = 'Food & Groceries'; $('e_recurring').value = '0';
+            $('e_month').value = today().substring(0, 7);
+            if ($('mdExpenseTitle')) $('mdExpenseTitle').textContent = 'Add Monthly Expense';
+        }
+        function editExpense(id) {
+            const x = DB.get('expenses').find(e => e.id === id); if (!x) return;
+            editMode = id; if ($('mdExpenseTitle')) $('mdExpenseTitle').textContent = 'Edit Expense';
+            $('e_desc').value = x.desc; $('e_cat').value = x.cat;
+            $('e_amount').value = fmtN(x.amount); $('e_month').value = x.month;
+            $('e_recurring').value = x.recurring ? '1' : '0'; $('e_notes').value = x.notes || '';
+            openModal('mdExpense');
         }
         function deleteExpense(id) {
             showConfirm('🗑️', 'Delete Expense?', '', 'btn-danger', '🗑️ Delete', () => {
@@ -5567,6 +5597,7 @@ Provide insights as a numbered list. Be specific with LKR amounts. Include one r
         <td>${x.recurring ? '<span class="badge bg-b">🔄 Monthly</span>' : '<span class="badge bg-gr">Once</span>'}</td>
         <td>${x.completed ? '<span class="badge bg-g">✅ Paid</span>' : '<span class="badge bg-a">Pending</span>'}</td>
         <td><div class="act-btns">${!x.completed ? `<button class="ib c" onclick="markExpDone('${x.id}')">✅</button>` : ''}
+            <button class="ib e" onclick="editExpense('${x.id}')">✏️</button>
             <button class="ib d" onclick="deleteExpense('${x.id}')">🗑️</button></div></td>
     </tr>`).join('');
         }
@@ -5579,9 +5610,13 @@ Provide insights as a numbered list. Be specific with LKR amounts. Include one r
             const arr = DB.get('targets');
             if (editMode) { const i = arr.findIndex(x => x.id === editMode); if (i > -1) { rec.savings = arr[i].savings; arr[i] = rec; } } else arr.push(rec);
             DB.set('targets', arr); closeModal('mdTarget');
+            const wasEdit = !!editMode;
+            clearTargetForm(); editMode = null;
+            renderTargets(); notify(wasEdit ? 'Target updated! 🎯' : 'Target created! 🎯');
+        }
+        function clearTargetForm() {
             ['t_name', 't_amount', 't_start', 't_end', 't_notes'].forEach(id => $(id).value = '');
             if ($('mdTargetTitle')) $('mdTargetTitle').textContent = 'Create New Target';
-            renderTargets(); notify(editMode ? 'Target updated! 🎯' : 'Target created! 🎯');
         }
         function editTarget(id) {
             const t = DB.get('targets').find(x => x.id === id); if (!t) return;
@@ -5740,11 +5775,27 @@ Provide insights as a numbered list. Be specific with LKR amounts. Include one r
             const type = $('bf_type').value, company = $('bf_company').value.trim(), amount = parseMoney($('bf_amount').value), date = $('bf_date').value;
             if (!company || !amount || !date) { notify('Please fill required fields', 'error'); return; }
             const data = DB.getObj('balance', { total: 0, flows: [] });
-            data.flows.push({ id: uid(), type, company, amount, date, notes: $('bf_notes').value });
-            DB.set('balance', data); closeModal('mdBalFlow');
+            const wasEdit = !!editMode;
+            if (editMode) {
+                const i = data.flows.findIndex(x => x.id === editMode);
+                if (i > -1) data.flows[i] = { ...data.flows[i], type, company, amount, date, notes: $('bf_notes').value };
+            } else {
+                data.flows.push({ id: uid(), type, company, amount, date, notes: $('bf_notes').value });
+            }
+            DB.set('balance', data); closeModal('mdBalFlow'); editMode = null;
             ['bf_company', 'bf_amount', 'bf_notes'].forEach(id => $(id).value = ''); $('bf_date').value = today();
-            renderBalance(); notify(type === 'out' ? 'Investment logged!' : 'Income logged!');
+            renderBalance(); notify(wasEdit ? 'Flow updated!' : (type === 'out' ? 'Investment logged!' : 'Income logged!'));
         }
+        function editBalFlow(id) {
+            const data = DB.getObj('balance', { total: 0, flows: [] });
+            const f = data.flows.find(x => x.id === id); if (!f) return;
+            editMode = id;
+            $('bf_type').value = f.type; $('bf_company').value = f.company;
+            $('bf_amount').value = fmtN(f.amount); $('bf_date').value = f.date;
+            $('bf_notes').value = f.notes || '';
+            openModal('mdBalFlow');
+        }
+
         function deleteBalFlow(id) {
             showConfirm('🗑️', 'Delete Flow?', '', 'btn-danger', '🗑️ Delete', () => {
                 const data = DB.getObj('balance', { total: 0, flows: [] });
@@ -5768,8 +5819,9 @@ Provide insights as a numbered list. Be specific with LKR amounts. Include one r
         <div class="flow-dot ${f.type === 'set' ? 'in' : f.type}">${f.type === 'set' ? '💰' : f.type === 'out' ? '📤' : '📥'}</div>
         <div class="flow-info"><div class="flow-name">${f.company}</div><div class="flow-date">${f.date}${f.notes ? ' · ' + f.notes : ''}</div></div>
         <div class="flow-right"><div class="flow-amt ${f.type === 'out' ? 'out' : 'in'}">${f.type === 'out' ? '-' : '+'}${fmt(f.amount)}</div><div><span class="badge ${f.type === 'set' ? 'bg-a' : f.type === 'out' ? 'bg-r' : 'bg-g'}">${f.type === 'set' ? 'Set' : f.type === 'out' ? 'Out' : 'In'}</span></div></div>
-        <button class="ib d" onclick="deleteBalFlow('${f.id}')">🗑️</button>
+        <div style="display:flex;gap:4px;">${f.type !== 'set' ? `<button class="ib e" onclick="editBalFlow('${f.id}')">✏️</button>` : ''}<button class="ib d" onclick="deleteBalFlow('${f.id}')">🗑️</button></div>
     </div>`).join('');
+
         }
 
         // ==================== MONTHLY DATA & PLAN ====================
@@ -5862,13 +5914,18 @@ Provide insights as a numbered list. Be specific with LKR amounts. Include one r
                 netData.push(md.balance);
                 yrInc += md.income; yrExp += md.totalExp;
             }
+            // Current month expenses (actual expenses logged for this month only)
+            const nowD = new Date();
+            const curMonthStr = `${nowD.getFullYear()}-${p2(nowD.getMonth() + 1)}`;
+            const curMonthExp = DB.get('expenses').filter(e => e.month === curMonthStr).reduce((s, e) => s + e.amount, 0);
             $('dashStats').innerHTML = `
         <div class="stat-card sc-green"><div class="stat-label">Year Income</div><div class="stat-val">${fmtS(yrInc)}</div></div>
         <div class="stat-card sc-red"><div class="stat-label">Year Expenses</div><div class="stat-val">${fmtS(yrExp)}</div></div>
         <div class="stat-card sc-gold"><div class="stat-label">Net Savings</div><div class="stat-val">${fmtS(yrInc - yrExp)}</div></div>
-        <div class="stat-card sc-blue"><div class="stat-label">Avg Monthly Exp</div><div class="stat-val">${fmtS(yrExp / 12)}</div></div>
+        <div class="stat-card sc-blue"><div class="stat-label">This Month Expenses</div><div class="stat-val">${fmtS(curMonthExp)}</div><div class="stat-meta">${MONTHS[nowD.getMonth()]} ${nowD.getFullYear()}</div></div>
         <div class="stat-card sc-cyan"><div class="stat-label">Savings Rate</div><div class="stat-val">${yrInc > 0 ? Math.round((yrInc - yrExp) / yrInc * 100) : 0}%</div></div>
     `;
+
 
             const ctxC = $('dashChart');
             if (dashChartInst) dashChartInst.destroy();
@@ -5955,29 +6012,44 @@ Provide insights as a numbered list. Be specific with LKR amounts. Include one r
 
         function renderRecentActivity() {
             const recent = [];
-
-            DB.getObj('balance').flows.forEach(f => {
-                recent.push({ title: f.company, sub: f.type === 'out' ? 'Investment Out' : f.type === 'in' ? 'Income In' : 'Balance Set', date: new Date(f.date), amt: f.amount, color: f.type === 'out' ? 'var(--red)' : f.type === 'in' ? 'var(--green)' : 'var(--accent)' });
-            });
-
-            DB.get('targets').forEach(t => {
-                t.savings.forEach(s => {
-                    recent.push({ title: t.name, sub: 'Savings Added', date: new Date(s.date), amt: s.amount, color: 'var(--green)' });
+            try {
+                const balData = DB.getObj('balance', { total: 0, flows: [] });
+                (balData.flows || []).forEach(f => {
+                    if (!f || !f.date) return;
+                    const d = new Date(f.date + 'T00:00:00');
+                    if (isNaN(d.getTime())) return;
+                    recent.push({ title: f.company || '—', sub: f.type === 'out' ? 'Investment Out' : f.type === 'in' ? 'Income In' : 'Balance Set', date: d, amt: f.amount, color: f.type === 'out' ? 'var(--red)' : f.type === 'in' ? 'var(--green)' : 'var(--accent)' });
                 });
-            });
-
+            } catch(e) {}
+            try {
+                DB.get('targets').forEach(t => {
+                    (t.savings || []).forEach(s => {
+                        if (!s || !s.date) return;
+                        const d = new Date(s.date + 'T00:00:00');
+                        if (isNaN(d.getTime())) return;
+                        recent.push({ title: t.name, sub: 'Savings Added', date: d, amt: s.amount, color: 'var(--green)' });
+                    });
+                });
+            } catch(e) {}
+            try {
+                DB.get('expenses').slice(-20).forEach(x => {
+                    if (!x || !x.month) return;
+                    const d = new Date(x.month + '-01T00:00:00');
+                    recent.push({ title: x.desc, sub: x.cat + ' Expense', date: d, amt: x.amount, color: 'var(--red)' });
+                });
+            } catch(e) {}
             recent.sort((a, b) => b.date - a.date);
-            const top5 = recent.slice(0, 5);
-
+            const top8 = recent.slice(0, 8);
             const wrap = $('dashRecent');
-            if (!top5.length) {
+            if (!top8.length) {
                 wrap.innerHTML = emptyState('📭', 'No Recent Activity', 'Your latest financial logs will appear here.');
                 return;
             }
-            wrap.innerHTML = top5.map(u => `<div class="li-item">
+            wrap.innerHTML = top8.map(u => `<div class="li-item">
         <div><div class="li-title">${u.title}</div><div class="li-sub">${u.sub}</div></div>
-        <div style="text-align:right;"><div class="li-amt" style="color:${u.color};">${fmt(u.amt)}</div><div class="li-date">${u.date.toISOString().split('T')[0]}</div></div>
+        <div style="text-align:right;"><div class="li-amt" style="color:${u.color};">${fmt(u.amt)}</div><div class="li-date">${u.date.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}</div></div>
     </div>`).join('');
+
         }
 
         // ==================== DSCR CALCULATOR ====================
@@ -6172,61 +6244,61 @@ Provide insights as a numbered list. Be specific with LKR amounts. Include one r
 
         <!-- Installment Payment Schedule -->
         ${newEMI > 0 && newDur > 0 ? (() => {
-            const totalPaid = newEMI * newDur;
-            const totalInterest = totalPaid - actualNewLoan;
-            const interestPct = actualNewLoan > 0 ? ((totalInterest / actualNewLoan) * 100).toFixed(1) : 0;
-            
-            // Generate first 12 installments + summary
-            const monthlyRate = newRate / 100 / 12;
-            let balance = actualNewLoan;
-            let scheduleRows = '';
-            const maxShow = Math.min(newDur, 12);
-            
-            for (let m = 1; m <= maxShow; m++) {
-                const interestPart = balance * monthlyRate;
-                const principalPart = newEMI - interestPart;
-                balance = Math.max(0, balance - principalPart);
-                scheduleRows += '<tr style="border-bottom:1px solid var(--border);">' +
-                    '<td style="padding:6px 8px;font-family:var(--mono);font-size:12px;">' + m + '</td>' +
-                    '<td style="padding:6px 8px;font-family:var(--mono);font-size:12px;color:var(--accent);">' + fmtN(newEMI) + '</td>' +
-                    '<td style="padding:6px 8px;font-family:var(--mono);font-size:12px;color:var(--green);">' + fmtN(principalPart) + '</td>' +
-                    '<td style="padding:6px 8px;font-family:var(--mono);font-size:12px;color:var(--red);">' + fmtN(interestPart) + '</td>' +
-                    '<td style="padding:6px 8px;font-family:var(--mono);font-size:12px;">' + fmtN(balance) + '</td>' +
-                '</tr>';
-            }
+                    const totalPaid = newEMI * newDur;
+                    const totalInterest = totalPaid - actualNewLoan;
+                    const interestPct = actualNewLoan > 0 ? ((totalInterest / actualNewLoan) * 100).toFixed(1) : 0;
 
-            return '<div style="margin-top:20px;text-align:left;">' +
-                '<div style="font-size:13px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px;">📋 Loan Payment Summary</div>' +
-                '<div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px;">' +
-                    '<div style="flex:1;min-width:120px;padding:10px 14px;background:var(--bg2);border-radius:10px;text-align:center;">' +
+                    // Generate first 12 installments + summary
+                    const monthlyRate = newRate / 100 / 12;
+                    let balance = actualNewLoan;
+                    let scheduleRows = '';
+                    const maxShow = Math.min(newDur, 12);
+
+                    for (let m = 1; m <= maxShow; m++) {
+                        const interestPart = balance * monthlyRate;
+                        const principalPart = newEMI - interestPart;
+                        balance = Math.max(0, balance - principalPart);
+                        scheduleRows += '<tr style="border-bottom:1px solid var(--border);">' +
+                            '<td style="padding:6px 8px;font-family:var(--mono);font-size:12px;">' + m + '</td>' +
+                            '<td style="padding:6px 8px;font-family:var(--mono);font-size:12px;color:var(--accent);">' + fmtN(newEMI) + '</td>' +
+                            '<td style="padding:6px 8px;font-family:var(--mono);font-size:12px;color:var(--green);">' + fmtN(principalPart) + '</td>' +
+                            '<td style="padding:6px 8px;font-family:var(--mono);font-size:12px;color:var(--red);">' + fmtN(interestPart) + '</td>' +
+                            '<td style="padding:6px 8px;font-family:var(--mono);font-size:12px;">' + fmtN(balance) + '</td>' +
+                            '</tr>';
+                    }
+
+                    return '<div style="margin-top:20px;text-align:left;">' +
+                        '<div style="font-size:13px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px;">📋 Loan Payment Summary</div>' +
+                        '<div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px;">' +
+                        '<div style="flex:1;min-width:120px;padding:10px 14px;background:var(--bg2);border-radius:10px;text-align:center;">' +
                         '<div style="font-size:10px;color:var(--text3);text-transform:uppercase;">Loan Amount</div>' +
                         '<div style="font-size:16px;font-weight:800;font-family:var(--mono);color:var(--text);">' + fmt(actualNewLoan) + '</div>' +
-                    '</div>' +
-                    '<div style="flex:1;min-width:120px;padding:10px 14px;background:var(--bg2);border-radius:10px;text-align:center;">' +
+                        '</div>' +
+                        '<div style="flex:1;min-width:120px;padding:10px 14px;background:var(--bg2);border-radius:10px;text-align:center;">' +
                         '<div style="font-size:10px;color:var(--text3);text-transform:uppercase;">Total Payable</div>' +
                         '<div style="font-size:16px;font-weight:800;font-family:var(--mono);color:var(--accent);">' + fmt(totalPaid) + '</div>' +
-                    '</div>' +
-                    '<div style="flex:1;min-width:120px;padding:10px 14px;background:rgba(239,68,68,0.08);border-radius:10px;text-align:center;">' +
+                        '</div>' +
+                        '<div style="flex:1;min-width:120px;padding:10px 14px;background:rgba(239,68,68,0.08);border-radius:10px;text-align:center;">' +
                         '<div style="font-size:10px;color:var(--text3);text-transform:uppercase;">Total Interest</div>' +
                         '<div style="font-size:16px;font-weight:800;font-family:var(--mono);color:var(--red);">' + fmt(totalInterest) + '</div>' +
                         '<div style="font-size:10px;color:var(--red);">' + interestPct + '% of principal</div>' +
-                    '</div>' +
-                '</div>' +
-                '<div style="font-size:12px;font-weight:700;color:var(--text3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px;">First ' + maxShow + ' Installments (' + _getCurrency() + ')</div>' +
-                '<div style="overflow-x:auto;border-radius:8px;border:1px solid var(--border);">' +
-                '<table style="width:100%;border-collapse:collapse;font-size:12px;">' +
-                    '<thead><tr style="background:var(--card2);">' +
+                        '</div>' +
+                        '</div>' +
+                        '<div style="font-size:12px;font-weight:700;color:var(--text3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px;">First ' + maxShow + ' Installments (' + _getCurrency() + ')</div>' +
+                        '<div style="overflow-x:auto;border-radius:8px;border:1px solid var(--border);">' +
+                        '<table style="width:100%;border-collapse:collapse;font-size:12px;">' +
+                        '<thead><tr style="background:var(--card2);">' +
                         '<th style="padding:8px;text-align:left;font-weight:700;color:var(--text3);font-size:10px;text-transform:uppercase;">#</th>' +
                         '<th style="padding:8px;text-align:left;font-weight:700;color:var(--text3);font-size:10px;text-transform:uppercase;">EMI</th>' +
                         '<th style="padding:8px;text-align:left;font-weight:700;color:var(--text3);font-size:10px;text-transform:uppercase;">Principal</th>' +
                         '<th style="padding:8px;text-align:left;font-weight:700;color:var(--text3);font-size:10px;text-transform:uppercase;">Interest</th>' +
                         '<th style="padding:8px;text-align:left;font-weight:700;color:var(--text3);font-size:10px;text-transform:uppercase;">Balance</th>' +
-                    '</tr></thead>' +
-                    '<tbody>' + scheduleRows + '</tbody>' +
-                '</table></div>' +
-                (newDur > 12 ? '<div style="font-size:11px;color:var(--text3);margin-top:6px;text-align:center;">Showing first 12 of ' + newDur + ' installments</div>' : '') +
-            '</div>';
-        })() : ''}
+                        '</tr></thead>' +
+                        '<tbody>' + scheduleRows + '</tbody>' +
+                        '</table></div>' +
+                        (newDur > 12 ? '<div style="font-size:11px;color:var(--text3);margin-top:6px;text-align:center;">Showing first 12 of ' + newDur + ' installments</div>' : '') +
+                        '</div>';
+                })() : ''}
 
         <div class="dscr-advice" style="border-left-color:${color};text-align:left;">${advice}</div>
     `;
@@ -6294,9 +6366,9 @@ Provide insights as a numbered list. Be specific with LKR amounts. Include one r
                 <div class="setting-info"><div class="setting-label">Haptic Intensity</div><div class="setting-desc">Control the strength of vibration feedback: Gentle (subtle), Standard (balanced), Intense (powerful).</div></div>
                 <div style="display:flex;gap:8px;align-items:center;">
                     <select class="fi" style="width:130px; border-color:var(--border2);" onchange="toggleSetting('hapticIntensity', this.value); triggerHaptic('medium');">
-                        <option value="gentle" ${(s.hapticIntensity||'standard') === 'gentle' ? 'selected' : ''}>🤫 Gentle</option>
-                        <option value="standard" ${(s.hapticIntensity||'standard') === 'standard' ? 'selected' : ''}>✨ Standard</option>
-                        <option value="intense" ${(s.hapticIntensity||'standard') === 'intense' ? 'selected' : ''}>💪 Intense</option>
+                        <option value="gentle" ${(s.hapticIntensity || 'standard') === 'gentle' ? 'selected' : ''}>🤫 Gentle</option>
+                        <option value="standard" ${(s.hapticIntensity || 'standard') === 'standard' ? 'selected' : ''}>✨ Standard</option>
+                        <option value="intense" ${(s.hapticIntensity || 'standard') === 'intense' ? 'selected' : ''}>💪 Intense</option>
                     </select>
                     <button class="btn btn-ghost btn-sm" onclick="triggerHaptic('success'); notify('Feel the luxury! ✨', 'info');" style="white-space:nowrap;">🔔 Test</button>
                 </div>
@@ -6507,7 +6579,7 @@ Provide insights as a numbered list. Be specific with LKR amounts. Include one r
         };
 
         function getSmartNotifHistory() {
-            try { return JSON.parse(localStorage.getItem('wf2_notif_history') || '{}'); } catch(e) { return {}; }
+            try { return JSON.parse(localStorage.getItem('wf2_notif_history') || '{}'); } catch (e) { return {}; }
         }
 
         function setSmartNotifHistory(h) {
@@ -6545,7 +6617,7 @@ Provide insights as a numbered list. Be specific with LKR amounts. Include one r
                     // Fallback: direct Notification API
                     new Notification(title, options);
                 }
-            } catch(e) {
+            } catch (e) {
                 console.warn('[NOTIF] OS notification failed:', e.message);
             }
         }
