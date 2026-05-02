@@ -1808,6 +1808,82 @@
             flex-shrink: 0;
         }
 
+        /* ================== AUTOCOMPLETE ================== */
+        .ac-wrap { position: relative; width: 100%; }
+        .ac-drop {
+            position: absolute;
+            top: calc(100% + 3px);
+            left: 0; right: 0;
+            background: var(--card);
+            border: 1.5px solid var(--border2);
+            border-radius: var(--r2);
+            z-index: 9999;
+            max-height: 220px;
+            overflow-y: auto;
+            box-shadow: var(--shadow);
+            display: none;
+        }
+        .ac-drop.show { display: block; }
+        .ac-item {
+            display: flex;
+            align-items: center;
+            padding: 9px 12px;
+            font-size: 13px;
+            cursor: pointer;
+            gap: 8px;
+            transition: background .12s;
+        }
+        .ac-item:hover { background: var(--card2); }
+        .ac-item.ac-live { opacity: 0.75; }
+        .ac-item-text { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .ac-sep {
+            font-size: 9px;
+            font-weight: 700;
+            color: var(--text3);
+            padding: 5px 12px 3px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background: var(--bg2);
+        }
+        .ac-del {
+            font-size: 10px;
+            color: var(--text3);
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid transparent;
+            background: transparent;
+            cursor: pointer;
+            flex-shrink: 0;
+            line-height: 1;
+            transition: all .12s;
+        }
+        .ac-del:hover { color: var(--red); border-color: rgba(239,68,68,.3); background: var(--rg); }
+
+        /* ================== EXPENSE SCHEDULE VIEW ================== */
+        .exp-view-toggle { display: flex; gap: 5px; }
+        .exp-vbtn { padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; border: 1px solid var(--border); background: var(--card2); color: var(--text3); cursor: pointer; transition: all .15s; }
+        .exp-vbtn.active { background: rgba(212,175,55,.15); color: var(--accent); border-color: rgba(212,175,55,.3); }
+        .exp-sched-section { margin-bottom: 18px; }
+        .exp-sched-label { font-size: 11px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; }
+        .exp-sched-item {
+            display: flex; align-items: center; gap: 12px;
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: var(--r2); padding: 12px 14px; margin-bottom: 8px;
+            transition: border-color .2s;
+        }
+        .exp-sched-item:hover { border-color: var(--border2); }
+        .exp-sched-item.done { opacity: .6; }
+        .exp-check-btn {
+            width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--border2);
+            background: transparent; cursor: pointer; font-size: 16px; display: flex;
+            align-items: center; justify-content: center; flex-shrink: 0; transition: all .15s;
+        }
+        .exp-check-btn:hover { border-color: var(--green); background: var(--gg); }
+        .exp-check-btn.checked { border-color: var(--green); background: var(--gg); }
+        .exp-sched-info { flex: 1; min-width: 0; }
+        .exp-sched-name { font-size: 14px; font-weight: 600; margin-bottom: 3px; }
+        .exp-sched-right { text-align: right; flex-shrink: 0; }
+
         /* ================== SECTION HEADER ================== */
         .sh {
             display: flex;
@@ -2793,7 +2869,7 @@
                                 <span class="sb-btn" onclick="sortList('income','rate',this)">Rate</span>
                                 <span class="sb-btn" onclick="sortList('income','date',this)">Date</span>
                             </div>
-                            <button class="btn btn-primary btn-sm" onclick="openModal('mdIncome')">+ Add Source</button>
+                            <button class="btn btn-primary btn-sm" onclick="clearIncomeForm(); openModal('mdIncome')">+ Add Source</button>
                         </div>
                     </div>
                     <div id="incomeList"></div>
@@ -2810,7 +2886,7 @@
                             </div>
                             <button class="btn btn-secondary btn-sm" onclick="openModal('mdSkipLoan')">⏭ Skip
                                 Month</button>
-                            <button class="btn btn-primary btn-sm" onclick="openModal('mdLoan')">+ Add Loan</button>
+                            <button class="btn btn-primary btn-sm" onclick="clearLoanForm(); openModal('mdLoan')">+ Add Loan</button>
                         </div>
                     </div>
                     <div id="loansList"></div>
@@ -2826,8 +2902,7 @@
                                 <span class="sb-btn" onclick="sortList('cci','date',this)">Date</span>
                             </div>
                             <button class="btn btn-secondary btn-sm" onclick="openModal('mdSkip')">⏭ Skip Month</button>
-                            <button class="btn btn-primary btn-sm" onclick="openModal('mdCCI')">+ Add
-                                Installment</button>
+                            <button class="btn btn-primary btn-sm" onclick="clearCCIForm(); openModal('mdCCI')">+ Add Installment</button>
                         </div>
                     </div>
                     <div class="g4" id="cciStats" style="margin-bottom:16px;"></div>
@@ -2861,7 +2936,7 @@
                                 <span class="sb-btn active" onclick="sortList('ccot','days',this)">Days Left</span>
                                 <span class="sb-btn" onclick="sortList('ccot','amount',this)">Amount</span>
                             </div>
-                            <button class="btn btn-primary btn-sm" onclick="openModal('mdCCOT')">+ Add Payment</button>
+                            <button class="btn btn-primary btn-sm" onclick="clearCCOTForm(); openModal('mdCCOT')">+ Add Payment</button>
                         </div>
                     </div>
                     <div
@@ -2898,7 +2973,7 @@
                                     Date</span>
                                 <span class="sb-btn" onclick="sortList('cheques','amount',this)">Amount</span>
                             </div>
-                            <button class="btn btn-primary btn-sm" onclick="openModal('mdCheque')">+ Add Cheque</button>
+                            <button class="btn btn-primary btn-sm" onclick="clearChequeForm(); openModal('mdCheque')">+ Add Cheque</button>
                         </div>
                     </div>
                     <div class="g4" id="chequeStats" style="margin-bottom:16px;"></div>
@@ -2930,11 +3005,14 @@
                             <select class="fi" style="width:130px;" id="expMonth" onchange="renderExpenses()">
                                 <option value="">All Months</option>
                             </select>
+                            <div class="exp-view-toggle">
+                                <button class="exp-vbtn active" id="expViewTable" onclick="setExpView('table',this)">📋 Table</button>
+                                <button class="exp-vbtn" id="expViewSched" onclick="setExpView('schedule',this)">📅 Schedule</button>
+                            </div>
                             <div class="sort-bar"><span class="sb-btn active"
                                     onclick="sortList('expenses','date',this)">Date</span><span class="sb-btn"
                                     onclick="sortList('expenses','amount',this)">Amount</span></div>
-                            <button class="btn btn-primary btn-sm" onclick="openModal('mdExpense')">+ Add
-                                Expense</button>
+                            <button class="btn btn-primary btn-sm" onclick="clearExpenseForm(); openModal('mdExpense')">+ Add Expense</button>
                         </div>
                     </div>
                     <div class="g4" id="expStats" style="margin-bottom:16px;"></div>
@@ -2960,9 +3038,8 @@
                     <div class="sh">
                         <div class="sh-title">Targets & Savings</div>
                         <div class="sh-actions">
-                            <button class="btn btn-secondary btn-sm" onclick="openModal('mdSaving')">+ Add
-                                Saving</button>
-                            <button class="btn btn-primary btn-sm" onclick="openModal('mdTarget')">+ New Target</button>
+                            <button class="btn btn-secondary btn-sm" onclick="openModal('mdSaving')">+ Add Saving</button>
+                            <button class="btn btn-primary btn-sm" onclick="clearTargetForm(); openModal('mdTarget')">+ New Target</button>
                         </div>
                     </div>
                     <div id="targetsList"></div>
@@ -2972,9 +3049,8 @@
                     <div class="sh">
                         <div class="sh-title">Balance Tracker</div>
                         <div class="sh-actions">
-                            <button class="btn btn-secondary btn-sm" onclick="openModal('mdBalFlow')">+ Log
-                                Flow</button>
-                            <button class="btn btn-primary btn-sm" onclick="openModal('mdBalSet')">Set Balance</button>
+                            <button class="btn btn-secondary btn-sm" onclick="clearBalFlowForm(); openModal('mdBalFlow')">+ Log Flow</button>
+                            <button class="btn btn-primary btn-sm" onclick="clearBalSetForm(); openModal('mdBalSet')">Set Balance</button>
                         </div>
                     </div>
                     <div class="g3" style="margin-bottom:16px;">
@@ -3008,78 +3084,67 @@
 
                 <div class="page" id="page-dscr">
                     <div class="sh">
-                        <div class="sh-title">DSCR Calculator - Sri Lanka Bank Eligibility</div>
-                        <div class="sh-actions"><button class="btn btn-ghost btn-sm" onclick="clearDSCR()">🧹 Clear
-                                Form</button></div>
+                        <div class="sh-title">📐 DSCR Calculator — Sri Lanka Bank Eligibility</div>
+                        <div class="sh-actions"><button class="btn btn-ghost btn-sm" onclick="clearDSCR()">🧹 Clear All</button></div>
                     </div>
                     <div class="g2">
                         <div class="card">
                             <div class="card-header">
-                                <div class="card-title">Your Financial Profile</div>
+                                <div class="card-title">📊 Your Financial Profile</div>
+                                <div class="card-sub">Income & Expenses Data</div>
                             </div>
 
-                            <div class="fg">
-                                <label class="fl">Gross Monthly Income (LKR)</label>
-                                <div style="display:flex; gap:8px; margin-bottom:8px;">
-                                    <button class="btn btn-secondary btn-sm" style="white-space:nowrap;"
-                                        onclick="loadSystemIncomeAvg()">🔄 System 1-Year Avg</button>
-                                    <input class="fi money-input" id="dscrSysIncome" placeholder="Calculated Auto"
-                                        readonly style="background:var(--bg3); opacity:0.8;" data-val="0">
+                            <div style="background:var(--bg2);border-radius:var(--r2);padding:14px;margin-bottom:14px;border:1px solid var(--border);">
+                                <div style="font-size:11px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">💰 Gross Monthly Income (LKR)</div>
+                                <div style="display:flex; gap:8px; margin-bottom:8px; align-items:center;">
+                                    <button class="btn btn-secondary btn-sm" style="white-space:nowrap;" onclick="loadSystemIncomeAvg()">🔄 System 1-Yr Avg</button>
+                                    <input class="fi money-input" id="dscrSysIncome" placeholder="Auto-calculated" readonly style="background:var(--card3); flex:1; font-family:var(--mono); font-weight:700; color:var(--green);" data-val="0">
+                                    <button class="btn btn-ghost btn-sm" style="color:var(--red);border-color:rgba(239,68,68,.3);padding:6px 10px;" onclick="$('dscrSysIncome').value=''; $('dscrSysIncome').dataset.val='0'; calcDSCR();" title="Clear system income">✕ Clear</button>
                                 </div>
-                                <input class="fi money-input" id="dscrCustIncome"
-                                    placeholder="+ Additional / Custom Income" oninput="calcDSCR()">
+                                <input class="fi money-input" id="dscrCustIncome" placeholder="+ Add custom / additional income" oninput="calcDSCR()" style="font-size:13px;">
                             </div>
 
-                            <div class="fg">
-                                <label class="fl">Monthly Operating Expenses (LKR)</label>
-                                <div style="display:flex; gap:8px; margin-bottom:8px;">
-                                    <button class="btn btn-secondary btn-sm" style="white-space:nowrap;"
-                                        onclick="loadSystemOpexAvg()">🔄 System 1-Year Avg</button>
-                                    <input class="fi money-input" id="dscrSysOpex" placeholder="Calculated Auto"
-                                        readonly style="background:var(--bg3); opacity:0.8;" data-val="0">
+                            <div style="background:var(--bg2);border-radius:var(--r2);padding:14px;margin-bottom:14px;border:1px solid var(--border);">
+                                <div style="font-size:11px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">📉 Monthly Operating Expenses (LKR)</div>
+                                <div style="display:flex; gap:8px; margin-bottom:8px; align-items:center;">
+                                    <button class="btn btn-secondary btn-sm" style="white-space:nowrap;" onclick="loadSystemOpexAvg()">🔄 System 1-Yr Avg</button>
+                                    <input class="fi money-input" id="dscrSysOpex" placeholder="Auto-calculated" readonly style="background:var(--card3); flex:1; font-family:var(--mono); font-weight:700; color:var(--red);" data-val="0">
+                                    <button class="btn btn-ghost btn-sm" style="color:var(--red);border-color:rgba(239,68,68,.3);padding:6px 10px;" onclick="$('dscrSysOpex').value=''; $('dscrSysOpex').dataset.val='0'; calcDSCR();" title="Clear system opex">✕ Clear</button>
                                 </div>
-                                <input class="fi money-input" id="dscrCustOpex" placeholder="+ Additional / Custom Opex"
-                                    oninput="calcDSCR()">
+                                <input class="fi money-input" id="dscrCustOpex" placeholder="+ Add custom / additional expenses" oninput="calcDSCR()" style="font-size:13px;">
                             </div>
 
-                            <div
-                                style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:18px 0 8px;">
-                                Existing Loan Payments</div>
-                            <div class="fg">
-                                <select class="fs" id="dscrAddExistingLoan" onchange="autoAddDSCRLoan()">
-                                    <option value="">+ Fetch active loan from system...</option>
-                                </select>
-                            </div>
-                            <div id="dscrExistingLoans" style="margin-bottom:10px;"></div>
-
-                            <div
-                                style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:18px 0 8px;">
-                                Proposed New Loan</div>
-                            <div class="fr">
-                                <div class="fg"><label class="fl">Loan Amount (LKR)</label><input class="fi money-input"
-                                        id="dscrNewAmt" placeholder="20,000,000" oninput="calcDSCR()"></div>
-                                <div class="fg"><label class="fl">Annual Rate (%)</label><input class="fi"
-                                        id="dscrNewRate" type="number" placeholder="14" step="0.1" oninput="calcDSCR()">
+                            <div style="background:var(--bg2);border-radius:var(--r2);padding:14px;margin-bottom:14px;border:1px solid var(--border);">
+                                <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">🏦 Existing Loan Payments</div>
+                                <div class="fg">
+                                    <select class="fs" id="dscrAddExistingLoan" onchange="autoAddDSCRLoan()">
+                                        <option value="">+ Fetch active loan from system...</option>
+                                    </select>
                                 </div>
+                                <div id="dscrExistingLoans" style="margin-top:8px;"></div>
                             </div>
-                            <div class="fr">
-                                <div class="fg"><label class="fl">Duration (months)</label><input class="fi"
-                                        id="dscrNewDur" type="number" placeholder="120" oninput="calcDSCR()"></div>
-                                <div class="fg"><label class="fl">Down Payment (LKR)</label><input
-                                        class="fi money-input" id="dscrDown" placeholder="0" oninput="calcDSCR()"></div>
+
+                            <div style="background:linear-gradient(135deg,rgba(212,175,55,.06),rgba(59,130,246,.06));border-radius:var(--r2);padding:14px;border:1px solid var(--border2);">
+                                <div style="font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">🏗️ Proposed New Loan</div>
+                                <div class="fr">
+                                    <div class="fg"><label class="fl">Loan Amount (LKR)</label><input class="fi money-input" id="dscrNewAmt" placeholder="20,000,000" oninput="calcDSCR()"></div>
+                                    <div class="fg"><label class="fl">Annual Rate (%)</label><input class="fi" id="dscrNewRate" type="number" placeholder="14" step="0.1" oninput="calcDSCR()"></div>
+                                </div>
+                                <div class="fr">
+                                    <div class="fg"><label class="fl">Duration (months)</label><input class="fi" id="dscrNewDur" type="number" placeholder="120" oninput="calcDSCR()"></div>
+                                    <div class="fg"><label class="fl">Down Payment (LKR)</label><input class="fi money-input" id="dscrDown" placeholder="0" oninput="calcDSCR()"></div>
+                                </div>
+                                <div class="fg"><label class="fl">Purpose</label><input class="fi" id="dscrPurpose" placeholder="Land / House / Vehicle / Business..."></div>
                             </div>
-                            <div class="fg"><label class="fl">Purpose</label><input class="fi" id="dscrPurpose"
-                                    placeholder="Land / House / Vehicle..."></div>
-                            <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:6px;"
-                                onclick="calcDSCR()">📐 Calculate Bank DSCR</button>
+                            <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:12px;padding:13px;font-size:15px;" onclick="calcDSCR()">📐 Calculate Bank DSCR Eligibility</button>
                         </div>
                         <div class="card">
                             <div class="card-header">
-                                <div class="card-title">Analysis Result</div>
+                                <div class="card-title">📊 Analysis Result</div>
+                                <div class="card-sub">Eligibility based on SL banking parameters</div>
                             </div>
                             <div id="dscrResult" style="text-align:center;padding:20px 0;">
-                                <div style="font-size:13px;color:var(--text3);">Fill in the form to calculate
-                                    eligibility based on local banking parameters.</div>
+                                <div style="font-size:13px;color:var(--text3);">Fill in the form to calculate eligibility based on local banking parameters.</div>
                             </div>
                         </div>
                     </div>
