@@ -7157,6 +7157,23 @@ Provide insights as a numbered list. Be specific with LKR amounts. Include one r
             }
         }
 
+
+
+              appilix.postMessage(JSON.stringify({
+                type: "appsflyer_log_event",
+                props: {
+                  name: "order_placed", // Event name
+                  parameters: {         // Event parameters, avoid personal information like email address, name, identity number
+                    customer_id: "#XXXXXXX",
+                    order_amount: 117.5,
+                    country: "US",
+                  }
+                }
+              }));
+
+
+        
+
     </script>
 </body>
 
