@@ -87,3 +87,13 @@ self.addEventListener('sync', (event) => {
         console.log('[SW] Background sync triggered');
     }
 });
+
+// Message handler — allows the app page to trigger notifications via SW
+self.addEventListener('message', (event) => {
+    if (event.data && event.data.type === 'SHOW_NOTIFICATION') {
+        const { title, options } = event.data;
+        event.waitUntil(
+            self.registration.showNotification(title, options)
+        );
+    }
+});
