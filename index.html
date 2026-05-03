@@ -34,6 +34,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 
     <style>
@@ -1945,6 +1946,67 @@
         @keyframes aiDot { 0%,80%,100%{opacity:.2;transform:scale(.8)} 40%{opacity:1;transform:scale(1)} }
         .ai-welcome-msg { background:linear-gradient(135deg,rgba(212,175,55,0.06),rgba(59,130,246,0.04)); border:1px solid rgba(212,175,55,0.15); border-radius:14px; padding:18px; }
 
+        /* ================== WEALTHFLOW SCORE ================== */
+        .wf-score-ring { position:relative; width:120px; height:120px; }
+        .wf-score-val { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+        .wf-score-num { font-size:28px; font-weight:900; font-family:var(--mono); }
+        .wf-score-lbl { font-size:9px; color:var(--text3); text-transform:uppercase; letter-spacing:1px; }
+
+        /* ================== 3D FLOW CANVAS ================== */
+        #cashFlowCanvas { width:100%; height:280px; border-radius:var(--r); background:var(--bg); display:block; }
+        .flow-legend { display:flex; gap:14px; flex-wrap:wrap; margin-top:10px; }
+        .flow-legend-item { display:flex; align-items:center; gap:6px; font-size:11px; color:var(--text2); }
+        .flow-dot { width:10px; height:10px; border-radius:50%; }
+
+        /* ================== MONTE CARLO ================== */
+        #monteCarloCanvas { width:100%; height:260px; border-radius:var(--r); }
+        .mc-badge { padding:4px 12px; border-radius:20px; font-size:11px; font-weight:700; }
+        .mc-best { background:rgba(16,185,129,.15); color:var(--green); border:1px solid rgba(16,185,129,.3); }
+        .mc-worst { background:rgba(239,68,68,.15); color:var(--red); border:1px solid rgba(239,68,68,.3); }
+        .mc-median { background:rgba(212,175,55,.15); color:var(--accent); border:1px solid rgba(212,175,55,.3); }
+
+        /* ================== DEBT DEMOLISHER ================== */
+        .debt-card { background:var(--card2); border:1px solid var(--border); border-radius:var(--r); padding:14px 16px; margin-bottom:8px; transition:all .2s; }
+        .debt-card.next-target { border-color:var(--accent); background:linear-gradient(135deg,rgba(212,175,55,.08),var(--card2)); box-shadow:0 0 20px rgba(212,175,55,.1); }
+        .debt-rank { width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; flex-shrink:0; }
+
+        /* ================== SUBSCRIPTION TRACKER ================== */
+        .sub-item { display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid var(--border); }
+        .sub-item:last-child { border-bottom:none; }
+        .sub-icon { width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+        .sub-alert { background:rgba(239,68,68,.1); border:1px solid rgba(239,68,68,.2); border-radius:8px; padding:6px 10px; font-size:11px; color:var(--red); margin-top:4px; }
+
+        /* ================== PANIC MODE ================== */
+        .decoy-banner { position:fixed; top:0; left:0; right:0; background:var(--red); color:#fff; text-align:center; padding:4px; font-size:11px; font-weight:700; z-index:9999; display:none; }
+        
+        /* ================== SESSION MANAGEMENT ================== */
+        .device-item { display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid var(--border); }
+        .device-item:last-child { border-bottom:none; }
+        .device-icon { width:40px; height:40px; border-radius:10px; background:var(--card2); display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; border:1px solid var(--border); }
+        .device-current { border-color:var(--green); background:rgba(16,185,129,.05); }
+
+        /* ================== SOUNDSCAPE ================== */
+        .sound-btn { padding:4px 10px; border-radius:20px; font-size:11px; border:1px solid var(--border); background:var(--card2); color:var(--text2); cursor:pointer; transition:all .15s; }
+        .sound-btn.active { background:rgba(212,175,55,.15); border-color:var(--accent); color:var(--accent); }
+
+        /* ================== AI PERSONA ================== */
+        .persona-card { padding:12px 16px; border-radius:var(--r); border:2px solid transparent; cursor:pointer; transition:all .2s; background:var(--card2); }
+        .persona-card.selected { border-color:var(--accent); background:linear-gradient(135deg,rgba(212,175,55,.1),var(--card2)); }
+        .persona-card:hover { border-color:var(--border2); }
+
+        /* ================== E2EE INDICATOR ================== */
+        .e2ee-badge { display:inline-flex; align-items:center; gap:5px; padding:3px 10px; border-radius:20px; font-size:10px; font-weight:700; background:rgba(16,185,129,.1); color:var(--green); border:1px solid rgba(16,185,129,.25); }
+
+        /* ================== AUTO-CATEGORIZE ================== */
+        .auto-cat-badge { position:absolute; right:8px; top:50%; transform:translateY(-50%); font-size:10px; color:var(--accent); font-weight:700; pointer-events:none; }
+
+        /* ================== INNOVATIONS TAB NAV ================== */
+        .innov-tabs { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:16px; }
+        .innov-tab { padding:6px 14px; border-radius:20px; font-size:12px; font-weight:600; cursor:pointer; border:1px solid var(--border); background:var(--card2); color:var(--text2); transition:all .15s; white-space:nowrap; }
+        .innov-tab.active { background:linear-gradient(135deg,var(--accent),var(--accent3)); color:#000; border-color:transparent; }
+        .innov-panel { display:none; }
+        .innov-panel.active { display:block; animation:pgIn .2s ease; }
+
         /* ================== HAPTIC RIPPLE (visual feedback for all OS) ================== */
         @keyframes hapticRipple {
             0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(212,175,55,0.4); }
@@ -2885,6 +2947,48 @@
                         </div>
                     </div>
 
+                    <!-- WealthFlow Score + 3D Flow Row -->
+                    <div class="g2" style="margin-bottom:16px;">
+                        <div class="card">
+                            <div class="card-header">
+                                <div>
+                                    <div class="card-title">🏆 WealthFlow Score</div>
+                                    <div class="card-sub">Your personal wealth health index (0–1000)</div>
+                                </div>
+                                <button class="btn btn-ghost btn-sm" onclick="renderWealthScore()">↻ Refresh</button>
+                            </div>
+                            <div id="wealthScoreArea" style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;"></div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">
+                                <div>
+                                    <div class="card-title">⚡ Pay This Next</div>
+                                    <div class="card-sub">Debt Demolisher — optimal payoff order</div>
+                                </div>
+                                <div style="display:flex;gap:6px;">
+                                    <button class="btn btn-ghost btn-xs" id="debtStratBtn" onclick="toggleDebtStrategy()">Avalanche</button>
+                                </div>
+                            </div>
+                            <div id="debtDemolisherArea"></div>
+                        </div>
+                    </div>
+
+                    <!-- 3D Cash Flow -->
+                    <div class="card" style="margin-bottom:16px;padding:16px;">
+                        <div class="card-header">
+                            <div>
+                                <div class="card-title">🌊 3D Cash Flow Visualization</div>
+                                <div class="card-sub">Live particle flow — income in, expenses out</div>
+                            </div>
+                            <div style="display:flex;gap:6px;">
+                                <button class="btn btn-ghost btn-xs" onclick="toggleCashFlowView()" id="cfViewBtn">2D View</button>
+                                <button class="btn btn-ghost btn-xs" onclick="initCashFlow3D()">↻ Reset</button>
+                            </div>
+                        </div>
+                        <canvas id="cashFlowCanvas"></canvas>
+                        <div class="flow-legend" id="flowLegend"></div>
+                    </div>
+
                     <div class="dash-chart-row">
                         <div class="card">
                             <div class="card-header">
@@ -3227,7 +3331,7 @@
 
                 <!-- ==================== AI ADVISOR PAGE ==================== -->
                 <div class="page" id="page-ai">
-                    <div class="sh" style="margin-bottom:16px;">
+                    <div class="sh" style="margin-bottom:12px;">
                         <div>
                             <div class="sh-title">🤖 AI Financial Advisor</div>
                             <div style="font-size:12px;color:var(--text3);margin-top:3px;">Your personalized, always-learning wealth companion</div>
@@ -3241,24 +3345,47 @@
                         </div>
                     </div>
 
+                    <!-- AI Persona Selector -->
+                    <div style="display:flex;gap:8px;margin-bottom:12px;overflow-x:auto;padding-bottom:4px;">
+                        <div class="persona-card selected" id="persona_supportive" onclick="setAIPersonaMode('supportive',this)" style="min-width:130px;">
+                            <div style="font-size:18px;margin-bottom:4px;">🤗</div>
+                            <div style="font-size:12px;font-weight:700;">Supportive</div>
+                            <div style="font-size:10px;color:var(--text3);">Warm & motivating</div>
+                        </div>
+                        <div class="persona-card" id="persona_strict" onclick="setAIPersonaMode('strict',this)" style="min-width:130px;">
+                            <div style="font-size:18px;margin-bottom:4px;">📊</div>
+                            <div style="font-size:12px;font-weight:700;">Strict Advisor</div>
+                            <div style="font-size:10px;color:var(--text3);">Blunt & data-driven</div>
+                        </div>
+                        <div class="persona-card" id="persona_coach" onclick="setAIPersonaMode('coach',this)" style="min-width:130px;">
+                            <div style="font-size:18px;margin-bottom:4px;">🏋️</div>
+                            <div style="font-size:12px;font-weight:700;">Coach</div>
+                            <div style="font-size:10px;color:var(--text3);">Goal-focused</div>
+                        </div>
+                        <div class="persona-card" id="persona_friend" onclick="setAIPersonaMode('friend',this)" style="min-width:130px;">
+                            <div style="font-size:18px;margin-bottom:4px;">😊</div>
+                            <div style="font-size:12px;font-weight:700;">Friend</div>
+                            <div style="font-size:10px;color:var(--text3);">Casual & friendly</div>
+                        </div>
+                    </div>
+
                     <!-- AI Suggestion Pills -->
-                    <div id="aiSuggestionPills" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;"></div>
+                    <div id="aiSuggestionPills" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;"></div>
 
                     <!-- Chat Area -->
                     <div class="card" style="padding:0;overflow:hidden;border:1px solid var(--border2);margin-bottom:0;">
-                        <div id="aiChatMessages" style="height:420px;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:14px;scroll-behavior:smooth;">
+                        <div id="aiChatMessages" style="height:400px;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:14px;scroll-behavior:smooth;">
                             <div class="ai-welcome-msg" id="aiWelcomeBlock">
                                 <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
                                     <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#0d1d3c,#1a2d4c);border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🤖</div>
                                     <div>
                                         <div style="font-size:13px;font-weight:700;color:var(--accent);">WealthFlow AI</div>
-                                        <div style="font-size:10px;color:var(--text3);">Your personal financial advisor</div>
+                                        <div style="font-size:10px;color:var(--text3);">Your personal financial advisor · <span class="e2ee-badge">🔒 E2EE Protected</span></div>
                                     </div>
                                 </div>
                                 <div style="font-size:14px;color:var(--text);line-height:1.7;">
                                     👋 Hello! I'm your <strong style="color:var(--accent);">WealthFlow AI Advisor</strong> — powered by Gemini, trained to understand <em>your</em> unique financial patterns.<br><br>
-                                    I can help you analyze your spending, plan your savings, review your loans, and give you smart, personalized advice based on your actual data.<br><br>
-                                    <span style="color:var(--text2);">Ask me anything about your finances! 💡</span>
+                                    Ask me anything about your finances. I learn your style and get smarter every conversation! 💡
                                 </div>
                             </div>
                         </div>
@@ -3268,22 +3395,121 @@
                             <div style="display:flex;gap:10px;align-items:flex-end;">
                                 <div style="flex:1;position:relative;">
                                     <textarea id="aiChatInput" class="fi" placeholder="Ask me anything about your finances... 💬" rows="1"
-                                        style="resize:none;padding-right:48px;border-radius:12px;line-height:1.5;max-height:120px;overflow-y:auto;transition:border-color 0.2s;"
+                                        style="resize:none;padding-right:48px;border-radius:12px;line-height:1.5;max-height:120px;overflow-y:auto;"
                                         onkeydown="handleAIChatKey(event)" oninput="autoResizeAIInput(this)"></textarea>
-                                    <label style="position:absolute;right:10px;bottom:9px;cursor:pointer;color:var(--text3);transition:color 0.2s;" title="Scan receipt with AI">
-                                        📸
-                                        <input type="file" accept="image/*" capture="environment" id="ai_chat_scan" style="display:none;" onchange="handleAIScan(event, 'ai_chat')">
+                                    <label style="position:absolute;right:10px;bottom:9px;cursor:pointer;color:var(--text3);" title="Scan receipt with AI">
+                                        📸<input type="file" accept="image/*" capture="environment" id="ai_chat_scan" style="display:none;" onchange="handleAIScan(event, 'ai_chat')">
                                     </label>
                                 </div>
-                                <button id="aiSendBtn" class="btn btn-primary" onclick="sendAIMessage()" style="padding:10px 18px;border-radius:12px;flex-shrink:0;font-size:15px;">
-                                    ➤
-                                </button>
+                                <button id="aiSendBtn" class="btn btn-primary" onclick="sendAIMessage()" style="padding:10px 18px;border-radius:12px;flex-shrink:0;font-size:15px;">➤</button>
                             </div>
                             <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
-                                <div id="aiTypingIndicator" style="font-size:11px;color:var(--text3);display:none;">
-                                    <span style="color:var(--accent);">●</span><span style="opacity:0.5;">●</span><span style="opacity:0.2;">●</span> AI is thinking...
-                                </div>
+                                <div id="aiTypingIndicator" style="font-size:11px;color:var(--text3);display:none;"><span style="color:var(--accent);">●</span><span style="opacity:0.5;">●</span><span style="opacity:0.2;">●</span> AI is thinking...</div>
                                 <div style="font-size:10px;color:var(--text3);margin-left:auto;font-family:var(--mono);" id="aiProviderInfo">Gemini · DeepSeek · Groq</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==================== INNOVATIONS PAGE ==================== -->
+                <div class="page" id="page-innovations">
+                    <div class="sh" style="margin-bottom:12px;">
+                        <div class="sh-title">🚀 Advanced Tools</div>
+                    </div>
+                    <div class="innov-tabs">
+                        <div class="innov-tab active" onclick="switchInnovTab('monte',this)">📈 Monte Carlo</div>
+                        <div class="innov-tab" onclick="switchInnovTab('subs',this)">🔔 Subscriptions</div>
+                        <div class="innov-tab" onclick="switchInnovTab('security',this)">🛡️ Security</div>
+                    </div>
+
+                    <!-- Monte Carlo Panel -->
+                    <div class="innov-panel active" id="innov-monte">
+                        <div class="card" style="margin-bottom:16px;">
+                            <div class="card-header">
+                                <div>
+                                    <div class="card-title">📈 Monte Carlo Wealth Simulation</div>
+                                    <div class="card-sub">10,000-run projection · Sri Lankan inflation & CBSL rates</div>
+                                </div>
+                                <button class="btn btn-primary btn-sm" onclick="runMonteCarlo()">▶ Run Simulation</button>
+                            </div>
+                            <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px;">
+                                <div class="fg" style="flex:1;min-width:140px;">
+                                    <label class="fl">Years to Project</label>
+                                    <select class="fs" id="mc_years">
+                                        <option value="3">3 Years</option>
+                                        <option value="5" selected>5 Years</option>
+                                        <option value="10">10 Years</option>
+                                        <option value="20">20 Years</option>
+                                    </select>
+                                </div>
+                                <div class="fg" style="flex:1;min-width:140px;">
+                                    <label class="fl">Inflation Rate (%)</label>
+                                    <input class="fi" id="mc_inflation" type="number" value="8.5" step="0.5" placeholder="8.5">
+                                </div>
+                                <div class="fg" style="flex:1;min-width:140px;">
+                                    <label class="fl">Return on Savings (%)</label>
+                                    <input class="fi" id="mc_return" type="number" value="10" step="0.5" placeholder="10">
+                                </div>
+                            </div>
+                            <canvas id="monteCarloCanvas" height="260"></canvas>
+                            <div id="monteCarloResult" style="margin-top:14px;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Subscriptions Panel -->
+                    <div class="innov-panel" id="innov-subs">
+                        <div class="card">
+                            <div class="card-header">
+                                <div>
+                                    <div class="card-title">🔔 Smart Subscription & Bill Tracker</div>
+                                    <div class="card-sub">AI-detected recurring payments · Anomaly alerts</div>
+                                </div>
+                                <button class="btn btn-primary btn-sm" onclick="detectSubscriptions()">🤖 Auto-Detect</button>
+                            </div>
+                            <div id="subscriptionList"></div>
+                        </div>
+                    </div>
+
+                    <!-- Security Panel -->
+                    <div class="innov-panel" id="innov-security">
+                        <div class="g2">
+                            <!-- E2EE Status -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-title">🔒 Zero-Knowledge Encryption</div>
+                                </div>
+                                <div id="e2eeStatus"></div>
+                                <div style="margin-top:12px;">
+                                    <div class="setting-row">
+                                        <div class="setting-info"><div class="setting-label">Client-Side Encryption</div><div class="setting-desc">Encrypt all data with your PIN before storing in Firebase. Even Anthropic cannot read it.</div></div>
+                                        <div class="toggle" id="e2eeToggle" onclick="toggleE2EE()"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Session Management -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-title">📱 Active Sessions</div>
+                                    <button class="btn btn-danger btn-sm" onclick="revokeAllSessions()">⚠️ Revoke All</button>
+                                </div>
+                                <div id="sessionList"></div>
+                            </div>
+                        </div>
+                        <!-- Panic Mode -->
+                        <div class="card" style="margin-top:16px;border-color:rgba(239,68,68,0.3);">
+                            <div class="card-header">
+                                <div>
+                                    <div class="card-title" style="color:var(--red);">🚨 Panic Mode / Decoy Vault</div>
+                                    <div class="card-sub">Set a decoy PIN to show fake data if forced to open the app</div>
+                                </div>
+                            </div>
+                            <div class="setting-row">
+                                <div class="setting-info"><div class="setting-label">Decoy PIN</div><div class="setting-desc">When entered at login, opens a fake vault with dummy data.</div></div>
+                                <button class="btn btn-secondary btn-sm" onclick="openModal('mdDecoyPin')">⚙️ Configure</button>
+                            </div>
+                            <div class="setting-row">
+                                <div class="setting-info"><div class="setting-label">Panic Mode Status</div><div class="setting-desc" id="panicModeDesc">Not configured</div></div>
+                                <span class="badge" id="panicModeBadge" style="background:rgba(148,163,184,.1);color:var(--text3);">Disabled</span>
                             </div>
                         </div>
                     </div>
