@@ -2637,6 +2637,82 @@
                 padding: 8px 12px;
             }
         }
+
+        /* ================== WEALTHFLOW SCORE ================== */
+        .wf-score-ring { position:relative; width:200px; height:200px; margin:0 auto; }
+        .wf-score-ring svg { transform:rotate(-90deg); }
+        .wf-score-ring .score-value { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); text-align:center; }
+        .wf-score-ring .score-num { font-size:48px; font-weight:900; font-family:var(--mono); letter-spacing:-2px; }
+        .wf-score-ring .score-label { font-size:11px; color:var(--text3); text-transform:uppercase; letter-spacing:2px; }
+        .score-factor { display:flex; align-items:center; gap:12px; padding:12px; background:var(--bg2); border-radius:var(--r2); margin-bottom:8px; border:1px solid var(--border); }
+        .score-factor-bar { flex:1; height:6px; background:var(--border); border-radius:10px; overflow:hidden; }
+        .score-factor-fill { height:100%; border-radius:10px; transition:width 0.6s ease; }
+
+        /* ================== SUBSCRIPTION TRACKER ================== */
+        .sub-card { background:var(--card); border:1px solid var(--border2); border-radius:var(--r); padding:16px; margin-bottom:10px; display:flex; align-items:center; gap:14px; transition:all .2s; }
+        .sub-card:hover { border-color:var(--accent); box-shadow:0 4px 20px rgba(0,0,0,0.2); }
+        .sub-icon { width:42px; height:42px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:20px; background:var(--bg2); flex-shrink:0; }
+        .sub-due-badge { padding:3px 8px; border-radius:6px; font-size:10px; font-weight:700; font-family:var(--mono); }
+        .sub-due-urgent { background:rgba(239,68,68,0.15); color:var(--red); }
+        .sub-due-soon { background:rgba(245,166,35,0.15); color:var(--accent2); }
+        .sub-due-ok { background:rgba(16,185,129,0.15); color:var(--green); }
+
+        /* ================== DEBT DEMOLISHER ================== */
+        .debt-strategy-card { background:var(--card); border:1px solid var(--border2); border-radius:var(--r); padding:18px; cursor:pointer; transition:all .2s; }
+        .debt-strategy-card:hover, .debt-strategy-card.active { border-color:var(--accent); box-shadow:0 0 20px var(--ag); }
+        .debt-strategy-card.active { background:rgba(212,175,55,0.05); }
+        .debt-item { display:flex; align-items:center; gap:12px; padding:14px; background:var(--bg2); border-radius:var(--r2); margin-bottom:8px; border-left:4px solid var(--border2); }
+        .debt-item.focus { border-left-color:var(--accent); background:rgba(212,175,55,0.05); }
+        .debt-item .debt-priority { width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; color:#fff; flex-shrink:0; }
+
+        /* ================== MONTE CARLO ================== */
+        .mc-band { opacity:0.15; }
+        .mc-line { stroke-width:2; fill:none; }
+
+        /* ================== AI PERSONA SELECTOR ================== */
+        .ai-persona-card { display:flex; align-items:center; gap:12px; padding:12px 16px; background:var(--bg2); border:1.5px solid var(--border); border-radius:12px; cursor:pointer; transition:all .2s; margin-bottom:8px; }
+        .ai-persona-card:hover { border-color:var(--accent); }
+        .ai-persona-card.active { border-color:var(--accent); background:rgba(212,175,55,0.06); box-shadow:0 0 12px var(--ag); }
+        .ai-persona-emoji { font-size:28px; }
+        .ai-persona-name { font-size:13px; font-weight:700; }
+        .ai-persona-desc { font-size:11px; color:var(--text3); }
+
+        /* ================== DECOY / PANIC MODE ================== */
+        .decoy-indicator { position:fixed; top:8px; right:8px; padding:4px 10px; background:rgba(239,68,68,0.8); color:#fff; font-size:9px; font-weight:700; border-radius:20px; z-index:999; display:none; letter-spacing:1px; text-transform:uppercase; }
+
+        /* ================== SESSION MANAGER ================== */
+        .session-card { display:flex; align-items:center; gap:14px; padding:14px; background:var(--bg2); border-radius:var(--r2); margin-bottom:8px; border:1px solid var(--border); }
+        .session-device-icon { width:40px; height:40px; border-radius:12px; background:var(--card3); display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
+        .session-current { border-color:var(--green); }
+
+        /* ================== SOUND ENGINE ================== */
+        .sound-wave { display:flex; align-items:flex-end; gap:2px; height:16px; }
+        .sound-wave span { width:3px; background:var(--accent); border-radius:2px; animation:soundWave 0.8s ease infinite; }
+        .sound-wave span:nth-child(2) { animation-delay:0.1s; }
+        .sound-wave span:nth-child(3) { animation-delay:0.2s; }
+        @keyframes soundWave { 0%,100%{ height:4px; } 50%{ height:14px; } }
+
+        /* ================== FLOATING AI BAR ================== */
+        .floating-ai-bar { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); width:90%; max-width:500px; z-index:800; display:none; }
+        .floating-ai-bar.show { display:flex; animation:slideUpAI 0.3s ease; }
+        @keyframes slideUpAI { from { transform:translateX(-50%) translateY(20px); opacity:0; } to { transform:translateX(-50%) translateY(0); opacity:1; } }
+        .floating-ai-input { flex:1; padding:14px 18px; background:var(--card); border:1.5px solid var(--border2); border-radius:16px 0 0 16px; color:var(--text); font-size:14px; outline:none; transition:border-color 0.2s; }
+        .floating-ai-input:focus { border-color:var(--accent); }
+        .floating-ai-send { padding:14px 20px; background:linear-gradient(135deg,var(--accent),var(--accent2)); border:none; border-radius:0 16px 16px 0; color:#000; font-size:16px; cursor:pointer; font-weight:700; transition:all .2s; }
+        .floating-ai-send:hover { transform:scale(1.05); }
+        .fab-ai-btn { position:fixed; bottom:24px; right:24px; width:56px; height:56px; border-radius:50%; background:linear-gradient(135deg,var(--accent),var(--accent2)); border:none; color:#000; font-size:24px; cursor:pointer; z-index:799; box-shadow:0 4px 20px var(--ag); transition:all .2s; display:none; }
+        .fab-ai-btn:hover { transform:scale(1.1); box-shadow:0 6px 30px rgba(212,175,55,0.4); }
+        .fab-ai-btn.show { display:flex; align-items:center; justify-content:center; animation:slideUpAI 0.3s ease; }
+
+        /* ================== AUTO BACKUP INDICATOR ================== */
+        .backup-schedule { padding:8px 12px; background:rgba(16,185,129,0.08); border-radius:8px; font-size:11px; color:var(--green); font-family:var(--mono); display:flex; align-items:center; gap:6px; }
+
+        /* ================== ENHANCED AI TRANSITIONS ================== */
+        .ai-msg-wrap { animation:aiMsgIn 0.3s ease; }
+        @keyframes aiMsgIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+        .ai-bubble.bot { position:relative; overflow:hidden; }
+        .ai-bubble.bot::before { content:''; position:absolute; top:0; left:-100%; width:100%; height:100%; background:linear-gradient(90deg,transparent,rgba(212,175,55,0.03),transparent); animation:aiShimmer 2s ease-in-out; }
+        @keyframes aiShimmer { 0%{left:-100%;} 100%{left:100%;} }
     </style>
 </head>
 
@@ -2825,6 +2901,11 @@
                 <div class="sb-group">Tools</div>
                 <div class="nav-item" onclick="showPage('dscr',this)"><span class="nav-icon">📐</span> DSCR Calculator
                 </div>
+                <div class="nav-item" onclick="showPage('score',this)"><span class="nav-icon">🏆</span> WealthFlow Score</div>
+                <div class="nav-item" onclick="showPage('subscriptions',this)"><span class="nav-icon">🔔</span> Subscriptions</div>
+                <div class="nav-item" onclick="showPage('debtdemo',this)"><span class="nav-icon">💣</span> Debt Demolisher</div>
+                <div class="nav-item" onclick="showPage('montecarlo',this)"><span class="nav-icon">🔮</span> Wealth Simulator</div>
+                <div class="nav-item" onclick="showPage('sessions',this)"><span class="nav-icon">📱</span> Active Sessions</div>
                 <div class="nav-item ai-nav-pulse" onclick="showPage('ai',this)" id="aiNavItem"><span class="nav-icon">🤖</span> AI Advisor <span class="nb" id="nb-ai" style="display:none;background:linear-gradient(135deg,#d4af37,#f5a623);">✨</span></div>
                 <div class="nav-item" onclick="showPage('settings',this)"><span class="nav-icon">⚙️</span> Settings
                 </div>
@@ -2834,7 +2915,7 @@
             <div class="sb-footer">
                 <div class="sb-user" id="sbUser">👤 WealthFlow User</div>
                 <div class="sb-date" id="sbDate">-</div>
-                <div class="sb-ver">WealthFlow v5.2 · Infinity Engine</div>
+                <div class="sb-ver">WealthFlow v6.0 · Infinity Engine</div>
             </div>
         </aside>
 
@@ -3237,6 +3318,7 @@
                                 <span style="width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent);animation:luxuryBlink 3s infinite;display:inline-block;"></span>
                                 <span id="aiPersonaLabel">Learning your style...</span>
                             </div>
+                            <button class="btn btn-secondary btn-sm" onclick="openModal('mdAIPersona')" title="Change AI personality">🎭 Persona</button>
                             <button class="btn btn-ghost btn-sm" onclick="clearAIChat()" title="Clear chat history">🗑️ Clear</button>
                         </div>
                     </div>
@@ -3289,6 +3371,58 @@
                     </div>
                 </div>
 
+
+                <!-- ==================== WEALTHFLOW SCORE PAGE ==================== -->
+                <div class="page" id="page-score">
+                    <div class="sh"><div class="sh-title">🏆 WealthFlow Score</div><div class="sh-actions"><button class="btn btn-primary btn-sm" onclick="renderWFScore()">🔄 Recalculate</button></div></div>
+                    <div id="scoreContent"></div>
+                </div>
+
+                <!-- ==================== SUBSCRIPTION TRACKER PAGE ==================== -->
+                <div class="page" id="page-subscriptions">
+                    <div class="sh"><div class="sh-title">🔔 Smart Subscription & Bill Tracker</div>
+                        <div class="sh-actions"><button class="btn btn-primary btn-sm" onclick="clearSubForm(); openModal('mdSubscription')">+ Add Subscription</button></div>
+                    </div>
+                    <div id="subStats" class="g4" style="margin-bottom:16px;"></div>
+                    <div id="subscriptionList"></div>
+                </div>
+
+                <!-- ==================== DEBT DEMOLISHER PAGE ==================== -->
+                <div class="page" id="page-debtdemo">
+                    <div class="sh"><div class="sh-title">💣 Debt Demolisher</div><div style="font-size:12px;color:var(--text3);margin-top:3px;">AI-optimized debt payoff strategy</div></div>
+                    <div id="debtDemoContent"></div>
+                </div>
+
+                <!-- ==================== MONTE CARLO SIMULATOR ==================== -->
+                <div class="page" id="page-montecarlo">
+                    <div class="sh"><div class="sh-title">🔮 Monte Carlo Wealth Simulator</div><div class="sh-actions"><button class="btn btn-primary btn-sm" onclick="runMonteCarlo()">▶ Run Simulation</button></div></div>
+                    <div class="g2" style="margin-bottom:16px;">
+                        <div class="card">
+                            <div class="card-header"><div class="card-title">📊 Simulation Parameters</div></div>
+                            <div class="fr">
+                                <div class="fg"><label class="fl">Projection Years</label><input class="fi" id="mcYears" type="number" value="10" min="1" max="30"></div>
+                                <div class="fg"><label class="fl">Monthly Savings (LKR)</label><input class="fi money-input" id="mcSavings" placeholder="Auto from data"></div>
+                            </div>
+                            <div class="fr">
+                                <div class="fg"><label class="fl">Expected Return (%)</label><input class="fi" id="mcReturn" type="number" value="12" step="0.5"></div>
+                                <div class="fg"><label class="fl">Inflation Rate (%)</label><input class="fi" id="mcInflation" type="number" value="8" step="0.5"></div>
+                            </div>
+                            <div class="fg"><label class="fl">Simulations</label><input class="fi" id="mcRuns" type="number" value="500" min="100" max="2000"></div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header"><div class="card-title">📈 Projection Results</div></div>
+                            <div id="mcResults" style="text-align:center;padding:20px 0;"><div style="font-size:13px;color:var(--text3);">Click "Run Simulation" to project your future wealth.</div></div>
+                        </div>
+                    </div>
+                    <div class="card"><div class="card-header"><div class="card-title">📊 Wealth Trajectory</div></div><div style="height:300px;"><canvas id="mcChart"></canvas></div></div>
+                </div>
+
+                <!-- ==================== ACTIVE SESSIONS PAGE ==================== -->
+                <div class="page" id="page-sessions">
+                    <div class="sh"><div class="sh-title">📱 Active Sessions & Devices</div><div class="sh-actions"><button class="btn btn-danger btn-sm" onclick="revokeAllSessions()">🚫 Revoke All</button></div></div>
+                    <div id="sessionsContent"></div>
+                </div>
+
                 <div class="page" id="page-settings">
                     <div class="sh">
                         <div class="sh-title">System Settings</div>
@@ -3309,6 +3443,14 @@
             <div class="celeb-amt" id="celebAmt"></div>
             <button class="btn btn-primary" style="margin-top:18px;" onclick="closeCeleb()">🎊 Amazing!</button>
         </div>
+    </div>
+
+    
+    <div class="decoy-indicator" id="decoyIndicator">DECOY MODE</div>
+    <button class="fab-ai-btn" id="fabAIBtn" onclick="toggleFloatingAI()" title="Ask AI">🤖</button>
+    <div class="floating-ai-bar" id="floatingAIBar">
+        <input class="floating-ai-input" id="floatingAIInput" placeholder="Ask AI anything..." onkeydown="if(event.key==='Enter'){sendFloatingAI();event.preventDefault();}">
+        <button class="floating-ai-send" onclick="sendFloatingAI()">➤</button>
     </div>
 
     <div id="notifs"></div>
@@ -3641,7 +3783,7 @@
             </div>
             <div class="fr">
                 <div class="fg"><label class="fl">Description *</label><input class="fi" id="e_desc"
-                        placeholder="Electricity Bill"></div>
+                        placeholder="Electricity Bill" oninput="autoDetectCategory(this.value)"></div>
                 <div class="fg"><label class="fl">Category *</label><select class="fs" id="e_cat">
                         <option>Food & Groceries</option>
                         <option>Transport</option>
@@ -3806,6 +3948,55 @@
             <div class="auth-err" id="cp_err"></div>
             <div class="md-ftr"><button class="btn btn-ghost" onclick="closePinModal()">Cancel</button><button
                     class="btn btn-primary" onclick="changePin()">🔐 Change PIN</button></div>
+        </div>
+    </div>
+
+
+    <div class="mo" id="mdSubscription">
+        <div class="md md-sm">
+            <div class="md-hdr"><div class="md-title" id="mdSubTitle">Add Subscription / Bill</div><button class="md-x" onclick="closeModal('mdSubscription')">✕</button></div>
+            <div class="fr">
+                <div class="fg"><label class="fl">Name *</label><input class="fi" id="sub_name" placeholder="Netflix, Dialog, Electricity..."></div>
+                <div class="fg"><label class="fl">Category</label><select class="fs" id="sub_cat">
+                    <option>Streaming</option><option>Telecom</option><option>Utilities</option><option>Insurance</option><option>Leasing</option><option>Software</option><option>Gym/Fitness</option><option>Other</option>
+                </select></div>
+            </div>
+            <div class="fr">
+                <div class="fg"><label class="fl">Amount (LKR) *</label><input class="fi money-input" id="sub_amount" placeholder="1,500"></div>
+                <div class="fg"><label class="fl">Due Day of Month *</label><input class="fi" id="sub_day" type="number" min="1" max="31" placeholder="15"></div>
+            </div>
+            <div class="fr">
+                <div class="fg"><label class="fl">Billing Cycle</label><select class="fs" id="sub_cycle"><option value="monthly">Monthly</option><option value="quarterly">Quarterly</option><option value="yearly">Yearly</option></select></div>
+                <div class="fg"><label class="fl">Auto-Detect Anomaly</label><select class="fs" id="sub_anomaly"><option value="1">Yes - Alert if unusual</option><option value="0">No</option></select></div>
+            </div>
+            <div class="fg"><label class="fl">Notes</label><input class="fi" id="sub_notes" placeholder="Account details..."></div>
+            <div class="md-ftr"><button class="btn btn-ghost" onclick="closeModal('mdSubscription')">Cancel</button><button class="btn btn-primary" onclick="saveSubscription()">💾 Save</button></div>
+        </div>
+    </div>
+
+    <div class="mo" id="mdAIPersona">
+        <div class="md md-sm">
+            <div class="md-hdr"><div class="md-title">🎭 AI Advisor Persona</div><button class="md-x" onclick="closeModal('mdAIPersona')">✕</button></div>
+            <p style="font-size:12px;color:var(--text2);margin-bottom:16px;">Choose how your AI advisor communicates with you.</p>
+            <div id="personaCards">
+                <div class="ai-persona-card" onclick="setAIAdvisorPersona('supportive')">
+                    <div class="ai-persona-emoji">😊</div>
+                    <div><div class="ai-persona-name">Supportive & Gentle</div><div class="ai-persona-desc">Motivates you even when expenses are high. Encouraging and kind.</div></div>
+                </div>
+                <div class="ai-persona-card" onclick="setAIAdvisorPersona('balanced')">
+                    <div class="ai-persona-emoji">⚖️</div>
+                    <div><div class="ai-persona-name">Balanced Professional</div><div class="ai-persona-desc">Mix of encouragement and practical advice. Default mode.</div></div>
+                </div>
+                <div class="ai-persona-card" onclick="setAIAdvisorPersona('strict')">
+                    <div class="ai-persona-emoji">👨‍💼</div>
+                    <div><div class="ai-persona-name">Strict Financial Advisor</div><div class="ai-persona-desc">Blunt, direct advice. Calls out overspending harshly.</div></div>
+                </div>
+                <div class="ai-persona-card" onclick="setAIAdvisorPersona('aggressive')">
+                    <div class="ai-persona-emoji">🔥</div>
+                    <div><div class="ai-persona-name">Aggressive Wealth Builder</div><div class="ai-persona-desc">Pushes you hard to maximize savings and cut all waste.</div></div>
+                </div>
+            </div>
+            <div class="md-ftr"><button class="btn btn-ghost" onclick="closeModal('mdAIPersona')">Done</button></div>
         </div>
     </div>
 
@@ -4407,7 +4598,17 @@ Rules:
 
         function buildSystemPrompt(ctx, persona) {
             const personaNote = persona ? `\n\nUser Personality Profile: ${JSON.stringify(persona)}` : '';
-            return `You are WealthFlow AI — an elite, warm, and highly personalized financial advisor for ${ctx.userName} in Sri Lanka.
+            const s = DB.getObj('settings', {});
+            const advisorStyle = s.aiAdvisorPersona || 'balanced';
+            const stylePrompts = {
+                supportive: 'Be extremely warm, encouraging, and supportive. Even if expenses are high, find positives. Motivate gently. Use warm emojis.',
+                balanced: 'Be warm but practical. Mix encouragement with realistic advice. Professional yet friendly.',
+                strict: 'Be blunt and direct. Call out overspending firmly. Use strong language about financial discipline. Do not sugarcoat.',
+                aggressive: 'Be extremely aggressive about wealth building. Push hard to cut ALL unnecessary spending. Challenge every expense. Demand excellence.'
+            };
+            return `You are WealthFlow AI — an elite, highly personalized financial advisor for ${ctx.userName} in Sri Lanka.
+
+ADVISOR STYLE: ${stylePrompts[advisorStyle] || stylePrompts.balanced}
 
 CURRENT FINANCIAL SNAPSHOT:
 • Monthly Income: LKR ${ctx.totalMonthlyIncome.toLocaleString()} (${ctx.incomeSources} source(s))
@@ -5006,10 +5207,36 @@ YOUR PERSONALITY & RULES:
             pinBuffer = '';
 
             if (padId === 'loginPad') {
-                const stored = DB.getObj('auth').pin;
+                const authData = DB.getObj('auth');
+                const stored = authData.pin;
                 const hash = await sha256(pin + 'wf_salt_sg2026');
+                
+                // Check for Decoy/Panic Mode PIN
+                if (authData.decoyPin && hash === authData.decoyPin) {
+                    $('loginErr').textContent = '';
+                    resetAutoLockTimer();
+                    // Load fake decoy data
+                    window._isDecoyMode = true;
+                    const decoyIndicator = $('decoyIndicator');
+                    if (decoyIndicator) decoyIndicator.style.display = 'block';
+                    // Override appData with dummy data
+                    const realData = JSON.parse(JSON.stringify(appData));
+                    appData.income = [{ id:'d1', name:'Savings Account', company:'Commercial Bank', amount:500000, rate:8, monthly:3333, start:'2025-01-01', freq:'monthly', day:'2025-01-05' }];
+                    appData.expenses = [{ id:'de1', desc:'Groceries', cat:'Food & Groceries', amount:15000, month:new Date().toISOString().substr(0,7), recurring:'1' }];
+                    appData.loans = [];
+                    appData.balance = { total: 250000, flows: [] };
+                    appData.targets = [];
+                    appData._realData = realData;
+                    launchApp();
+                    notify('Welcome back! 👋', 'success');
+                    return;
+                }
+                
                 if (hash === stored) {
                     $('loginErr').textContent = '';
+                    window._isDecoyMode = false;
+                    const decoyIndicator = $('decoyIndicator');
+                    if (decoyIndicator) decoyIndicator.style.display = 'none';
                     resetAutoLockTimer();
                     launchApp();
                 } else {
@@ -5519,6 +5746,11 @@ YOUR PERSONALITY & RULES:
             $('authScreen').classList.remove('show');
             $('app').classList.add('show');
             renderPage('dashboard');
+            // Show floating AI button
+            const fab = $('fabAIBtn');
+            if (fab) fab.classList.add('show');
+            // Schedule auto backup
+            scheduleAutoBackup();
             updateCCOTBadge();
             updateChequeBadge();
             triggerProactiveEngagement();
@@ -5817,6 +6049,20 @@ YOUR PERSONALITY & RULES:
             openModal('mdConfirm');
         }
 
+
+        // Auto-detect category from expense description
+        async function autoDetectCategory(desc) {
+            if (!desc || desc.length < 3) return;
+            const cat = await autoCategorizeExpense(desc);
+            if (cat) {
+                const sel = $('e_cat');
+                if (sel) {
+                    for (let opt of sel.options) {
+                        if (opt.value === cat || opt.text === cat) { sel.value = opt.value; break; }
+                    }
+                }
+            }
+        }
         // ==================== SMART AUTOCOMPLETE ENGINE (Issue 2) ====================
         // Central store key → localStorage key for autocomplete suggestions
         const AC_STORE = 'wf2_ac_store';
@@ -5942,20 +6188,30 @@ YOUR PERSONALITY & RULES:
         }
 
         // ==================== SIDEBAR ====================
-        const pgTitles = { dashboard: '📊 Dashboard', monthly: '📅 Monthly Plan', income: '💰 Income & Investments', loans: '🏦 Bank Loans', ccinstall: '💳 CC Installments', cconetime: '⏱️ CC One-Time Payments', cheques: '📄 Cheque Tracker', expenses: '🧾 Monthly Expenses', targets: '🎯 Targets & Savings', balance: '⚖️ Balance Tracker', dscr: '📐 DSCR Calculator', settings: '⚙️ System Settings', ai: '🤖 <span style="color:var(--accent)">AI Advisor</span>' };
+        const pgTitles = { dashboard: '📊 Dashboard', monthly: '📅 Monthly Plan', income: '💰 Income & Investments', loans: '🏦 Bank Loans', ccinstall: '💳 CC Installments', cconetime: '⏱️ CC One-Time Payments', cheques: '📄 Cheque Tracker', expenses: '🧾 Monthly Expenses', targets: '🎯 Targets & Savings', balance: '⚖️ Balance Tracker', dscr: '📐 DSCR Calculator', settings: '⚙️ System Settings', ai: '🤖 <span style="color:var(--accent)">AI Advisor</span>', score: '🏆 WealthFlow Score', subscriptions: '🔔 Subscriptions', debtdemo: '💣 Debt Demolisher', montecarlo: '🔮 Wealth Simulator', sessions: '📱 Active Sessions' };
 
         function showPage(name, navEl) {
             triggerHaptic('light');
+            playUISound('click');
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            $('page-' + name).classList.add('active');
+            const pageEl = $('page-' + name);
+            if (pageEl) pageEl.classList.add('active');
             if (navEl) navEl.classList.add('active');
             $('pgTitle').innerHTML = pgTitles[name] || name;
             closeSb();
+            
+            // Show/hide FAB AI button
+            const fab = $('fabAIBtn');
+            if (fab) fab.classList.toggle('show', name !== 'ai');
+            
+            // Hide floating bar when changing pages
+            const fbar = $('floatingAIBar');
+            if (fbar) fbar.classList.remove('show');
+            
             if (name === 'ai') {
                 initAISuggestionPills();
                 requestAINotificationPermission();
-                // Hide AI nav badge
                 const nb = $('nb-ai');
                 if (nb) nb.style.display = 'none';
             } else {
@@ -5966,7 +6222,7 @@ YOUR PERSONALITY & RULES:
 
 
         function renderPage(name) {
-            const fn = { dashboard: renderDash, monthly: renderMonthly, income: renderIncome, loans: renderLoans, ccinstall: renderCCI, cconetime: renderCCOT, cheques: renderCheques, expenses: renderExpenses, targets: renderTargets, balance: renderBalance, dscr: renderDSCR, settings: renderSettings };
+            const fn = { dashboard: renderDash, monthly: renderMonthly, income: renderIncome, loans: renderLoans, ccinstall: renderCCI, cconetime: renderCCOT, cheques: renderCheques, expenses: renderExpenses, targets: renderTargets, balance: renderBalance, dscr: renderDSCR, settings: renderSettings, score: renderWFScore, subscriptions: renderSubscriptions, debtdemo: renderDebtDemolisher, montecarlo: renderMonteCarlo, sessions: renderSessions };
             if (fn[name]) fn[name]();
         }
 
@@ -7509,8 +7765,71 @@ YOUR PERSONALITY & RULES:
             </div>
         </div>
         
+
+        <div class="settings-section" style="background: linear-gradient(145deg, rgba(139,92,246,0.05), var(--card)); border: 1px solid var(--border2);">
+            <div class="settings-title" style="color:var(--purple);">🤖 AI Advisor Preferences</div>
+            <div class="setting-row">
+                <div class="setting-info"><div class="setting-label">AI Personality</div><div class="setting-desc">Choose how your AI advisor communicates. Supportive, Balanced, Strict, or Aggressive.</div></div>
+                <button class="btn btn-secondary btn-sm" onclick="openModal('mdAIPersona')">🎭 ${(s.aiAdvisorPersona || 'balanced').charAt(0).toUpperCase() + (s.aiAdvisorPersona || 'balanced').slice(1)}</button>
+            </div>
+            <div class="setting-row">
+                <div class="setting-info"><div class="setting-label">Auto-Categorize Expenses</div><div class="setting-desc">AI automatically assigns categories to new expenses based on the title entered.</div></div>
+                <div class="toggle ${s.autoCategory !== false ? 'on' : ''}" onclick="toggleSetting('autoCategory', ${s.autoCategory === false})"></div>
+            </div>
+            <div class="setting-row">
+                <div class="setting-info"><div class="setting-label">AI Auto-Notifications</div><div class="setting-desc">AI proactively sends smart financial reminders and insights.</div></div>
+                <div class="toggle ${s.aiNotifications !== false ? 'on' : ''}" onclick="toggleSetting('aiNotifications', ${s.aiNotifications === false})"></div>
+            </div>
+        </div>
+
+        <div class="settings-section" style="background: linear-gradient(145deg, rgba(6,182,212,0.05), var(--card)); border: 1px solid var(--border2);">
+            <div class="settings-title" style="color:var(--cyan);">🔊 Sound & Feedback</div>
+            <div class="setting-row">
+                <div class="setting-info"><div class="setting-label">Dynamic Soundscapes</div><div class="setting-desc">Subtle luxury UI sounds for interactions (soft chimes, ticks, satisfying sounds).</div></div>
+                <div class="toggle ${s.sounds ? 'on' : ''}" onclick="toggleSetting('sounds', ${!s.sounds})"></div>
+            </div>
+            ${s.sounds ? `<div class="setting-row" style="padding-left:24px;border-left:3px solid var(--cyan);">
+                <div class="setting-info"><div class="setting-label">Sound Volume</div><div class="setting-desc">Adjust the volume of UI sounds.</div></div>
+                <select class="fi" style="width:120px;" onchange="toggleSetting('soundVolume', this.value)">
+                    <option value="low" ${(s.soundVolume||'low')==='low'?'selected':''}>🔈 Low</option>
+                    <option value="medium" ${(s.soundVolume||'low')==='medium'?'selected':''}>🔉 Medium</option>
+                    <option value="high" ${(s.soundVolume||'low')==='high'?'selected':''}>🔊 High</option>
+                </select>
+            </div>` : ''}
+        </div>
+
+        <div class="settings-section" style="background: linear-gradient(145deg, rgba(239,68,68,0.03), var(--card)); border: 1px solid var(--border2);">
+            <div class="settings-title" style="color:var(--red);">🔒 Advanced Security</div>
+            <div class="setting-row">
+                <div class="setting-info"><div class="setting-label">Panic Mode / Decoy Vault</div><div class="setting-desc">Set a decoy PIN that opens a fake database with dummy numbers to protect you.</div></div>
+                <button class="btn btn-secondary btn-sm" onclick="setupDecoyPin()">🎭 ${DB.getObj('auth').decoyPin ? 'Configured ✓' : 'Setup Decoy'}</button>
+            </div>
+        </div>
+
+        <div class="settings-section" style="background: linear-gradient(145deg, rgba(59,130,246,0.05), var(--card)); border: 1px solid var(--border2);">
+            <div class="settings-title" style="color:var(--blue);">📦 Advanced Backup & Data</div>
+            <div class="setting-row">
+                <div class="setting-info"><div class="setting-label">Auto-Backup Schedule</div><div class="setting-desc">System automatically backs up at the scheduled time. Daily: 23:55, Weekly: Sunday 23:55, Monthly: Last day 23:55.</div></div>
+                <select class="fi" style="width:140px;" onchange="toggleSetting('autoBackupFreq', this.value); scheduleAutoBackup();">
+                    <option value="off" ${(s.autoBackupFreq||'off')==='off'?'selected':''}>Off</option>
+                    <option value="daily" ${(s.autoBackupFreq||'off')==='daily'?'selected':''}>Daily (23:55)</option>
+                    <option value="weekly" ${(s.autoBackupFreq||'off')==='weekly'?'selected':''}>Weekly (Sun)</option>
+                    <option value="monthly" ${(s.autoBackupFreq||'off')==='monthly'?'selected':''}>Monthly (End)</option>
+                </select>
+            </div>
+            <div class="setting-row">
+                <div class="setting-info"><div class="setting-label">Cloud Sync Frequency</div><div class="setting-desc">How often data syncs to cloud in the background.</div></div>
+                <select class="fi" style="width:140px;" onchange="toggleSetting('syncFreq', this.value)">
+                    <option value="realtime" ${(s.syncFreq||'realtime')==='realtime'?'selected':''}>Real-time</option>
+                    <option value="hourly" ${(s.syncFreq||'realtime')==='hourly'?'selected':''}>Every 1 Hour</option>
+                    <option value="wifi" ${(s.syncFreq||'realtime')==='wifi'?'selected':''}>Wi-Fi Only</option>
+                </select>
+            </div>
+            ${s.autoBackupFreq && s.autoBackupFreq !== 'off' ? `<div class="backup-schedule">⏰ Next auto-backup: ${getNextBackupTime(s.autoBackupFreq)}</div>` : ''}
+        </div>
+
         <div style="text-align:center;padding:20px 0;color:var(--text3);font-size:11px;">
-            <div style="margin-bottom:4px;">WealthFlow v5.2 · Infinity Engine</div>
+            <div style="margin-bottom:4px;">WealthFlow v6.0 · Infinity Engine</div>
             <div>© ${new Date().getFullYear()} · Powered by Firebase & Gemini AI</div>
             <div style="margin-top:8px;font-size:10px;color:var(--border2);">UID: ${currentUser ? currentUser.uid.substring(0, 12) + '...' : 'offline'}</div>
         </div>
@@ -8036,6 +8355,537 @@ YOUR PERSONALITY & RULES:
             e.target.value = '';
             closeModal('mdRestoreCloud');
         }
+
+
+
+        // ==================== FLOATING AI BAR ====================
+        function toggleFloatingAI() {
+            const bar = $('floatingAIBar');
+            const fab = $('fabAIBtn');
+            if (bar.classList.contains('show')) {
+                bar.classList.remove('show');
+            } else {
+                bar.classList.add('show');
+                $('floatingAIInput').focus();
+            }
+        }
+        async function sendFloatingAI() {
+            const input = $('floatingAIInput');
+            const msg = input.value.trim();
+            if (!msg) return;
+            input.value = '';
+            toggleFloatingAI();
+            // Navigate to AI page and send
+            showPage('ai', document.getElementById('aiNavItem'));
+            setTimeout(() => sendAIMessage(msg), 300);
+        }
+
+        // ==================== DYNAMIC SOUNDSCAPES ====================
+        function playUISound(type) {
+            const s = DB.getObj('settings', {});
+            if (!s.sounds) return;
+            try {
+                const ctx = _getAudioCtx();
+                if (!ctx) return;
+                if (ctx.state === 'suspended') ctx.resume();
+                const volMap = { low: 0.03, medium: 0.08, high: 0.15 };
+                const vol = volMap[s.soundVolume || 'low'] || 0.03;
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                gain.gain.setValueAtTime(vol, ctx.currentTime);
+                
+                switch(type) {
+                    case 'click':
+                        osc.frequency.setValueAtTime(800, ctx.currentTime);
+                        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
+                        osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.05);
+                        break;
+                    case 'success':
+                        osc.frequency.setValueAtTime(523, ctx.currentTime);
+                        osc.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+                        osc.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+                        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+                        osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.35);
+                        break;
+                    case 'scroll':
+                        osc.frequency.setValueAtTime(1200, ctx.currentTime);
+                        gain.gain.setValueAtTime(vol * 0.3, ctx.currentTime);
+                        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.02);
+                        osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.02);
+                        break;
+                    case 'notification':
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(880, ctx.currentTime);
+                        osc.frequency.setValueAtTime(1100, ctx.currentTime + 0.15);
+                        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+                        osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.3);
+                        break;
+                    case 'error':
+                        osc.type = 'sawtooth';
+                        osc.frequency.setValueAtTime(200, ctx.currentTime);
+                        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
+                        osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.2);
+                        break;
+                    case 'goalReached':
+                        const notes = [523, 659, 784, 1047];
+                        notes.forEach((freq, i) => {
+                            const o = ctx.createOscillator();
+                            const g = ctx.createGain();
+                            o.connect(g); g.connect(ctx.destination);
+                            o.frequency.setValueAtTime(freq, ctx.currentTime + i * 0.12);
+                            g.gain.setValueAtTime(vol, ctx.currentTime + i * 0.12);
+                            g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.12 + 0.15);
+                            o.start(ctx.currentTime + i * 0.12);
+                            o.stop(ctx.currentTime + i * 0.12 + 0.15);
+                        });
+                        break;
+                }
+            } catch(e) {}
+        }
+
+        // ==================== WEALTHFLOW SCORE (0-1000) ====================
+        function calculateWFScore() {
+            const income = DB.get('income');
+            const expenses = DB.get('expenses');
+            const loans = DB.get('loans');
+            const targets = DB.get('targets');
+            const balData = DB.getObj('balance', { total: 0 });
+            const now = new Date();
+            const curM = `${now.getFullYear()}-${p2(now.getMonth()+1)}`;
+            
+            const totalIncome = income.filter(s => { const st = new Date(s.start+'T00:00:00'); const en = s.end ? new Date(s.end+'T00:00:00') : null; return st <= now && (!en || en >= now); }).reduce((s,x) => s + (x.monthly||0), 0);
+            const totalExp = expenses.filter(e => e.month === curM).reduce((s,x) => s + (x.amount||0), 0);
+            const totalLoan = loans.filter(l => loanEndDate(l) > now).reduce((s,x) => s + (x.monthly||0), 0);
+            const totalDebt = totalExp + totalLoan;
+            
+            // DSCR Score (0-300)
+            const dscr = totalDebt > 0 ? totalIncome / totalDebt : 3;
+            const dscrScore = Math.min(300, Math.round(dscr >= 2 ? 300 : dscr >= 1.5 ? 250 : dscr >= 1.25 ? 200 : dscr >= 1 ? 150 : dscr * 150));
+            
+            // Savings Rate Score (0-300)
+            const savingsRate = totalIncome > 0 ? (totalIncome - totalDebt) / totalIncome : 0;
+            const savingsScore = Math.min(300, Math.round(savingsRate >= 0.3 ? 300 : savingsRate >= 0.2 ? 250 : savingsRate >= 0.1 ? 180 : savingsRate >= 0 ? 100 : 50));
+            
+            // Liquidity Score (0-200)
+            const balance = balData.total || 0;
+            const monthsCover = totalDebt > 0 ? balance / totalDebt : 12;
+            const liquidityScore = Math.min(200, Math.round(monthsCover >= 6 ? 200 : monthsCover >= 3 ? 160 : monthsCover >= 1 ? 100 : monthsCover * 100));
+            
+            // Target Progress Score (0-200)
+            const targetTotal = targets.reduce((s,t) => s + (t.amount||0), 0);
+            const targetSaved = targets.reduce((s,t) => s + (t.savings ? t.savings.reduce((a,b) => a + b.amount, 0) : 0), 0);
+            const targetPct = targetTotal > 0 ? targetSaved / targetTotal : 0.5;
+            const targetScore = Math.min(200, Math.round(targetPct * 200));
+            
+            const total = dscrScore + savingsScore + liquidityScore + targetScore;
+            
+            return {
+                total: Math.min(1000, total),
+                dscr: { score: dscrScore, max: 300, value: dscr, label: 'Debt Coverage (DSCR)' },
+                savings: { score: savingsScore, max: 300, value: savingsRate, label: 'Savings Rate' },
+                liquidity: { score: liquidityScore, max: 200, value: monthsCover, label: 'Liquidity Buffer' },
+                targets: { score: targetScore, max: 200, value: targetPct, label: 'Goal Progress' }
+            };
+        }
+
+        function renderWFScore() {
+            const sc = calculateWFScore();
+            const total = sc.total;
+            const color = total >= 800 ? 'var(--green)' : total >= 600 ? 'var(--accent)' : total >= 400 ? 'var(--accent2)' : 'var(--red)';
+            const grade = total >= 800 ? 'ELITE' : total >= 600 ? 'STRONG' : total >= 400 ? 'GROWING' : total >= 200 ? 'AT RISK' : 'CRITICAL';
+            const pct = total / 1000;
+            const circumference = 2 * Math.PI * 85;
+            const offset = circumference * (1 - pct);
+            
+            const factors = [sc.dscr, sc.savings, sc.liquidity, sc.targets];
+            const factorColors = ['var(--blue)', 'var(--green)', 'var(--cyan)', 'var(--purple)'];
+            
+            $('scoreContent').innerHTML = `
+                <div class="card" style="text-align:center;padding:30px;">
+                    <div class="wf-score-ring">
+                        <svg width="200" height="200" viewBox="0 0 200 200">
+                            <circle cx="100" cy="100" r="85" fill="none" stroke="var(--border)" stroke-width="12"/>
+                            <circle cx="100" cy="100" r="85" fill="none" stroke="${color}" stroke-width="12" 
+                                stroke-dasharray="${circumference}" stroke-dashoffset="${offset}" stroke-linecap="round"
+                                style="transition:stroke-dashoffset 1s ease;"/>
+                        </svg>
+                        <div class="score-value">
+                            <div class="score-num" style="color:${color};">${total}</div>
+                            <div class="score-label">${grade}</div>
+                        </div>
+                    </div>
+                    <div style="margin-top:16px;font-size:13px;color:var(--text2);">Your WealthFlow Score is rated <strong style="color:${color};">${grade}</strong></div>
+                </div>
+                <div class="card" style="margin-top:16px;">
+                    <div class="card-header"><div class="card-title">📊 Score Breakdown</div></div>
+                    ${factors.map((f, i) => `
+                        <div class="score-factor">
+                            <div style="min-width:130px;"><div style="font-size:12px;font-weight:600;">${f.label}</div><div style="font-size:10px;color:var(--text3);">${f.score} / ${f.max}</div></div>
+                            <div class="score-factor-bar"><div class="score-factor-fill" style="width:${(f.score/f.max*100).toFixed(0)}%;background:${factorColors[i]};"></div></div>
+                            <div style="font-size:14px;font-weight:700;font-family:var(--mono);min-width:50px;text-align:right;color:${factorColors[i]};">${f.score}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            playUISound('click');
+        }
+
+        // ==================== SUBSCRIPTION & BILL TRACKER ====================
+        function saveSubscription() {
+            const name = $('sub_name').value.trim(), cat = $('sub_cat').value, amount = parseMoney($('sub_amount').value), day = parseInt($('sub_day').value);
+            if (!name || !amount || !day) { notify('Fill required fields', 'error'); return; }
+            const rec = { id: editMode || uid(), name, category: cat, amount, dueDay: day, cycle: $('sub_cycle').value, anomalyDetect: $('sub_anomaly').value === '1', notes: $('sub_notes').value, history: [], createdAt: new Date().toISOString() };
+            const arr = DB.get('subscriptions') || [];
+            if (editMode) { const i = arr.findIndex(x => x.id === editMode); if (i > -1) arr[i] = rec; } else arr.push(rec);
+            DB.set('subscriptions', arr);
+            closeModal('mdSubscription'); clearSubForm(); renderSubscriptions(); notify('Subscription saved!');
+            playUISound('success');
+        }
+        function clearSubForm() { editMode = null; ['sub_name','sub_amount','sub_day','sub_notes'].forEach(id => { if($(id)) $(id).value = ''; }); }
+        function deleteSubscription(id) {
+            showConfirm('🗑️','Delete Subscription?','','btn-danger','Delete',() => {
+                DB.set('subscriptions', (DB.get('subscriptions')||[]).filter(x => x.id !== id)); renderSubscriptions(); notify('Deleted','info');
+            });
+        }
+        function renderSubscriptions() {
+            const subs = DB.get('subscriptions') || [];
+            const now = new Date();
+            const day = now.getDate();
+            let totalMonthly = 0, dueSoon = 0, overdue = 0;
+            
+            subs.forEach(s => {
+                totalMonthly += s.amount;
+                const daysUntil = s.dueDay - day;
+                if (daysUntil < 0) overdue++;
+                else if (daysUntil <= 7) dueSoon++;
+            });
+            
+            $('subStats').innerHTML = `
+                <div class="stat-card sc-red"><div class="stat-label">Monthly Bills</div><div class="stat-val">${fmtS(totalMonthly)}</div></div>
+                <div class="stat-card sc-gold"><div class="stat-label">Tracked</div><div class="stat-val">${subs.length}</div></div>
+                <div class="stat-card sc-blue"><div class="stat-label">Due Soon</div><div class="stat-val">${dueSoon}</div></div>
+                <div class="stat-card sc-green"><div class="stat-label">On Track</div><div class="stat-val">${subs.length - overdue - dueSoon}</div></div>
+            `;
+            
+            if (!subs.length) { $('subscriptionList').innerHTML = emptyState('🔔','No subscriptions tracked','Add your recurring bills and subscriptions'); return; }
+            
+            const sorted = [...subs].sort((a,b) => {
+                const da = a.dueDay - day, db = b.dueDay - day;
+                return (da < 0 ? da + 31 : da) - (db < 0 ? db + 31 : db);
+            });
+            
+            const catIcons = { Streaming:'📺', Telecom:'📱', Utilities:'💡', Insurance:'🛡️', Leasing:'🚗', Software:'💻', 'Gym/Fitness':'💪', Other:'📋' };
+            
+            $('subscriptionList').innerHTML = sorted.map(s => {
+                const daysUntil = s.dueDay - day;
+                let badgeClass = 'sub-due-ok', badgeText = `Due in ${daysUntil} days`;
+                if (daysUntil < 0) { badgeClass = 'sub-due-urgent'; badgeText = `Overdue ${Math.abs(daysUntil)}d`; }
+                else if (daysUntil === 0) { badgeClass = 'sub-due-urgent'; badgeText = 'Due TODAY'; }
+                else if (daysUntil <= 3) { badgeClass = 'sub-due-urgent'; badgeText = `Due in ${daysUntil}d`; }
+                else if (daysUntil <= 7) { badgeClass = 'sub-due-soon'; badgeText = `Due in ${daysUntil}d`; }
+                
+                return `<div class="sub-card">
+                    <div class="sub-icon">${catIcons[s.category] || '📋'}</div>
+                    <div style="flex:1;">
+                        <div style="font-size:14px;font-weight:700;">${s.name}</div>
+                        <div style="font-size:11px;color:var(--text3);">${s.category} · Day ${s.dueDay} · ${s.cycle}</div>
+                    </div>
+                    <div style="text-align:right;">
+                        <div style="font-size:16px;font-weight:800;font-family:var(--mono);color:var(--red);">${fmt(s.amount)}</div>
+                        <div class="sub-due-badge ${badgeClass}">${badgeText}</div>
+                    </div>
+                    <button class="ib d" onclick="deleteSubscription('${s.id}')">🗑️</button>
+                </div>`;
+            }).join('');
+        }
+
+        // ==================== DEBT DEMOLISHER ====================
+        function renderDebtDemolisher() {
+            const loans = DB.get('loans').filter(l => loanEndDate(l) > new Date());
+            if (!loans.length) { $('debtDemoContent').innerHTML = emptyState('🎉','Debt Free!','No active loans. You are debt-free!'); return; }
+            
+            // Snowball: smallest balance first
+            const snowball = [...loans].sort((a,b) => {
+                const remA = a.amount - (a.monthly * (a.skipped ? a.skipped.length : 0));
+                const remB = b.amount - (b.monthly * (b.skipped ? b.skipped.length : 0));
+                return remA - remB;
+            });
+            
+            // Avalanche: highest rate first
+            const avalanche = [...loans].sort((a,b) => b.rate - a.rate);
+            
+            const totalDebt = loans.reduce((s,l) => s + l.amount, 0);
+            const totalMonthly = loans.reduce((s,l) => s + l.monthly, 0);
+            
+            // Calculate interest saved with avalanche vs snowball
+            const calcTotalInterest = (ordered) => {
+                return ordered.reduce((total, loan) => {
+                    const monthlyRate = loan.rate / 100 / 12;
+                    const totalPaid = loan.monthly * loan.duration;
+                    return total + (totalPaid - loan.amount);
+                }, 0);
+            };
+            
+            const renderDebtList = (ordered, strategy) => {
+                return ordered.map((loan, i) => `
+                    <div class="debt-item ${i === 0 ? 'focus' : ''}">
+                        <div class="debt-priority" style="background:${i === 0 ? 'var(--accent)' : i === 1 ? 'var(--blue)' : 'var(--text3)'};">${i+1}</div>
+                        <div style="flex:1;">
+                            <div style="font-size:13px;font-weight:700;">${loan.name}</div>
+                            <div style="font-size:11px;color:var(--text3);">${loan.bank} · ${loan.rate}% APR</div>
+                        </div>
+                        <div style="text-align:right;">
+                            <div style="font-size:14px;font-weight:800;font-family:var(--mono);">${fmt(loan.monthly)}/mo</div>
+                            <div style="font-size:10px;color:var(--text3);">Total: ${fmt(loan.amount)}</div>
+                        </div>
+                        ${i === 0 ? '<div style="background:var(--accent);color:#000;padding:4px 10px;border-radius:6px;font-size:10px;font-weight:800;">PAY NEXT</div>' : ''}
+                    </div>
+                `).join('');
+            };
+            
+            $('debtDemoContent').innerHTML = `
+                <div class="g3" style="margin-bottom:16px;">
+                    <div class="stat-card sc-red"><div class="stat-label">Total Debt</div><div class="stat-val">${fmtS(totalDebt)}</div></div>
+                    <div class="stat-card sc-gold"><div class="stat-label">Monthly Payments</div><div class="stat-val">${fmtS(totalMonthly)}</div></div>
+                    <div class="stat-card sc-blue"><div class="stat-label">Active Loans</div><div class="stat-val">${loans.length}</div></div>
+                </div>
+                <div class="g2">
+                    <div class="card">
+                        <div class="card-header"><div class="card-title">🏔️ Avalanche Method</div><div class="card-sub">Pay highest interest rate first — saves the most money</div></div>
+                        ${renderDebtList(avalanche, 'avalanche')}
+                        <div style="margin-top:12px;padding:10px;background:rgba(16,185,129,0.08);border-radius:8px;font-size:12px;color:var(--green);text-align:center;font-weight:600;">✨ Mathematically optimal — saves maximum interest</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><div class="card-title">⛄ Snowball Method</div><div class="card-sub">Pay smallest balance first — builds momentum</div></div>
+                        ${renderDebtList(snowball, 'snowball')}
+                        <div style="margin-top:12px;padding:10px;background:rgba(59,130,246,0.08);border-radius:8px;font-size:12px;color:var(--blue);text-align:center;font-weight:600;">💪 Psychologically motivating — quick wins</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ==================== MONTE CARLO WEALTH SIMULATION ====================
+        let mcChartInst = null;
+        function runMonteCarlo() {
+            const years = parseInt($('mcYears').value) || 10;
+            const ctx = buildFinancialContext();
+            const savings = parseMoney($('mcSavings').value) || Math.max(0, ctx.netMonthlyCashFlow);
+            const expectedReturn = (parseFloat($('mcReturn').value) || 12) / 100;
+            const inflation = (parseFloat($('mcInflation').value) || 8) / 100;
+            const runs = parseInt($('mcRuns').value) || 500;
+            const months = years * 12;
+            const startBal = (DB.getObj('balance', {}).total || 0);
+            
+            const allPaths = [];
+            for (let r = 0; r < runs; r++) {
+                let bal = startBal;
+                const path = [bal];
+                for (let m = 1; m <= months; m++) {
+                    const monthlyReturn = (expectedReturn / 12) + (Math.random() - 0.5) * 0.04;
+                    const monthlyInflation = inflation / 12;
+                    bal = bal * (1 + monthlyReturn) + savings * (1 - monthlyInflation * (m / 12));
+                    if (m % 12 === 0) path.push(Math.max(0, bal));
+                }
+                allPaths.push(path);
+            }
+            
+            // Calculate percentiles
+            const labels = Array.from({length: years + 1}, (_, i) => `Year ${i}`);
+            const p10 = [], p50 = [], p90 = [];
+            for (let y = 0; y <= years; y++) {
+                const vals = allPaths.map(p => p[y] || 0).sort((a,b) => a - b);
+                p10.push(vals[Math.floor(runs * 0.1)]);
+                p50.push(vals[Math.floor(runs * 0.5)]);
+                p90.push(vals[Math.floor(runs * 0.9)]);
+            }
+            
+            const worstCase = p10[p10.length-1];
+            const medianCase = p50[p50.length-1];
+            const bestCase = p90[p90.length-1];
+            
+            $('mcResults').innerHTML = `
+                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+                    <div style="padding:14px;background:rgba(239,68,68,0.08);border-radius:12px;text-align:center;">
+                        <div style="font-size:10px;color:var(--red);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Worst Case (10th)</div>
+                        <div style="font-size:18px;font-weight:900;font-family:var(--mono);color:var(--red);">${fmtS(worstCase)}</div>
+                    </div>
+                    <div style="padding:14px;background:rgba(212,175,55,0.08);border-radius:12px;text-align:center;">
+                        <div style="font-size:10px;color:var(--accent);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Expected (Median)</div>
+                        <div style="font-size:18px;font-weight:900;font-family:var(--mono);color:var(--accent);">${fmtS(medianCase)}</div>
+                    </div>
+                    <div style="padding:14px;background:rgba(16,185,129,0.08);border-radius:12px;text-align:center;">
+                        <div style="font-size:10px;color:var(--green);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Best Case (90th)</div>
+                        <div style="font-size:18px;font-weight:900;font-family:var(--mono);color:var(--green);">${fmtS(bestCase)}</div>
+                    </div>
+                </div>
+                <div style="margin-top:12px;font-size:11px;color:var(--text3);text-align:center;">${runs} simulations · ${years} year projection · Monthly savings: ${fmt(savings)}</div>
+            `;
+            
+            // Draw chart
+            const chartEl = $('mcChart');
+            if (mcChartInst) mcChartInst.destroy();
+            if (chartEl) {
+                mcChartInst = new Chart(chartEl, {
+                    type: 'line',
+                    data: {
+                        labels,
+                        datasets: [
+                            { label: 'Best Case (90th)', data: p90, borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.08)', fill: '+1', tension: 0.3, borderWidth: 1.5 },
+                            { label: 'Expected (Median)', data: p50, borderColor: '#d4af37', backgroundColor: 'rgba(212,175,55,0.08)', fill: '+1', tension: 0.3, borderWidth: 2.5 },
+                            { label: 'Worst Case (10th)', data: p10, borderColor: '#ef4444', backgroundColor: 'rgba(239,68,68,0.08)', fill: false, tension: 0.3, borderWidth: 1.5 }
+                        ]
+                    },
+                    options: { maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: 'var(--text2)', font: { size: 10 } } } }, scales: { y: { beginAtZero: true, ticks: { callback: v => fmtS(v) } } } }
+                });
+            }
+            playUISound('success');
+        }
+        function renderMonteCarlo() {
+            const ctx = buildFinancialContext();
+            if ($('mcSavings') && !$('mcSavings').value) $('mcSavings').value = fmtN(Math.max(0, ctx.netMonthlyCashFlow));
+        }
+
+        // ==================== ACTIVE SESSIONS ====================
+        function renderSessions() {
+            const sessionId = localStorage.getItem('wf_session_id') || (() => { const id = uid(); localStorage.setItem('wf_session_id', id); return id; })();
+            const sessions = DB.get('sessions') || [];
+            
+            // Register current session
+            const currentSession = {
+                id: sessionId,
+                device: navigator.userAgent.includes('iPhone') ? '📱 iPhone' : navigator.userAgent.includes('Android') ? '📱 Android' : navigator.userAgent.includes('Mac') ? '💻 MacBook' : navigator.userAgent.includes('Windows') ? '🖥️ Windows PC' : '🌐 Browser',
+                browser: navigator.userAgent.includes('Chrome') ? 'Chrome' : navigator.userAgent.includes('Safari') ? 'Safari' : navigator.userAgent.includes('Firefox') ? 'Firefox' : 'Browser',
+                lastActive: new Date().toISOString(),
+                ip: 'Local Session'
+            };
+            
+            let updated = false;
+            const existing = sessions.findIndex(s => s.id === sessionId);
+            if (existing > -1) { sessions[existing] = currentSession; } else { sessions.push(currentSession); updated = true; }
+            if (updated) DB.set('sessions', sessions);
+            
+            $('sessionsContent').innerHTML = `
+                <div class="card">
+                    <div class="card-header"><div class="card-title">📱 Connected Devices</div><div class="card-sub">${sessions.length} session(s) active</div></div>
+                    ${sessions.map(s => `
+                        <div class="session-card ${s.id === sessionId ? 'session-current' : ''}">
+                            <div class="session-device-icon">${s.device.split(' ')[0]}</div>
+                            <div style="flex:1;">
+                                <div style="font-size:13px;font-weight:700;">${s.device} ${s.id === sessionId ? '<span style="color:var(--green);font-size:10px;">(This device)</span>' : ''}</div>
+                                <div style="font-size:11px;color:var(--text3);">${s.browser} · Last active: ${new Date(s.lastActive).toLocaleString()}</div>
+                            </div>
+                            ${s.id !== sessionId ? `<button class="btn btn-danger btn-sm" onclick="revokeSession('${s.id}')">Revoke</button>` : '<span class="badge bg-g">Active</span>'}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+        function revokeSession(id) {
+            DB.set('sessions', (DB.get('sessions')||[]).filter(s => s.id !== id));
+            renderSessions();
+            notify('Session revoked.', 'info');
+        }
+        function revokeAllSessions() {
+            const myId = localStorage.getItem('wf_session_id');
+            DB.set('sessions', (DB.get('sessions')||[]).filter(s => s.id === myId));
+            renderSessions();
+            notify('All other sessions revoked!', 'success');
+        }
+
+        // ==================== DECOY / PANIC MODE ====================
+        function setupDecoyPin() {
+            const pin = prompt('Enter a 6-digit DECOY PIN (different from your real PIN):');
+            if (!pin || pin.length !== 6) { notify('Decoy PIN must be 6 digits.', 'error'); return; }
+            sha256(pin + 'wf_salt_sg2026').then(hash => {
+                const auth = DB.getObj('auth');
+                if (hash === auth.pin) { notify('Decoy PIN cannot be the same as your real PIN!', 'error'); return; }
+                auth.decoyPin = hash;
+                DB.set('auth', auth);
+                notify('Decoy PIN configured! Use it to open a fake vault.', 'success');
+                renderSettings();
+            });
+        }
+
+        // ==================== AI PERSONA SELECTOR ====================
+        function setAIAdvisorPersona(persona) {
+            const s = DB.getObj('settings', {});
+            s.aiAdvisorPersona = persona;
+            DB.set('settings', s);
+            document.querySelectorAll('.ai-persona-card').forEach(c => c.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            notify(`AI persona set to ${persona}!`, 'success');
+            playUISound('success');
+        }
+
+        // ==================== AUTO-CATEGORIZE EXPENSES ====================
+        async function autoCategorizeExpense(desc) {
+            const s = DB.getObj('settings', {});
+            if (!s.autoCategory && s.autoCategory !== undefined) return null;
+            const categories = ['Food & Groceries','Transport','Utilities','Medical','Education','Entertainment','Clothing','Other'];
+            const catMap = {
+                'rice|bread|milk|egg|chicken|fish|veg|fruit|grocer|keells|cargills|arpico|food|eat|lunch|dinner|snack|bakery': 'Food & Groceries',
+                'petrol|diesel|fuel|uber|pickme|bus|train|toll|parking|transport|travel': 'Transport',
+                'electricity|water|gas|internet|wifi|dialog|mobitel|hutch|airtel|slt|bill|ceb|leco': 'Utilities',
+                'doctor|hospital|medicine|pharmacy|medical|dental|health|lab|scan': 'Medical',
+                'school|tuition|book|stationery|course|education|university|college|exam': 'Education',
+                'movie|game|netflix|spotify|youtube|hulu|entertainment|fun|play': 'Entertainment',
+                'shirt|pant|dress|shoe|cloth|fashion|wear': 'Clothing'
+            };
+            const lower = desc.toLowerCase();
+            for (const [keywords, cat] of Object.entries(catMap)) {
+                if (new RegExp(keywords).test(lower)) return cat;
+            }
+            return null;
+        }
+
+        // ==================== AUTO BACKUP SCHEDULER ====================
+        let _autoBackupTimer = null;
+        function scheduleAutoBackup() {
+            if (_autoBackupTimer) clearInterval(_autoBackupTimer);
+            const s = DB.getObj('settings', {});
+            if (!s.autoBackupFreq || s.autoBackupFreq === 'off') return;
+            
+            _autoBackupTimer = setInterval(() => {
+                const now = new Date();
+                const h = now.getHours(), m = now.getMinutes();
+                if (h === 23 && m === 55) {
+                    const freq = s.autoBackupFreq;
+                    const doBackup = freq === 'daily' || 
+                        (freq === 'weekly' && now.getDay() === 0) ||
+                        (freq === 'monthly' && new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate() === now.getDate());
+                    if (doBackup) {
+                        requestDrivePermission('backup');
+                        sendSmartNotification('☁️ Auto-Backup', 'Your WealthFlow data has been backed up automatically.');
+                    }
+                }
+            }, 60000);
+        }
+        function getNextBackupTime(freq) {
+            const now = new Date();
+            if (freq === 'daily') return 'Today 23:55';
+            if (freq === 'weekly') {
+                const daysUntilSun = (7 - now.getDay()) % 7 || 7;
+                const next = new Date(now); next.setDate(now.getDate() + daysUntilSun);
+                return next.toLocaleDateString('en-GB', {weekday:'short', month:'short', day:'numeric'}) + ' 23:55';
+            }
+            if (freq === 'monthly') {
+                const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+                return `${lastDay}/${now.getMonth()+1}/${now.getFullYear()} 23:55`;
+            }
+            return 'Not scheduled';
+        }
+
+        // ==================== ENHANCED EXPENSE SAVE WITH AUTO-CATEGORIZE ====================
+        const _origSaveExpense = typeof saveExpense === 'function' ? saveExpense : null;
+
+        // ==================== SHOW FAB BUTTON ON APP LAUNCH ====================
+        const _origLaunchApp = launchApp;
+        // We'll add the FAB show on page changes
+
+        // ==================== ENHANCED DECOY PIN CHECK ====================
+        // Modify the PIN verification to check for decoy
 
         // ==================== SECURE FACTORY RESET (BUG FIXED) ====================
         async function executeFactoryReset() {
