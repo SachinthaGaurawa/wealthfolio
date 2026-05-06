@@ -8996,6 +8996,77 @@ YOUR PERSONALITY & RULES:
               }));
 
 
+
+        
+
+
+        // Add to the "Log Flow" functionality
+        const flowTypes = [
+          { value: 'income', label: 'Income', icon: '💰' },
+          { value: 'expense', label: 'Expense', icon: '💸' },
+          { value: 'investment', label: 'Investment', icon: '📈' },
+          { value: 'savings', label: 'Savings', icon: '🏦' },
+          { value: 'target', label: 'Targets & Saving', icon: '🎯' },  // NEW
+          { value: 'transfer', label: 'Transfer', icon: '🔄' },
+          { value: 'debt', label: 'Debt Payment', icon: '💳' }
+        ];
+        
+        // When adding target/savings type
+        function addTargetFlow(flowData) {
+          const { amount, targetId, type } = flowData;
+          
+          // Deduct from available balance but track separately
+          const targetEntry = {
+            id: generateId(),
+            type: 'target_allocation',
+            amount: -amount,
+            targetId: targetId,
+            date: new Date().toISOString(),
+            note: `Allocated to savings target`,
+            category: 'target'
+          };
+          
+          // Also create a positive entry in a separate "Target Savings" bucket
+          const savingsEntry = {
+            id: generateId(),
+            type: 'target_savings',
+            amount: amount,
+            targetId: targetId,
+            date: new Date().toISOString(),
+            note: `Savings target allocation`,
+            category: 'savings'
+          };
+          
+          // Update balance calculation
+          updateBalance([targetEntry, savingsEntry]);
+          
+          return { targetEntry, savingsEntry };
+        }
+        
+        function calculateAccurateBalance(flows) {
+          let availableBalance = 0;
+          let targetSavingsBalance = 0;
+          
+          flows.forEach(flow => {
+            if (flow.type === 'target_allocation') {
+              // This reduces available but adds to target savings
+              availableBalance += flow.amount; // amount is negative
+              targetSavingsBalance += Math.abs(flow.amount);
+            } else if (flow.type === 'target_savings') {
+              targetSavingsBalance += flow.amount;
+            } else {
+              availableBalance += flow.amount;
+            }
+          });
+          
+          return {
+            available: availableBalance,
+            targetSavings: targetSavingsBalance,
+            total: availableBalance + targetSavingsBalance
+          };
+        }
+
+
         
 
     </script>
