@@ -1,143 +1,156 @@
+// ==================== WealthFlow AI Engine v6.1 ====================
+// Triple-engine AI with automatic failover.
+// IMPORTANT: All API keys MUST be configured as Vercel Environment Variables.
+// We do NOT keep hardcoded fallbacks — they are a security liability.
+//   - WealthFlow_API_Key  (Gemini)
+//   - DEEPSEEK_API_KEY    (DeepSeek)
+//   - GROQ_API_KEY        (Groq)
+
+export const config = {
+    maxDuration: 30 // seconds
+};
+
+// Helper: fetch with timeout — prevents one slow provider from blocking the chain
+async function fetchWithTimeout(url, options, timeoutMs = 18000) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+        return await fetch(url, { ...options, signal: controller.signal });
+    } finally {
+        clearTimeout(timer);
+    }
+}
+
 export default async function handler(req, res) {
-    // CORS headers for global access
+    // CORS — allow the public Vercel deployment to be called from anywhere
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-    
-    // Handle preflight requests
+
     if (req.method === 'OPTIONS') return res.status(200).end();
     if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-    const { prompt, image } = req.body;
+    const { prompt, image, temperature, maxTokens } = req.body || {};
     if (!prompt) return res.status(400).json({ error: 'Missing prompt' });
 
-    // Securely pull API keys from Vercel Environment Variables
-    const geminiKey = process.env.WealthFlow_API_Key || "AIzaSyCU6KyYWjUg7Iikf3XdYteCiJnbJ_2ZZCQ";
-    const deepseekKey = process.env.DEEPSEEK_API_KEY || "sk-5b66522f940d4d3fb3dbd77bf72d2177";
-    const groqKey = process.env.GROQ_API_KEY || "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";
+    // Pull keys ONLY from environment — no hardcoded fallbacks
+    const geminiKey = process.env.WealthFlow_API_Key || process.env.GEMINI_API_KEY;
+    const deepseekKey = process.env.DEEPSEEK_API_KEY;
+    const groqKey = process.env.GROQ_API_KEY;
 
-    // ---------------------------------------------------------
-    // ENGINE 1: GEMINI (Primary - Handles Text & Vision/OCR)
-    // ---------------------------------------------------------
+    const temp = (typeof temperature === 'number') ? temperature : 0.7;
+    const tokens = (typeof maxTokens === 'number') ? maxTokens : 1500;
+
+    // ---------- ENGINE 1: GEMINI (Primary, supports vision) ----------
     async function fetchGemini() {
+        if (!geminiKey) throw new Error('Gemini key not configured');
         const model = image ? 'gemini-1.5-flash' : 'gemini-2.0-flash';
         const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${geminiKey}`;
-        
-        const parts = [{ text: prompt }];
-        if (image) {
-            parts.push({ inline_data: { mime_type: "image/jpeg", data: image } });
-        }
 
-        const response = await fetch(url, {
+        const parts = [{ text: prompt }];
+        if (image) parts.push({ inline_data: { mime_type: 'image/jpeg', data: image } });
+
+        const response = await fetchWithTimeout(url, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-                contents: [{ parts }], 
-                generationConfig: { temperature: 0.7, maxOutputTokens: 1000 } 
+            body: JSON.stringify({
+                contents: [{ parts }],
+                generationConfig: { temperature: temp, maxOutputTokens: tokens },
+                safetySettings: [
+                    { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_ONLY_HIGH' },
+                    { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_ONLY_HIGH' },
+                    { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_ONLY_HIGH' },
+                    { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_ONLY_HIGH' }
+                ]
             })
         });
 
-        if (!response.ok) throw new Error(`Gemini status: ${response.status}`);
-        const data = await response.json();
-        
-        if (data.promptFeedback?.blockReason) throw new Error('Blocked by Google Safety');
-        if (data.candidates?.[0]?.content?.parts?.[0]?.text) {
-            return data.candidates[0].content.parts[0].text;
+        if (!response.ok) {
+            const errText = await response.text().catch(() => '');
+            throw new Error(`Gemini status ${response.status}: ${errText.substring(0, 200)}`);
         }
+
+        const data = await response.json();
+        if (data.promptFeedback?.blockReason) throw new Error('Blocked by Google Safety');
+        const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (text) return { reply: text, provider: 'gemini' };
         throw new Error('Gemini returned an empty response');
     }
 
-    // ---------------------------------------------------------
-    // ENGINE 2: DEEPSEEK (Fallback 1 - High Intelligence)
-    // ---------------------------------------------------------
+    // ---------- ENGINE 2: DEEPSEEK (Fallback, text-only) ----------
     async function fetchDeepSeek() {
-        if (image) throw new Error('DeepSeek skipped (Image passed to text-only model)');
-        
-        const response = await fetch('https://api.deepseek.com/chat/completions', {
+        if (image) throw new Error('DeepSeek skipped (text-only)');
+        if (!deepseekKey) throw new Error('DeepSeek key not configured');
+
+        const response = await fetchWithTimeout('https://api.deepseek.com/chat/completions', {
             method: 'POST',
-            headers: { 
+            headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${deepseekKey}`
             },
             body: JSON.stringify({
                 model: 'deepseek-chat',
                 messages: [{ role: 'user', content: prompt }],
-                temperature: 0.7,
-                max_tokens: 1000
+                temperature: temp,
+                max_tokens: tokens
             })
         });
 
-        if (!response.ok) throw new Error(`DeepSeek status: ${response.status}`);
+        if (!response.ok) throw new Error(`DeepSeek status ${response.status}`);
         const data = await response.json();
-        return data.choices[0].message.content;
+        const text = data.choices?.[0]?.message?.content;
+        if (!text) throw new Error('DeepSeek returned empty');
+        return { reply: text, provider: 'deepseek' };
     }
 
-    // ---------------------------------------------------------
-    // ENGINE 3: GROQ (Fallback 2 - Ultra Fast)
-    // ---------------------------------------------------------
+    // ---------- ENGINE 3: GROQ (Fallback, ultra-fast) ----------
     async function fetchGroq() {
-        if (image) throw new Error('Groq skipped (Image passed to text-only model)');
+        if (image) throw new Error('Groq skipped (text-only)');
+        if (!groqKey) throw new Error('Groq key not configured');
 
-        const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        const response = await fetchWithTimeout('https://api.groq.com/openai/v1/chat/completions', {
             method: 'POST',
-            headers: { 
+            headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${groqKey}`
             },
             body: JSON.stringify({
-                model: 'llama-3.1-8b-instant',
+                model: 'llama-3.3-70b-versatile',
                 messages: [{ role: 'user', content: prompt }],
-                temperature: 0.7,
-                max_tokens: 1000
+                temperature: temp,
+                max_tokens: tokens
             })
         });
 
-        if (!response.ok) throw new Error(`Groq status: ${response.status}`);
+        if (!response.ok) throw new Error(`Groq status ${response.status}`);
         const data = await response.json();
-        return data.choices[0].message.content;
+        const text = data.choices?.[0]?.message?.content;
+        if (!text) throw new Error('Groq returned empty');
+        return { reply: text, provider: 'groq' };
     }
 
-    // =========================================================
-    // EXECUTION CHAIN (The Fallback Logic)
-    // =========================================================
-    let errorLog = [];
+    // ---------- EXECUTION CHAIN ----------
+    const errorLog = [];
+    const engines = [
+        { name: 'Gemini', fn: fetchGemini },
+        { name: 'DeepSeek', fn: fetchDeepSeek },
+        { name: 'Groq', fn: fetchGroq }
+    ];
 
-    // Attempt 1: Gemini
-    try {
-        console.log('[AI ENGINE] Attempting Gemini...');
-        const reply = await fetchGemini();
-        console.log('[AI ENGINE] ✅ Gemini Success');
-        return res.status(200).json({ reply });
-    } catch (e) {
-        console.error('[AI ENGINE] ❌ Gemini Failed:', e.message);
-        errorLog.push(`Gemini: ${e.message}`);
+    for (const engine of engines) {
+        try {
+            console.log(`[AI] Attempting ${engine.name}…`);
+            const result = await engine.fn();
+            console.log(`[AI] ✓ ${engine.name} succeeded`);
+            return res.status(200).json({ reply: result.reply, provider: result.provider });
+        } catch (e) {
+            console.warn(`[AI] ${engine.name} failed:`, e.message);
+            errorLog.push(`${engine.name}: ${e.message}`);
+        }
     }
 
-    // Attempt 2: DeepSeek
-    try {
-        console.log('[AI ENGINE] Attempting DeepSeek...');
-        const reply = await fetchDeepSeek();
-        console.log('[AI ENGINE] ✅ DeepSeek Success');
-        return res.status(200).json({ reply });
-    } catch (e) {
-        console.error('[AI ENGINE] ❌ DeepSeek Failed:', e.message);
-        errorLog.push(`DeepSeek: ${e.message}`);
-    }
-
-    // Attempt 3: Groq
-    try {
-        console.log('[AI ENGINE] Attempting Groq...');
-        const reply = await fetchGroq();
-        console.log('[AI ENGINE] ✅ Groq Success');
-        return res.status(200).json({ reply });
-    } catch (e) {
-        console.error('[AI ENGINE] ❌ Groq Failed:', e.message);
-        errorLog.push(`Groq: ${e.message}`);
-    }
-
-    // If all fail
-    return res.status(503).json({ 
-        error: "All AI Providers are temporarily down.",
+    return res.status(503).json({
+        error: 'All AI providers are temporarily unavailable.',
         details: errorLog.join(' | ')
     });
 }
